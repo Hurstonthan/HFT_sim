@@ -49,8 +49,20 @@ module ethernet_mac_tx #(
     logic IP_send_l, TCP_send_l; //Signals indicating IP module and TCP need to send the 64 bits data
     ether_state_t state, nstate;
 
+    logic crc_init, valid;
+    logic [31:0] crc_out;
+
     assign xgmii_txd = xgmii_txd_l;
-    assign xgmii_txc = xgmii_txc_l;   
+    assign xgmii_txc = xgmii_txc_l; 
+
+
+      crc32_parallel_64bit CRC (
+        .CLK(CLK),
+        .nRST(nRST),
+        .valid(valid),
+        .data_in(xgmii_txc),
+        .crc_out(crc_out)
+      );
 
     always_ff @(posedge CLK, negedge nRST) begin //64 bits XGMII transmission
         if (!nRST) begin
@@ -79,9 +91,11 @@ module ethernet_mac_tx #(
         nstate = state;
         IP_send_l = IP_send;
         TCP_send_l = TCP_send;
+        
 
         case (state)
             IDLE: begin
+                
                 if (TX_en) begin
                     nstate = SEND_PREAMBLE_SFD;
                 end
@@ -144,28 +158,34 @@ module ethernet_mac_tx #(
         nxgmii_txd_l = xgmii_txd_l;
         nxgmii_txc_l = xgmii_txc_l;
         arp_req = 1'b0;
-
+        crc_init = 1'b0;
+        valid = 1'b1;
         case (state)
             IDLE: begin
+                crc_init = 1'b1;
+                valid = 1'b0;
                 nxgmii_txd_l = 64'h07070707_07070707;
                 nxgmii_txc_l = '1;
             end
 
             SEND_PREAMBLE_SFD: begin
                 // Logic to send preamble and SFD
+                valid = 1'b0;
                 nxgmii_txd_l = {56'h55555555555555, 8'hFB}; //Preamble and SFD 
                 nxgmii_txc_l = 8'b000_0001;
             end
 
             SEND_ETHER_HEAD1: begin
                 // Logic to send destination and source MAC addresses
+
                 nxgmii_txc_l =  '0;
-                if (rcv_mac_addr) begin
-                    nxgmii_txd_l = {dst_mac_addr,MAC_SRC_ADDR[47:32]};
-                end else begin
-                    nxgmii_txd_l = {MAC_DEST_ADDR,MAC_SRC_ADDR[47:32]}; //ARP protocol
-                    arp_req = 1'b1;
-                end
+                nxgmii_txd_l = {MAC_DEST_ADDR,MAC_SRC_ADDR[47:32]};
+                // if (rcv_mac_addr) begin
+                //     nxgmii_txd_l = {dst_mac_addr,MAC_SRC_ADDR[47:32]};
+                // end else begin
+                //     nxgmii_txd_l = {MAC_DEST_ADDR,MAC_SRC_ADDR[47:32]}; //ARP protocol
+                //     arp_req = 1'b1;
+                // end
                 
             end
 
@@ -262,8 +282,10 @@ module ethernet_mac_tx #(
             end
 
             SEND_FCS_TERMINATE: begin
+                valid = 1'b0;
                 // Logic to send FCS and terminate
-                nxgmii_txd_l = 64'h00_00_00_00_00_00_00_FD; // FCS and 0xFD
+                nxgmii_txd_l = {crc_out, 32'h FD}; // FCS and 0xFD
+                // nxgmii_txd_l = 64'h00_00_00_00_00_00_00_FD; // FCS and 0xFD
                 nxgmii_txc_l = 8'b0000_0001; // all control
             end
 
@@ -272,6 +294,7 @@ module ethernet_mac_tx #(
             // Then send txc: 8'b0000_0001
             // Then second send 64'h of 0x07 and then going back to IDLE 
             SEND_IDLE_END1: begin
+                valid = 1'b0;
                 nxgmii_txd_l = 64'h07070707_07070707;
                 nxgmii_txc_l = 8'b0000_0001;
             end
