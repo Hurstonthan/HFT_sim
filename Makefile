@@ -16,9 +16,7 @@ VFILES     = $(SRCDIR)/$*.sv
 ### Common Verilator flags
 VERI_FLAGS := -Wall -I$(INCDIR)
 
-########################################################################
-# PATTERN 1 —  “make foo.sim”
-########################################################################
+
 %.sim:
 	@echo "==> Building + running sim for top '$*'"
 	@mkdir -p $(BUILDDIR)
@@ -26,35 +24,27 @@ VERI_FLAGS := -Wall -I$(INCDIR)
 	          --cc $(VFILES)                         \
 	          --top-module $*                        \
 	          --exe $(TBDIR)/$*_tb.cpp               \
-	          --build                                \
-	          
-	@$(OUT)
+	          --build
+	@./obj_dir/V$*        
 
-########################################################################
-# PATTERN 2 —  “make foo.wav”
-#   • adds --trace  so Verilator emits VCD support
-#   • assumes  $*_tb.cpp  enables VCD dump (see note below)
-########################################################################
+
 %.wav:
 	@echo "==> Building + tracing '$*' (VCD)"
 	@mkdir -p $(BUILDDIR)
-	verilator $(VERI_FLAGS) --trace                   \
-	          --cc $(VFILES)                          \
-	          --top-module $*                         \
-	          --exe $(TBDIR)/$*_tb.cpp                \
-	          --build                                 \
-	          -o $(BUILDDIR)/$*_sim
-	@echo "==> Running simulation (produces $(BUILDDIR)/$*.vcd)"
-	@$(BUILDDIR)/$*_sim
+	verilator $(VERI_FLAGS) --trace                  \
+	          --cc $(VFILES)                         \
+	          --top-module $*                        \
+	          --exe $(TBDIR)/$*_tb.cpp               \
+	          --build
+	@./obj_dir/V$*          # <-- actually *run* it
 	@echo "==> Launching GTKWave ..."
-	@gtkwave $(BUILDDIR)/$*.vcd &
+	@gtkwave $*.vcd &
 
-########################################################################
-# House-keeping
-########################################################################
+
 .PHONY: clean help
 clean:
 	rm -rf obj_dir $(BUILDDIR)
+	rm -f *.vcd
 
 help:
 	@echo "Usage:"
