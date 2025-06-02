@@ -7,26 +7,28 @@ interface mac_ip_if_vh;
     import reciever_pkg::*;
 
     //input
-    logic valid_ip;
-    logic [DATA_SIZE-1:0] data_ip;  
-    logic start_ip; //meaning of a new packet
-    logic [BYTE_NUMBER-1:0] length_ip;
+    logic valid_mac;
+    logic [DATA_SIZE-1:0] data_mac;  
+    logic start_mac; //meaning of a new packet
+    logic [BYTE_NUMBER-1:0] length_mac;
+    logic end_mac;
 
     //output
-    logic valid_udp; //head completed for ip layer
-    logic [DATA_SIZE-1:0] data_udp;
-    logic [BYTE_NUMBER-1:0] length_udp;
-    logic start_udp;
-    logic end_udp;
+    logic valid_ip; //head completed for ip layer
+    logic [DATA_SIZE-1:0] data_ip;
+    logic [BYTE_NUMBER-1:0] length_ip;
+    logic start_ip;
+    logic end_ip;
+    
 
     modport mac_ip (
-        input valid_ip, data_ip, start_ip, length_ip,
-        output valid_udp, data_udp, start_udp, length_udp
+        input valid_mac, data_mac, start_mac, length_mac,
+        output valid_ip, data_ip, start_ip, length_ip
     );
 
     modport tb(
-        input valid_udp, data_udp, start_udp, length_udp,
-        output valid_ip, data_ip, start_ip, length_ip
+        input valid_ip, data_ip, start_ip, length_ip,
+        output valid_mac, data_mac, start_mac, length_mac
     );
 
 endinterface;
