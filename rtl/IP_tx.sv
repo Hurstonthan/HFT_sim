@@ -33,7 +33,9 @@ module IP_tx #(
     //Interface between Ethernet MAC and IP TX
     input logic IP_send,
     input logic [15:0] TCP_len_data,
-    output logic [WORD_WIDTH - 1 : 0] IP_transmit
+    input logic [WORD_WIDTH - 1 : 0] TCP_transmit,
+    output logic [WORD_WIDTH - 1 : 0] IP_transmit,
+    output logic TCP_send
 );
     
     typedef enum logic [6:0] {
@@ -42,7 +44,7 @@ module IP_tx #(
         SEND_IP_HEADER1, //Send length LSB, IP_iden, IP_flag, IP offset,IP TLL, IP protocol, IP checksum MSB
         SEND_IP_HEADER2, //Send check sum IP LSB, source IP, dest IP MSB
         SEND_IP_HEADER3, //Send dest IP LSB 
-        SEND_IP_PAYLOAD
+        SEND_IP_PAYLOAD,
         //That's all for IP header
     } IP_state_t;
 
@@ -100,12 +102,20 @@ module IP_tx #(
                 nxIP_transmit_l = {56'b0, IP_DEST_ADDR[7:0]}; //Send dest IP LSB
             end
             SEND_IP_HEADER3: begin
-                nxIP_state = IDLE;
-                nxIP_transmit_l = '0; //End of IP header, go back to IDLE
+                //nxIP_state = IDLE;
+                nxIP_state = SEND_IP_PAYLOAD;
+                TCP_send = 1'b1;
+                //nxIP_transmit_l = '0; //End of IP header, go back to IDLE
+                nxIP_transmit_l = TCP_transmit;
             end
 
             SEND_IP_PAYLOAD: begin
-
+                nxIP_transmit_l = TCP_transmit;
+                if (!IP_send) begin
+                    TCP_send = 1'b0;
+                    nxIP_transmit_l = '0;
+                    nxIP_state = IDLE;h
+                end
             end
             default: begin
                 nxIP_transmit_l = '0;
