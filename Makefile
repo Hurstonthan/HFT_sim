@@ -20,7 +20,7 @@ VERI_FLAGS := -Wall -I$(INCDIR)
 %.sim:
 	@echo "==> Building + running sim for top '$*'"
 	@mkdir -p $(BUILDDIR)
-	verilator $(VERI_FLAGS)                          \
+	verilator $(VERI_FLAGS) --trace                  \
 	          --cc $(VFILES)                         \
 	          --top-module $*                        \
 	          --exe $(TBDIR)/$*_tb.cpp               \

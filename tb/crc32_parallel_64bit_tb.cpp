@@ -29,7 +29,8 @@ int main(int argc, char** argv) {
 
         tfp->dump(main_time);
 
-        top->CLK ^= 1; ++main_time;
+        top->CLK ^= 1; 
+        ++main_time;
     }
     top->nRST = 1;
 
@@ -55,9 +56,9 @@ int main(int argc, char** argv) {
         top->valid = 0;
         for (int ph = 0; ph < 2; ++ph) {
             top->CLK ^= 1; top->eval();
-#if VM_TRACE
+
             tfp->dump(main_time);
-#endif
+
             ++main_time;
         }
 

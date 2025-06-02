@@ -1,3 +1,6 @@
+//NOTE STILL NEED TO FIX THE IP_TX DUE TO THE DESIGN SUGGESTION PIPLINE WITH TCP TRANSMISSION
+
+
 module IP_tx #(
     // parameter WORD_WIDTH = 64,
     // parameter ETHER_TYPE    //2 bytes
@@ -16,12 +19,10 @@ module IP_tx #(
     parameter ETHER_TYPE         = 16'h0800,   // IPv4 EtherType
     parameter IPV4_VER           = 8'h45,      // IPv4 + header length = 5 words (20 bytes)
     parameter LENGTH             = 16'd40,     // Total IP length (20 bytes IP header + 20 bytes TCP header)
-    parameter IP_IDENTIFICATION  = 16'h0001,   // Example identification
-    parameter IP_FLAG            = 16'h4000,   // Don't Fragment flag (DF = 1, offset = 0)
-    parameter IP_OFFSET          = 8'h00,      // Fragment offset (0)
-    parameter IP_TTL             = 8'h40,      // Time to Live (64)
+    parameter IP_IDENFICATION    = 16'h0001,   // Example identification
+    parameter IP_FLAG_OFFSET     = 16'h4000,   // Don't Fragment flag (DF = 1, offset = 0)
+    parameter IP_TLL             = 8'h40,      // Time to Live (64)
     parameter IP_PROTOCOL        = 8'h06,      // TCP protocol number = 6
-    parameter IP_CHECKSUM        = 16'h0000,   // Checksum placeholder (to be computed later)
     parameter IP_SRC_ADDR        = 32'hC0A80101, // 192.168.1.1
     parameter IP_DEST_ADDR       = 32'hC0A80102  // 192.168.1.2
 
@@ -40,7 +41,8 @@ module IP_tx #(
         SEND_ETYPE_IPV4_MSB_LENGTH,
         SEND_IP_HEADER1, //Send length LSB, IP_iden, IP_flag, IP offset,IP TLL, IP protocol, IP checksum MSB
         SEND_IP_HEADER2, //Send check sum IP LSB, source IP, dest IP MSB
-        SEND_IP_HEADER3 //Send dest IP LSB 
+        SEND_IP_HEADER3, //Send dest IP LSB 
+        SEND_IP_PAYLOAD
         //That's all for IP header
     } IP_state_t;
 
@@ -50,15 +52,17 @@ module IP_tx #(
     //Adding the logic of IP checksum
     logic chk_sum_valid;
     logic [16:0] IPv4_chk_sum, nIPv4_chk_sum;
-    logic [16:0] sum_chk;
+    // logic [16:0] sum_chk;
 
     always_ff @(posedge CLK, negedge nRST) begin
         if (!nRST) begin
             IP_transmit <= '0;
             IPv4_chk_sum <= '0;
+            IP_state <= IDLE;
         end else begin
+            IP_state <= nxIP_state;
             IP_transmit <= nxIP_transmit_l;
-            IPv4_chk_sum <= ~(nIPv4_chk_sum[15:0] + nIPv4_chk_sum[16]);
+            IPv4_chk_sum <= ~(nIPv4_chk_sum[15:0] + {15'b0, nIPv4_chk_sum[16]});
         end
     end
 
@@ -85,7 +89,7 @@ module IP_tx #(
             end
             SEND_ETYPE_IPV4_MSB_LENGTH: begin
                 nxIP_state = SEND_IP_HEADER1;
-                nxIP_transmit_l = {LENGTH[7:0], IP_IDENFICATION, IP_FLAG, IP_OFFSET, IP_TILL, IP_PROTOCOL, IPv4_chk_sum[15:8]}; //Send length LSB, IP_iden, IP_flag, IP offset,IP TLL, IP protocol, IP checksum MSB
+                nxIP_transmit_l = {LENGTH[7:0], IP_IDENFICATION, IP_FLAG_OFFSET, IP_TLL, IP_PROTOCOL, IPv4_chk_sum[15:8]}; //Send length LSB, IP_iden, IP_flag, IP offset,IP TLL, IP protocol, IP checksum MSB
             end
             SEND_IP_HEADER1: begin
                 nxIP_state = SEND_IP_HEADER2;
@@ -98,6 +102,10 @@ module IP_tx #(
             SEND_IP_HEADER3: begin
                 nxIP_state = IDLE;
                 nxIP_transmit_l = '0; //End of IP header, go back to IDLE
+            end
+
+            SEND_IP_PAYLOAD: begin
+
             end
             default: begin
                 nxIP_transmit_l = '0;
