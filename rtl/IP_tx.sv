@@ -37,16 +37,23 @@ module IP_tx #(
     output logic [WORD_WIDTH - 1 : 0] IP_transmit,
     output logic TCP_send
 );
+
     
-    typedef enum logic [6:0] {
+    
+    
+    typedef enum logic [2:0] {
         IDLE,
         SEND_ETYPE_IPV4_MSB_LENGTH,
         SEND_IP_HEADER1, //Send length LSB, IP_iden, IP_flag, IP offset,IP TLL, IP protocol, IP checksum MSB
         SEND_IP_HEADER2, //Send check sum IP LSB, source IP, dest IP MSB
         SEND_IP_HEADER3, //Send dest IP LSB 
-        SEND_IP_PAYLOAD,
+        SEND_IP_PAYLOAD
         //That's all for IP header
     } IP_state_t;
+
+    
+
+    
 
     IP_state_t IP_state, nxIP_state;
     logic [WORD_WIDTH - 1 : 0] nxIP_transmit_l;
@@ -80,9 +87,12 @@ module IP_tx #(
         nxIP_transmit_l = IP_transmit;
         nxIP_state = IP_state;
         chk_sum_valid = 1'b0;
+        TCP_send = 1'b0;
+
 
         case (IP_state)
             IDLE: begin
+
                 if (IP_send) begin
                     nxIP_state = SEND_ETYPE_IPV4_MSB_LENGTH;
                     nxIP_transmit_l = {32'b0, ETHER_TYPE, IPV4_VER ,LENGTH[15:8]}; //Send EtherType and length
@@ -90,31 +100,41 @@ module IP_tx #(
                 end  
             end
             SEND_ETYPE_IPV4_MSB_LENGTH: begin
+
                 nxIP_state = SEND_IP_HEADER1;
                 nxIP_transmit_l = {LENGTH[7:0], IP_IDENFICATION, IP_FLAG_OFFSET, IP_TLL, IP_PROTOCOL, IPv4_chk_sum[15:8]}; //Send length LSB, IP_iden, IP_flag, IP offset,IP TLL, IP protocol, IP checksum MSB
+        
             end
             SEND_IP_HEADER1: begin
+
                 nxIP_state = SEND_IP_HEADER2;
                 nxIP_transmit_l = {IPv4_chk_sum[7:0], IP_SRC_ADDR, IP_DEST_ADDR[31:8]};
+        
             end
             SEND_IP_HEADER2: begin
+
                 nxIP_state = SEND_IP_HEADER3;
                 nxIP_transmit_l = {56'b0, IP_DEST_ADDR[7:0]}; //Send dest IP LSB
+        
             end
             SEND_IP_HEADER3: begin
+
                 //nxIP_state = IDLE;
                 nxIP_state = SEND_IP_PAYLOAD;
                 TCP_send = 1'b1;
                 //nxIP_transmit_l = '0; //End of IP header, go back to IDLE
                 nxIP_transmit_l = TCP_transmit;
+        
             end
 
             SEND_IP_PAYLOAD: begin
+                
                 nxIP_transmit_l = TCP_transmit;
+        
                 if (!IP_send) begin
                     TCP_send = 1'b0;
                     nxIP_transmit_l = '0;
-                    nxIP_state = IDLE;h
+                    nxIP_state = IDLE;
                 end
             end
             default: begin

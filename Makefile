@@ -31,14 +31,16 @@ VERI_FLAGS := -Wall -I$(INCDIR)
 %.wav:
 	@echo "==> Building + tracing '$*' (VCD)"
 	@mkdir -p $(BUILDDIR)
-	verilator $(VERI_FLAGS) --trace                  \
+	verilator $(VERI_FLAGS) --trace-fst                  \
 	          --cc $(VFILES)                         \
 	          --top-module $*                        \
 	          --exe $(TBDIR)/$*_tb.cpp               \
 	          --build
+			  
+			  
 	@./obj_dir/V$*          # <-- actually *run* it
 	@echo "==> Launching GTKWave ..."
-	@gtkwave $*.vcd &
+	@gtkwave $*.vcd $*.gtkw &
 
 
 .PHONY: clean help

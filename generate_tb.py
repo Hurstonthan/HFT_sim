@@ -3,13 +3,13 @@ import os
 
 TEMPLATE = """#include "V{modulename}.h"
 #include "verilated.h"
-#include "verilated_vcd_c.h"
+#include "verilated_fst_c.h"
 
 
 static uint64_t main_time = 0;
 double sc_time_stamp() {{ return main_time; }}
 
-void tick (V{modulename}* top, VerilatedVcdC* tfp) {{
+void tick (V{modulename}* top, VerilatedFstC* tfp) {{
     for (int k = 0; k < 2; k++) {{
         top -> eval();
         tfp->dump(main_time);
@@ -23,7 +23,7 @@ int main(int argc, char **argv) {{
     V{modulename}* top = new V{modulename};
 
     Verilated::traceEverOn(true);
-    VerilatedVcdC* tfp = new VerilatedVcdC;
+    VerilatedFstC* tfp = new VerilatedFstC;
     top->trace(tfp, 99);
     tfp->open("build/{modulename}.vcd");
 
