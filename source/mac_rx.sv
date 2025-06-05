@@ -7,6 +7,7 @@ module mac_rx(
     phy_mac_if pmif
 );
     //todo include crc logic
+    // input data is MSB first, so reverse the byte order while connecting 
     import receiver_pkg::*;
     mac_state_t current_state, next_state;
     count_t count, next_count;
@@ -17,10 +18,10 @@ module mac_rx(
 
     crc32_parallel_64bit crc_inst (
         .clk(clk),
-        .nRST(nRST || state == IDLE), // Reset the CRC when in IDLE state
+        .nRST(nRST && (state != IDLE)), // Reset the CRC when in IDLE state
         .data_in(pmif.data_phy),
-        .valid_in(pmif.valid_phy),
-        .crc_init(1'b0), // No need to initialize CRC here, handled in IDLE state
+        .valid_in(pmif.valid_phy && (current_state == PAYLOAD || current_state == VLAN)), // Only process valid data in PAYLOAD or VLAN state
+        .crc_init(32'hFFFFFFFF), // default CRC initialization value
         .crc_out(pmif.crc_out), 
     );
 
@@ -60,9 +61,11 @@ module mac_rx(
                 if (pmif.valid_phy) begin
                     next_state = HEADER;
                     next_start = 1'b1; // Start of a new packet
+                    next_count = '0; // Reset count when a new packet starts
                 end 
             end
             //check the vlan tag
+            // it cannot be fully layouted 
             HEADER: begin
                 if (pmif.valid_phy) begin
                     // Process header logic here
@@ -76,11 +79,12 @@ module mac_rx(
                             next_state = (pmif.data_phy[47:0] == FPGA_MAC)? HEADER : ERROR; // Check if the source address matches FPGA_MAC
                         end
                         1: begin
+                            //set testbench to test the header 
                             // Check the destination address
                             if (({pmif.data_phy[31:0], previous_data[63:48]} == NASDAQ_MAC)) begin
-                                if (pmif.data_phy[63:32] == VLAN_TAG) begin
+                                if (pmif.data_phy[47:32] == TPIC) begin
                                     next_state = VLAN;
-                                end else if (pmif.data_phy[63:32] == IP_TYPE) begin
+                                end else if (pmif.data_phy[47:32] == IP_TYPE) begin
                                     next_state = PAYLOAD;
                                     next_start = 1'b1; // Start of the payload
                                 end else begin
@@ -97,8 +101,15 @@ module mac_rx(
             end
             VLAN: begin
                 //todo finish what rest of vlan is doing
+                // formate of VLAN
+                /*
+                    TCI include PCP, DEI and VID
+                    |TPID (0x8100)| PCP   | DEI  | VID    |
+                    | 16 bits     | 3 bits| 1 bit| 12 bits|
+                */
                 if (pmif.valid_phy) begin
-                    if (pmif.data_phy[63:32] == IP_TYPE) begin 
+                    // the first two bytes is IP TYPE, the rest is not
+                    if (pmif.data_phy[15:0] == IP_TYPE) begin 
                         next_state = PAYLOAD; // If VLAN tag is correct, go to PAYLOAD state
                         next_start = 1'b1; // Start of the payload
                     end else begin
