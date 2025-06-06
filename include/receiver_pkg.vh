@@ -28,8 +28,12 @@ package receiver_pkg;
     parameter NASDAQ_IP = ; // the correct ip source address - 4 byte
 
     //UDP layer parameters
-
-    // FSM states
+    parameter UDP_SOURCE = ;
+    parameter UDP_DESTINATION = ;
+    parameter UDP_HEADER_LENGTH = 8'h08; // UDP header length in bytes
+    parameter UDP_CHECKSUM = 16'h0000; // UDP checksum, 16'h0000 for no checksum
+    
+    // FSM states this may need to be changed for each layer 
     typedef enum logic [2:0] { 
         IDLE,
         HEADER,
