@@ -48,15 +48,14 @@ module udp_rx (
             IDLE: begin 
                 if (iuif.valid_ip && iuif.start_ip) begin
                     next_state = HEADER;
-                    next_count = '0;
+                    next_count = '0; 
                     next_start = 1'b1; // start of a new UDP packet
                 end
             end
             HEADER: begin // maybe this can be extended to be more stage
             //let's finish this verion first then improve the speed
                 case (count) 
-                    // 1 - 2 MAC layer header, 2 - 5 IP layer header, 5 - 6 UDP layer header
-                    4: begin // MAC header
+                    0: begin // MAC header
                         udp_destination_port = iuif.data_ip [31:16]; // 16 bits for destination port
                         udp_source_port = iuif.data_ip [47:32]; // 16 bits for source port
                         udp_length = iuif.data_ip [63:48]; // 16 bits for UDP length
@@ -67,7 +66,7 @@ module udp_rx (
                             next_state = ERROR; // UDP length is less than header length
                         end 
                     end
-                    5: begin
+                    1: begin
                         udp_checksum = iuif.data_ip [15:0]; 
                         //todo like ip layer figure about checksum logic
                         if (udp_checksum != UDP_CHECKSUM) begin

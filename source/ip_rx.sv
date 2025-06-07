@@ -77,7 +77,7 @@ module ip_rx(
 
         case (current_state)
             IDLE: begin
-                if (mipif.valid_mac) begin
+                if (mipif.valid_mac && mipif.start_mac) begin
                     next_state = HEADER;
                     next_count = '0; // Reset count when a new packet starts
                     next_start = 1'b1; // Start of a new packet
@@ -89,9 +89,9 @@ module ip_rx(
                     next_count = count + 1; 
                     case (count) 
                         //version without VLAN
-                        0: // MAC layer
-                        1: // MAC layer
-                        2:  begin
+                        // 0: // MAC layer
+                        // 1: // MAC layer
+                        0:  begin
                             ip_version = prevuous_data[59:56];
                             ip_header_length = previous_data[63:60];
                             ip_total_length = mipif.data_mac[15:0];
@@ -108,7 +108,7 @@ module ip_rx(
                                 next_state = ERROR; // If TTL does not match, go to ERROR state
                             end
                         end
-                        3: begin
+                        1: begin
                             ip_header_checksum = mipif.data_mac[15:0]; // Header checksum
                             ip_source_address = mipif.data_mac[47:16]; // Source IP address
                             //todo check the checksum validation logic
@@ -116,7 +116,7 @@ module ip_rx(
                                 next_state = ERROR; // If source address does not match FPGA_IP, go to ERROR state
                             end
                         end
-                        4: begin
+                        2: begin
                             ip_destination_address = {mipif.data_mac[15:0], previous_data[63:48]}; // Destination IP address
                             if (ip_destination_address != NASDAQ_IP) begin
                                 next_state = ERROR; // If destination address does not match NASDAQ_IP, go to ERROR state
