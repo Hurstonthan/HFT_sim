@@ -9,23 +9,23 @@ import receiver_pkg::*;
     logic clk = 0, nRST;
 
     // interface
-    mac_ip_if miif();
+    mac_ip_if mipif();
     
     // test program
-    test PROG (clk, nRST, miif);
+    test PROG (clk, nRST, mipif);
 
     // clock generation
     always #(PERIOD/2) clk = ~clk;
     
     // DUT instantiation
-    ip_rx DUT (clk, nRST, miif);
+    ip_rx DUT (clk, nRST, mipif);
 endmodule
 
 // test program
 program test(
     input logic clk,
     output logic nRST,
-    mac_ip_if.tb miif
+    mac_ip_if.tb mipif
 );
     import receiver_pkg::*; 
     parameter BYTE_NUMBER = 12;  
@@ -40,11 +40,11 @@ program test(
         test_case = "Reset";
         $display("[%0t] TEST: %s", $time, test_case);
         nRST = 1'b0;
-        miif.valid_mac = 1'b0;
-        miif.data_mac = '0;
-        miif.start_mac = 1'b0;
-        miif.length_mac = '0;
-        miif.end_mac = 1'b0;
+        mipif.valid_mac = 1'b0;
+        mipif.data_mac = '0;
+        mipif.start_mac = 1'b0;
+        mipif.length_mac = '0;
+        mipif.end_mac = 1'b0;
         #20ns;
         nRST = 1'b1;
         @(posedge clk);
@@ -58,40 +58,41 @@ program test(
         input logic [DATA_SIZE-1:0] error_pattern = '1 
     );
         // send packet
-        miif.valid_mac = 1'b1;
-        miif.start_mac = 1'b1;
-        miif.length_mac = length;
+        mipif.valid_mac = 1'b1;
+        mipif.start_mac = 1'b1;
+        mipif.length_mac = length;
         
         // first packet data
-        miif.data_mac = (insert_error && (error_position == 0)) ? 
+        mipif.data_mac = (insert_error && (error_position == 0)) ? 
                        (data[0] ^ error_pattern) : data[0];
-        miif.end_mac = (length == 1) ? 1'b1 : 1'b0;
+        mipif.end_mac = (length == 1) ? 1'b1 : 1'b0;
         @(posedge clk);
-        miif.start_mac = 1'b0;
+        mipif.start_mac = 1'b0;
         
         // internal data transfer
         for (int i = 1; i < length-1; i++) begin
-            miif.data_mac = (insert_error && (error_position == i)) ? 
+            mipif.data_mac = (insert_error && (error_position == i)) ? 
                           (data[i] ^ error_pattern) : data[i];
-            miif.end_mac = 1'b0;
+            mipif.end_mac = 1'b0;
             @(posedge clk);
         end
         
         // last packet data
         if (length > 1) begin
-            miif.data_mac = (insert_error && (error_position == length-1)) ? 
+            mipif.data_mac = (insert_error && (error_position == length-1)) ? 
                           (data[length-1] ^ error_pattern) : data[length-1];
-            miif.end_mac = 1'b1;
+            mipif.end_mac = 1'b1;
             @(posedge clk);
         end
         
         // done sending
-        miif.valid_mac = 1'b0;
-        miif.end_mac = 1'b0;
+        mipif.valid_mac = 1'b0;
+        mipif.end_mac = 1'b0;
         @(posedge clk);
     endtask
     
     // Generate valid IP header
+    // todo the ip header is different from my idea
     function void generate_ip_header(ref logic [MAX_PACKET_SIZE-1:0][DATA_SIZE-1:0] packet_data);
         // Version (4 bits) + IHL (4 bits) + DSCP (6 bits) + ECN (2 bits) + Total Length (16 bits)
         packet_data[0][31:0] = {IP_VERSION, IP_HEADER_LENGTH, 8'h00, 16'h0028}; // Total length = 40 bytes
