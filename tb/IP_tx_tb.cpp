@@ -54,10 +54,19 @@ int main (int argc, char** argv) {
 
     //Now passing the data and observe it
     top -> IP_send = 1;
+    top -> TCP_len_data = 40;
+    top -> bytes_sent_tcp_ip = 50;
     for (int p = 0; p < 10; p++) {
         tick(top, tfp);
+        if (p >= 3 and p < 3 + len_data) {
+            top -> TCP_transmit = data_vec[p - 3]; //Start transmitting data after 3 cycles
+        } 
+        printf("Cyle %d -> IP_transmit = 0x%08X\n", p, top -> IP_transmit);
+        printf("Cyle %d -> IP_transmit = 0x%08X\n", p, top -> bytes_sent_tcp_ip);
         printf("Cyle %d -> IP_transmit = 0x%08X\n", p, top -> IP_transmit);
     }
+
+
     // for (int k = 0; k < len_data; k++) {
     //     top -> TCP
     // }

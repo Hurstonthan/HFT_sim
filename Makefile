@@ -9,18 +9,20 @@ INCDIR     := include
 SRCDIR     := rtl
 TBDIR      := tb
 BUILDDIR   := build
+SUR_FILES  := TCP_flow_ctrl
 ########################################################################
 
+
 ### All RTL sources
-VFILES     = $(SRCDIR)/$*.sv
+VFILES     = $(SRCDIR)/$*.sv $(SRCDIR)/$(SUR_FILES).sv 
 ### Common Verilator flags
-VERI_FLAGS := -Wall -I$(INCDIR)
+VERI_FLAGS := -Wall -I$(INCDIR) -CFLAGS "-Irtl" -Wno-UNDRIVEN -Wno-UNUSEDSIGNAL 
 
 
 %.sim:
 	@echo "==> Building + running sim for top '$*'"
 	@mkdir -p $(BUILDDIR)
-	verilator $(VERI_FLAGS) --trace                  \
+	verilator $(VERI_FLAGS) --trace-fst                  \
 	          --cc $(VFILES)                         \
 	          --top-module $*                        \
 	          --exe $(TBDIR)/$*_tb.cpp               \

@@ -20,7 +20,7 @@ module TCP_tx #(
     input logic [15:0] bytes_abt_sent;
 
     output logic SYN_sent, FIN_sent,
-    output logic [17:0] bytes_sent,
+    output logic [15:0] bytes_sent,
     // Interface between TCP_tx and IP_tx
     input logic TCP_send,
     output logic [WORD_WIDTH - 1 : 0] TCP_transmit
@@ -94,7 +94,7 @@ always_comb begin
 
         SEND_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE: begin
             valid_checksum = 1'b1;
-            nTCP_tranmit = {seq_num_tx[7:0], ACK_tx, offset_tx, TCP_control_tx, window_size_tx[15:8]}; // Send the last 8 bits of sequence number, ACK number, offset, control flags, and window size
+            nTCP_tranmit = {seq_num_tx[7:0], ACK_tx, {offset_tx, 4'b0}, TCP_control_tx, window_size_tx[15:8]}; // Send the last 8 bits of sequence number, ACK number, offset, control flags, and window size
         end
 
         SEND_WINDOWSIZE_CHECKSUM_URGENT_PAYLOAD: begin

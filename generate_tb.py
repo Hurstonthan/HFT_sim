@@ -25,7 +25,7 @@ int main(int argc, char **argv) {{
     Verilated::traceEverOn(true);
     VerilatedFstC* tfp = new VerilatedFstC;
     top->trace(tfp, 99);
-    tfp->open("build/{modulename}.vcd");
+    tfp->open("{modulename}.vcd");
 
     // Reset
     //top->nRST = 0;

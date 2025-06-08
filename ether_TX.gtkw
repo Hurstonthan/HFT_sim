@@ -1,0 +1,75 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Sun Jun  8 08:02:16 2025
+[*]
+[dumpfile] "/home/than0/HFT_sim/ether_TX.vcd"
+[dumpfile_mtime] "Sun Jun  8 08:00:57 2025"
+[dumpfile_size] 2043
+[savefile] "/home/than0/HFT_sim/ether_TX.gtkw"
+[timestart] 0
+[size] 3956 2432
+[pos] -1 -1
+*-1.915936 16 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.ether_TX.
+[treeopen] TOP.ether_TX.my_TCP_flow_ctrl.
+[sst_width] 586
+[signals_width] 842
+[sst_expanded] 1
+[sst_vpaned_height] 800
+@22
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.ACK_tx[31:0]
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.ISN_num[31:0]
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.TCP_len_data[31:0]
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.checksum_tx[15:0]
+@28
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.end_ss
+@22
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.offset_tx[3:0]
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.seq_num_tx[31:0]
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.urgent_pointer_tx[15:0]
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.window_size_tx[15:0]
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.TCP_control_tx[7:0]
+@28
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.TCP_tx_en
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.TCP_stop_flg
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.seq_up
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.SYN_sent
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.ACK_sent
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.FIN_sent
+@24
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.bytes_sent[31:0]
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.bytes_abt_sent[31:0]
+@100000028
+TOP.CLK
+@28
+TOP.nRST
+@100000028
+TOP.ether_TX.my_TCP_flow_ctrl.state[6:0]
+@200
+-
+-___DIVISION___
+@22
+TOP.ether_TX.my_TCP_flow_ctrl.myrx.ACK_rx[31:0]
+TOP.ether_TX.my_TCP_flow_ctrl.myrx.TCP_control_rx[7:0]
+TOP.ether_TX.my_TCP_flow_ctrl.myrx.checksum_rx[15:0]
+TOP.ether_TX.my_TCP_flow_ctrl.myrx.offset_rx[3:0]
+TOP.ether_TX.my_TCP_flow_ctrl.myrx.payload_len_rx[31:0]
+@28
+TOP.ether_TX.my_TCP_flow_ctrl.myrx.timeout_flag
+@22
+TOP.ether_TX.my_TCP_flow_ctrl.myrx.urgent_pointer_rx[15:0]
+TOP.ether_TX.my_TCP_flow_ctrl.myrx.window_size_rx[15:0]
+@100000028
+TOP.CLK
+@28
+TOP.nRST
+TOP.ether_TX.my_TCP_flow_ctrl.myrx.rcv_data
+@100000028
+TOP.ether_TX.my_TCP_flow_ctrl.state[6:0]
+@24
+TOP.ether_TX.my_TCP_flow_ctrl.bytes_in_flight[31:0]
+@25
+TOP.ether_TX.my_TCP_flow_ctrl.ack_num[33:0]
+[pattern_trace] 1
+[pattern_trace] 0

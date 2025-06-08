@@ -33,9 +33,12 @@ module IP_tx #(
     //Interface between Ethernet MAC and IP TX
     input logic IP_send,
     input logic [15:0] TCP_len_data,
+    input logic [15:0] bytes_sent_tcp_ip,
     input logic [WORD_WIDTH - 1 : 0] TCP_transmit,
     output logic [WORD_WIDTH - 1 : 0] IP_transmit,
-    output logic TCP_send
+    output logic TCP_send,
+    output logic [15:0] bytes_sent_ip_mac,
+    output logic [15:0] TCP_len_data_mc
 );
 
     
@@ -68,10 +71,14 @@ module IP_tx #(
             IP_transmit <= '0;
             IPv4_chk_sum <= '0;
             IP_state <= IDLE;
+            bytes_sent_ip_mac <= '0;
+            TCP_len_data_mc <= '0;
         end else begin
             IP_state <= nxIP_state;
             IP_transmit <= nxIP_transmit_l;
             IPv4_chk_sum <= ~(nIPv4_chk_sum[15:0] + {15'b0, nIPv4_chk_sum[16]});
+            TCP_len_data_mc <= TCP_len_data;
+            bytes_sent_ip_mac <= bytes_sent_tcp_ip;
         end
     end
 
@@ -109,28 +116,27 @@ module IP_tx #(
 
                 nxIP_state = SEND_IP_HEADER2;
                 nxIP_transmit_l = {IPv4_chk_sum[7:0], IP_SRC_ADDR, IP_DEST_ADDR[31:8]};
+                TCP_send = 1'b1; //Indicate that TCP header is being sent
         
             end
             SEND_IP_HEADER2: begin
-
+                TCP_send = 1'b1; //Indicate that TCP header is being sent
                 nxIP_state = SEND_IP_HEADER3;
-                nxIP_transmit_l = {56'b0, IP_DEST_ADDR[7:0]}; //Send dest IP LSB
+                nxIP_transmit_l = {IP_DEST_ADDR[7:0], TCP_transmit[55:0]}; //Send dest IP LSB
         
             end
             SEND_IP_HEADER3: begin
-
+                TCP_send = 1'b1; //Indicate that TCP header is being sent
                 //nxIP_state = IDLE;
                 nxIP_state = SEND_IP_PAYLOAD;
-                TCP_send = 1'b1;
                 //nxIP_transmit_l = '0; //End of IP header, go back to IDLE
                 nxIP_transmit_l = TCP_transmit;
         
             end
 
             SEND_IP_PAYLOAD: begin
-                
+                TCP_send = 1'b1; //Indicate that TCP header is being sent
                 nxIP_transmit_l = TCP_transmit;
-        
                 if (!IP_send) begin
                     TCP_send = 1'b0;
                     nxIP_transmit_l = '0;
