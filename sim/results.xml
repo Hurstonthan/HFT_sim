@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1749500769" />
+    <testcase name="test_axi_stream_with_pcap" classname="test_axi_eth_rx" file="/home/duckstew/project/HFT_sim/sim/test_axi_eth_rx.py" lineno="6" time="0.008050680160522461" sim_time_ns="480.001" ratio_time="59622.41579956762" />
+  </testsuite>
+</testsuites>
