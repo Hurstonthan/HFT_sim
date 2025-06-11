@@ -125,11 +125,19 @@ class RXDriver {
             dut_ -> FIN_sent = 0; // Reset FIN sent flag
             dut_ -> ACK_sent = 0; // Reset ACK sent flag
             dut_ -> end_ss = 0; // Reset end of session flag
+            dut_ -> seq_up = false; // Reset sequence update flag
             tick(dut_, tfp_); // Toggle the clock and dump the trace
+            
+        }
+
+        void update_seq () {
+            dut_ -> seq_up = true;
+            tick(dut_, tfp_); // Toggle the clock and dump the trace
+            dut_ -> seq_up = false; // Reset sequencxq12k   a=-\.e number for RX
         }
 
         void stop_rx() {
-            dut_ -> rcv_data = 0; // Reset received data
+            dut_ -> rcv_data = false; // Reset received data
             tick(dut_, tfp_); // Toggle the clock and dump the trace
         }
 
@@ -139,14 +147,14 @@ class RXDriver {
                 drive_input_tx (
                     true, // SYN_sent
                     false, // FIN_sent
-                    true, // ACK_sent
+                    false, // ACK_sent
                     false, // end_ss
                     ISN_num_tx, // ISN_num
                     bytes_sent, // bytes_sent
                     bytes_abt_sent, // bytes_abt_sent
-                    true // seq_up
+                    false // seq_up
                 );
-                tick(dut_, tfp_);
+                
                 seq_count_tx += 1; // Update sequence number for TX
                 
             } else if (type == "FIN") {
@@ -164,14 +172,12 @@ class RXDriver {
                     ISN_num_tx, // ISN_num
                     bytes_sent, // bytes_sent
                     bytes_abt_sent, // bytes_abt_sent
-                    true // seq_up
+                    false // seq_up
                 );
 
                 bytes_sent += bytes_abt_sent; // Update bytes sent
                 seq_count_tx += bytes_abt_sent; // Update sequence number for TX
                 printf("ACK sent, bytes_sent: %u\n", bytes_sent);
-                
-                tick(dut_, tfp_); // Toggle the clock and dump the trace
                 if (seq_count_tx != dut_->seq_num_rx) {
                     // Handle sequence number mismatch
                     bytes_sent -= bytes_abt_sent; // Rollback bytes sent
@@ -191,12 +197,8 @@ class RXDriver {
                     ISN_num_tx, // ISN_num
                     bytes_sent, // bytes_sent
                     bytes_abt_sent, // bytes_abt_sent
-                    true // seq_up
+                    false // seq_up
                 );
-
-                
-                
-                tick(dut_, tfp_); // Toggle the clock and dump the trace
                 
                 
             } else if (type == "DATA") {
@@ -208,18 +210,18 @@ class RXDriver {
                     ISN_num_tx, // ISN_num
                     bytes_sent, // bytes_sent
                     bytes_abt_sent, // bytes_abt_sent
-                    true // seq_up
+                    false // seq_up
                 );
 
                 bytes_sent += bytes_abt_sent; // Update bytes sent
                 seq_count_tx += bytes_abt_sent; // Update sequence number for TX
-                tick(dut_, tfp_); // Toggle the clock and dump the trace
-                if (seq_count_tx != dut_->seq_num_rx) {
-                    // Handle sequence number mismatch
-                    bytes_sent -= bytes_abt_sent; // Rollback bytes sent
-                } else {
-                    seq_count_tx += bytes_abt_sent; // Update sequence number for TX
-                }
+
+                // if (seq_count_tx != dut_->seq_num_tx) {
+                //     // Handle sequence number mismatch
+                //     bytes_sent -= bytes_abt_sent; // Rollback bytes sent
+                // } else {
+                //     seq_count_tx += bytes_abt_sent; // Update sequence number for TX
+                // }
                 
   
             } 
@@ -228,8 +230,6 @@ class RXDriver {
                 
             }
 
-            stop_tx(); // Stop the TX interface after sending the packet
-            
         }
 
         void rcv_data_pkg (bool loss, const std::string& type) {
@@ -247,7 +247,6 @@ class RXDriver {
                     payload_len_rx // payload_len_rx
                 );
 
-                tick(dut_, tfp_); // Toggle the clock and dump the trace
             } else {
                 if (type == "SYN") {
                     drive_input_rx (
@@ -277,7 +276,7 @@ class RXDriver {
                     // );
 
                     rcv_nxt += 1; // Update the sequence number for RX
-                    tick(dut_, tfp_); // Toggle the clock and dump the trace
+
 
                 } else if (type == "FIN") {
                     drive_input_rx (
@@ -294,7 +293,7 @@ class RXDriver {
                     );
 
                     rcv_nxt += 1; // Update the sequence number for RX
-                    tick(dut_, tfp_); // Toggle the clock and dump the trace
+
 
                 } else if (type == "ACK") {
                     drive_input_rx (
@@ -311,7 +310,7 @@ class RXDriver {
                     );
 
                     rcv_nxt += payload_len_rx; // Update the sequence number for RX
-                    tick(dut_, tfp_); // Toggle the clock and dump the trace
+
 
                 } else if (type == "DATA") {
                     drive_input_rx (
@@ -328,7 +327,7 @@ class RXDriver {
                     );
 
                     rcv_nxt += payload_len_rx; // Update the sequence number for RX
-                    tick(dut_, tfp_); // Toggle the clock and dump the trace
+
 
             }
         }
@@ -379,16 +378,35 @@ int main(int argc, char **argv) {
     //tick(top, tfp); // Toggle the clock and dump the trace
 
     rx_driver.send_type_pkg("SYN_ACK");
-    //tick(top, tfp); // Toggle the clock and dump the trace
-    //tick(top, tfp); // Toggle the clock and dump the trace
-
-    printf("Check top -> bytes_sent: %u\n", top->bytes_sent);
+    top -> ACK_sent = 0;
+    // rx_driver.stop_tx(); // Stop the TX interface after sending SYN_ACK
+    // tick(top, tfp); // Toggle the clock and dump the trace
+    // tick(top, tfp); // Toggle the clock and dump the trace
 
 
 
     //Handshake complete, now send the data to check the sequence number
     rx_driver.send_type_pkg("DATA");
-    printf("Check top -> bytes_sent: %u\n", top->bytes_sent);
+    rx_driver.update_seq();
+    rx_driver.send_type_pkg("DATA");
+    rx_driver.update_seq();
+    rx_driver.send_type_pkg("DATA");
+    rx_driver.update_seq();
+    rx_driver.send_type_pkg("DATA");
+    rx_driver.update_seq();
+    rx_driver.send_type_pkg("DATA");
+    rx_driver.update_seq();
+    rx_driver.send_type_pkg("DATA");
+    rx_driver.update_seq();
+    rx_driver.send_type_pkg("DATA");
+    tick(top, tfp); // Toggle the clock and dump the trace
+    tick(top, tfp); // Toggle the clock and dump the trace
+    rx_driver.rcv_data_pkg(false, "DATA"); // Simulate receiving data
+
+    // printf("Check top -> bytes_sent: %u\n", top->bytes_sent);
+    // tick(top, tfp); // Toggle the clock and dump the trace
+    // rx_driver.send_type_pkg("DATA");
+    // tick(top, tfp); // Toggle the clock and dump the trace
 
     tfp->close();
     delete top;

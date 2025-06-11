@@ -9,12 +9,15 @@ INCDIR     := include
 SRCDIR     := rtl
 TBDIR      := tb
 BUILDDIR   := build
+SUBFOLD	   := sub_mod
 SUR_FILES  := TCP_flow_ctrl
+
 ########################################################################
 
 
 ### All RTL sources
-VFILES     = $(SRCDIR)/$*.sv $(SRCDIR)/$(SUR_FILES).sv 
+VFILES     = $(SRCDIR)/$*.sv $(SRCDIR)/$(SUR_FILES).sv $(SRCDIR)/priority_encoder.sv
+#VSUBs = $(wildcard $(SRCDIR)/$(SUBFOLD)/*.sv)
 ### Common Verilator flags
 VERI_FLAGS := -Wall -I$(INCDIR) -CFLAGS "-Irtl" -Wno-UNDRIVEN -Wno-UNUSEDSIGNAL 
 

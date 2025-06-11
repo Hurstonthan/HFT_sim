@@ -1,20 +1,20 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Sun Jun  8 08:02:16 2025
+[*] Mon Jun  9 07:20:23 2025
 [*]
 [dumpfile] "/home/than0/HFT_sim/ether_TX.vcd"
-[dumpfile_mtime] "Sun Jun  8 08:00:57 2025"
-[dumpfile_size] 2043
+[dumpfile_mtime] "Mon Jun  9 07:20:03 2025"
+[dumpfile_size] 2312
 [savefile] "/home/than0/HFT_sim/ether_TX.gtkw"
-[timestart] 0
-[size] 3956 2432
+[timestart] 28
+[size] 2490 1536
 [pos] -1 -1
-*-1.915936 16 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-1.915936 48 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.ether_TX.
 [treeopen] TOP.ether_TX.my_TCP_flow_ctrl.
 [sst_width] 586
-[signals_width] 842
+[signals_width] 312
 [sst_expanded] 1
 [sst_vpaned_height] 800
 @22
@@ -26,20 +26,23 @@ TOP.ether_TX.my_TCP_flow_ctrl.mytx.checksum_tx[15:0]
 TOP.ether_TX.my_TCP_flow_ctrl.mytx.end_ss
 @22
 TOP.ether_TX.my_TCP_flow_ctrl.mytx.offset_tx[3:0]
-TOP.ether_TX.my_TCP_flow_ctrl.mytx.seq_num_tx[31:0]
 TOP.ether_TX.my_TCP_flow_ctrl.mytx.urgent_pointer_tx[15:0]
 TOP.ether_TX.my_TCP_flow_ctrl.mytx.window_size_tx[15:0]
 TOP.ether_TX.my_TCP_flow_ctrl.mytx.TCP_control_tx[7:0]
 @28
 TOP.ether_TX.my_TCP_flow_ctrl.mytx.TCP_tx_en
-TOP.ether_TX.my_TCP_flow_ctrl.mytx.TCP_stop_flg
-TOP.ether_TX.my_TCP_flow_ctrl.mytx.seq_up
 TOP.ether_TX.my_TCP_flow_ctrl.mytx.SYN_sent
 TOP.ether_TX.my_TCP_flow_ctrl.mytx.ACK_sent
 TOP.ether_TX.my_TCP_flow_ctrl.mytx.FIN_sent
 @24
 TOP.ether_TX.my_TCP_flow_ctrl.mytx.bytes_sent[31:0]
 TOP.ether_TX.my_TCP_flow_ctrl.mytx.bytes_abt_sent[31:0]
+@28
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.seq_up
+@24
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.seq_num_tx[31:0]
+@28
+TOP.ether_TX.my_TCP_flow_ctrl.mytx.TCP_stop_flg
 @100000028
 TOP.CLK
 @28
@@ -59,6 +62,7 @@ TOP.ether_TX.my_TCP_flow_ctrl.myrx.payload_len_rx[31:0]
 TOP.ether_TX.my_TCP_flow_ctrl.myrx.timeout_flag
 @22
 TOP.ether_TX.my_TCP_flow_ctrl.myrx.urgent_pointer_rx[15:0]
+@24
 TOP.ether_TX.my_TCP_flow_ctrl.myrx.window_size_rx[15:0]
 @100000028
 TOP.CLK
@@ -69,7 +73,11 @@ TOP.ether_TX.my_TCP_flow_ctrl.myrx.rcv_data
 TOP.ether_TX.my_TCP_flow_ctrl.state[6:0]
 @24
 TOP.ether_TX.my_TCP_flow_ctrl.bytes_in_flight[31:0]
-@25
 TOP.ether_TX.my_TCP_flow_ctrl.ack_num[33:0]
+TOP.ether_TX.my_TCP_flow_ctrl.rcv_next[31:0]
+@25
+TOP.ether_TX.seq_num_rx[31:0]
+@28
+TOP.ether_TX.my_TCP_flow_ctrl.out_of_order_flg
 [pattern_trace] 1
 [pattern_trace] 0

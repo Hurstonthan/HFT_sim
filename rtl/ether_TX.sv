@@ -1,3 +1,5 @@
+`timescale 1ns / 10ps
+
 `include "TCP_flow_if.vh"
 `include "ether_pkg.vh"
 

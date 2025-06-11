@@ -1,7 +1,11 @@
+`timescale 1ns / 10ps
+
 `include "TCP_flow_if.vh"
 `include "ether_pkg.vh"
 
-module TCP_flow_ctrl (
+module TCP_flow_ctrl #(
+    parameter N = 128 //Number of out of order packets;
+) (
     input logic CLK,
     input logic nRST,
     TCP_flow_if.rx myrx,
@@ -27,17 +31,57 @@ module TCP_flow_ctrl (
     seq_num_frame seq_num, nseq_num;
     logic [15:0] window_size, nwindow_size;
     logic [31:0] bytes_in_flight;
+    logic [31:0] wnd_allow;
 
 
 
     //We want 256K bytes of the TCP out of order packets
-    TCP_out_order_t [17:0] TCP_out_order, nTCP_out_order;
-    logic [17:0] start_ptr, incr_ptr, nstart_ptr, nincr_ptr; //These pointers are for handling the receiving out of orders packets
-    logic [17:0] trk_ptr, ntrk_ptr; //This pointer is for handling the sending out of orders packets
+    TCP_out_order_t [127:0] TCP_out_order, nTCP_out_order;
+    
     logic [31:0] rcv_next, nrcv_next;
+    logic out_of_order_flg; //This flag is for handling the out of order packets
+
+    logic [$clog2(N)-1:0] free_idx, match_idx;;
+    logic [N - 1:0] v_vec, free_vec; //Vector of valid bits for the out of order packets
+    
+    logic [31:0] [N - 1 : 0] seq_vec;
+    logic free_mask, match_found;
+    logic [N - 1:0] match_mask;
+
+    genvar i;
 
     assign mytx.TCP_len_data = mytx.bytes_abt_sent;
     assign mytx.TCP_control_tx = tx_pkg_type;
+
+    generate
+        for (i = 0; i < N; i++) begin
+            assign v_vec[i] = TCP_out_order[i].v;
+        end
+    endgenerate
+    assign free_vec = ~v_vec; //Mask of free bits for the out of order packets
+
+    for (i = 0; i < N; i++) begin
+        assign match_mask[i] = (TCP_out_order[i].seq_num == rcv_next) && TCP_out_order[i].v; //Mask of matched bits for the out of order packets
+        
+    end
+
+    priority_encoder #(
+        .WIDTH(N)
+    ) me (
+        .din(match_mask),
+        .valid(match_found),
+        .idx(match_idx)
+    );
+
+    
+
+    priority_encoder #(
+        .WIDTH(N)
+    ) pe (
+        .din(free_vec),
+        .valid(free_mask),
+        .idx(free_idx)
+    );
     
 
     //Explanation
@@ -45,7 +89,13 @@ module TCP_flow_ctrl (
     // "bytes_send" is the number of bytes have sent
     // "bytes_abt_send" is the number of bytes that are about to be sent
     // "ack_num.ACK_num" is the number of bytes that have been acknowledged
-    assign bytes_in_flight = (mytx.bytes_sent + mytx.bytes_abt_sent) - ack_num.ACK_num;
+
+
+    // assign bytes_in_flight = (mytx.bytes_sent + mytx.bytes_abt_sent) - (ack_num.ACK_num - mytx.ISN_num); //THIS IS CORRECT
+    
+    //assign bytes_in_flight = (mytx.bytes_sent + mytx.bytes_abt_sent) - (ack_num.ACK_num); //Assume that the ISN_num is 0
+    assign bytes_in_flight = (seq_num.seq_num + mytx.bytes_abt_sent) - (ack_num.ACK_num - mytx.ISN_num); //Assume that the ISN_num is 0
+    assign wnd_allow = {15'd0,window_size} - bytes_in_flight; //This is the number of bytes that can be sent
     assign rcv_pkg_type = TCP_control_t'(myrx.TCP_control_rx);
 
 
@@ -55,22 +105,21 @@ module TCP_flow_ctrl (
             ack_num <= '0;
             seq_num <= '0; //Set the initial sequence number
             window_size <= 16'd40; //Set the initial number
-            TCP_out_order <= '0;
-            start_ptr <= '0;
-            incr_ptr <= '0;
+            TCP_out_order <= 0;
             rcv_next <= '0;
-            trk_ptr <= '0;
             state <= IDLE;
-        end else begin
+        end else if (match_found) begin
+            rcv_next <= rcv_next + TCP_out_order[match_idx].length; //Update the next sequence number to receive
+            TCP_out_order[match_idx].v <= 1'b0; //Set the valid bit to 0
+        end
+        else begin
             ack_num <= nack_num;
             seq_num <= nseq_num;
             window_size <= nwindow_size;
             TCP_out_order <= nTCP_out_order;
-            start_ptr <= nstart_ptr;
-            incr_ptr <= nincr_ptr;
-            rcv_next <= nrcv_next;
-            trk_ptr <= ntrk_ptr;
             state <= nstate;
+            rcv_next <= nrcv_next;
+            
         end
     end 
 
@@ -83,15 +132,16 @@ module TCP_flow_ctrl (
         nseq_num = seq_num;
         nwindow_size = window_size;
         nTCP_out_order = TCP_out_order;
-        nstart_ptr = start_ptr;
-        nincr_ptr = incr_ptr;
+        
         mytx.TCP_stop_flg = 1'b0;
         nrcv_next = rcv_next;
-        ntrk_ptr = trk_ptr;
+        
+
+        out_of_order_flg = 1'b0; //Reset the out of order flag
         case (state)
             //During the IDLE, client will send the SYN packet first
             IDLE: begin
-                nseq_num.seq_num = 32'd1;
+                nseq_num.seq_num = 32'd0;
                 if (mytx.SYN_sent) begin
                     nstate = WAIT_SYN_ACK;
                 end
@@ -103,7 +153,7 @@ module TCP_flow_ctrl (
                 if (myrx.rcv_data && rcv_pkg_type.SYN && rcv_pkg_type.ACK) begin                    
                     nstate = SEND_ACK;
                     nseq_num.seq_num = seq_num.seq_num + 1;
-                    nack_num.ACK_num = seq_num.seq_num + 1; //This should be this
+                    nack_num.ACK_num = myrx.ACK_rx; //This should be this
                     nrcv_next = myrx.seq_num_rx + 1; 
                     nwindow_size = myrx.window_size_rx;
                 end 
@@ -115,6 +165,7 @@ module TCP_flow_ctrl (
 
             SEND_ACK: begin
                 if (mytx.ACK_sent) begin
+                    //nseq_num.seq_num = seq_num.seq_num + 1;
                     nstate = DATA_CONNECTED;
                 end
             end
@@ -124,14 +175,13 @@ module TCP_flow_ctrl (
             DATA_CONNECTED: begin
                 //bytes_sent - ACK_num is the number of bytes in flight
                 //seq_up tell us that we done with
-                if (bytes_in_flight <= window_size && mytx.seq_up) begin
-                    mytx.TCP_stop_flg = 1'b0;
-                    nseq_num.seq_num = seq_num.seq_num + mytx.bytes_abt_sent;
-                    
+                if (|wnd_allow) begin
+                    mytx.TCP_stop_flg = 1'b0; //We can send the data
+                    if (mytx.seq_up) begin
+                        nseq_num.seq_num = seq_num.seq_num + mytx.bytes_abt_sent;
+                    end 
                 end else begin
-                    //Logic of stopping the sending
-                    mytx.TCP_stop_flg = 1'b1;
-                    // nstate = WAIT_ACK;
+                    mytx.TCP_stop_flg = 1'b1; //We need to stop sending the data
                 end
 
                 //Flow receiving logic 
@@ -156,20 +206,14 @@ module TCP_flow_ctrl (
                     //Logic of sending ACK packets if needed
                     //Logic of receiving the offset of bytes data
                     if (myrx.seq_num_rx != rcv_next) begin //If out of order happened
-                        nTCP_out_order[incr_ptr].seq_num = myrx.seq_num_rx;
-                        nTCP_out_order[incr_ptr].length = myrx.payload_len_rx; //Len of the receiving payload
-                        nincr_ptr = incr_ptr + 1;
-                        //If the upcoming pointer 
-                        if (myrx.seq_num_rx == TCP_out_order[trk_ptr].seq_num + TCP_out_order[trk_ptr].length) begin
-                            ntrk_ptr = trk_ptr + 1;
+                        if (free_mask) begin
+                            nTCP_out_order[free_idx].seq_num = myrx.seq_num_rx;
+                            nTCP_out_order[free_idx].length = myrx.payload_len_rx; //Len of the receiving payload
+                            nTCP_out_order[free_idx].v = 1'b1; //Set the valid bit
                         end
                     end else begin
                         nrcv_next = myrx.seq_num_rx + myrx.payload_len_rx;//seq_num_rx + len_of payload;
-                        //ACK_tx = //seq_num_rx + len_of payload;
-                        if (TCP_out_order[start_ptr].seq_num == myrx.seq_num_rx + myrx.payload_len_rx) begin
-                            nrcv_next = TCP_out_order[trk_ptr].seq_num + TCP_out_order[trk_ptr].length;
-                            nstart_ptr = trk_ptr;
-                        end 
+                        
                     end
                 end else if (myrx.timeout_flag) begin
                     //Logic of timeout issue resend the packets
@@ -236,7 +280,7 @@ module TCP_flow_ctrl (
             SEND_ACK: begin
                 tx_pkg_type.ACK = 1'b1;
                 mytx.seq_num_tx = seq_num.seq_num;
-                mytx.ACK_tx = ack_num.ACK_num;
+                mytx.ACK_tx = rcv_next;
         
             end
 

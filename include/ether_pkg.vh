@@ -19,6 +19,11 @@ typedef struct packed {
     logic [31:0] ACK_num;
 } ack_num_frame;
 
+typedef struct packed {
+    //logic out_order_flag;
+    logic [63:0] payload;
+} TCP_FIFO_t;
+
 //TCP_CONTROL frame
 typedef struct packed {
     logic CWR;
@@ -31,10 +36,47 @@ typedef struct packed {
     logic ACK;
 } TCP_control_t;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Adding something to handle the out of order packets
 typedef struct packed {
     logic [31:0] seq_num;
     logic [31:0] length;
+    logic v;
 } TCP_out_order_t;
+
+// logic [$clog2(N)-1:0] free_idx, match_idx;;
+// logic [31:0] [N - 1: 0] seq_vec;
+
 
 
 endpackage
