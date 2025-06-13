@@ -52,7 +52,8 @@ module TCP_flow_ctrl #(
 
     assign mytx.TCP_len_data = mytx.bytes_abt_sent;
     assign mytx.TCP_control_tx = tx_pkg_type;
-
+    assign mytx.rcv_next = rcv_next;
+    assign mytx.seq_num = seq_num.seq_num;
     generate
         for (i = 0; i < N; i++) begin
             assign v_vec[i] = TCP_out_order[i].v;
@@ -144,6 +145,7 @@ module TCP_flow_ctrl #(
                 nseq_num.seq_num = 32'd0;
                 if (mytx.SYN_sent) begin
                     nstate = WAIT_SYN_ACK;
+                    nseq_num.seq_num = seq_num.seq_num + 1;
                 end
             end
 
@@ -152,7 +154,7 @@ module TCP_flow_ctrl #(
                 mytx.TCP_stop_flg = 1'b1;
                 if (myrx.rcv_data && rcv_pkg_type.SYN && rcv_pkg_type.ACK) begin                    
                     nstate = SEND_ACK;
-                    nseq_num.seq_num = seq_num.seq_num + 1;
+                    // nseq_num.seq_num = seq_num.seq_num + 1;
                     nack_num.ACK_num = myrx.ACK_rx; //This should be this
                     nrcv_next = myrx.seq_num_rx + 1; 
                     nwindow_size = myrx.window_size_rx;
@@ -287,6 +289,7 @@ module TCP_flow_ctrl #(
             DATA_CONNECTED: begin
                 //Do nothing
                 mytx.seq_num_tx = seq_num.seq_num;
+                tx_pkg_type.ACK = 1'b1;
                 //mytx.ACK_tx = ack_num.ACK_num;
                 mytx.ACK_tx = rcv_next;
         
@@ -314,4 +317,3 @@ module TCP_flow_ctrl #(
         endcase
     end
 endmodule
-
