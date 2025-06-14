@@ -2,9 +2,9 @@
 `define PHY_MAC_IF_VH
 
 //check with more about the mac layer
-`include "reciever_pkg.vh"
+`include "receiver_pkg.vh"
 interface phy_mac_if_vh;
-    import reciever_pkg::*;
+    import receiver_pkg::*;
     //input
     logic valid_phy;
     logic [DATA_SIZE-1:0] data_phy;  

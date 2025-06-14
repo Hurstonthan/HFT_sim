@@ -1,10 +1,11 @@
 `ifndef MAC_IP_IF_VH
 `define MAC_IP_IF_VH
 
-`include "reciever_pkg.vh"
+`include "receiver_pkg.vh"
+
 interface mac_ip_if_vh;
 
-    import reciever_pkg::*;
+    import receiver_pkg::*;
 
     //input
     logic valid_mac;
@@ -31,4 +32,5 @@ interface mac_ip_if_vh;
         output valid_mac, data_mac, start_mac, length_mac
     );
 
-endinterface;
+endinterface
+`endif 

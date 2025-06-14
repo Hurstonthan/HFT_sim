@@ -30,3 +30,5 @@ interface ethernet_rx_if_vh;
         output valid_phy, data_phy, start_phy, length_phy
     );
 endinterface
+
+`endif 

@@ -1,8 +1,8 @@
-`include "receiver_pkg.vh"
 `include "mac_ip_if.vh"
+`include "receiver_pkg.vh"
 
 module ip_rx(
-    input logic clk, nRST,
+    input logic CLK, nRST,
     mac_ip_if mipif
 );   
     import receiver_pkg::*;
@@ -36,7 +36,7 @@ module ip_rx(
             mipif.length_udp <= '0;
             mipif.start_udp <= 1'b0;
             mipif.end_udp <= 1'b0;
-            next_state <= IDLE;
+            current_state <= IP_IDLE;
 
             //internal reset
             count <= '0;
@@ -76,15 +76,15 @@ module ip_rx(
         ip_destination_address = '0; // Reset destination IP address
 
         case (current_state)
-            IDLE: begin
+            IP_IDLE: begin
                 if (mipif.valid_mac && mipif.start_mac) begin
-                    next_state = HEADER;
+                    next_state = IP_HEADER;
                     next_count = '0; // Reset count when a new packet starts
                     next_start = 1'b1; // Start of a new packet
                 end 
             end
             // FINISH the EXCEL about timeing before finishing this part
-            HEADER: begin
+            IP_HEADER: begin
                 if (mipif.valid_mac) begin
                     next_count = count + 1; 
                     case (count) 
@@ -92,20 +92,20 @@ module ip_rx(
                         // 0: // MAC layer
                         // 1: // MAC layer
                         0:  begin
-                            ip_version = prevuous_data[59:56];
+                            ip_version = previous_data[59:56];
                             ip_header_length = previous_data[63:60];
                             ip_total_length = mipif.data_mac[15:0];
-                            identification = mipif.data_mac[31:16]; // Identification field
+                            ip_identification = mipif.data_mac[31:16]; // Identification field
                             ip_flags = mipif.data_mac[34:32]; // Flags
                             ip_fragment_offset = mipif.data_mac[47:35]; // Fragment offset
                             ip_ttl = mipif.data_mac[55:48]; // Time to Live
                             ip_protocol = mipif.data_mac[63:56]; // Protocol (TCP, UDP, etc.)
                             if (ip_version != IP_VERSION || ip_header_length != IP_HEADER_LENGTH) begin
-                                next_state = ERROR; // If version or header length does not match, go to ERROR state
+                                next_state = IP_ERROR; // If version or header length does not match, go to ERROR state
                             end else if (ip_protocol != UDP_PROTOCOL && ip_protocol != TCP_PROTOCOL) begin
-                                next_state = ERROR; // If protocol is neither UDP nor TCP, go to ERROR state
+                                next_state = IP_ERROR; // If protocol is neither UDP nor TCP, go to ERROR state
                             end else if (ip_ttl == 0) begin
-                                next_state = ERROR; // If TTL does not match, go to ERROR state
+                                next_state = IP_ERROR; // If TTL does not match, go to ERROR state
                             end
                         end
                         1: begin
@@ -113,44 +113,44 @@ module ip_rx(
                             ip_source_address = mipif.data_mac[47:16]; // Source IP address
                             //todo check the checksum validation logic
                             if (ip_source_address != FPGA_IP ) begin
-                                next_state = ERROR; // If source address does not match FPGA_IP, go to ERROR state
+                                next_state = IP_ERROR; // If source address does not match FPGA_IP, go to ERROR state
                             end
                         end
                         2: begin
                             ip_destination_address = {mipif.data_mac[15:0], previous_data[63:48]}; // Destination IP address
                             if (ip_destination_address != NASDAQ_IP) begin
-                                next_state = ERROR; // If destination address does not match NASDAQ_IP, go to ERROR state
+                                next_state = IP_ERROR; // If destination address does not match NASDAQ_IP, go to ERROR state
                             end else begin
-                                next_state = PAYLOAD; // If everything is correct, go to PAYLOAD state
+                                next_state = IP_PAYLOAD; // If everything is correct, go to PAYLOAD state
                                 next_start = 1'b1; // Start of the payload
                             end
                         end
                     endcase
                 end else begin
-                    next_state = ERROR; 
+                    next_state = IP_ERROR; 
                 end 
             end
-            PAYLOAD: begin 
+            IP_PAYLOAD: begin 
                 if (mipif.valid_mac) begin
                     // Process data logic here
                     if (mipif.end_mac) begin
-                        next_state = IDLE; // Go back to IDLE after processing data
+                        next_state = IP_IDLE; // Go back to IP_IDLE after processing data
                     end else begin
-                        next_state = PAYLOAD; // Stay in PAYLOAD state
+                        next_state = IP_PAYLOAD; // Stay in PAYLOAD state
                     end
                 end else begin
-                    next_state = ERROR; 
+                    next_state = IP_ERROR; 
                 end
             end
 
-            ERROR: begin
+            IP_ERROR: begin
                 if (mipif.valid_mac) begin
-                    next_state = HEADER; // Go back to HEADER if a new packet is detected
+                    next_state = IP_HEADER; // Go back to HEADER if a new packet is detected
                     next_start = 1'b1; // Start of a new packet
                 end
             end   
             default: begin
-                next_state = IDLE; // Fallback state
+                next_state = IP_IDLE; // Fallback state
             end
         endcase
     end

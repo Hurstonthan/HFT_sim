@@ -1,14 +1,14 @@
 `ifndef IP_UDP_IF_VH
 `define IP_UDP_IF_VH
 
-`include "reciever_pkg.vh"
+`include "receiver_pkg.vh"
 interface ip_udp_if_vh;
 
-    import reciever_pkg::*;
+    import receiver_pkg::*;
 
     //input
     logic valid_ip;
-    logic [DATA_SIZE-1:0] data_ip;  
+    logic [DATA_SIZE-1:0] data_ip;
     logic start_ip; //meaning of a new packet
     logic [BYTE_NUMBER-1:0] length_ip;
     logic end_ip;
@@ -19,7 +19,7 @@ interface ip_udp_if_vh;
     logic [BYTE_NUMBER-1:0] length_udp;
     logic start_udp;
     logic end_udp;
-    
+
 
     modport ip_udp (
         input valid_ip, data_ip, start_ip, length_ip,
@@ -31,4 +31,6 @@ interface ip_udp_if_vh;
         output valid_ip, data_ip, start_ip, length_ip
     );
 
-endinterface;
+endinterface
+
+`endif 
