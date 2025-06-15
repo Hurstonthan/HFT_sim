@@ -20,7 +20,7 @@ typedef struct packed {
 } ack_num_frame;
 
 typedef struct packed {
-    //logic out_order_flag;
+    logic valid;
     logic [63:0] payload;
 } TCP_FIFO_t;
 

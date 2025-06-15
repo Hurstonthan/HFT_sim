@@ -261,9 +261,9 @@ module TCP_flow_ctrl #(
         tx_pkg_type = '0;
         mytx.offset_tx = 4'd5;
         mytx.urgent_pointer_tx = 0;
-        mytx.window_size_tx = 16'd31; //64KB;
         mytx.seq_num_tx = '0;
         mytx.ACK_tx = '0;
+        mytx.window_size_tx = (mytx.full) ? 15'd0 : 15'd256;
         
 
         case (state)

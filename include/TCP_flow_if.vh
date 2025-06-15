@@ -57,6 +57,7 @@ modport tx(
     input bytes_sent,
     input bytes_abt_sent,
     input seq_up,
+    input full, //the full signal should come out the payload_FIFO.sv
     output TCP_len_data,
     output TCP_stop_flg,
     output TCP_control_tx,
