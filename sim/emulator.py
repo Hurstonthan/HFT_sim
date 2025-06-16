@@ -14,7 +14,9 @@ import io
 import math
 import random
 
+# Ethernet sim
 from utils.pcap_loader import extract_frames, decode_frame
+from scapy.all import sniff, sendp, Ether, ARP, IP, ICMP, TCP, RandShort, RandString, rdpcap, get_if_list, getmacbyip
 
 # ==========================================================================================================================================
 # DEBUG
@@ -59,6 +61,8 @@ HOST = ''
 PORT = '8001'
 nodes = None		# Dictionary to store the node information indexed by id
 Config = None	   # Holds all the configuration information
+interface = None
+mode = "hw"			# sim vs hw
 
 def read_config_file(path):
 	""" Reads the configuration file and sets parameters """
@@ -115,7 +119,28 @@ def log(message):
 		f.write(f'{time.time()}\n{message}\n\n')
 
 
-# TODO: Switched to ethernet packet?
+def create_arp_request():
+    return Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(op=1, pdst="192.168.0.1")
+
+
+def create_icmp_ping():
+    return Ether(dst="00:11:22:33:44:55") / IP(dst="192.168.0.1") / ICMP()
+
+
+def create_tcp_syn(src_ip, dst_ip, sport, dport):
+    return IP(src=src_ip, dst=dst_ip) / TCP(sport=sport, dport=dport, flags="S", seq=random.randint(1000, 10000))
+
+
+def create_payload_packet(payload):
+    return Ether(dst="00:11:22:33:44:55") / IP(dst="192.168.0.1") / TCP(dport=1234, flags="PA") / payload
+
+
+def detect_interface():
+    interfaces = get_if_list()
+    candidates = [i for i in interfaces if i.startswith("en") or i.startswith("eth")]
+    return candidates[0] if candidates else "lo"
+
+
 class Packet:
 	"""
 	Holds the data and sender address for a single packet. Also records the time when it should be dequeued from the latency queue.
@@ -378,6 +403,10 @@ class NetworkEmulator:
 		self.terminate = False
 		self.latency_queue = LatencyQueue(self.socketfd)
 		self.sending_buffers = {}
+		global iface
+		if mode == "hw":
+			iface = detect_interface()
+
 
 	def bootstrap(self, host, port):
 		"""
