@@ -24,7 +24,6 @@ from scapy.all import sniff, sendp, Ether, ARP, IP, ICMP, TCP, RandShort, RandSt
 
 
 def packet_to_seq_num(packet):
-	""" FOR DEBUGGING TA CODE. """
 	return int(packet.data.split(b'\n')[1].split()[0])
 	# return packet.data
 
@@ -404,8 +403,6 @@ class NetworkEmulator:
 		self.latency_queue = LatencyQueue(self.socketfd)
 		self.sending_buffers = {}
 		global iface
-		if mode == "hw":
-			iface = detect_interface()
 
 
 	def bootstrap(self, host, port):
@@ -414,8 +411,10 @@ class NetworkEmulator:
 		:param host: str Host for this NE's socket
 		:param port: str Port for this NE's socket
 		"""
-		self.socketfd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		self.socketfd.bind((host, port))
+		# self.socketfd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		# self.socketfd.bind((host, port))
+		if mode == "hw":
+			iface = detect_interface()
 		print("Network Emulator is up and running.")
 
 	def get_dest_address(self, packet):

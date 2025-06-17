@@ -8,6 +8,9 @@ import os
 
 # Config File   
 import configparser
+from scapy.all import sniff, sendp, Ether, ARP, IP, ICMP, TCP, RandShort, RandString, rdpcap, get_if_list, getmacbyip
+import random
+
 
 # ==================================================================================
 # GLOBAL VARIABLES
@@ -43,9 +46,33 @@ def get_id_size(file_size, data_chunk_size):
     # Calculate the required bytes dynamically
     return max(1, math.ceil(bit_length / 8))
 
+
+def create_tcp_syn(src_ip, dst_ip, sport, dport):
+    return IP(src=src_ip, dst=dst_ip) / TCP(sport=sport, dport=dport, flags="S", seq=random.randint(1000, 10000))
+
+
+# --- Interface Auto-Detection ---
+def detect_interface():
+    interfaces = get_if_list()
+    candidates = [i for i in interfaces if i.startswith("en") or i.startswith("eth")]
+    return candidates[0] if candidates else "lo"
+
 # ==================================================================================
 # PROTOCOL FUNCTIONS
 # ==================================================================================
+def packet_sender():
+    while True:
+        pkt = tx_queue.get()
+        if pkt is None:
+            break
+        if mode == "hardware":
+            sendp(pkt, iface=iface, verbose=False)
+            print(f"[TX] {pkt.summary()}")
+        else:
+            inject_to_dut(pkt)  # Simulation mode: push to testbench
+        time.sleep(0.1)
+
+
 
 def send_packet(send_monitor: Monitor, receiver_id, packets, max_packet_size, id_size):
     global thread_lock, last_sent, is_ack, last_ack, window_size, duplicate_ack_count
@@ -145,6 +172,33 @@ def waiting_ACK(send_monitor: Monitor, max_packet_size):
             ack_received.set()
             # logging.info(f"Event ACK set with {is_ack}:{last_ack}")
         # logging.info("**************************************")
+
+def handle_tcp_handshake(src_ip, dst_ip, sport, dport):
+    dst_mac = getmacbyip(dst_ip)
+    syn = create_tcp_syn(src_ip, dst_ip, sport, dport)
+    sendp(Ether(dst=dst_mac) / syn, iface=iface, verbose=False)
+    print(f"[{sport}] Sent SYN")
+
+    def synack_filter(pkt):
+        return (
+            pkt.haslayer(TCP) and
+            pkt[IP].src == dst_ip and
+            pkt[TCP].dport == sport and
+            pkt[TCP].flags == "SA"
+        )
+
+    replies = sniff(iface=detect_interface(), lfilter=synack_filter, count=1, timeout=2)
+
+    if not replies:
+        print(f"[{sport}] No SYN-ACK received.")
+        return
+
+    synack = replies[0]
+    ack_num = synack[TCP].seq + 1
+    ack = IP(src=src_ip, dst=dst_ip) / TCP(sport=sport, dport=dport, flags="A", seq=syn[TCP].seq + 1, ack=ack_num)
+    sendp(Ether(dst=dst_mac) / ack, iface=detect_interface(), verbose=False)
+    print(f"[{sport}] Handshake complete")
+
 
 # ==================================================================================
 # MAIN
