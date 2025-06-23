@@ -263,7 +263,7 @@ module TCP_flow_ctrl #(
         mytx.urgent_pointer_tx = 0;
         mytx.seq_num_tx = '0;
         mytx.ACK_tx = '0;
-        mytx.window_size_tx = (mytx.full) ? 15'd0 : 15'd256;
+        mytx.window_size_tx = (mytx.full) ? 16'd0 : 16'd256;
         
 
         case (state)
