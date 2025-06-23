@@ -19,7 +19,7 @@ module mac_rx(
 
     crc32_parallel_64bit crc_inst (
         .clk(clk),
-        .nRST(nRST && (state != MAC_IDLE)), // Reset the CRC when in MAC_IDLE state
+        .nRST(nRST && (current_state != MAC_IDLE)), // Reset the CRC when in MAC_IDLE state
         .data_in(pmif.data_phy),
         .valid_in(pmif.valid_phy && (current_state == MAC_PAYLOAD || current_state == MAC_VLAN)), // Only process valid data in PAYLOAD or VLAN state
         .crc_init(32'hFFFFFFFF), // default CRC initialization value
