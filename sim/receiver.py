@@ -1,151 +1,188 @@
 #!/usr/bin/env python3
-from monitor import Monitor
 import sys
-import logging
+import time
 import math
-
-# Config File
+import logging
 import configparser
 
-# The performance of the above protocols depend on the choice of the timeout value,
-# and the choice of window size, which itself needs to be chosen in a
-# configuration-specific way. Please make sure to set the timeout and window size
-# automatically to values that are reasonable for different configurations using
-# good rules of thumb.
+# bring in shared config (must call read_config_file first)
+from config import read_config_file, MODE, SENDER_ID, RECEIVER_ID
 
-# We must limit the window size to 50 in all cases. Additionally, if you're using a 
-# NACK scheme, your buffer can't be larger than the maximum window size (50), and
-# you aren't allowed to send the entire file at once.
+CONFIG_PATH = sys.argv[1]
+read_config_file(CONFIG_PATH)
 
-# ==================================================================================
-# GLOBAL VARIABLE
-# ==================================================================================
+# Common parameters
+cfg = configparser.RawConfigParser(allow_no_value=True)
+cfg.read(CONFIG_PATH)
 
+WRITE_LOCATION    = cfg.get('receiver', 'write_location')
+MAX_PACKET_SIZE   = int(cfg.get('network', 'MAX_PACKET_SIZE'))
+PROP_DELAY        = float(cfg.get('network', 'PROP_DELAY'))
+LINK_BANDWIDTH    = float(cfg.get('network', 'LINK_BANDWIDTH'))
+MAX_PKTS_QUEUED   = float(cfg.get('network', 'MAX_PACKETS_QUEUED'))
+WINDOW_SIZE       = 5  # or compute dynamically as before
+TRANSM_DELAY      = MAX_PACKET_SIZE / LINK_BANDWIDTH
+RTT               = 2.0*(PROP_DELAY + TRANSM_DELAY)
+QUEUE_DELAY       = (MAX_PKTS_QUEUED * TRANSM_DELAY) / 2.0
+TIMEOUT           = math.ceil(RTT + QUEUE_DELAY*0.5)
 
-# ==================================================================================
-# HELPER FUNCTIONS
-# ==================================================================================
+# ------------------------------------------------------------------------------
+# Hardware mode: use Monitor (UDP) exactly as before
+# ------------------------------------------------------------------------------
+if MODE == "hardware":
+    from monitor import Monitor
 
-
-# ==================================================================================
-# PROTOCOL FUNCTIONS
-# ==================================================================================
-
-def wait_packet(recv_monitor: Monitor, max_packet_size, write_location, window_size, timeout):
-    id_size = 1
-    first_handshake_received = False
-    packets_to_write = {}
-    expected_packet_id = 0
-    max_packet_id = 0
-    temp = {}
-    expected_end_window_packet_id = expected_packet_id + window_size
-
-    while not first_handshake_received:
-        sender_id, packet = recv_monitor.recv(max_packet_size)
-        # logging.info(f"handshake got packet={packet}")
-        # logging.info(f"packet.split(b\":\")[0]={int.from_bytes(packet.split(b':')[0], 'big')}")
-        # logging.info(f"packet.split(b\":\")[1]={int.from_bytes(packet.split(b':')[1], 'big')}")
-        try:
-            max_packet_id = int.from_bytes(packet.split(b':')[0], 'big')
-            id_size = int.from_bytes(packet.split(b':')[1], 'big')
-            send_ACK(recv_monitor, 0, sender_id, id_size, True)
-            first_handshake_received = True
-        except:
-            send_ACK(recv_monitor, 0, sender_id, id_size, False)
-            first_handshake_received = False
-
-	# logging.info(f"FINISHED HANDSHAKING")
-
-    finished = False
-
-    # while expected_packet_id <= max_packet_id:
-    while True:
-        # logging.info(f"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-        # logging.info(f"Waiting for new packet")
-        sender_id, packet = recv_monitor.recv(max_packet_size)
-
-        packet_id = int.from_bytes(packet[:id_size], 'big')
-        data = packet[id_size:]
-        # logging.info(f"max_packet_id={max_packet_id}")
-        # logging.info(f"packet_id={packet_id}")
-        # logging.info(f"expected_packet_id={expected_packet_id}")
-
-        if packet_id < expected_packet_id:
-            # packet_id received is smaller than expected_packet_id -> duplicates triggered
-            # -> Resending the packet_id ack before the expected one
-            # logging.info(f"--> packet_id={expected_packet_id} < expected_packet_id={expected_packet_id} <--")
-            send_ACK(recv_monitor, expected_packet_id - 1, sender_id, id_size)
-            continue
-
-        elif packet_id == expected_packet_id: # correct packet received
-            # logging.info(f"--> Updating expected_packet_id <--")
-            expected_packet_id += 1
-			# logging.info(f"--> Updated expected_packet_id={expected_packet_id} <--")
-            packets_to_write[packet_id] = data.decode("utf-8")
-
-            # Check if values in temp are now in-order
-            while expected_packet_id in temp:
-                packet = temp.pop(expected_packet_id)
-                packets_to_write[expected_packet_id] = packet.decode("utf-8")
-                expected_packet_id += 1
+    def send_ACK(recv_monitor, packet_id: int, sender_id: int, id_size: int, isAck=True):
+        """Send an ACK back over UDP to the sender."""
+        if isAck:
+            ack_msg = b'\x01:' + packet_id.to_bytes(id_size, 'big')
         else:
-            # Packet isnt what it expected, but is still be useful
-            # store it in a temp
-            if packet_id not in temp:
-                temp[packet_id] = data
+            ack_msg = b'\x00:' + packet_id.to_bytes(id_size, 'big')
+        recv_monitor.send(sender_id, ack_msg)
 
-        # Send cumulative ACK indicating the highest in-order packet received
-        send_ACK(recv_monitor, expected_packet_id - 1, sender_id, id_size)
-        # If all packets have been received, write the file and finish
+    def wait_packet(recv_monitor):
+        """Blocking receive loop, writes out the file when done."""
+        first_hs = False
+        expected_id = 0
+        max_id = 0
+        id_size = 1
+        buffer = {}
+        out_of_order = {}
 
-        if expected_packet_id > max_packet_id or packet_id == max_packet_id:
+        # --- Handshake ---
+        while not first_hs:
+            sender_id, packet = recv_monitor.recv(MAX_PACKET_SIZE)
+            try:
+                parts = packet.split(b':')
+                max_id   = int.from_bytes(parts[0], 'big')
+                id_size  = int.from_bytes(parts[1], 'big')
+                send_ACK(recv_monitor, 0, sender_id, id_size, True)
+                first_hs = True
+            except:
+                send_ACK(recv_monitor, 0, sender_id, id_size, False)
+
+        # --- Data transfer ---
+        while True:
+            sender_id, packet = recv_monitor.recv(MAX_PACKET_SIZE)
+            pkt_id = int.from_bytes(packet[:id_size], 'big')
+            data   = packet[id_size:]
+
+            if pkt_id < expected_id:
+                # duplicate → re-ACK last in‐order
+                send_ACK(recv_monitor, expected_id-1, sender_id, id_size)
+                continue
+
+            if pkt_id == expected_id:
+                buffer[pkt_id] = data.decode('utf-8')
+                expected_id += 1
+                # drain any buffered in‐order
+                while expected_id in out_of_order:
+                    buffer[expected_id] = out_of_order.pop(expected_id).decode('utf-8')
+                    expected_id += 1
+            else:
+                # future packet → store
+                if pkt_id not in out_of_order:
+                    out_of_order[pkt_id] = data
+
+            # cumulative ACK
+            send_ACK(recv_monitor, expected_id-1, sender_id, id_size)
+
+            # check for completion
+            if expected_id > max_id:
+                with open(WRITE_LOCATION, 'w', encoding='utf-8') as f:
+                    for i in range(expected_id):
+                        f.write(buffer[i])
+                recv_monitor.recv_end(WRITE_LOCATION, sender_id)
+                break
+
+    def main():
+        logging.basicConfig(level=logging.INFO,
+                            format="%(asctime)s %(message)s")
+        recv_monitor = Monitor(CONFIG_PATH, 'receiver')
+        wait_packet(recv_monitor)
+
+# ------------------------------------------------------------------------------
+# Simulation mode: register a callback with the emulator core
+# ------------------------------------------------------------------------------
+else:
+    from emulator_core import NetworkEmulator
+    import simulation_hooks
+
+    # State for the reliability protocol
+    first_hs       = False
+    expected_id    = 0
+    max_id         = 0
+    id_size        = 1
+    buffer         = {}
+    out_of_order   = {}
+    finished       = False
+
+    # Instantiate the emulator (it will run in its own thread)
+    ne = NetworkEmulator()
+
+    def send_ACK_sim(packet_id: int, sender_id: int, isAck=True):
+        """Inject an ACK back into the emulator."""
+        flag = b'\x01:' if isAck else b'\x00:'
+        ack_msg = flag + packet_id.to_bytes(id_size, 'big')
+        # prepend "receiver_id sender_id\n" as the emulator core expects
+        header = f"{RECEIVER_ID} {sender_id}\n".encode()
+        ne.receive_from_dut(header + ack_msg)
+
+    def inject_to_receiver(raw_bytes: bytes):
+        """
+        Called by emulator_core whenever a packet
+        destined for this receiver completes its journey.
+        """
+        global first_hs, expected_id, max_id, id_size, finished
+
+        # Split off the emulation‐header
+        hdr, payload = raw_bytes.split(b'\n', 1)
+        sender_id = int(hdr.split()[0])
+        # --- Handshake phase ---
+        if not first_hs:
+            parts = payload.split(b':', 1)
+            max_id  = int.from_bytes(parts[0], 'big')
+            id_size = int.from_bytes(parts[1], 'big')
+            send_ACK_sim(0, sender_id, True)
+            first_hs = True
+            return
+
+        # --- Data packets ---
+        pkt_id = int.from_bytes(payload[:id_size], 'big')
+        data   = payload[id_size:]
+
+        if pkt_id < expected_id:
+            send_ACK_sim(expected_id-1, sender_id, True)
+            return
+
+        if pkt_id == expected_id:
+            buffer[pkt_id] = data.decode('utf-8')
+            expected_id += 1
+            while expected_id in out_of_order:
+                buffer[expected_id] = out_of_order.pop(expected_id).decode('utf-8')
+                expected_id += 1
+        else:
+            out_of_order[pkt_id] = data
+
+        # cumulative ACK
+        send_ACK_sim(expected_id-1, sender_id, True)
+
+        # on completion, write file once
+        if expected_id > max_id and not finished:
+            with open(WRITE_LOCATION, 'w', encoding='utf-8') as f:
+                for i in range(expected_id):
+                    f.write(buffer[i])
             finished = True
-            with open(write_location, "w", encoding="utf-8") as file:
-                for i in range(expected_packet_id):
-                    file.write(packets_to_write[i])
-            recv_monitor.recv_end(write_location, sender_id)
+            print(f"[SIM] All packets received; wrote to {WRITE_LOCATION}")
 
-		# logging.info(f"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+    # register the callback with the emulator core
+    simulation_hooks.inject_to_receiver = inject_to_receiver
 
-def send_ACK(recv_monitor: Monitor, packet_id: int, sender_id, id_size, isAck=True):
-    if isAck:
-        ack_msg = b'\x01:' + packet_id.to_bytes(id_size, 'big')
-    else:
-        ack_msg = b'\x00:' + packet_id.to_bytes(id_size, 'big')
-    # logging.info(f"Sending new ack_msg={ack_msg}")
-    recv_monitor.send(sender_id, ack_msg)
+    def main():
+        print("[SIM] Receiver running in simulation mode; waiting for packets …")
+        # simply block until done
+        while not finished:
+            time.sleep(0.1)
 
-# ==================================================================================
-# MAIN
-# ==================================================================================
-
-def main():
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
-    config_path = sys.argv[1]
-
-    # Initialize receiver monitor
-    recv_monitor = Monitor(config_path, 'receiver')
-    
-    # Parse config file
-    cfg = configparser.RawConfigParser(allow_no_value=True)
-    cfg.read(config_path)
-
-    write_location = cfg.get('receiver', 'write_location')
-
-    max_packet_size =   int(cfg.get('network', 'MAX_PACKET_SIZE'))
-    prop_delay =        float(cfg.get('network', 'PROP_DELAY'))
-    link_bandwidth =    float(cfg.get('network', 'LINK_BANDWIDTH'))
-    max_packet_queued = float(cfg.get('network', 'MAX_PACKETS_QUEUED'))
-
-    # window_size  = int(2*prop_delay*(link_bandwidth/float(max_packet_size))) + 1
-    window_size  = 5
-
-    transmission_delay = float(max_packet_size) / link_bandwidth
-    rtt = 2.0*(prop_delay + transmission_delay)
-    queue_delay = (max_packet_queued * transmission_delay) / 2.0
-    timeout = math.ceil(int(rtt+queue_delay*0.5))
-
-    wait_packet(recv_monitor, max_packet_size, write_location, window_size, timeout)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

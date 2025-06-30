@@ -1,257 +1,210 @@
 #!/usr/bin/env python3
-from monitor import Monitor
 import sys
 import threading
 import logging
 import math
 import os
-
-# Config File   
-import configparser
-from scapy.all import sniff, sendp, Ether, ARP, IP, ICMP, TCP, RandShort, RandString, rdpcap, get_if_list, getmacbyip
 import random
+import configparser
+import time
 
+from monitor import Monitor
+from scapy.all import rdpcap, sendp, get_if_list, getmacbyip, Ether
 
-# ==================================================================================
-# GLOBAL VARIABLES
-# ==================================================================================
-thread_lock = threading.Lock()
-ack_received = threading.Event()
-last_sent = -1
-last_ack = -1
-duplicate_ack_count = 0
-window_size = 0
-timeout = 0
-is_ack = False
-packets = []
+# -------------------------------------------------------------------
+# Shared config & mode detection
+# -------------------------------------------------------------------
+from config import read_config_file, MODE
+import simulation_hooks
 
-# ==================================================================================
-# HELPER FUNCTIONS
-# ==================================================================================
+CONFIG_PATH = sys.argv[1]
+
+print(simulation_hooks)
+
+# Load config
+read_config_file(CONFIG_PATH)
+
+# In simulation mode: launch one emulator and register our injection hook
+if MODE == "simulation":
+    from emulator_core import NetworkEmulator
+    _sim_emulator = NetworkEmulator()
+    simulation_hooks.inject_to_sender = _sim_emulator.receive_from_dut
+
+# -------------------------------------------------------------------
+# Globals for reliable‐send protocol
+# -------------------------------------------------------------------
+thread_lock       = threading.Lock()
+ack_received      = threading.Event()
+last_sent         = -1
+last_ack          = -1
+duplicate_ack_cnt = 0
+window_size       = 0
+timeout           = 0
+packets           = []
+
+# -------------------------------------------------------------------
+# Helpers: splitting file into numbered payloads
+# -------------------------------------------------------------------
 def split_byte_string(text, chunk_size, id_size):
     data_size = chunk_size - id_size
-    packets = []
-
-    for packet_id, i in enumerate(range(0, len(text), data_size)):
-        packet_id_bytes = packet_id.to_bytes(id_size, 'big')
-        text_chunk = text[i:i+data_size]
-        packets.append(packet_id_bytes + text_chunk.encode())
-
-    return packets
+    out = []
+    for pid, i in enumerate(range(0, len(text), data_size)):
+        header = pid.to_bytes(id_size, 'big')
+        chunk  = text[i:i+data_size]
+        out.append(header + chunk.encode())
+    return out
 
 def get_id_size(file_size, data_chunk_size):
-    total_packets = math.ceil(file_size / data_chunk_size)
-    bit_length = total_packets.bit_length()
+    total = math.ceil(file_size / data_chunk_size)
+    bits  = total.bit_length()
+    return max(1, math.ceil(bits/8))
 
-    # Calculate the required bytes dynamically
-    return max(1, math.ceil(bit_length / 8))
+# -------------------------------------------------------------------
+# Send‐through helper (hardware vs. simulation)
+# -------------------------------------------------------------------
+def send_data(sender_id, receiver_id, payload: bytes):
+    if MODE == "hardware":
+        # real UDP via Monitor
+        _send_monitor.send(receiver_id, payload)
+    else:
+        # simulation: inject into emulator core
+        hdr = f"{sender_id} {receiver_id}\n".encode()
+        simulation_hooks.inject_to_sender(hdr + payload)
 
+# -------------------------------------------------------------------
+# Core reliable‐send routine (handshake + sliding window)
+# -------------------------------------------------------------------
+def send_packet(sender_id, receiver_id, payloads, max_packet_size, id_size):
+    global last_sent, last_ack, duplicate_ack_cnt
 
-def create_tcp_syn(src_ip, dst_ip, sport, dport):
-    return IP(src=src_ip, dst=dst_ip) / TCP(sport=sport, dport=dport, flags="S", seq=random.randint(1000, 10000))
+    num_pkts = len(payloads)
+    first_hs = False
 
+    # --- ACK‐receiver thread (only in hardware mode) ---
+    def waiting_ACK():
+        global last_ack, duplicate_ack_cnt
+        while True:
+            addr, data = _send_monitor.recv(max_packet_size)
+            ack_id = int.from_bytes(data[2:], 'big')
+            with thread_lock:
+                if ack_id == last_ack:
+                    duplicate_ack_cnt += 1
+                else:
+                    duplicate_ack_cnt = 0
+                last_ack = ack_id
+                ack_received.set()
 
-# --- Interface Auto-Detection ---
-def detect_interface():
-    interfaces = get_if_list()
-    candidates = [i for i in interfaces if i.startswith("en") or i.startswith("eth")]
-    return candidates[0] if candidates else "lo"
+    if MODE == "hardware":
+        threading.Thread(target=waiting_ACK, daemon=True).start()
 
-# ==================================================================================
-# PROTOCOL FUNCTIONS
-# ==================================================================================
-def packet_sender():
-    while True:
-        pkt = tx_queue.get()
-        if pkt is None:
-            break
-        if mode == "hardware":
-            sendp(pkt, iface=iface, verbose=False)
-            print(f"[TX] {pkt.summary()}")
+    # --- 1) Handshake: tell receiver how many pkts to expect ---
+    while not first_hs:
+        max_id = (num_pkts - 1).to_bytes(id_size, 'big')
+        sz_hdr = id_size.to_bytes(id_size, 'big')
+        handshake = max_id + b":" + sz_hdr
+        send_data(sender_id, receiver_id, handshake)
+
+        if MODE == "hardware":
+            if ack_received.wait(timeout):
+                with thread_lock:
+                    first_hs = True
+                    ack_received.clear()
         else:
-            inject_to_dut(pkt)  # Simulation mode: push to testbench
-        time.sleep(0.1)
+            # in simulation assume immediate OK
+            first_hs = True
 
-
-
-def send_packet(send_monitor: Monitor, receiver_id, packets, max_packet_size, id_size):
-    global thread_lock, last_sent, is_ack, last_ack, window_size, duplicate_ack_count
-    packet_id = 0
-    num_packets = len(packets)
-    first_handshake_sent = False
-
-    ack_thread = threading.Thread(target=waiting_ACK, 
-                                  args=(send_monitor, max_packet_size,),
-                                  daemon=True)
-    ack_thread.start()
-
-    while not first_handshake_sent:
-        # Send handshake packet
-        max_packet_id = len(packets) - 1
-        handshake_packet = max_packet_id.to_bytes(id_size, 'big') + b":" + id_size.to_bytes(id_size, 'big')
-        # logging.info(f"Handshake handshake_packet={handshake_packet}")
-        send_monitor.send(receiver_id, handshake_packet)
-        # Wait for handshake
-        event_triggered = ack_received.wait(timeout)
-        if not event_triggered:
-            # if timed out
-            continue
-
-        with thread_lock:
-            if is_ack:
-                first_handshake_sent = True
-            ack_received.clear()
-
-    # logging.info(f"FINISHED HANDSHAKING")
-
-    # Send initial window of packets
+    # --- 2) send initial window ---
+    last_sent = -1
     with thread_lock:
-        while last_sent < window_size - 1 and last_sent < num_packets - 1:
+        while last_sent < min(window_size-1, num_pkts-1):
             last_sent += 1
-            send_monitor.send(receiver_id, packets[last_sent])
-    
+            send_data(sender_id, receiver_id, payloads[last_sent])
 
-    while last_ack < num_packets - 1:
-        # logging.info(f"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-        event_triggered = ack_received.wait(timeout)
+    # --- 3) sliding window with dup‐ACK & timeout ---
+    while last_ack < num_pkts-1:
+        if MODE == "hardware":
+            fired = ack_received.wait(timeout)
+        else:
+            # simulate perfect timing in sim
+            time.sleep(0.01)
+            fired = True
+
         with thread_lock:
-            # Retransmit on duplicate ACKs
-            if duplicate_ack_count >= 3: # Use 3 for now, not sure why
-                packet_id = last_ack + 1
-                if packet_id < num_packets:
-                    # logging.info(f"Retransmitting packet_id={packet_id}")
-                    send_monitor.send(receiver_id, packets[packet_id])
-                duplicate_ack_count = 0
-                ack_received.clear()
-                continue
+            if fired and duplicate_ack_cnt >= 3:
+                # fast‐retransmit
+                pkt_id = last_ack + 1
+                send_data(sender_id, receiver_id, payloads[pkt_id])
+                duplicate_ack_cnt = 0
 
-            if not event_triggered:
-                # if timed out
-                # logging.info("------------- TIMED OUT --------------")
-                # logging.info(f"Resending packet id from {last_ack + 1} to {last_sent + 1}")
-                # logging.info("------------- TIMED OUT --------------")
-                packet_id = last_ack + 1
-                while packet_id <= last_sent and packet_id < num_packets:
-                    # logging.info(f"Sending packet_id={packet_id}")
-                    send_monitor.send(receiver_id, packets[packet_id])
-                    packet_id += 1
+            elif not fired:
+                # timeout retransmit all un‐acked in window
+                for pid in range(last_ack+1, last_sent+1):
+                    send_data(sender_id, receiver_id, payloads[pid])
+
             else:
-                # logging.info("************* ACK RCVED *************")
-                # logging.info(f"Sending packet id from {last_sent}")
-                # logging.info("************* ACK RCVED *************")
-                while last_sent < num_packets - 1 and (last_sent - last_ack) < window_size:
+                # new ACK received — advance window
+                while last_sent < num_pkts-1 and (last_sent - last_ack) < window_size:
                     last_sent += 1
-                    # logging.info(f"num_packets - 1={num_packets - 1}")
-                    # logging.info(f"Sending packet_id={last_sent}")
-                    send_monitor.send(receiver_id, packets[last_sent])
+                    send_data(sender_id, receiver_id, payloads[last_sent])
+
             ack_received.clear()
-    
-        # logging.info(f"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
-    send_monitor.send_end(receiver_id)
+    # --- 4) signal end of transmission ---
+    send_data(sender_id, receiver_id, b"__END__")
 
-def waiting_ACK(send_monitor: Monitor, max_packet_size):
-    global thread_lock, last_ack, is_ack, duplicate_ack_count
-
-    while True:
-        # logging.info("**************************************")
-        # logging.info("waiting for ACK")
-
-        addr, data = send_monitor.recv(max_packet_size)
-        ack_id = int.from_bytes(data[2:], 'big')
-        # logging.info(f"got ACK with ack_id={ack_id}")
-
-        with thread_lock:
-            is_ack = data[0]
-            # if is_ack
-            if ack_id == last_ack: # count duplicates
-                duplicate_ack_count += 1
-            else:
-                duplicate_ack_count = 0
-            last_ack = ack_id
-            ack_received.set()
-            # logging.info(f"Event ACK set with {is_ack}:{last_ack}")
-        # logging.info("**************************************")
-
-def handle_tcp_handshake(src_ip, dst_ip, sport, dport):
-    dst_mac = getmacbyip(dst_ip)
-    syn = create_tcp_syn(src_ip, dst_ip, sport, dport)
-    sendp(Ether(dst=dst_mac) / syn, iface=iface, verbose=False)
-    print(f"[{sport}] Sent SYN")
-
-    def synack_filter(pkt):
-        return (
-            pkt.haslayer(TCP) and
-            pkt[IP].src == dst_ip and
-            pkt[TCP].dport == sport and
-            pkt[TCP].flags == "SA"
-        )
-
-    replies = sniff(iface=detect_interface(), lfilter=synack_filter, count=1, timeout=2)
-
-    if not replies:
-        print(f"[{sport}] No SYN-ACK received.")
-        return
-
-    synack = replies[0]
-    ack_num = synack[TCP].seq + 1
-    ack = IP(src=src_ip, dst=dst_ip) / TCP(sport=sport, dport=dport, flags="A", seq=syn[TCP].seq + 1, ack=ack_num)
-    sendp(Ether(dst=dst_mac) / ack, iface=detect_interface(), verbose=False)
-    print(f"[{sport}] Handshake complete")
-
-
-# ==================================================================================
-# MAIN
-# ==================================================================================
+# -------------------------------------------------------------------
+# Main driver
+# -------------------------------------------------------------------
 def main():
-    global thread_lock, timeout, window_size
+    global _send_monitor, window_size, timeout, packets
+
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 
-    config_path = sys.argv[1]
+    # Load config file path
+    cfg_path = sys.argv[1]
 
-    # Initialize sender monitor
-    send_monitor = Monitor(config_path, 'sender')
+    # In hardware mode, bring up a Monitor
+    if MODE == "hardware":
+        _send_monitor = Monitor(cfg_path, 'sender')
+    else:
+        _send_monitor = None
 
-    # Parse config file
+    # Parse rest of config
     cfg = configparser.RawConfigParser(allow_no_value=True)
-    cfg.read(config_path)
+    cfg.read(cfg_path)
 
-    file_to_send = cfg.get('nodes', 'file_to_send')
+    receiver_id       = int(cfg.get('receiver', 'id'))
+    file_to_send      = cfg.get('nodes', 'file_to_send')
+    max_pkt_size      = int(cfg.get('network', 'MAX_PACKET_SIZE'))
+    prop_delay        = float(cfg.get('network', 'PROP_DELAY'))
+    link_bw           = float(cfg.get('network', 'LINK_BANDWIDTH'))
+    max_queued        = float(cfg.get('network', 'MAX_PACKETS_QUEUED'))
 
-    receiver_id         = int(cfg.get('receiver', 'id'))
-    max_packet_size     = int(cfg.get('network', 'MAX_PACKET_SIZE'))
-    prop_delay          = float(cfg.get('network', 'PROP_DELAY'))
-    link_bandwidth      = float(cfg.get('network', 'LINK_BANDWIDTH'))
-    max_packet_queued   = float(cfg.get('network', 'MAX_PACKETS_QUEUED'))
+    # Window & timeout heuristics
+    window_size       = int(2 * prop_delay * (link_bw/max_pkt_size)) + 1
+    transmission_time = max_pkt_size / link_bw
+    rtt               = 2*(prop_delay + transmission_time)
+    queue_time        = (max_queued * transmission_time)/2
+    timeout           = math.ceil(rtt + queue_time*0.5)
 
-    # window_size  = int(2*prop_delay*(link_bandwidth/float(max_packet_size))) + 1
-    window_size  = 5
-
-    transmission_delay = float(max_packet_size) / link_bandwidth
-    rtt = 2.0 * (prop_delay + transmission_delay)
-    queue_delay = (max_packet_queued * transmission_delay) / 2.0
-    timeout = math.ceil(int(rtt + queue_delay * 0.5))
-    # timeout = 3
-
-    max_packet_size_allowed = max_packet_size - 128
-
+    # Read and split file
     with open(file_to_send, "rb") as f:
         f.seek(0, os.SEEK_END)
-        file_size = f.tell()
+        size = f.tell()
+    id_size = get_id_size(size, max_pkt_size-128)
 
-    id_size = get_id_size(file_size, max_packet_size_allowed)
+    with open(file_to_send, "r", encoding="utf-8") as f:
+        txt = f.read()
+    packets = split_byte_string(txt, max_pkt_size-128, id_size)
 
-    with open(file_to_send, "r", encoding="utf-8") as file:
-        text_file = file.read()
+    # Launch the send protocol
+    send_packet(
+        sender_id   = int(cfg.get('sender', 'id')),
+        receiver_id = receiver_id,
+        payloads    = packets,
+        max_packet_size = max_pkt_size,
+        id_size     = id_size
+    )
 
-    packets = split_byte_string(text_file, max_packet_size_allowed, id_size)
-    print(window_size)
-    print(window_size * max_packet_size_allowed)
-    print(timeout)
-    # print(max_packet_id)
-    # handshake_packet = max_packet_id.to_bytes(id_size, 'big') + b":" + id_size.to_bytes(id_size, 'big')
-    # print(handshake_packet)
-    send_packet(send_monitor, receiver_id, packets, max_packet_size, id_size)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
