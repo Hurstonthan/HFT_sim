@@ -5,10 +5,10 @@ import time
 import socket
 import threading
 from queue import Queue
-from config import MODE, HOST, PORT, NODES, NET_CONFIG, IFACE
+from config import read_config_file, Config
 from utils.pcap_loader import extract_frames, decode_frame
 
-# In simulation mode, your cocotb test harness must provide this:
+# In simulation mode, cocotb test harness must provide this:
 # a function that takes raw bytes and drives them into the DUT.
 # In hardware mode, this is unused.
 try:
@@ -16,6 +16,20 @@ try:
 except ImportError:
     def inject_to_dut(_data: bytes):
         raise RuntimeError("inject_to_dut() not implemented for simulation mode")
+
+# ==========================================================================================================================================
+# CONFIGURATION LEVEL PARAMETERS
+# ==========================================================================================================================================
+
+SEND_SUCCESS = 1
+SEND_FAIL = -1
+PACKET_FAIL = -1
+STAT_INTERVAL = 5
+CONFIG = read_config_file("./config.ini")
+MODE = CONFIG.MODE
+HOST = CONFIG.HOST
+PORT = CONFIG.PORT
+NODES = CONFIG.NODES
 
 # ------------------------------------------------------------------------------
 # Shared Queues
@@ -31,7 +45,7 @@ class Packet:
         self.data = data
         self.addr = addr
         self.timestamp = time.time()
-        self.latency_complete_time = self.timestamp + NET_CONFIG.PROP_DELAY
+        self.latency_complete_time = self.timestamp + CONFIG.PROP_DELAY
 
     def receiver_id(self):
         try:
@@ -51,7 +65,7 @@ class LatencyQueue:
 
     def _recv_thread(self):
         while True:
-            data, addr = self._sockfd.recvfrom(NET_CONFIG.MAX_PACKET_SIZE)
+            data, addr = self._sockfd.recvfrom(CONFIG.MAX_PACKET_SIZE)
             pkt = Packet(data, addr)
             self._queue.append(pkt)
 
@@ -75,7 +89,7 @@ class SendingQueue:
 
     def check_bandwidth(self):
         delta = time.time() - self._last_time
-        self._bandwidth_counter -= NET_CONFIG.LINK_BANDWIDTH * delta
+        self._bandwidth_counter -= CONFIG.LINK_BANDWIDTH * delta
         self._last_time = time.time()
         return self._bandwidth_counter <= 0
 

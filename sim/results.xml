@@ -1,6 +1,8 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1749500769" />
-    <testcase name="test_axi_stream_with_pcap" classname="test_axi_eth_rx" file="/home/duckstew/project/HFT_sim/sim/test_axi_eth_rx.py" lineno="6" time="0.008050680160522461" sim_time_ns="480.001" ratio_time="59622.41579956762" />
+    <property name="random_seed" value="1751343821" />
+    <testcase name="test_ethernet_emulator" classname="test_axi_eth_rx" file="/home/duckstew/project/HFT_sim/sim/test_axi_eth_rx.py" lineno="14" time="50.893019914627075" sim_time_ns="6115580.0" ratio_time="120165.39812844417">
+      <failure message="Test failed with RANDOM_SEED=1751343821" />
+    </testcase>
   </testsuite>
 </testsuites>

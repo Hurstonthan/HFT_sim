@@ -10,25 +10,7 @@ import time
 
 from monitor import Monitor
 from scapy.all import rdpcap, sendp, get_if_list, getmacbyip, Ether
-
-# -------------------------------------------------------------------
-# Shared config & mode detection
-# -------------------------------------------------------------------
-from config import read_config_file, MODE
 import simulation_hooks
-
-CONFIG_PATH = sys.argv[1]
-
-print(simulation_hooks)
-
-# Load config
-read_config_file(CONFIG_PATH)
-
-# In simulation mode: launch one emulator and register our injection hook
-if MODE == "simulation":
-    from emulator_core import NetworkEmulator
-    _sim_emulator = NetworkEmulator()
-    simulation_hooks.inject_to_sender = _sim_emulator.receive_from_dut
 
 # -------------------------------------------------------------------
 # Globals for reliable‐send protocol
@@ -41,6 +23,7 @@ duplicate_ack_cnt = 0
 window_size       = 0
 timeout           = 0
 packets           = []
+mode              = None
 
 # -------------------------------------------------------------------
 # Helpers: splitting file into numbered payloads
@@ -63,7 +46,7 @@ def get_id_size(file_size, data_chunk_size):
 # Send‐through helper (hardware vs. simulation)
 # -------------------------------------------------------------------
 def send_data(sender_id, receiver_id, payload: bytes):
-    if MODE == "hardware":
+    if mode == "hardware":
         # real UDP via Monitor
         _send_monitor.send(receiver_id, payload)
     else:
@@ -94,7 +77,7 @@ def send_packet(sender_id, receiver_id, payloads, max_packet_size, id_size):
                 last_ack = ack_id
                 ack_received.set()
 
-    if MODE == "hardware":
+    if mode == "hardware":
         threading.Thread(target=waiting_ACK, daemon=True).start()
 
     # --- 1) Handshake: tell receiver how many pkts to expect ---
@@ -104,7 +87,7 @@ def send_packet(sender_id, receiver_id, payloads, max_packet_size, id_size):
         handshake = max_id + b":" + sz_hdr
         send_data(sender_id, receiver_id, handshake)
 
-        if MODE == "hardware":
+        if mode == "hardware":
             if ack_received.wait(timeout):
                 with thread_lock:
                     first_hs = True
@@ -122,7 +105,7 @@ def send_packet(sender_id, receiver_id, payloads, max_packet_size, id_size):
 
     # --- 3) sliding window with dup‐ACK & timeout ---
     while last_ack < num_pkts-1:
-        if MODE == "hardware":
+        if mode == "hardware":
             fired = ack_received.wait(timeout)
         else:
             # simulate perfect timing in sim
@@ -155,20 +138,12 @@ def send_packet(sender_id, receiver_id, payloads, max_packet_size, id_size):
 # -------------------------------------------------------------------
 # Main driver
 # -------------------------------------------------------------------
-def main():
-    global _send_monitor, window_size, timeout, packets
+def main(cfg_path):
+    global _send_monitor, window_size, timeout, packets, mode
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 
     # Load config file path
-    cfg_path = sys.argv[1]
-
-    # In hardware mode, bring up a Monitor
-    if MODE == "hardware":
-        _send_monitor = Monitor(cfg_path, 'sender')
-    else:
-        _send_monitor = None
-
     # Parse rest of config
     cfg = configparser.RawConfigParser(allow_no_value=True)
     cfg.read(cfg_path)
@@ -179,6 +154,19 @@ def main():
     prop_delay        = float(cfg.get('network', 'PROP_DELAY'))
     link_bw           = float(cfg.get('network', 'LINK_BANDWIDTH'))
     max_queued        = float(cfg.get('network', 'MAX_PACKETS_QUEUED'))
+    mode              = str(cfg.get('emulator', 'mode'))
+    # In hardware mode, bring up a Monitor
+
+    if mode == "hardware":
+        _send_monitor = Monitor(cfg_path, 'sender')
+    else:
+        _send_monitor = None
+
+    # In simulation mode: launch one emulator and register our injection hook
+    if mode == "simulation":
+        from emulator_core import NetworkEmulator
+        _sim_emulator = NetworkEmulator()
+        simulation_hooks.inject_to_sender = _sim_emulator.receive_from_dut
 
     # Window & timeout heuristics
     window_size       = int(2 * prop_delay * (link_bw/max_pkt_size)) + 1
@@ -207,4 +195,5 @@ def main():
     )
 
 if __name__ == "__main__":
-    main()
+    cfg_path = sys.argv[1]
+    main(cfg_path)
