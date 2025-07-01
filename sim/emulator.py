@@ -54,6 +54,58 @@ class config:
 		self.RANDOM_DROP_PROBABILITY: float = 0
 		self.REORDER_PROBABILITY: float = 0
 
+# Emulator
+LOG_FILE_PATH = './emulator.log'
+HOST = ''
+PORT = '8001'
+nodes = None		# Dictionary to store the node information indexed by id
+Config = None	   # Holds all the configuration information
+interface = None
+mode = "hw"			# sim vs hw
+
+def read_config_file(path):
+	""" Reads the configuration file and sets parameters """
+	global LOG_FILE_PATH
+	global PORT
+	global nodes
+	global Config
+
+	try:
+		cfg = configparser.RawConfigParser(allow_no_value=True)
+		cfg.read(path)
+	except Exception as e:
+		print(e)
+		print("FAILED! Configuration file exception")
+		sys.exit(1)
+
+	# Emulator
+	LOG_FILE_PATH = cfg.get("emulator", "log_file")
+	PORT = int(cfg.get("emulator", "port"))
+
+	# Network
+	Config = config()
+	Config.PROP_DELAY=float(cfg.get("network", "PROP_DELAY"))
+	Config.MAX_PACKET_SIZE=int(cfg.get("network", "MAX_PACKET_SIZE"))
+	Config.LINK_BANDWIDTH=int(cfg.get("network", "LINK_BANDWIDTH"))
+	Config.DROP_MODEL=int(cfg.get("network", "DROP_MODEL"))
+	Config.RANDOM_DROP_PROBABILITY=float(cfg.get("network", "RANDOM_DROP_PROBABILITY"))
+	Config.REORDER_PROBABILITY=float(cfg.get("network", "REORDER_PROBABILITY"))
+	Config.MAX_PACKETS_QUEUED= int(2*Config.PROP_DELAY*(Config.LINK_BANDWIDTH/Config.MAX_PACKET_SIZE)) + 1 # The bandwidth delay product
+
+	print("Config Parsed: ", Config)
+
+	# Nodes
+	node_headers = cfg.get("nodes", "config_headers").split(',')
+	nodes = {}
+	for header in node_headers:
+		id = int(cfg.get(header, 'id'))
+		host = cfg.get(header, "host")
+		port = int(cfg.get(header, "port"))
+		nodes[id] = node(id, (host, port))
+
+	# print("Log file : ", LOG_FILE_PATH)
+	with open(LOG_FILE_PATH, 'w+') as f:
+		f.write(f'{time.time()}\n{"Configuration File Parsed."}\n')
 
 
 # ==========================================================================================================================================

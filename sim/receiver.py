@@ -27,7 +27,7 @@ QUEUE_DELAY       = (MAX_PKTS_QUEUED * TRANSM_DELAY) / 2.0
 TIMEOUT           = math.ceil(RTT + QUEUE_DELAY*0.5)
 
 # ------------------------------------------------------------------------------
-# Hardware mode: use Monitor (UDP) exactly as before
+# Hardware mode: use Monitor (UDP)
 # ------------------------------------------------------------------------------
 if MODE == "hardware":
     from monitor import Monitor
@@ -68,7 +68,7 @@ if MODE == "hardware":
             data   = packet[id_size:]
 
             if pkt_id < expected_id:
-                # duplicate → re-ACK last in‐order
+                # duplicate -> re-ACK last in‐order
                 send_ACK(recv_monitor, expected_id-1, sender_id, id_size)
                 continue
 
@@ -80,7 +80,7 @@ if MODE == "hardware":
                     buffer[expected_id] = out_of_order.pop(expected_id).decode('utf-8')
                     expected_id += 1
             else:
-                # future packet → store
+                # future packet -> store
                 if pkt_id not in out_of_order:
                     out_of_order[pkt_id] = data
 

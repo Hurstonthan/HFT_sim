@@ -140,13 +140,13 @@ class NetworkEmulator:
                     if addr:
                         self.socketfd.sendto(pkt.data, addr)
                 else:
-                    # simulation → push into DUT
+                    # simulation -> push into DUT
                     inject_to_dut(pkt.data)
 
             time.sleep(0.001)  # small sleep to avoid busy spin
 
     # --------------------------------------------------------------------------
-    # Simulation‐only API: your cocotb driver calls this when DUT emits a frame
+    # Simulation‐only API: cocotb driver calls this when DUT emits a frame
     # --------------------------------------------------------------------------
     def receive_from_dut(self, raw_bytes: bytes, addr=None):
         """Inject incoming bytes from DUT into the latency queue."""

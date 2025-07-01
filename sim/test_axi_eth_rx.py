@@ -1,37 +1,52 @@
+import sys
 import cocotb
-from cocotb.triggers import RisingEdge, Timer
 from cocotb.clock import Clock
-from utils.pcap_loader import extract_frames, decode_frame
+from cocotb.triggers import RisingEdge, Timer
+
+# Pull in emulator core + config
+from config import read_config_file, MODE, NET_CONFIG, SENDER_ID, RECEIVER_ID
+import emulator_core, simulation_hooks, sender
+
+CONFIG_PATH = sys.argv[1]
 
 @cocotb.test()
-async def test_axi_stream_with_pcap(dut):
-    cocotb.start_soon(Clock(dut.clk, 10, units='ns').start())
+async def test_ethernet_emulator(dut):
+    # 1) Load config and assert simulation mode
+    read_config_file(CONFIG_PATH)
+    assert MODE == "simulation"
 
-    dut.rst.value = 1
-    for _ in range(5):
-        await RisingEdge(dut.clk)
-    dut.rst.value = 0
+    # 2) Start the DUT clock
+    cocotb.start_soon(Clock(dut.clk, 10, units="ns").start())
 
-    frames = extract_frames("../pcap_samples/sample_market_data.pcap")
-    frame = frames[0]
-    decode_frame(frame)
-    print(frame)
+    # 3) Instantiate emulator
+    ne = emulator_core.NetworkEmulator()
 
-    for i, byte in enumerate(frame):
-        print(f"byte={byte}")
-        dut.s_axis_tdata.value = byte
-        dut.s_axis_tvalid.value = 1
-        dut.s_axis_tlast.value = (i == len(frame) - 1)
-        print(f"Sending byte {i:02d}: {hex(byte)}")
-        await RisingEdge(dut.clk)
-        if (dut.s_axis_tready.value):
-            break
+    # 4) Hook DUT -> Emulator: watch DUT’s tx interface
+    async def monitor_dut_tx():
+        while True:
+            await RisingEdge(dut.clk)
+            if dut.tx_valid.value:
+                byte = int(dut.tx_data.value)
+                # wrap in emulator header: "<sender> <receiver>\n"
+                hdr = f"{SENDER_ID} {RECEIVER_ID}\n".encode()
+                ne.receive_from_dut(hdr + bytes([byte]))
+    cocotb.start_soon(monitor_dut_tx())
 
-        print(f"dut.byte_cnt.value={int(dut.byte_cnt.value)}")
-        print(f"dut.eth_type.value={dut.eth_type.value}")
+    # 5) Hook Emulator -> DUT: feed emulator output into DUT’s rx interface
+    async def inject_to_dut(raw_bytes):
+        for b in raw_bytes:
+            dut.rx_data.value  = b
+            dut.rx_valid.value = 1
+            # clock a cycle for each byte
+            await RisingEdge(dut.clk)
+        dut.rx_valid.value = 0
 
-    dut.s_axis_tvalid.value = 0
-    dut.s_axis_tlast.value = 0
-    await Timer(100, units='ns')
+    simulation_hooks.inject_to_dut = inject_to_dut
 
-    assert dut.eth_type.value == 0x0800, f"Expected 0x0800, got {hex(dut.eth_type.value)}"
+    # 6) Kick off the Python sender in a background thread
+    import threading
+    threading.Thread(target=sender.main, args=(CONFIG_PATH,), daemon=True).start()
+
+    # 7) Let the simulation run for enough time
+    await Timer( NET_CONFIG.PROP_DELAY*1e9 + 5000, units="ns")
+
