@@ -1,10 +1,11 @@
-`timescale 1ps/1ps
+`timescale 1ns/1ps
 
-module ethernet_mac_tx #(
+module MAC_tx #(
     parameter WORD_WIDTH = 64,
     parameter CTRL_WIDTH = 8,
     parameter MAC_SRC_ADDR = 48'h FF_FF_FF_FF_FF,
-    parameter MAC_DEST_ADDR = 48'h AA_BB_FF_FF_FF
+    parameter MAC_DEST_ADDR = 48'h AA_BB_FF_FF_FF,
+    parameter ETHER_TYPE         = 16'h0800,   // IPv4 EtherType
 ) (
     input wire CLK,
     input wire nRST,
@@ -38,7 +39,6 @@ module ethernet_mac_tx #(
     ether_state_t state, nstate;
 
     logic crc_init, valid;
-
     logic [31:0] crc_out;
 
     
@@ -142,15 +142,17 @@ module ethernet_mac_tx #(
                 nxgmii_txd_l = 64'h07070707_07070707;
                 nxgmii_txc_l = '1;
                 if (TX_en) begin
-                    nxgmii_txd_l = {56'h55555555555555, 8'hFB}; //Preamble and SFD 
+                    nxgmii_txd_l = {8'hFB,48'h55555555555555, 8'hD5}; //Preamble and SFD 
                     nxgmii_txc_l = 8'b000_0001;
                 end
             end
 
             SEND_PREAMBLE_SFD: begin
+                //Ok I make a mistake
                 // Logic to send preamble and SFD
                 nxgmii_txc_l =  '0;
                 nxgmii_txd_l = {MAC_DEST_ADDR,MAC_SRC_ADDR[47:32]};
+                
             end
 
             SEND_ETHER_HEAD1: begin
@@ -165,9 +167,12 @@ module ethernet_mac_tx #(
                 //     nxgmii_txd_l = {MAC_DEST_ADDR,MAC_SRC_ADDR[47:32]}; //ARP protocol
                 //     arp_req = 1'b1;
                 // end
-
+                
                 nxgmii_txd_l = {MAC_SRC_ADDR[31:0], IP_transmit[31:0]};
                 nxgmii_txc_l =  '0; 
+                //5 byte of MAC_SRC_ADDR
+                //2 byte of ETHER_TYPE
+                //1 byte of IP_transmit 
             end
 
             SEND_ETHER_HEAD2: begin
@@ -185,7 +190,7 @@ module ethernet_mac_tx #(
                 nxgmii_txd_l = IP_transmit;
                 nxgmii_txc_l =  '0;
                 if (bytes_sent_ip_mac >= (TCP_len_data_mc - 15'd1)) begin
-                    nxgmii_txd_l = {crc_out, 32'h FD}; // FCS and 0xFD
+                    nxgmii_txd_l = {crc_out, 8'h FD}; // FCS and 0xFD
                     nxgmii_txc_l = 8'b0000_0001; // all control
                 end
 
@@ -206,7 +211,7 @@ module ethernet_mac_tx #(
                 nxgmii_txd_l = IP_transmit;
                 nxgmii_txc_l =  '0;
                 if (bytes_sent_ip_mac >= (TCP_len_data_mc - 15'd1)) begin
-                    nxgmii_txd_l = {crc_out, 32'hFD000000}; // FCS and 0xFD
+                    nxgmii_txd_l = {crc_out, 8'hFD}; // FCS and 0xFD
                     nxgmii_txc_l = 8'b0000_0001; // all control
                 end
                 

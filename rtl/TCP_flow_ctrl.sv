@@ -52,8 +52,8 @@ module TCP_flow_ctrl #(
 
     assign mytx.TCP_len_data = mytx.bytes_abt_sent;
     assign mytx.TCP_control_tx = tx_pkg_type;
-    assign mytx.rcv_next = rcv_next;
-    assign mytx.seq_num = seq_num.seq_num;
+    assign myrx.rcv_next = rcv_next;
+    assign myrx.seq_num = seq_num.seq_num;
     generate
         for (i = 0; i < N; i++) begin
             assign v_vec[i] = TCP_out_order[i].v;
@@ -62,7 +62,7 @@ module TCP_flow_ctrl #(
     assign free_vec = ~v_vec; //Mask of free bits for the out of order packets
 
     for (i = 0; i < N; i++) begin
-        assign match_mask[i] = (TCP_out_order[i].seq_num == rcv_next) && TCP_out_order[i].v; //Mask of matched bits for the out of order packets
+        assign match_mask[i] = (rcv_next >= TCP_out_order[i].seq_num) && TCP_out_order[i].v; //Mask of matched bits for the out of order packets
         
     end
 
@@ -110,8 +110,18 @@ module TCP_flow_ctrl #(
             rcv_next <= '0;
             state <= IDLE;
         end else if (match_found) begin
-            rcv_next <= rcv_next + TCP_out_order[match_idx].length; //Update the next sequence number to receive
-            TCP_out_order[match_idx].v <= 1'b0; //Set the valid bit to 0
+            if (TCP_out_order[match_idx].seq_num == rcv_next) begin
+                rcv_next <= rcv_next + TCP_out_order[match_idx].length; //Update the next sequence number to receive
+                TCP_out_order[match_idx].v <= 1'b0; //Set the valid bit to 0
+            end else if (rcv_next > TCP_out_order[match_idx].seq_num) begin
+                //Need to check this logic
+                if (rcv_next >= TCP_out_order[match_idx].seq_num + TCP_out_order[match_idx].length) begin
+                    TCP_out_order[match_idx].v <= 1'b0; //Set the valid bit to 0
+                end else begin
+                    TCP_out_order[match_idx].seq_num <= rcv_next;
+                    TCP_out_order[match_idx].length <= (TCP_out_order[match_idx].seq_num + TCP_out_order[match_idx].length) - (rcv_next);
+                end
+            end
         end
         else begin
             ack_num <= nack_num;
@@ -135,6 +145,7 @@ module TCP_flow_ctrl #(
         nTCP_out_order = TCP_out_order;
         
         mytx.TCP_stop_flg = 1'b0;
+        
         nrcv_next = rcv_next;
         
 
@@ -143,7 +154,12 @@ module TCP_flow_ctrl #(
             //During the IDLE, client will send the SYN packet first
             IDLE: begin
                 nseq_num.seq_num = 32'd0;
-                if (mytx.SYN_sent) begin
+                
+                // if (mytx.SYN_sent) begin
+                //     nstate = WAIT_SYN_ACK;
+                //     nseq_num.seq_num = seq_num.seq_num + 1;
+                // end
+                if (mytx.seq_up) begin
                     nstate = WAIT_SYN_ACK;
                     nseq_num.seq_num = seq_num.seq_num + 1;
                 end
@@ -166,7 +182,7 @@ module TCP_flow_ctrl #(
             end
 
             SEND_ACK: begin
-                if (mytx.ACK_sent) begin
+                if (mytx.seq_up) begin
                     //nseq_num.seq_num = seq_num.seq_num + 1;
                     nstate = DATA_CONNECTED;
                 end
@@ -187,11 +203,11 @@ module TCP_flow_ctrl #(
                 end
 
                 //Flow receiving logic 
-                if (myrx.rcv_data) begin
+                if (myrx.rcv_data && (myrx.seq_num_rx >= rcv_next)) begin
                     nwindow_size = myrx.window_size_rx; //Update the new window size
                     
                     if (myrx.ACK_rx == ack_num.ACK_num && rcv_pkg_type.ACK) begin
-                        if (ack_num.dup_chk == 2) begin
+                        if (ack_num.dup_chk == 3) begin
                             //Logic of 3 duplicated ACK and transmit the data again
                             //Need a flag to indicate that the data is sent again
                             nack_num.dup_chk = 0;
@@ -207,14 +223,21 @@ module TCP_flow_ctrl #(
 
                     //Logic of sending ACK packets if needed
                     //Logic of receiving the offset of bytes data
-                    if (myrx.seq_num_rx != rcv_next) begin //If out of order happened
+                    if (myrx.seq_num_rx > rcv_next) begin //If out of order happened
                         if (free_mask) begin
                             nTCP_out_order[free_idx].seq_num = myrx.seq_num_rx;
-                            nTCP_out_order[free_idx].length = myrx.payload_len_rx; //Len of the receiving payload
+                            nTCP_out_order[free_idx].length =  ((myrx.seq_num_rx + myrx.payload_len_rx) > (rcv_next + 32'hFFFF)) ? ((rcv_next + 32'hFFFF) - (myrx.seq_num_rx)) : myrx.payload_len_rx; //Len of the receiving payload
                             nTCP_out_order[free_idx].v = 1'b1; //Set the valid bit
                         end
                     end else begin
+                        //In order packets case
                         nrcv_next = myrx.seq_num_rx + myrx.payload_len_rx;//seq_num_rx + len_of payload;
+                        // if ((myrx.seq_num_rx + myrx.payload_len_rx) > 32'h FFFF) begin
+                        //     nrcv_next = myrx.seq_num_rx + myrx.payload_len_rx - 32'h FFFF; //Wrap around the sequence number
+                        // end else begin
+                            
+                        // end
+                        
                         
                     end
                 end else if (myrx.timeout_flag) begin
@@ -263,8 +286,8 @@ module TCP_flow_ctrl #(
         mytx.urgent_pointer_tx = 0;
         mytx.seq_num_tx = '0;
         mytx.ACK_tx = '0;
-        mytx.window_size_tx = (mytx.full) ? 15'd0 : 15'd256;
-        
+        mytx.window_size_tx = (mytx.full) ? 16'd0 : 16'hFFFF;
+        mytx.hand_shake_done = 1'b0; //Reset the handshake done flag
 
         case (state)
             IDLE: begin
@@ -283,6 +306,9 @@ module TCP_flow_ctrl #(
                 tx_pkg_type.ACK = 1'b1;
                 mytx.seq_num_tx = seq_num.seq_num;
                 mytx.ACK_tx = rcv_next;
+                if (mytx.ACK_sent) begin
+                    mytx.hand_shake_done = 1'b1; //Handshake is done
+                end
         
             end
 

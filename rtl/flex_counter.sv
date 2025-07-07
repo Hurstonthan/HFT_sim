@@ -3,6 +3,7 @@
 module flex_counter #(parameter SIZE = 4) (
     input logic CLK, nRST, clear, count_enable,
     input logic [SIZE-1:0] rollover_val,
+    input logic [SIZE-1:0] initial_val,
     output logic [SIZE-1:0] count_out,
     output logic rollover_flag
 );
@@ -23,7 +24,7 @@ module flex_counter #(parameter SIZE = 4) (
 
     always_comb begin
         if (clear) begin    // if clear, reset to 0s
-            nxt_count_out = 0;
+            nxt_count_out = initial_val;
             nxt_rollover_flag = 1'b0;
         end
         else if (count_enable) begin    // if count_enable, check whether counter is at rollover val or not
@@ -33,10 +34,10 @@ module flex_counter #(parameter SIZE = 4) (
             if (count_out + 1 == rollover_val) begin    // if counter at rollover_val, reset counter and rollover_flag to 1s
                 nxt_rollover_flag = 1'b1;
             end
-            else if (count_out >= rollover_val) begin
-                nxt_count_out = 1;
-                nxt_rollover_flag = 1'b0;
-            end
+            // else if (count_out >= rollover_val) begin
+            //     nxt_count_out = 1;
+            //     nxt_rollover_flag = 1'b0;
+            // end
             else begin  // if counter not at rollover_val, increment counter and set rollover_flag to 0
                 nxt_rollover_flag = 1'b0;
             end

@@ -16,7 +16,7 @@ module IP_tx #(
     // parameter IP_DEST_ADDR  // 4 bytes
 
     parameter WORD_WIDTH         = 64,
-    parameter ETHER_TYPE         = 16'h0800,   // IPv4 EtherType
+    
     parameter IPV4_VER           = 8'h45,      // IPv4 + header length = 5 words (20 bytes)
     parameter LENGTH             = 16'd40,     // Total IP length (20 bytes IP header + 20 bytes TCP header)
     parameter IP_IDENFICATION    = 16'h0001,   // Example identification
@@ -27,18 +27,17 @@ module IP_tx #(
     parameter IP_DEST_ADDR       = 32'hC0A80102  // 192.168.1.2
 
 ) (
-    input logic CLK,
-    input logic nRST,
+    input wire CLK,
+    input wire nRST,
 
     //Interface between Ethernet MAC and IP TX
     input logic IP_send,
+    input logic TCP_done,
     input logic [15:0] TCP_len_data,
-    input logic [15:0] bytes_sent_tcp_ip,
     input logic [WORD_WIDTH - 1 : 0] TCP_transmit,
     output logic [WORD_WIDTH - 1 : 0] IP_transmit,
-    output logic TCP_send,
-    output logic [15:0] bytes_sent_ip_mac,
-    output logic [15:0] TCP_len_data_mc
+    output logic TCP_send
+    
 );
 
     
@@ -71,14 +70,12 @@ module IP_tx #(
             IP_transmit <= '0;
             IPv4_chk_sum <= '0;
             IP_state <= IDLE;
-            bytes_sent_ip_mac <= '0;
-            TCP_len_data_mc <= '0;
+             
         end else begin
             IP_state <= nxIP_state;
             IP_transmit <= nxIP_transmit_l;
             IPv4_chk_sum <= ~(nIPv4_chk_sum[15:0] + {15'b0, nIPv4_chk_sum[16]});
-            TCP_len_data_mc <= TCP_len_data;
-            bytes_sent_ip_mac <= bytes_sent_tcp_ip;
+            
         end
     end
 
@@ -137,7 +134,7 @@ module IP_tx #(
             SEND_IP_PAYLOAD: begin
                 TCP_send = 1'b1; //Indicate that TCP header is being sent
                 nxIP_transmit_l = TCP_transmit;
-                if (!IP_send) begin
+                if (TCP_payload_done) begin
                     TCP_send = 1'b0;
                     nxIP_transmit_l = '0;
                     nxIP_state = IDLE;
