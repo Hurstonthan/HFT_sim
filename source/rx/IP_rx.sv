@@ -1,12 +1,14 @@
 `timescale 1ns/10ps
+`include "chksum_tcp_pl.sv"
+`include "rx_pkg.vh"
 module IP_rx #(
-    parameter VERSION = 4'd4,
-    parameter HDR = 4'd5,
-    parameter DSCP = 6'd0,
-    parameter ECN = 2'd0,
-    parameter PROTOCOL = 8'h06, //TCP is 06, UDP is 0x11
-    parameter SRC_ADDR = 32'hFFFF_FFFF_FFFF_FFFFF,
-    parameter DEST_ADDR = 32'hFFFF_FFFF_FFFF_FFFFF
+    // parameter VERSION = 4'd4,
+    // parameter HDR = 4'd5,
+    // parameter DSCP = 6'd0,
+    // parameter ECN = 2'd0,
+    // parameter PROTOCOL = 8'h06, //TCP is 06, UDP is 0x11
+    // parameter SRC_ADDR = 32'hFFFF_FFFF_FFFF_FFFFF,
+    // parameter DEST_ADDR = 32'hFFFF_FFFF_FFFF_FFFFF
 ) (
     input logic CLK,
     input logic nRST,
@@ -19,44 +21,34 @@ module IP_rx #(
     output logic IP_flush,
     output logic [63:0] IP_payload
 );
+    import rx_pkg::*;
+    IP_t state, nstate;
+    logic [15:0] IP_checksum, nIP_checksum;
+    logic [63:0] nIP_payload;
+    logic [15:0] bytes_rcv, nbytes_rcv;
 
-typedef enum logic [5:0] { 
-    IDLE,
-    RCV_VER_IHL_DSCP_ECN, // 4b + 4b + 6b + 2b 
-    RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL, //2B + 2B + 2B + 2B
-    RCV_SUM_SRC_ADDR_DEST_ADDR, //2B + 4B + 2B
-    RCV_PAYLOAD_DEST, //Remember need to check 2B left of dest addr
-    CHK_SUM,
-    RCV_PAYLOAD,
-    ERROR
- } IP_t;
+    logic chksum_en;
+    logic [63:0] chksum_in;
+    logic [15:0] chksum_pl;
+    logic [16:0] chksum_final;
+    logic [15:0] dst_addr, ndst_addr;
+    logic [15:0] IP_len, nIP_len;
+    
+    // logic [63:0] crc_in, crc_in_big;
 
- IP_t state, nstate;
- logic [15:0] IP_checksum, nIP_checksum;
- logic [63:0] nIP_payload;
- logic [15:0] bytes_rcv, nbytes_rcv;
+    logic nIP_valid;
+    
+    //todo fix the checksum logic
+    chksum_tcp_pl (
+       .CLK(CLK),
+       .nRST(nRST),
+       .clear(1'b0),
+       .FIFO_rd_en(chksum_en),
+       .TCP_payload_tx(chksum_in),
+       .TCP_checksum_pl(chksum_pl)
+    );
 
- logic chksum_en;
- logic [63:0] chksum_in;
- logic [15:0] chksum_pl;
- logic [16:0] chksum_final;
- logic [15:0] dst_addr, ndst_addr;
- logic [15:0] IP_len, nIP_len;
- logic nIP_valid;
-
-
- 
-
- chksum_tcp_pl (
-    .CLK(CLK),
-    .nRST(nRST),
-    .clear(1'b0),
-    .FIFO_rd_en(chksum_en),
-    .TCP_payload_tx(chksum_in),
-    .TCP_checksum_pl(chksum_pl)
- );
-
- always_ff @(posedge CLK, negedge nRST) begin
+    always_ff @(posedge CLK, negedge nRST) begin
     if (!nRST) begin
         state <= IDLE;
         IP_checksum <= 0;
@@ -105,9 +97,8 @@ always_comb begin
     case (state)
         IDLE: begin
             if (MAC_valid) begin
-                nstate = RCV_VER_IHL_DSCP_ECN;
+                nstate = RCV_VER_IHL_DSCP_ECN; 
             end
-
         end
 
         RCV_VER_IHL_DSCP_ECN: begin
@@ -122,11 +113,12 @@ always_comb begin
         RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL: begin
             chksum_en = 1'b1;
             if (MAC_valid) begin
-                if (MAC_payload_rcv[63:56] <= 16'd1500 && 
+                // total length 
+                if (MAC_payload_rcv[63:56] <= 16'd1480 && 
                     MAC_payload_rcv[28:16] == 0 && //Fragoff
-                    MAC_payload_rcv[15:8] !=0 && //TTL
+                    MAC_payload_rcv[15:8] !=0 && //Time to live
                     !MAC_payload_rcv[31] && //MF != 1, no more segment
-                    MAC_payload_rcv[7:0] == PROTOCOL) begin
+                    (MAC_payload_rcv[7:0] == UDP_PROTOCOL) || (MAC_payload_rcv[7:0] == TCP_PROTOCOL)) begin
                         next_state = RCV_SUM_SRC_ADDR_DEST_ADDR;
                         nIP_len = MAC_payload_rcv[63:56];
                     end else begin
@@ -140,8 +132,8 @@ always_comb begin
             if (MAC_valid) begin
                 chksum_in = {16'h0, MAC_payload_rcv[47:0]};
                 nIP_checksum = MAC_payload_rcv[63:48];
-                ndst_addr = MAC_payload_rcv[15:0];
-                if (MAC_payload_rcv[47:16] == SRC_ADDR) begin
+                ndst_addr = MAC_payload_rcv[15:0]; // store the destonation address as part of the element
+                if (MAC_payload_rcv[47:16] == IP_SRC_ADDR) begin
                     nstate = RCV_PAYLOAD_DEST;
                     nIP_valid = 1'b1;
                 end else begin
@@ -155,7 +147,7 @@ always_comb begin
             chksum_in = {48'h0, MAC_payload_rcv[63:48]};
             chksum_en = 1'b1;
             if (MAC_valid) begin
-                if (({dst_addr, MAC_payload_rcv[63:48]} == DEST_ADDR) && ) begin
+                if (({dst_addr, MAC_payload_rcv[63:48]} == IP_DEST_ADDR)) begin
                     nIP_payload = MAC_payload_rcv[47:0];
                     nIP_valid = 1'b1;
                     nstate = CHK_SUM;
@@ -169,6 +161,10 @@ always_comb begin
             if (MAC_valid) begin
                 nIP_payload = MAC_payload_rcv;
             end
+            // sum everything of 16 bits, if oversize, take the most significant bit to.
+            // take the complement of the sum
+            //todo finish the checksum
+            // msb (most significant bit) order 
             if (chksum_tcp_pl == IP_checksum) begin
                 nstate = RCV_PAYLOAD;
                 nIP_valid = 1'b1;
@@ -199,7 +195,4 @@ always_comb begin
 
     endcase
 end
-
-
-
 endmodule

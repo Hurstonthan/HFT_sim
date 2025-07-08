@@ -23,7 +23,7 @@ module chksum_tcp_pl #(
         end
     end
 
-
+    // verifvy with google
     always_comb begin
         nTCP_checksum = 0;
         if (clear) begin
@@ -32,8 +32,5 @@ module chksum_tcp_pl #(
             nTCP_checksum = TCP_checksum + TCP_payload_tx[15:0] + TCP_payload_tx[31:16] + TCP_payload_tx[47:32] + TCP_payload_tx[63:48];
         end
     end
-
-
-
 
 endmodule

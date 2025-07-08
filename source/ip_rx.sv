@@ -6,7 +6,7 @@ module ip_rx(
     mac_ip_if mipif
 );   
     import receiver_pkg::*;
-    state_t current_state, next_state;
+    ip_state_t current_state, next_state;
     // include vlan active or not
     logic [DATA_SIZE-1:0] next_data, previous_data; 
     //todo fix previous data logic
