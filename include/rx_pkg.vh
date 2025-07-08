@@ -29,9 +29,9 @@ package rx_pkg;
     parameter IP_DEST_ADDR = 32'hFFFF_FFFF_FFFF_FFFFF; 
 
     //UDP layer parameters
-    parameter UDP_SOURCE = 16'h12; //sample
-    parameter UDP_DESTINATION = 16'h21; //sample
-    parameter UDP_HEADER_LENGTH = 8'h08; // UDP header length in bytes
+    parameter UDP_SRC_ADDR = 16'h1234; 
+    parameter UDP_DEST_ADDR = 16'h4321; 
+    parameter UDP_HEADER_LENGTH = 16'h08;
     parameter UDP_CHECKSUM = 16'h0000; // UDP checksum, 16'h0000 for no checksum
     
     typedef enum logic [2:0] { 
@@ -47,10 +47,10 @@ package rx_pkg;
 
     typedef enum logic [2:0] { 
         UDP_IDLE,
-        UDP_SRC_ADDR, //only 2 bytes
-        UDP_DEST_ADDR_LENGTH_CHK_PAYLOAD, //2B + 2B + 2B + payload
+        UDP_SRC_ADDR_DEST_ADDR_LENGTH, //IP dest + 2B + 2B + 2B 
+        UDP_CHK_SUM_PAYLOAD, //checksum + 2B
         UDP_PAYLOAD,
-        UDP_CHK_SUM,
+        UDP_CHK_SUM, //optional
         UDP_ERROR
     } UDP_t;
      

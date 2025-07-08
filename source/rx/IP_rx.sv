@@ -19,7 +19,9 @@ module IP_rx #(
 
     output logic IP_valid,
     output logic IP_flush,
-    output logic [63:0] IP_payload
+    output logic [63:0] IP_payload,
+    output logic is_udp,
+    output logic is_tcp
 );
     import rx_pkg::*;
     IP_t state, nstate;
@@ -37,7 +39,7 @@ module IP_rx #(
     // logic [63:0] crc_in, crc_in_big;
 
     logic nIP_valid;
-    
+    logic next_is_udp, next_is_tcp;
     //todo fix the checksum logic
     chksum_tcp_pl (
        .CLK(CLK),
@@ -57,8 +59,10 @@ module IP_rx #(
         dst_addr <= 0;
         IP_valid <= 0;
         IP_len <= 0;
+        is_tcp <= 0;
+        is_udp <= 0;
     end else begin
-        if (MAC_flush || IP_flush) begin
+        if (MAC_flush || IP_flush) begin //todo check whethere IP flush cause timing
             state <= IDLE;
             IP_checksum <= 0;
             IP_payload <= 0;
@@ -66,6 +70,8 @@ module IP_rx #(
             dst_addr <= 0;
             IP_valid <= 0;
             IP_len <= 0;
+            is_tcp <= 0;
+            is_udp <= 0;
         end
         else begin
             state <= nstate;
@@ -75,6 +81,8 @@ module IP_rx #(
             dst_addr <= ndst_addr;
             IP_valid <= nIP_valid;
             IP_len <= nIP_len;
+            is_tcp <= next_is_tcp;
+            is_udp <= next_is_udp;
         end
         
     end
@@ -91,6 +99,8 @@ always_comb begin
     nIP_valid = 0;
     chksum_final = {1'b0, chksum_tcp_pl};
     nIP_len = IP_len;
+    next_is_tcp = is_tcp;
+    next_is_udp = is_udp;
     if (MAC_valid) begin
         nbytes_rcv = bytes_rcv + bytes_rcv_len;
     end
@@ -112,8 +122,12 @@ always_comb begin
 
         RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL: begin
             chksum_en = 1'b1;
+            next_is_tcp = '0;
+            next_is_udp = '0;
             if (MAC_valid) begin
                 // total length 
+                next_is_tcp = MAC_payload_rcv[7:0] == TCP_PROTOCOL;
+                next_is_udp = MAC_payload_rcv[7:0] == UDP_PROTOCOL;
                 if (MAC_payload_rcv[63:56] <= 16'd1480 && 
                     MAC_payload_rcv[28:16] == 0 && //Fragoff
                     MAC_payload_rcv[15:8] !=0 && //Time to live
@@ -178,7 +192,7 @@ always_comb begin
         RCV_PAYLOAD: begin
             if (MAC_valid) begin
                 nIP_payload = MAC_payload_rcv;
-                if (bytes_rcv >= IP_len) begin
+                if (bytes_rcv >= IP_len) begin //checking the rectver length
                     nIP_valid = 1'b0;
                     nstate = ERROR;
                 end else begin
