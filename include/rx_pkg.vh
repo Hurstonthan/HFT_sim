@@ -34,7 +34,7 @@ package rx_pkg;
     parameter UDP_HEADER_LENGTH = 16'h08;
     parameter UDP_CHECKSUM = 16'h0000; // UDP checksum, 16'h0000 for no checksum
     
-    typedef enum logic [2:0] { 
+    typedef enum logic [3:0] { 
         IDLE,
         RCV_VER_IHL_DSCP_ECN, // 4b + 4b + 6b + 2b 
         RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL, //2B + 2B + 2B + 2B
@@ -42,14 +42,16 @@ package rx_pkg;
         RCV_PAYLOAD_DEST, //Remember need to check 2B left of dest addr
         CHK_SUM,
         RCV_PAYLOAD,
+        DONE,
         ERROR
     } IP_t;
 
     typedef enum logic [2:0] { 
         UDP_IDLE,
-        UDP_SRC_ADDR_DEST_ADDR_LENGTH, //IP dest + 2B + 2B + 2B 
+        UDP_HEADER, //IP dest + 2B + 2B + 2B 
         UDP_CHK_SUM_PAYLOAD, //checksum + 2B
         UDP_PAYLOAD,
+        UDP_DONE,
         UDP_CHK_SUM,
         UDP_ERROR
     } UDP_t;
