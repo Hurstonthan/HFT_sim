@@ -50,7 +50,7 @@ package rx_pkg;
         UDP_SRC_ADDR_DEST_ADDR_LENGTH, //IP dest + 2B + 2B + 2B 
         UDP_CHK_SUM_PAYLOAD, //checksum + 2B
         UDP_PAYLOAD,
-        UDP_CHK_SUM, //optional
+        UDP_CHK_SUM,
         UDP_ERROR
     } UDP_t;
      
