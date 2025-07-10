@@ -1,6 +1,7 @@
 `timescale 1ns/10ps
-`include "chksum_tcp_pl.sv"
-`include "rx_pkg.vh"
+// `include "chksum_tcp_pl.sv"
+// `include "rx_pkg.vh"
+`include "rx_pkg.sv"
 module IP_rx #(
     // parameter VERSION = 4'd4,
     // parameter HDR = 4'd5,
@@ -41,7 +42,7 @@ module IP_rx #(
     logic nIP_valid;
     logic next_is_udp, next_is_tcp;
     //todo fix the checksum logic
-    chksum_tcp_pl (
+    chksum_tcp_pl chksum_inst(
        .CLK(CLK),
        .nRST(nRST),
        .clear(chksum_clear),
@@ -111,7 +112,7 @@ always_comb begin
     ndst_addr = dst_addr;
     nIP_valid = 0;
     chksum_clear = 1'b0;
-    chksum_final = {1'b0, chksum_tcp_pl};
+    chksum_final = {1'b0, chksum_pl};
     nIP_len = IP_len;
     next_is_tcp = is_tcp;
     next_is_udp = is_udp;
@@ -207,7 +208,7 @@ always_comb begin
             // take the complement of the sum
             //todo finish the checksum
             // msb (most significant bit) order 
-            if (chksum_tcp_pl == IP_checksum) begin
+            if (chksum_pl == IP_checksum) begin
                 nstate = RCV_PAYLOAD;
                 nIP_valid = 1'b1;
             end else begin

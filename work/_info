@@ -1,7 +1,7 @@
 m255
 K4
 z2
-!s11f MIXED_VERSIONS
+!s11f vlog 2021.4 2021.10, Oct 13 2021
 13
 !s112 1.1
 !i10d 8192
@@ -9,80 +9,106 @@ z2
 !i10f 100
 cModel Technology
 Z0 d/home/ecegridfs/a/437mg085/ece437/HFT_sim
-vip_rx
+vchksum_tcp_pl
 Z1 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
-Z2 DXx4 work 12 receiver_pkg 0 22 mnGbIXnQg8]cFRDh`CZa32
-Z3 !s110 1749916137
+Z2 !s110 1752181604
 !i10b 1
-!s100 C4_2e93c2[J>1E]fW:[7j2
-I_aSXP4iW3XId6g@OhADan2
+!s100 :=>N;EK0W3J?9lh^iFOIM3
+I<1OQ^J^LSDmeG@>>3gb8O3
 S1
 R0
-w1749916084
-8source/ip_rx.sv
-Fsource/ip_rx.sv
+w1752178394
+8source/chksum_tcp_pl.sv
+Fsource/chksum_tcp_pl.sv
 !i122 1
-L0 4 154
-Z4 VDg1SIo80bB@j0V0VzS_@n1
-Z5 OL;L;2021.4;73
+L0 1 36
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+Z4 OL;L;2021.4;73
 r1
 !s85 0
 31
-Z6 !s108 1749916137.000000
-!s107 include/receiver_pkg.vh|include/mac_ip_if.vh|source/ip_rx.sv|
-Z7 !s90 +acc|-sv12compat|-mfcu|-lint|+incdir+include|-suppress|12110|-suppress|7061|source/ip_rx.sv|
+Z5 !s108 1752181604.000000
+!s107 source/chksum_tcp_pl.sv|
+!s90 +acc|-sv12compat|-mfcu|-lint|+incdir+include|-suppress|12110|-suppress|7061|source/chksum_tcp_pl.sv|
 !i113 0
-Z8 o-suppress 12110 -suppress 7061 +acc -sv12compat -mfcu -lint -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
-Z9 !s92 -suppress 12110 -suppress 7061 +acc -sv12compat -mfcu -lint +incdir+include -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
-Z10 tCvgOpt 0
-Ymac_ip_if_vh
+Z6 o-suppress 12110 -suppress 7061 +acc -sv12compat -mfcu -lint -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z7 !s92 -suppress 12110 -suppress 7061 +acc -sv12compat -mfcu -lint +incdir+include -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z8 tCvgOpt 0
+vIP_rx
 R1
+DXx4 work 6 rx_pkg 0 22 AV`6[EGhc5on:`AfL8T:l0
 R2
-R3
 !i10b 1
-!s100 9ZME554Ygf@V1>GPBIa_h0
-IPEeleNh3dWe=J5SELb^S>2
+!s100 58d=VDHVjU@3OWXPj;P3M0
+I]bm10=VNgW6lz9KUl<a7B2
 S1
 R0
-w1749915281
-8include/mac_ip_if.vh
-Finclude/mac_ip_if.vh
-!i122 1
-L0 6 0
+w1752180760
+8source/IP_rx.sv
+Fsource/IP_rx.sv
+!i122 0
+L0 5 242
+R3
 R4
-R5
 r1
 !s85 0
 31
-R6
-Z11 !s107 include/receiver_pkg.vh|include/mac_ip_if.vh|source/ip_rx.sv|
-R7
+R5
+!s107 source/rx_pkg.sv|source/IP_rx.sv|
+!s90 +acc|-sv12compat|-mfcu|-lint|+incdir+include|-suppress|12110|-suppress|7061|source/IP_rx.sv|
 !i113 0
+R6
+R7
 R8
-R9
-R10
-Xreceiver_pkg
+n@i@p_rx
+vip_rx_tb
 R1
-R3
+DXx4 work 6 rx_pkg 0 22 L:`fE=d@f:l?cCChGkbPY2
+Z9 !s110 1752181605
 !i10b 1
-!s100 `SGL5=`kZ^1?YBfX<VH]z2
-ImnGbIXnQg8]cFRDh`CZa32
+!s100 [i=R]0Bl2R_AUDPRlQGoQ2
+IH=^fALoz1XAYo81kiC8hQ1
 S1
 R0
-w1749916122
-8include/receiver_pkg.vh
-Finclude/receiver_pkg.vh
-!i122 1
-L0 4 0
-VmnGbIXnQg8]cFRDh`CZa32
-R5
+w1752181534
+8testbench/IP_rx_tb.sv
+Ftestbench/IP_rx_tb.sv
+!i122 3
+L0 3 200
+R3
+R4
 r1
 !s85 0
 31
-R6
-R11
-R7
+!s108 1752181605.000000
+!s107 testbench/IP_rx_tb.sv|
+!s90 +acc|-sv12compat|-mfcu|-lint|+incdir+include|-suppress|12110|-suppress|7061|testbench/IP_rx_tb.sv|
 !i113 0
+R6
+R7
 R8
+Xrx_pkg
+R1
 R9
-R10
+!i10b 1
+!s100 2h6QLfMj;aL[;I3L5HOQQ1
+IL:`fE=d@f:l?cCChGkbPY2
+S1
+R0
+w1752181454
+8source/rx_pkg.sv
+Fsource/rx_pkg.sv
+!i122 2
+L0 4 0
+VL:`fE=d@f:l?cCChGkbPY2
+R4
+r1
+!s85 0
+31
+R5
+!s107 source/rx_pkg.sv|
+!s90 +acc|-sv12compat|-mfcu|-lint|+incdir+include|-suppress|12110|-suppress|7061|source/rx_pkg.sv|
+!i113 0
+R6
+R7
+R8

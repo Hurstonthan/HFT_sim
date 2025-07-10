@@ -1,8 +1,8 @@
-`include "rx_pkg.vh"
+// `include "rx_pkg.sv"
 `timescale 1ns/1ns
 module ip_rx_tb;
     import rx_pkg::*;
-    parameter PERIOD = 10; 
+    parameter CLK_PERIOD = 10; 
     parameter CKMSUM_CYCLES = 10;
     logic CLK = 0, nRST;
 
@@ -26,9 +26,9 @@ module ip_rx_tb;
     end
     
     always begin
-        clk = 0;
+        CLK = 0;
         #(CLK_PERIOD / 2.0);
-        clk = 1;
+        CLK = 1;
         #(CLK_PERIOD / 2.0);
     end
 
@@ -39,12 +39,12 @@ module ip_rx_tb;
         MAC_payload_rcv = 0;
         MAC_flush = 0;
         bytes_rcv_len = 0;
-        @(posedge clk);
-        @(posedge clk);
-        @(negedge clk);
+        @(posedge CLK);
+        @(posedge CLK);
+        @(negedge CLK);
         nRST = 1;
-        @(posedge clk);
-        @(posedge clk);
+        @(posedge CLK);
+        @(posedge CLK);
     end
     endtask
 
@@ -103,10 +103,10 @@ module ip_rx_tb;
 
     //calculate checksum
     function [15:0] calculate_checksum(
-        input [63:0] header0, header1, header2, header3, 
+        input [63:0] header0, header1, header2, header3
     );
         // logic [255:0] sum = {header0, header1, header2, header3};
-        logic [159:0] ip_header = {header0[15:0], header1[63:0], header2[31:0], header3[63:56]};
+        automatic logic [159:0] ip_header = {header0[15:0], header1[63:0], header2[31:0], header3[63:56]};
         integer i;
         logic [17:0] sum;
         logic [15:0] carry;
@@ -134,10 +134,11 @@ module ip_rx_tb;
         header2[63:48] = checksum;
     endtask
 
-    inital begin
+    initial begin
         logic [63:0] header0, header1, header2, header3;
-        logic [63:0] payload[$] = {64'hA5A5A5A5A5A5A5A5, 64'h5A5A5A5A5A5A5A5A};
-        word_t testcase = 0;
+        static logic [63:0] payload[$] = {64'hA5A5A5A5A5A5A5A5, 64'h5A5A5A5A5A5A5A5A};
+        logic [15:0] testcase;
+        logic [15:0] checksum;
         // Initialize
         reset_dut();
 
@@ -177,8 +178,8 @@ module ip_rx_tb;
         header2[15:0] = IP_DEST_ADDR[31:16];
         header3[63:48] = IP_DEST_ADDR[15:0];
 
-        chcksum = calculate_checksum(header0, header1, header2, header3);
-        insert_checksum(header0, header1, header2, header3, chcksum + 1); // Intentionally wrong checksum
+        checksum = calculate_checksum(header0, header1, header2, header3);
+        insert_checksum(header0, header1, header2, header3, checksum + 1); // Intentionally wrong checksum
         send_ip_packet(header0, header1, header2, header3, payload);
 
         //Test case 4: Ping
@@ -194,9 +195,8 @@ module ip_rx_tb;
         checksum = calculate_checksum(header0, header1, header2, header3);
         insert_checksum(header0, header1, header2, header3, checksum);
         send_ip_packet(header0, header1, header2, header3, payload);
-
         
-        $finish 
+        $finish;
     end
 
 endmodule

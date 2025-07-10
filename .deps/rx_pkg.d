@@ -1,1 +1,1 @@
-rx_pkg:  rx_pkg.vho
+rx_pkg:  rx_pkg.svo

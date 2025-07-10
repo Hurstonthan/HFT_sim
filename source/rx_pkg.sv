@@ -2,18 +2,16 @@
 `define RX_PKG_VH
 // data input are MSB first, so we need to reverse the order of the bits
 package rx_pkg;
-    parameter TOTAL_SIZE = 256; // total size of the packet in bits
-    parameter DATA_SIZE = 64;
-    parameter BYTE_NUMBER = 8; // = 64/8
-    parameter COUNT = TOTAL_SIZE / DATA_SIZE; // number of data words in the packet
-    typedef logic [COUNT-1:0] count_t;
+    // parameter TOTAL_SIZE = 256; // total size of the packet in bits
+    // parameter DATA_SIZE = 64;
+    // parameter BYTE_NUMBER = 8; // = 64/8
+    // parameter COUNT = TOTAL_SIZE / DATA_SIZE; // number of data words in the packet
+    // typedef logic [COUNT-1:0] count_t;
 
-    parameter VLAN_TAG_SIZE = 1; // clengthheck what is VLAN tag size
-    parameter TPIC = 16'h8100; // VLAN tag type, 16'h8100 for IEEE 802.1Q
-    parameter VLAN_ID = 12'h000; // VLAN ID, 12'h000 for no VLAN
+    // parameter VLAN_TAG_SIZE = 1; // clengthheck what is VLAN tag size
+    // parameter TPIC = 16'h8100; // VLAN tag type, 16'h8100 for IEEE 802.1Q
+    // parameter VLAN_ID = 12'h000; // VLAN ID, 12'h000 for no VLAN
 
-    //todo determine the correct values for FPGA_MAC and NASDAQ_MAC
-    //change sample to the correct numbers
     //MAC layer parameters
     parameter FPGA_MAC = 48'h123456; // the correct mac destination address - 6 byte
     parameter NASDAQ_MAC = 48'h65431; // the correct mac source address - 6 byte
@@ -24,9 +22,10 @@ package rx_pkg;
     parameter IP_HDL = 4'h5; // IPv4 header length in 32-bit words
     parameter UDP_PROTOCOL = 8'h11; 
     parameter TCP_PROTOCOL = 8'h06; 
+    parameter ICMP_PROTOCOL = 8'h01;
     parameter IP_TTL = 8'h40; 
-    parameter IP_SRC_ADDR = 32'hFFFF_FFFF_FFFF_FFFFF; // cans be changed 
-    parameter IP_DEST_ADDR = 32'hFFFF_FFFF_FFFF_FFFFF; 
+    parameter IP_SRC_ADDR = 32'hFFFFFFFF; // needs to change to the correct value
+    parameter IP_DEST_ADDR = 32'hFFFFFFFF; 
 
     //UDP layer parameters
     parameter UDP_SRC_ADDR = 16'h1234; 
