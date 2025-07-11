@@ -1,3 +1,7 @@
 {
     "idf.pythonInstallPath": "/home/than0/.espressif/python_env/idf5.4_py3.10_env/bin/python"
+    "rapidgpt.username": "Bob Xu",
+    "cortex-debug.armToolchainPath.linux": "/usr/bin/gdb-multiarch",
+    "cortex-debug.armToolchainPath": "/usr/bin/gdb-multiarch",
+    "C_Cpp.default.compilerPath": "C:/msys64/mingw64/bin/arm-none-eabi-gcc.exe"
 }
