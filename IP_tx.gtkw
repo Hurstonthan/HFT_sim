@@ -1,0 +1,57 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Tue Jun  3 06:22:33 2025
+[*]
+[dumpfile] "/home/than0/HFT_sim/IP_tx.vcd"
+[dumpfile_mtime] "Tue Jun  3 06:22:01 2025"
+[dumpfile_size] 1215
+[savefile] "/home/than0/HFT_sim/IP_tx.gtkw"
+[timestart] 0
+[size] 2490 1536
+[pos] -1 -1
+*-2.915936 9 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[sst_width] 233
+[signals_width] 337
+[sst_expanded] 1
+[sst_vpaned_height] 470
+@28
+TOP.IP_tx.CLK
+@29
+TOP.IP_tx.nRST
+@420
+TOP.IP_tx.ETHER_TYPE
+TOP.IP_tx.IPV4_VER
+TOP.IP_tx.IP_DEST_ADDR
+TOP.IP_tx.IP_FLAG_OFFSET
+TOP.IP_tx.IP_IDENFICATION
+TOP.IP_tx.IP_PROTOCOL
+TOP.IP_tx.IP_SRC_ADDR
+TOP.IP_tx.IP_TLL
+@28
+TOP.IP_tx.IP_send
+@100000028
+TOP.IP_tx.IP_state[2:0]
+@22
+TOP.IP_tx.IP_transmit[63:0]
+TOP.IP_tx.IPv4_chk_sum[16:0]
+@420
+TOP.IP_tx.LENGTH
+@22
+TOP.IP_tx.TCP_len_data[15:0]
+@28
+TOP.IP_tx.TCP_send
+@22
+TOP.IP_tx.TCP_transmit[63:0]
+@420
+TOP.IP_tx.WORD_WIDTH
+@28
+TOP.IP_tx.chk_sum_valid
+@22
+TOP.IP_tx.nIPv4_chk_sum[16:0]
+@100000028
+TOP.IP_tx.nxIP_state[2:0]
+@22
+TOP.IP_tx.nxIP_transmit_l[63:0]
+[pattern_trace] 1
+[pattern_trace] 0
