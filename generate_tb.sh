@@ -6,5 +6,6 @@ if [ -z "$1" ]; then
 fi
 
 MODULE=$1
+RTL="rtl"
 echo "generate tb at ./tb"
-python3 generate_tb.py $MODULE
+python3 generate_tb.py $MODULE --rtl-dir $RTL

@@ -1,8 +1,10 @@
+`timescale 1ns / 10ps
 module crc32_parallel_64bit (
     input  logic        CLK,
     input  logic        nRST,
     input  logic        valid,
     input  logic        crc_init,
+    input  logic rx,
     input  logic [63:0] data_in,
     output logic [31:0] crc_out
 );
@@ -10,7 +12,7 @@ module crc32_parallel_64bit (
     logic [31:0] crc_reg;
     logic [31:0] next_crc;
 
-    assign crc_out = ~crc_reg;
+    assign crc_out = rx ? crc_reg : ~crc_reg;
 
     always_ff @(posedge CLK, negedge nRST) begin
         if (!nRST)

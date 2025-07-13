@@ -1,112 +1,107 @@
 `include "ether_pkg.vh"
+
 module payload_FIFO #(
-    parameter FIFO_DEPTH = 16384,
-    parameter FIFO_WIDTH = $clog2(FIFO_DEPTH),
-    parameter DATA_WIDTH = 64
-)  (
+    parameter int FIFO_DEPTH  = 2048,               // words  (must be power‑of‑2)
+    parameter int DATA_WIDTH  = 64,
+    parameter int CTRL_WIDTH = 8,
+    localparam int WORD_BYTES = DATA_WIDTH / 8,
+    localparam int FIFO_WIDTH = $clog2(FIFO_DEPTH),
+    localparam int WINDOW_BYTES = FIFO_DEPTH * WORD_BYTES
+)(
+    // Clock & reset
     input logic CLK,
     input logic nRST,
-    input logic nw_segment,
-    input logic hand_shake_done,
-    input logic [DATA_WIDTH-1:0] TCP_payload,
-    input logic [31:0] seq_rcv,
-    input logic [31:0] ISN_num_rcv,
-    input logic [FIFO_WIDTH - 1:0] len_rcv,
-    input logic [31:0] payload_len,
-    
 
-    output logic [DATA_WIDTH -1 : 0] TCP_data_out,
-    output logic [31:0] bytes_buff,
-    output logic full,
-    output logic valid_rd 
+    //Writing request
+    input logic nw_segment, //Signal to indicate nw segment come and handle flush case
+    input logic TCP_flush,
+    input logic [63:0] axis_data_rx,
+    input logic axis_w_en,
+    input logic axis_t_last,
+
+    input logic [7:0] wr_FIFO_offset,
+    output logic [FIFO_WIDTH - 1:0] wr_ptr_out,
+
+
+    input logic [FIFO_WIDTH - 1 : 0] rd_ptr_in,
+    input logic axis_r_en,
+    output logic [DATA_WIDTH - 1 : 0] axis_rd_data
+    
 );
 
     import ether_pkg::*;
-    logic [$clog2(FIFO_DEPTH)-1:0] in_order_ptr, rd_ptr, wrt_ptr, nwrt_ptr'
-    // logic [$clog2(FIFO_DEPTH)-1:0]buffer_end, nbuffer_end;
-    logic [31:0] end_ptr, nbytes_buff, rcv_base, nrcv_base, byte_off;
-    TCP_FIFO_t [FIFO_DEPTH - 1:0] TCP_FIFO, nTCP_FIFO;
 
-    logic order_flg, norder_flg, full, empty;
+    typedef struct packed {
+        logic [DATA_WIDTH - 1 : 0] payload;
+        logic [CTRL_WIDTH - 1: 0] bytes_offset;
+    } fifo_entry_t;
 
-    
-    assign byte_off = seq_rcv - rcv_base;
-    assign empty = (bytes_buff == 0);
-    
+    fifo_entry_t TCP_FIFO [FIFO_DEPTH - 1: 0];
+    fifo_entry_t fifo_entry_rd;
+    logic [FIFO_WIDTH - 1:0] flush_ptr, nflush_ptr;
 
+    assign fifo_entry.payload = axis_data_rx;
+    assign fifo_entry.bytes_offset = wr_FIFO_offset;
 
-    flex_counter #(.SIZE(FIFO_WIDTH)) wr_counter (.CLK(CLK), .nRST(nRST), .clear(), .count_enable(order_flg && !full), .rollover_val(FIFO_DEPTH), .rollover_flag(FIFO_DEPTH), .count_out(in_order_ptr));
-    flex_counter #(.SIZE(FIFO_WIDTH)) rd_counter (.CLK(CLK), .nRST(nRST), .clear(), .count_enable(rd_en && !empty), .rollover_val(FIFO_DEPTH), .rollover_flag(FIFO_DEPTH), .count_out(rd_ptr));
+    // priority_encoder bytes_convert (
+    //     .din(),
+    //     .valid(),
+    //     .idx()
+    // )
 
+    logic [FIFO_WIDTH - 1:0] wr_ptr, nwr_ptr, rd_ptr, nrd_ptr;
+    assign fifo_entry_rd = TCP_FIFO[rd_ptr];
 
     always_ff @(posedge CLK, negedge nRST) begin
         if (!nRST) begin
-            TCP_FIFO <= 0;
-            wrt_ptr <= 0;
-            order_flg <= 0;
-            bytes_buff <= 0;
-            rcv_base <= 0;
-            // buffer_end <= 0;
-            
+            wr_ptr <= 0;
+            rd_ptr <= 0;
+            flush_ptr <= 0;
         end else begin
-            TCP_FIFO <= nTCP_FIFO;
-            order_flg <= norder_flg;
-            bytes_buff <= nbytes_buff;
-            rcv_base <= nrcv_base;
-            if (hand_shake_done) begin
-                rcv_base <= ISN_num_rcv;
+            wr_ptr <= nwr_ptr;
+            rd_ptr <= nrd_ptr;
+            flush_ptr <= nflush_ptr;
+            if (!axis_w_en) begin
+                wr_ptr_out<= wr_ptr;
             end
-            if (nw_segment) begin
-                wrt_ptr <= nwrt_ptr;
-            end else begin
-                wrt_ptr <= (byte_off >> 3) & (FIFO_DEPTH - 1);
+
+            if (axis_w_en) begin
+                TCP_FIFO[wr_ptr] <= fifo_entry;
             end
-            // buffer_end <= nbuffer_end;
-            
+
+            if (TCP_flush) begin
+                TCP_FIFO[flush_ptr] <= 0;
+            end else if (axis_r_en) begin
+                axis_rd_data[63:56] <= fifo_entry_rd.bytes_offset[7] ? fifo_entry_rd.payload [63:56]: 0;
+                axis_rd_data[55:48] <= fifo_entry_rd.bytes_offset[6] ? fifo_entry_rd.payload [55:48]: 0;
+                axis_rd_data[47:40] <= fifo_entry_rd.bytes_offset[5] ? fifo_entry_rd.payload [47:40]: 0;
+                axis_rd_data[39:32] <= fifo_entry_rd.bytes_offset[4] ? fifo_entry_rd.payload [39:32]: 0;
+                axis_rd_data[31:24] <= fifo_entry_rd.bytes_offset[3] ? fifo_entry_rd.payload [31:24]: 0;
+                axis_rd_data[23:16] <= fifo_entry_rd.bytes_offset[2] ? fifo_entry_rd.payload [23:16]: 0;
+                axis_rd_data[15:8]  <= fifo_entry_rd.bytes_offset[1] ? fifo_entry_rd.payload [15:8]: 0;
+                axis_rd_data[7:0]   <= fifo_entry_rd.bytes_offset[0] ? fifo_entry_rd.payload [7:0]: 0;
+                
+            end
         end
     end
 
 
     always_comb begin
-        nwrt_ptr = wrt_ptr;
-        nTCP_FIFO = TCP_FIFO;
-        norder_flg = order_flg;
-        valid_rd = 1'b0;
-        TCP_data_out = 0;
-        // valid_rd = (rd_ptr < in_order_ptr);
-        nbytes_buff = bytes_buff;
-
-        // nbuffer_end = buffer_end;
-        if ((wrt_ptr == in_order_ptr) && nw_segment) begin
-            norder_flg = 1'b1;
-        end else begin
-            norder_flg = 1'b0;
+        nwr_ptr = wr_ptr;
+        nrd_ptr = rd_ptr_in;
+        nflush_ptr = flush_ptr;
+        if (nw_segment) begin
+           nflush_ptr = wr_ptr; //new segment is  
+        end else if (TCP_flush) begin
+           nflush_ptr = flush_ptr + 1;
         end
+        if (axis_w_en) begin
+            nwr_ptr = wr_ptr + 1;
+        end 
 
-        if (nw_segment && !TCP_FIFO[wrt_ptr].valid && (seq_rcv >= rcv_base)) begin
-            nTCP_FIFO[wrt_ptr].payload = TCP_payload;
-            nTCP_FIFO[wrt_ptr].valid = 1'b1;
-            nwrt_ptr = wrt_ptr + 1;
-            nbytes_buff = bytes_buff + 8;
-        end
-
-        // if (nw_segment && end_ptr >= buffer_end) begin
-        //     nbuffer_end = end_ptr;
-        // end
-
-        if (rd_en && !empty) begin
-            TCP_data_out = TCP_FIFO[rd_ptr].payload;
-            nbytes_buff = bytes_buff - 8;
-            nrcv_base = rcv_base + 8;
-            // if (rd_ptr <= in_order_ptr) begin
-            //     valid_rd = 1'b1;
-            //     TCP_data_out = TCP_FIFO[rd_ptr].payload;
-
-            // end 
-        end
+        
     end
-    
 
-    
+
 
 endmodule
