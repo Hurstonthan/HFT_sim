@@ -22,7 +22,8 @@ VERI_FLAGS := \
 
 # ---------- derived file lists -----------------------------------------
 #   $* is the target stem (e.g. priority_encoder)
-VFILES = $(RTL_DIR)/$*.sv $(addprefix $(RTL_DIR)/,$(SUR_FILES:=.sv))
+# VFILES = $(RTL_DIR)/$*.sv $(addprefix $(RTL_DIR)/,$(SUR_FILES:=.sv))
+VFILES = $(RTL_DIR)/$*.sv
 TB_CPP = $(GEN_DIR_BASE)/$*/$*_tb.cpp
 DRIVE_CPP = $(GEN_DIR_BASE)/$*/$*_input.cpp
 
