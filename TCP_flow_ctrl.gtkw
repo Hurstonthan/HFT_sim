@@ -1,0 +1,113 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Tue Jul 15 04:34:31 2025
+[*]
+[dumpfile] "/home/than0/HFT_sim/TCP_flow_ctrl.vcd"
+[dumpfile_mtime] "Tue Jul 15 04:14:24 2025"
+[dumpfile_size] 2262
+[savefile] "/home/than0/HFT_sim/TCP_flow_ctrl.gtkw"
+[timestart] 85
+[size] 3956 2432
+[pos] -1 -1
+*-5.000000 31 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[sst_width] 1169
+[signals_width] 695
+[sst_expanded] 1
+[sst_vpaned_height] 756
+@100000028
+TOP.CLK
+@28
+TOP.nRST
+@22
+[color] 2
+TOP.seq_num_rx[31:0]
+[color] 2
+TOP.ACK_rx[31:0]
+[color] 2
+TOP.TCP_control_rx[7:0]
+[color] 2
+TOP.urgent_pointer_rx[15:0]
+[color] 2
+TOP.checksum_rx[15:0]
+[color] 2
+TOP.offset_rx[3:0]
+@c00022
+[color] 2
+TOP.payload_len_rx[31:0]
+@28
+(0)TOP.payload_len_rx[31:0]
+(1)TOP.payload_len_rx[31:0]
+(2)TOP.payload_len_rx[31:0]
+(3)TOP.payload_len_rx[31:0]
+(4)TOP.payload_len_rx[31:0]
+(5)TOP.payload_len_rx[31:0]
+(6)TOP.payload_len_rx[31:0]
+(7)TOP.payload_len_rx[31:0]
+(8)TOP.payload_len_rx[31:0]
+(9)TOP.payload_len_rx[31:0]
+(10)TOP.payload_len_rx[31:0]
+(11)TOP.payload_len_rx[31:0]
+(12)TOP.payload_len_rx[31:0]
+(13)TOP.payload_len_rx[31:0]
+(14)TOP.payload_len_rx[31:0]
+(15)TOP.payload_len_rx[31:0]
+(16)TOP.payload_len_rx[31:0]
+(17)TOP.payload_len_rx[31:0]
+(18)TOP.payload_len_rx[31:0]
+(19)TOP.payload_len_rx[31:0]
+(20)TOP.payload_len_rx[31:0]
+(21)TOP.payload_len_rx[31:0]
+(22)TOP.payload_len_rx[31:0]
+(23)TOP.payload_len_rx[31:0]
+(24)TOP.payload_len_rx[31:0]
+(25)TOP.payload_len_rx[31:0]
+(26)TOP.payload_len_rx[31:0]
+(27)TOP.payload_len_rx[31:0]
+(28)TOP.payload_len_rx[31:0]
+(29)TOP.payload_len_rx[31:0]
+(30)TOP.payload_len_rx[31:0]
+(31)TOP.payload_len_rx[31:0]
+@1401200
+-group_end
+@22
+[color] 2
+TOP.window_size_rx[15:0]
+@28
+[color] 2
+TOP.TCP_flush
+[color] 2
+TOP.TCP_last
+[color] 2
+TOP.nw_segment
+[color] 2
+TOP.rcv_data
+[color] 2
+TOP.rd_FIFO_en
+@22
+[color] 2
+TOP.rd_FIFO_len[7:0]
+[color] 2
+TOP.rd_FIFO_ptr[10:0]
+@28
+[color] 2
+TOP.rd_FIFO_valid
+@22
+[color] 2
+TOP.seq_rx_FIFO_rd[31:0]
+@28
+[color] 2
+TOP.timeout_flag
+[color] 2
+TOP.wr_FIFO_en
+@22
+[color] 2
+TOP.wr_FIFO_len[7:0]
+[color] 2
+TOP.wr_FIFO_offset[7:0]
+[color] 2
+TOP.wr_FIFO_ptr[10:0]
+[color] 2
+TOP.TCP_bytes_trk[7:0]
+[pattern_trace] 1
+[pattern_trace] 0

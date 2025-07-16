@@ -1,105 +1,115 @@
 `timescale 1ns / 10ps
-module data_buffer #(
+module FIFO_TX #(
+    parameter DATA_WIDRH = 64,
     parameter FIFO_DEPTH = 64, // Depth of the FIFO
     parameter FIFO_WIDTH = $clog2(FIFO_DEPTH) // Width of the FIFO address
 )(
-    input logic clk,
-    input logic n_rst,
-    input logic rd_en,
-    input logic wr_en,
-    input logic [7:0] data_recv,
-    output logic [7:0] data_send,
+    input logic CLK,
+    input logic nRST,
 
+    //TCP interface
+    input logic rd_FIFO_en,
+    output logic rd_FIFO_valid,
+    output logic [DATA_WIDRH - 1:0] rd_FIFO_payload,
 
-
-    input logic clear,
-    input logic flush,
-
-    output logic [6:0] buffer_occupancy,
-    output logic bytes_abt_sent,
-    output logic empty
+    //Soupbin TCP interface
+    input logic axis_last,
+    input logic wr_FIFO_en,
+    input logic [31:0] len_seq,
+    input logic [DATA_WIDRH - 1:0] soupbin_TCP_payload,
+    output logic wr_FIFO_valid //FULL case
+    
 );
 
+    // typedef enum logic [2:0] { 
+    //     IDLE,
+    //     FLUSH,
+    //  } name;
 
-    //Creating the FIFO RAM
-    logic [7:0] [64:0]fifo_register [64:0];
-    logic [7:0] [64:0] n_fifo_register [64:0];
     
-    logic full;
-    logic [6:0] wptr, rptr; //For
-    logic [6:0] n_buffer_occupancy; 
+    typedef struct packed {
+        logic valid;
+        logic [31:0] seq_num;
+        logic [31:0] len_seq;
+        logic [FIFO_WIDTH - 1:0] ptr_str;
+        logic [FIFO_WIDTH - 1:0] ptr_end;
 
-    assign empty = (buffer_occupancy == '0) ? 1'b1 : 1'b0;
-    assign full = (buffer_occupancy == 7'd 64) ? 1'b1 : 1'b0;
+    } FIFO_TX_t;
 
-    flex_counter #(.SIZE(7)) u0 (.clk(clk), .n_rst(n_rst), .clear(clear | flush), .count_enable(wr_en & !full), .rollover_val(7'd64), .count_out(wptr), .rollover_flag());
-    flex_counter #(.SIZE(7)) u1 (.clk(clk), .n_rst(n_rst), .clear(clear | flush), .count_enable(rd_en & !empty), .rollover_val(7'd64), .count_out(rptr), .rollover_flag());
 
-    always_ff @(posedge clk, negedge n_rst) begin
-        if (!n_rst) begin
-            for (int i = 0; i < 65; i++) begin
-                fifo_register[i] <= '0;
-            end
-            buffer_occupancy <= 7'b0;
-            bytes_abt_sent <= '0;
+    FIFO_TX_t [15:0] dict_tx, ndict_tx;
+    logic full, empty;
+    logic [$clog2(16) -1 : 0] dict_wrt_ptr, ndict_wrt_ptr, dict_rd_ptr, ndict_rd_ptr;
+    logic [FIFO_WIDTH - 1:0] ptr_str, nptr_str, ptr_end, nptr_end
+    logic [FIFO_WIDTH - 1:0] rd_ptr, nrd_ptr, wrt_ptr, nwrt_ptr;
+    logic [FIFO_WIDTH - 1:0] [FIFO_DEPTH - 1:0] TCP_tx_order, nTCP_tx_order;
+
+    assign full = rd_ptr == (wrt_ptr - 1);
+    assign emptur = wrt_ptr == rd_ptr;
+
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            wrt_ptr <= 0;
+            rd_ptr <= 0;
+            ptr_str <= 0;
+            ptr_end <= 0;
+            TCP_tx_order <= 0;
+            dict_tx <= 0;
+            dict_wrt_ptr <= 0;
+            dict_rd_ptr <= 0;
         end else begin
-            for (int i = 0; i < 65; i++) begin
-                fifo_register[i] <= n_fifo_register[i];
-            end
-            buffer_occupancy <= n_buffer_occupancy;
-            if (wr_en) begin
-                bytes_abt_sent <= n_buffer_occupancy;
-            end
- 
+            wrt_ptr <= nwrt_ptr;
+            rd_ptr <= nrd_ptr;
+            ptr_str <= nptr_str;
+            ptr_end <= nptr_end;
+            TCP_tx_order <= nTCP_tx_order;
+            dict_tx <= ndict_tx;
+            dict_wrt_ptr <= 0;
+            dict_rd_ptr <= 0;
+        end    
+    
+    end
+
+    
+
+    always_comb begin 
+        nrd_ptr = rd_ptr;
+        nwrt_ptr = wrt_ptr;
+        nptr_str = ptr_str;
+        nptr_end = ptr_end;
+        nTCP_tx_order = TCP_tx_order;
+        ndict_tx = dict_tx;
+        ndict_rd_ptr = dict_rd_ptr;
+        ndict_wrt_ptr = dict_wrt_ptr;
+
+    if (wr_FIFO_en && !full) begin
+        nptr_str = wrt_ptr;
+        nwrt_ptr = wrt_ptr + 1;
+        nTCP_tx_order[wrt_ptr] = soupbin_TCP_payload;
+
+        //last bytes_data
+        if (axis_last) begin
+            ndict_tx[dict_wrt_ptr].len_seq = len_seq;
+            ndict_tx[dict_wrt_ptr].ptr_str = ptr_str;
+            ndict_tx[dict_wrt_ptr].ptr_end = wrt_ptr + 1;
+            ndict_tx[dict_wrt_ptr].valid = 1'b1;
+            ndict_wrt_ptr = dict_wrt_ptr + 1;
         end
     end
 
-    always_comb begin
-        for (int i = 0; i < 65; i++) begin
-            n_fifo_register[i] = fifo_register[i];
-        end
-        data_send = '0;
-        n_buffer_occupancy = buffer_occupancy;
-        
 
-        if (!clear && !flush) begin
-            //Handle RX part
-            if (wr_en) begin
-                if (!full) begin
-                    n_fifo_register[wptr] = data_recv,;
-                    n_buffer_occupancy = buffer_occupancy + 8'b1;
-                end
-            end
-            else if (rd_en) begin
-                if (!empty) begin
-                    data_send = fifo_register[rptr];
-                    n_fifo_register[rptr] = '0;
-                    n_buffer_occupancy = buffer_occupancy - 8'b1;
-                end
-            end
 
-            //Handle TX part
-            if () begin
-                if (!full) begin
-                    n_fifo_register[wptr] = ;
-                    n_buffer_occupancy = buffer_occupancy + 8'b1;
-                end
-            end
-            else if () begin
-                if (!empty) begin
-                     = fifo_register[rptr];
-                    n_fifo_register[rptr] = '0;
-                    n_buffer_occupancy = buffer_occupancy - 8'b1;
-                end
-            end
-        end 
+
+
+
+
+
         
-        else begin
-            for (int i = 0; i < 65; i++) begin
-                n_fifo_register[i] = '0;
-            end
-            n_buffer_occupancy = '0;
-        end
     end
+        
+    
+    
+
+
 
 endmodule

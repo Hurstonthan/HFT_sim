@@ -16,16 +16,17 @@ module TCP_tx #(
     input logic [15:0] urgent_pointer_tx,
     
     
+    output logic rd_en,
     input logic [31:0] bytes_abt_sent,
-    
+    input logic [DATA_WIDTH - 1 : 0] TCP_payload_tx,
+
     output logic seq_up,
     output logic [31:0] bytes_sent,
-    output logic rd_en,
+    
 
     // Interface between TCP_tx and IP_tx
     input logic TCP_send,
     input logic [15:0] TCP_basesum_payload,
-    input logic [DATA_WIDTH - 1 : 0] TCP_payload_tx,
     output logic [DATA_WIDTH - 1 : 0] TCP_transmit
 );
 

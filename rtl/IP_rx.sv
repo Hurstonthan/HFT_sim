@@ -19,7 +19,8 @@ module IP_rx #(
     output logic IP_flush,
     output logic [15:0] IP_pseuder,
     output logic [63:0] IP_payload,
-    output logic [15:0] TCP_len
+    output logic [15:0] TCP_len,
+    output logic [7:0] IP_bytes_rcv,
 );
 
 typedef enum logic [5:0] { 
@@ -77,6 +78,7 @@ typedef enum logic [5:0] {
         IP_len <= 0;
         IP_hd_len <= 0;
         TCP_len <= 0;
+        IP_bytes_rcv <= 0;
     end else begin
         if (MAC_flush || IP_flush) begin
             state <= IDLE;
@@ -85,15 +87,14 @@ typedef enum logic [5:0] {
             bytes_rcv <= 0;
             dst_addr <= 0;
             IP_valid <= 0;
-
             IP_len <= 0;
             IP_pseuder_l <= 0;
-
             IP_hd_len <= 0;
             IP_protocol <= 0;
             dst_addr <= 0;
             src_addr <= 0;
             TCP_len <= 0;
+            IP_bytes_rcv <= 0;
         end
         else begin
             state <= nstate;
@@ -110,6 +111,7 @@ typedef enum logic [5:0] {
             dst_addr <= ndst_addr;
             src_addr <= nsrc_addr;
             TCP_len <= nTCP_len;
+            IP_bytes_rcv <= bytes_rcv_len;
         end
         
     end

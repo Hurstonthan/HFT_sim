@@ -10,19 +10,22 @@ GEN_DIR_BASE  := $(strip generated)
 INC_DIR       := $(strip include)
 
 # ---------- extra RTL ---------------------------------------------------
-SUR_FILES     := TCP_flow_ctrl      # add more, space-separated
+SUR_FILES     := priority_encoder   # add more, space-separated
 
 # ---------- verilator flags --------------------------------------------
 #-Wall -Wno-UNDRIVEN -Wno-UNUSEDSIGNAL
 VERI_FLAGS := \
 	-Wno-lint --error-limit 0 \
+	--trace \
 	--trace-fst \
+	--trace-structs \
 	-I$(INC_DIR) \
 	-CFLAGS "-I$(RTL_DIR)"
 
 # ---------- derived file lists -----------------------------------------
 #   $* is the target stem (e.g. priority_encoder)
 VFILES = $(RTL_DIR)/$*.sv $(addprefix $(RTL_DIR)/,$(SUR_FILES:=.sv))
+# VFILES = $(RTL_DIR)/$*.sv
 TB_CPP = $(GEN_DIR_BASE)/$*/$*_tb.cpp
 DRIVE_CPP = $(GEN_DIR_BASE)/$*/$*_input.cpp
 
@@ -39,7 +42,7 @@ DRIVE_CPP = $(GEN_DIR_BASE)/$*/$*_input.cpp
 # ---------- build, run, then gtkwave -----------------------------------
 %.wav: %.sim
 	@echo "==> Opening GTKWave ..."
-	@gtkwave $*.vcd &
+	@gtkwave $*.vcd $*.gtkw
 
 # ---------- housekeeping ------------------------------------------------
 .PHONY: clean

@@ -49,13 +49,13 @@ typedef struct packed {
 
 
 //Adding something to handle the out of order packets
-typedef struct packed {
-    logic [31:0] seq_num;
-    logic [15:0] seq_length;
-    logic [15:0] rd_ptr;
-    logic [15:0] length_ptr;
-    logic v;
-} TCP_order_t;
+// typedef struct packed {
+//     logic [31:0] seq_num;
+//     logic [15:0] seq_length;
+//     logic [15:0] rd_ptr;
+//     logic [15:0] length_ptr;
+//     logic v;
+// } TCP_order_t;
 
 // logic [$clog2(N)-1:0] free_idx, match_idx;;
 // logic [31:0] [N - 1: 0] seq_vec;

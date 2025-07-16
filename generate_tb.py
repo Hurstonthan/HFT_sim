@@ -101,7 +101,8 @@ TB_TMPL = r'''
 
 static vluint64_t main_time = 0;
 double sc_time_stamp() {{ return main_time; }}
-
+V{M} *top = new V{M};
+VerilatedFstC *tfp = new VerilatedFstC;
 static void tick(V{M} *top, VerilatedFstC *tfp) {{
     top->eval(); tfp->dump(main_time++);
     top->CLK ^= 1;
@@ -110,10 +111,9 @@ static void tick(V{M} *top, VerilatedFstC *tfp) {{
 
 int main(int argc, char **argv) {{
     Verilated::commandArgs(argc, argv);
-    V{M} *top = new V{M};
-
+    
     Verilated::traceEverOn(true);
-    VerilatedFstC *tfp = new VerilatedFstC;
+    
     top->trace(tfp, 99);
     tfp->open("{M}.vcd");
 
@@ -166,13 +166,18 @@ def main() -> None:
     sv_path = find_sv_file(args.module, rtl_dir)
     sv_code = sv_path.read_text()
 
+    for mod, _params, ports, _body in MOD_RE.findall(sv_code):
+        print(f"hoho {mod}")
+    
     # locate module block
     for mod, _params, ports, _body in MOD_RE.findall(sv_code):
+        print(f"hoho {mod}")
         if mod == args.module:
             inputs = extract_inputs(ports)
             if not inputs:
                 raise RuntimeError(f"No `input logic` ports inside module '{mod}'")
             break
+        
     else:
         raise RuntimeError(f"Module '{args.module}' not found in {sv_path}")
 
