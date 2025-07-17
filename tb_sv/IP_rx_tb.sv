@@ -144,7 +144,7 @@ module ip_rx_tb;
 
         //Test case 1: Valid TCP packet
         testcase = 1;
-        header0 = {48'h112233445566, 16'h0800, 4'h4, 4'h5, 8'h00};  // MAC src, IP type, Ver, IHL, TOS
+        header0 = {32'h112233445566, 16'h0800, 4'h4, 4'h5, 8'h00};  // MAC src, IP type, Ver, IHL, TOS
         header1 = {16'h003C, 16'h1234, 3'b010, 13'h0, 8'h40, TCP_PROTOCOL}; //Total Length, Identification, Flags, Fragment Offset, TTL, Protocol
         header2 = {16'h0000, IP_SRC_ADDR, 16'h0000}; // Header Checksum, Source Address, first half Destination Address
         header3 = {16'h0000, 48'h0}; // second half Destination Address
@@ -184,7 +184,7 @@ module ip_rx_tb;
 
         //Test case 4: Ping
         testcase = 4;
-        header0 = {48'h112233445566, 16'h0800, 4'h4, 4'h5, 8'h00}; 
+        header0 = {32'h112233, 16'h0800, 4'h4, 4'h5, 8'h00}; 
         header1 = {16'h003C, 16'h1234, 3'b010, 13'h0, 8'h40, ICMP_PROTOCOL}; 
         header2 = {16'h0000, IP_SRC_ADDR, 16'h0000}; 
         header3 = {16'h0000, 48'h0}; //

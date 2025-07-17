@@ -7,8 +7,11 @@
 const uint8_t TCP_PROTOCOL = 6;
 const uint8_t UDP_PROTOCOL = 17;
 const uint8_t ICMP_PROTOCOL = 1;
-const uint32_t IP_SRC_ADDR = 0xC0A80102; 
-const uint32_t IP_DEST_ADDR = 0xC0A80101; 
+// const uint32_t IP_SRC_ADDR = 0xC0A80102; 
+// const uint32_t IP_DEST_ADDR = 0xC0A80101; 
+const uint32_t IP_SRC_ADDR = 0xFFFFFFFF; 
+const uint32_t IP_DEST_ADDR = 0xFFFFFFFA; 
+
 
 static vluint64_t main_time = 0;
 double sc_time_stamp() { return main_time; }

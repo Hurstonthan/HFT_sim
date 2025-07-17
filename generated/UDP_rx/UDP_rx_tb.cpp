@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     Verilated::traceEverOn(true);
     VerilatedFstC *tfp = new VerilatedFstC;
     top->trace(tfp, 99);
-    tfp->open("UDP_rx.vcd");
+    tfp->open("UDP_rx.fst");
 
     // Reset phase
     reset_input_UDP_rx();

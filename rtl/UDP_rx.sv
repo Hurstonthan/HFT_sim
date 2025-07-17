@@ -1,5 +1,5 @@
 `timescale 1ns/10ps
-`include "rx_pkg.vh"
+`include "rx_pkg.sv"
 
 module UDP_rx (
     input logic CLK, nRST,
@@ -23,14 +23,14 @@ module UDP_rx (
             current_state <= UDP_IDLE;
             UDP_valid <= '0;
             UDP_payload <= '0;
-            udp_len <= '0;
+            UDP_len <= '0;
             cnt <= '0;
         end else begin
             current_state <= nstate;
             UDP_valid <= next_UDP_valid;
             UDP_payload <= next_UDP_payload;
             cnt <= next_cnt;
-            udp_len <= next_UDP_len;
+            UDP_len <= next_UDP_len;
         end
     end
 
@@ -52,21 +52,21 @@ module UDP_rx (
         */
         case(current_state) 
             UDP_IDLE: begin
-                if (MAC_valid && is_udp) begin
-                    nstate = UDP_SRC_ADDR;
+                if (IP_valid && is_udp) begin
+                    nstate = UDP_HEADER;
                 end
             end
 
             UDP_HEADER: begin
                 // todo check whether need tp swap 
-                if (MAC_valid) begin
+                if (IP_valid) begin
                     if (IP_payload[31:16] == UDP_DEST_ADDR && IP_payload[47:32] == UDP_SRC_ADDR) begin
                         nstate = UDP_CHK_SUM_PAYLOAD;
                         next_UDP_len = IP_payload[15:0]; 
                         next_UDP_valid = 1'b1;
                         next_cnt = 16'd6; // 6 bytes from CHK_SUM is payload
                     end else begin
-                        nstate = UDP_ERROR;
+                        nstate = UDP_CHK_SUM;
                         UDP_flush = 1'b1;
                     end
                 end
@@ -102,9 +102,9 @@ module UDP_rx (
                 next_cnt = '0;
             end
 
-            UDP_CHK_SUM: // optional
+            // UDP_CHK_SUM: // optional
 
-            UDP_ERROR: begin
+            UDP_CHK_SUM: begin
                 UDP_flush = 1'b1;
                 if (!IP_valid) begin
                     nstate = UDP_IDLE;

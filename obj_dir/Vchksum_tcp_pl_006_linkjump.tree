@@ -1,0 +1,146 @@
+Verilator Tree Dump (format 0x3900) from <e1129> to <e1284>
+     NETLIST 0x55555621be90 <e1> {a0aa}  $root [1ps/1ps]
+    1: MODULE 0x555556256280 <e1129#> {d1ai}  chksum_tcp_pl  L2 [1ps]
+    1:2: VAR 0x555556256540 <e593> {d2ap} @dt=0@  DATA_WIDTH [VSTATIC]  GPARAM
+    1:2:1: BASICDTYPE 0x555556256470 <e594> {d2ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x5555562584a0 <e595> {d2bc} @dt=0x5555562563a0@(G/swu32/7)  ?32?sh40
+    1:2: VAR 0x555556256920 <e1137#> {d5ar} @dt=0@  CLK INPUT PORT
+    1:2:1: BASICDTYPE 0x555556256850 <e600> {d5al} @dt=this@(w1)  logic kwd=logic
+    1:2: VAR 0x555556256e10 <e1142#> {d6ar} @dt=0@  nRST INPUT PORT
+    1:2:1: BASICDTYPE 0x555556256d40 <e608> {d6al} @dt=this@(w1)  logic kwd=logic
+    1:2: VAR 0x555556257330 <e1147#> {d7ar} @dt=0@  FIFO_rd_en INPUT PORT
+    1:2:1: BASICDTYPE 0x555556257260 <e617> {d7al} @dt=this@(w1)  logic kwd=logic
+    1:2: VAR 0x5555562578f0 <e1152#> {d8ar} @dt=0@  clear INPUT PORT
+    1:2:1: BASICDTYPE 0x555556257820 <e626> {d8al} @dt=this@(w1)  logic kwd=logic
+    1:2: VAR 0x555556258ff0 <e1157#> {d9bk} @dt=0@  TCP_payload_tx INPUT PORT
+    1:2:1: BASICDTYPE 0x555556258af0 <e655> {d9al} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1: RANGE 0x555556258bc0 <e652> {d9ar}
+    1:2:1:1:1: SUB 0x555556258c70 <e650> {d9bd} @dt=0@
+    1:2:1:1:1:1: VARREF 0x55555623a800 <e1169#> {d9as} @dt=0@  DATA_WIDTH [RV] <- VAR 0x555556256540 <e593> {d2ap} @dt=0@  DATA_WIDTH [VSTATIC]  GPARAM
+    1:2:1:1:1:2: CONST 0x555556258df0 <e642> {d9bf} @dt=0x55555623e9e0@(G/swu32/1)  ?32?sh1
+    1:2:1:1:2: CONST 0x555556258ef0 <e651> {d9bh} @dt=0x55555623e9e0@(G/swu32/1)  ?32?sh0
+    1:2: VAR 0x555556259eb0 <e1162#> {d11az} @dt=0@  TCP_checksum_pl OUTPUT PORT
+    1:2:1: BASICDTYPE 0x555556259b30 <e684> {d11am} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1: RANGE 0x555556259c00 <e681> {d11as}
+    1:2:1:1:1: CONST 0x555556259cb0 <e679> {d11at} @dt=0x555556259450@(G/swu32/4)  ?32?shf
+    1:2:1:1:2: CONST 0x555556259db0 <e680> {d11aw} @dt=0x55555623e9e0@(G/swu32/1)  ?32?sh0
+    1:2: VAR 0x55555625abb0 <e918> {d14as} @dt=0@  TCP_checksum [VSTATIC]  VAR
+    1:2:1: BASICDTYPE 0x55555625a830 <e710> {d14af} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1: RANGE 0x55555625a900 <e708> {d14al}
+    1:2:1:1:1: CONST 0x55555625a9b0 <e706> {d14am} @dt=0x55555625a310@(G/swu32/5)  ?32?sh10
+    1:2:1:1:2: CONST 0x55555625aab0 <e707> {d14ap} @dt=0x55555623e9e0@(G/swu32/1)  ?32?sh0
+    1:2: VAR 0x55555625b380 <e713> {d14bg} @dt=0@  nTCP_checksum [VSTATIC]  VAR
+    1:2:1: BASICDTYPE 0x55555625b000 <e712> {d14af} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1: RANGE 0x55555625b0d0 <e708> {d14al}
+    1:2:1:1:1: CONST 0x55555625b180 <e706> {d14am} @dt=0x55555625a310@(G/swu32/5)  ?32?sh10
+    1:2:1:1:2: CONST 0x55555625b280 <e707> {d14ap} @dt=0x55555623e9e0@(G/swu32/1)  ?32?sh0
+    1:2: ASSIGNW 0x55555625bde0 <e735> {d16bc} @dt=0@
+    1:2:1: SELEXTRACT 0x55555625bd00 <e733> {d16bq} @dt=0@
+    1:2:1:1: VARREF 0x55555623a8e0 <e1172#> {d16be} @dt=0@  TCP_checksum [RV] <- VAR 0x55555625abb0 <e918> {d14as} @dt=0@  TCP_checksum [VSTATIC]  VAR
+    1:2:1:2: CONST 0x55555625b870 <e730> {d16br} @dt=0x555556259450@(G/swu32/4)  ?32?shf
+    1:2:1:3: CONST 0x55555625bb00 <e731> {d16bu} @dt=0x55555623e9e0@(G/swu32/1)  ?32?sh0
+    1:2:1:4: ATTROF 0x55555623a9c0 <e1175#> {d16bq} @dt=0@ [VAR_BASE]
+    1:2:1:4:1: VARREF 0x55555623aa70 <e1174#> {d16be} @dt=0@  TCP_checksum [RV] <- VAR 0x55555625abb0 <e918> {d14as} @dt=0@  TCP_checksum [VSTATIC]  VAR
+    1:2:2: VARREF 0x55555623ab50 <e1178#> {d16am} @dt=0@  TCP_checksum_pl [LV] => VAR 0x555556259eb0 <e1162#> {d11az} @dt=0@  TCP_checksum_pl OUTPUT PORT
+    1:2: ALWAYS 0x55555625e330 <e800> {d18af} [always_ff]
+    1:2:1: SENTREE 0x55555625c3a0 <e1131#> {d18ap}
+    1:2:1:1: SENITEM 0x55555625c0b0 <e737> {d18ar} [POS]
+    1:2:1:1:1: VARREF 0x55555623ac30 <e1181#> {d18az} @dt=0@  CLK [RV] <- VAR 0x555556256920 <e1137#> {d5ar} @dt=0@  CLK INPUT PORT
+    1:2:1:1: SENITEM 0x55555625c2f0 <e742> {d18be} [NEG]
+    1:2:1:1:1: VARREF 0x55555623ad10 <e1184#> {d18bm} @dt=0@  nRST [RV] <- VAR 0x555556256e10 <e1142#> {d6ar} @dt=0@  nRST INPUT PORT
+    1:2:2: BEGIN 0x55555625c4b0 <e1133#> {d18bs} [UNNAMED]
+    1:2:2:2: IF 0x55555625e170 <e795> {d19aj}
+    1:2:2:2:1: LOGNOT 0x55555625c830 <e796> {d19an} @dt=0x555556240b90@(G/w1)
+    1:2:2:2:1:1: VARREF 0x55555623adf0 <e1187#> {d19ao} @dt=0@  nRST [RV] <- VAR 0x555556256e10 <e1142#> {d6ar} @dt=0@  nRST INPUT PORT
+    1:2:2:2:2: BEGIN 0x55555625c9a0 <e749> {d19au} [UNNAMED]
+    1:2:2:2:2:2: ASSIGNDLY 0x55555625cec0 <e757> {d20ba} @dt=0@
+    1:2:2:2:2:2:1: CONST 0x55555625ccc0 <e758> {d20bd} @dt=0x55555623e9e0@(G/swu32/1)  ?32?sh0
+    1:2:2:2:2:2:2: VARREF 0x55555623aed0 <e1190#> {d20an} @dt=0@  TCP_checksum [LV] => VAR 0x55555625abb0 <e918> {d14as} @dt=0@  TCP_checksum [VSTATIC]  VAR
+    1:2:2:2:3: BEGIN 0x55555625d090 <e760> {d21as} [UNNAMED]
+    1:2:2:2:3:2: ASSIGNDLY 0x55555625e060 <e792> {d22ba} @dt=0@
+    1:2:2:2:3:2:1: ADD 0x55555625df80 <e793> {d22by} @dt=0@
+    1:2:2:2:3:2:1:1: SELEXTRACT 0x55555625d9d0 <e790> {d22br} @dt=0@
+    1:2:2:2:3:2:1:1:1: VARREF 0x55555623afb0 <e1193#> {d22be} @dt=0@  nTCP_checksum [RV] <- VAR 0x55555625b380 <e713> {d14bg} @dt=0@  nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2:3:2:1:1:2: CONST 0x55555625d540 <e777> {d22bs} @dt=0x555556259450@(G/swu32/4)  ?32?shf
+    1:2:2:2:3:2:1:1:3: CONST 0x55555625d7d0 <e778> {d22bv} @dt=0x55555623e9e0@(G/swu32/1)  ?32?sh0
+    1:2:2:2:3:2:1:1:4: ATTROF 0x55555623b090 <e1196#> {d22br} @dt=0@ [VAR_BASE]
+    1:2:2:2:3:2:1:1:4:1: VARREF 0x55555623b140 <e1195#> {d22be} @dt=0@  nTCP_checksum [RV] <- VAR 0x55555625b380 <e713> {d14bg} @dt=0@  nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2:3:2:1:2: SELBIT 0x55555625dea0 <e791> {d22cn} @dt=0@
+    1:2:2:2:3:2:1:2:1: VARREF 0x55555623b220 <e1199#> {d22ca} @dt=0@  nTCP_checksum [RV] <- VAR 0x55555625b380 <e713> {d14bg} @dt=0@  nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2:3:2:1:2:2: CONST 0x55555625dca0 <e788> {d22co} @dt=0x55555625a310@(G/swu32/5)  ?32?sh10
+    1:2:2:2:3:2:2: VARREF 0x55555623b300 <e1202#> {d22an} @dt=0@  TCP_checksum [LV] => VAR 0x55555625abb0 <e918> {d14as} @dt=0@  TCP_checksum [VSTATIC]  VAR
+    1:2: ALWAYS 0x555556261cc0 <e916> {d27af} [always_comb]
+    1:2:2: BEGIN 0x55555625e470 <e801> {d27ar} [UNNAMED]
+    1:2:2:2: ASSIGN 0x55555625e990 <e809> {d28ax} @dt=0@
+    1:2:2:2:1: CONST 0x55555625e790 <e810> {d28az} @dt=0x55555623e9e0@(G/swu32/1)  ?32?sh0
+    1:2:2:2:2: VARREF 0x55555623b3e0 <e1205#> {d28aj} @dt=0@  nTCP_checksum [LV] => VAR 0x55555625b380 <e713> {d14bg} @dt=0@  nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2: IF 0x555556261bb0 <e914> {d29aj}
+    1:2:2:2:1: VARREF 0x55555623b4c0 <e1208#> {d29an} @dt=0@  clear [RV] <- VAR 0x5555562578f0 <e1152#> {d8ar} @dt=0@  clear INPUT PORT
+    1:2:2:2:2: BEGIN 0x55555625ecc0 <e813> {d29au} [UNNAMED]
+    1:2:2:2:2:2: ASSIGN 0x55555625f1e0 <e821> {d30bb} @dt=0@
+    1:2:2:2:2:2:1: CONST 0x55555625efe0 <e822> {d30bd} @dt=0x55555623e9e0@(G/swu32/1)  ?32?sh0
+    1:2:2:2:2:2:2: VARREF 0x55555623b5a0 <e1211#> {d30an} @dt=0@  nTCP_checksum [LV] => VAR 0x55555625b380 <e713> {d14bg} @dt=0@  nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2:3: IF 0x555556261b00 <e910> {d31as}
+    1:2:2:2:3:1: VARREF 0x55555623b680 <e1214#> {d31aw} @dt=0@  FIFO_rd_en [RV] <- VAR 0x555556257330 <e1147#> {d7ar} @dt=0@  FIFO_rd_en INPUT PORT
+    1:2:2:2:3:2: BEGIN 0x55555625f570 <e825> {d31bi} [UNNAMED]
+    1:2:2:2:3:2:2: ASSIGN 0x5555562619f0 <e907> {d32bb} @dt=0@
+    1:2:2:2:3:2:2:1: ADD 0x555556261940 <e908> {d32ej} @dt=0@
+    1:2:2:2:3:2:2:1:1: ADD 0x555556261130 <e905> {d32dl} @dt=0@
+    1:2:2:2:3:2:2:1:1:1: ADD 0x5555562608d0 <e885> {d32cn} @dt=0@
+    1:2:2:2:3:2:2:1:1:1:1: ADD 0x5555562600c0 <e866> {d32bq} @dt=0@
+    1:2:2:2:3:2:2:1:1:1:1:1: VARREF 0x55555623b760 <e1217#> {d32bd} @dt=0@  TCP_checksum [RV] <- VAR 0x55555625abb0 <e918> {d14as} @dt=0@  TCP_checksum [VSTATIC]  VAR
+    1:2:2:2:3:2:2:1:1:1:1:2: SELEXTRACT 0x55555625ffe0 <e847> {d32cg} @dt=0@
+    1:2:2:2:3:2:2:1:1:1:1:2:1: VARREF 0x55555623b840 <e1220#> {d32bs} @dt=0@  TCP_payload_tx [RV] <- VAR 0x555556258ff0 <e1157#> {d9bk} @dt=0@  TCP_payload_tx INPUT PORT
+    1:2:2:2:3:2:2:1:1:1:1:2:2: CONST 0x55555625fb50 <e843> {d32ch} @dt=0x555556259450@(G/swu32/4)  ?32?shf
+    1:2:2:2:3:2:2:1:1:1:1:2:3: CONST 0x55555625fde0 <e844> {d32ck} @dt=0x55555623e9e0@(G/swu32/1)  ?32?sh0
+    1:2:2:2:3:2:2:1:1:1:1:2:4: ATTROF 0x55555623b920 <e1223#> {d32cg} @dt=0@ [VAR_BASE]
+    1:2:2:2:3:2:2:1:1:1:1:2:4:1: VARREF 0x55555623b9d0 <e1222#> {d32bs} @dt=0@  TCP_payload_tx [RV] <- VAR 0x555556258ff0 <e1157#> {d9bk} @dt=0@  TCP_payload_tx INPUT PORT
+    1:2:2:2:3:2:2:1:1:1:2: SELEXTRACT 0x5555562607f0 <e867> {d32dd} @dt=0@
+    1:2:2:2:3:2:2:1:1:1:2:1: VARREF 0x55555623bab0 <e1226#> {d32cp} @dt=0@  TCP_payload_tx [RV] <- VAR 0x555556258ff0 <e1157#> {d9bk} @dt=0@  TCP_payload_tx INPUT PORT
+    1:2:2:2:3:2:2:1:1:1:2:2: CONST 0x555556260360 <e863> {d32de} @dt=0x55555625a310@(G/swu32/5)  ?32?sh1f
+    1:2:2:2:3:2:2:1:1:1:2:3: CONST 0x5555562605f0 <e864> {d32dh} @dt=0x55555625a310@(G/swu32/5)  ?32?sh10
+    1:2:2:2:3:2:2:1:1:1:2:4: ATTROF 0x55555623bca0 <e1229#> {d32dd} @dt=0@ [VAR_BASE]
+    1:2:2:2:3:2:2:1:1:1:2:4:1: VARREF 0x55555623bd50 <e1228#> {d32cp} @dt=0@  TCP_payload_tx [RV] <- VAR 0x555556258ff0 <e1157#> {d9bk} @dt=0@  TCP_payload_tx INPUT PORT
+    1:2:2:2:3:2:2:1:1:2: SELEXTRACT 0x555556261050 <e886> {d32eb} @dt=0@
+    1:2:2:2:3:2:2:1:1:2:1: VARREF 0x55555623be30 <e1232#> {d32dn} @dt=0@  TCP_payload_tx [RV] <- VAR 0x555556258ff0 <e1157#> {d9bk} @dt=0@  TCP_payload_tx INPUT PORT
+    1:2:2:2:3:2:2:1:1:2:2: CONST 0x555556260b70 <e882> {d32ec} @dt=0x555556260c70@(G/swu32/6)  ?32?sh2f
+    1:2:2:2:3:2:2:1:1:2:3: CONST 0x555556260e50 <e883> {d32ef} @dt=0x555556260c70@(G/swu32/6)  ?32?sh20
+    1:2:2:2:3:2:2:1:1:2:4: ATTROF 0x55555623bf10 <e1235#> {d32eb} @dt=0@ [VAR_BASE]
+    1:2:2:2:3:2:2:1:1:2:4:1: VARREF 0x55555623bfc0 <e1234#> {d32dn} @dt=0@  TCP_payload_tx [RV] <- VAR 0x555556258ff0 <e1157#> {d9bk} @dt=0@  TCP_payload_tx INPUT PORT
+    1:2:2:2:3:2:2:1:2: SELEXTRACT 0x555556261860 <e906> {d32ez} @dt=0@
+    1:2:2:2:3:2:2:1:2:1: VARREF 0x55555623c0a0 <e1238#> {d32el} @dt=0@  TCP_payload_tx [RV] <- VAR 0x555556258ff0 <e1157#> {d9bk} @dt=0@  TCP_payload_tx INPUT PORT
+    1:2:2:2:3:2:2:1:2:2: CONST 0x5555562613d0 <e902> {d32fa} @dt=0x555556260c70@(G/swu32/6)  ?32?sh3f
+    1:2:2:2:3:2:2:1:2:3: CONST 0x555556261660 <e903> {d32fd} @dt=0x555556260c70@(G/swu32/6)  ?32?sh30
+    1:2:2:2:3:2:2:1:2:4: ATTROF 0x55555623c180 <e1241#> {d32ez} @dt=0@ [VAR_BASE]
+    1:2:2:2:3:2:2:1:2:4:1: VARREF 0x55555623c230 <e1240#> {d32el} @dt=0@  TCP_payload_tx [RV] <- VAR 0x555556258ff0 <e1157#> {d9bk} @dt=0@  TCP_payload_tx INPUT PORT
+    1:2:2:2:3:2:2:2: VARREF 0x55555623c310 <e1244#> {d32an} @dt=0@  nTCP_checksum [LV] => VAR 0x55555625b380 <e713> {d14bg} @dt=0@  nTCP_checksum [VSTATIC]  VAR
+    3: TYPETABLE 0x55555621c550 <e2> {a0aa}
+		 integer  -> BASICDTYPE 0x555556239490 <e26> {c31bb} @dt=this@(G/sw32)  integer [GENERIC] kwd=integer range=[31:0]
+		   logic  -> BASICDTYPE 0x555556240b90 <e104> {c50aw} @dt=this@(G/w1)  logic [GENERIC] kwd=logic
+		  string  -> BASICDTYPE 0x55555624f940 <e510> {c156ak} @dt=this@(G/str)  string [GENERIC] kwd=string
+		detailed  ->  BASICDTYPE 0x555556240b90 <e104> {c50aw} @dt=this@(G/w1)  logic [GENERIC] kwd=logic
+		detailed  ->  BASICDTYPE 0x55555623e9e0 <e47> {c33bg} @dt=this@(G/swu32/1)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x55555624bfd0 <e434> {c119aw} @dt=this@(G/swu32/2)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x55555624c7b0 <e451> {c121aw} @dt=this@(G/swu32/3)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x555556259450 <e670> {d11at} @dt=this@(G/swu32/4)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x55555625a310 <e697> {d14am} @dt=this@(G/swu32/5)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x555556260c70 <e872> {d32ec} @dt=this@(G/swu32/6)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x5555562563a0 <e589> {d2bc} @dt=this@(G/swu32/7)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x555556239490 <e26> {c31bb} @dt=this@(G/sw32)  integer [GENERIC] kwd=integer range=[31:0]
+		detailed  ->  BASICDTYPE 0x55555624f940 <e510> {c156ak} @dt=this@(G/str)  string [GENERIC] kwd=string
+		detailed  ->  BASICDTYPE 0x55555624f6a0 <e504> {c156ar} @dt=this@(G/w296)  logic [GENERIC] kwd=logic range=[295:0]
+    3:1: BASICDTYPE 0x555556239490 <e26> {c31bb} @dt=this@(G/sw32)  integer [GENERIC] kwd=integer range=[31:0]
+    3:1: BASICDTYPE 0x55555623e9e0 <e47> {c33bg} @dt=this@(G/swu32/1)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x555556240b90 <e104> {c50aw} @dt=this@(G/w1)  logic [GENERIC] kwd=logic
+    3:1: VOIDDTYPE 0x555556241900 <e127> {c51av} @dt=this@(w0)void
+    3:1: BASICDTYPE 0x55555624bfd0 <e434> {c119aw} @dt=this@(G/swu32/2)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x55555624c7b0 <e451> {c121aw} @dt=this@(G/swu32/3)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x55555624f6a0 <e504> {c156ar} @dt=this@(G/w296)  logic [GENERIC] kwd=logic range=[295:0]
+    3:1: BASICDTYPE 0x55555624f940 <e510> {c156ak} @dt=this@(G/str)  string [GENERIC] kwd=string
+    3:1: BASICDTYPE 0x5555562563a0 <e589> {d2bc} @dt=this@(G/swu32/7)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x555556259450 <e670> {d11at} @dt=this@(G/swu32/4)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x55555625a310 <e697> {d14am} @dt=this@(G/swu32/5)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x555556260c70 <e872> {d32ec} @dt=this@(G/swu32/6)  logic [GENERIC] kwd=logic range=[31:0]
+    3: CONSTPOOL 0x55555621c740 <e7> {a0aa}
+    3:1: MODULE 0x55555621c8c0 <e6> {a0aa}  @CONST-POOL@  L0 [NONE]
+    3:1:2: SCOPE 0x55555621c9e0 <e5> {a0aa}  @CONST-POOL@ [abovep=0] [cellp=0] [modp=0x55555621c8c0]

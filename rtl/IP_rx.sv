@@ -36,7 +36,7 @@ module IP_rx #(
     logic [16:0] chksum_final;
     logic [15:0] dst_addr, ndst_addr;
     logic [15:0] IP_len, nIP_len;
-    
+    // logic nIP_flush;
     // logic [63:0] crc_in, crc_in_big;
 
     logic nIP_valid;
@@ -52,18 +52,7 @@ module IP_rx #(
     );
 
     always_ff @(posedge CLK, negedge nRST) begin
-    if (!nRST) begin
-        state <= IDLE;
-        IP_checksum <= 0;
-        IP_payload <= 0;
-        bytes_rcv <= 0;
-        dst_addr <= 0;
-        IP_valid <= 0;
-        IP_len <= 0;
-        is_tcp <= 0;
-        is_udp <= 0;
-    end else begin
-        if (MAC_flush || IP_flush) begin //todo check whethere IP flush cause timing
+        if (!nRST) begin
             state <= IDLE;
             IP_checksum <= 0;
             IP_payload <= 0;
@@ -73,26 +62,54 @@ module IP_rx #(
             IP_len <= 0;
             is_tcp <= 0;
             is_udp <= 0;
-        end
-        else begin
-            state <= nstate;
-            IP_checksum <= nIP_checksum;
-            IP_payload <= nIP_payload;
-            bytes_rcv <= nbytes_rcv;
-            dst_addr <= ndst_addr;
-            IP_valid <= nIP_valid;
-            IP_len <= nIP_len;
-            is_tcp <= next_is_tcp;
-            is_udp <= next_is_udp;
+        end else begin
+            // flush is only trigger by one clock cycle
+            if (MAC_flush || IP_flush) begin 
+                state <= IDLE;
+                IP_checksum <= 0;
+                IP_payload <= 0;
+                bytes_rcv <= 0;
+                dst_addr <= 0;
+                IP_valid <= 0;
+                IP_len <= 0;
+                is_tcp <= 0;
+                is_udp <= 0;
+                // IP_flush <= 1'b0;
+            end
+            else begin
+                state <= nstate;
+                IP_checksum <= nIP_checksum;
+                IP_payload <= nIP_payload;
+                bytes_rcv <= nbytes_rcv;
+                dst_addr <= ndst_addr;
+                IP_valid <= nIP_valid;
+                IP_len <= nIP_len;
+                is_tcp <= next_is_tcp;
+                is_udp <= next_is_udp;
+                // IP_flush <= nIP_flush;
+            end
         end
     end
-end
 
+// debugging 
+logic [15:0] total_len;
+logic [15:0] frags_flag;
+logic [7:0] ttl;
+logic [2:0] flags;
+logic [12:0] fragoff;
+
+
+
+
+
+logic [3:0] test_valid;
+logic [3:0] ip_version;
+logic is_src_addr;
 
 always_comb begin
     /* 0      7 8     15 16    23 24    31 32    39 40    47 48    55 56     63 
     * +--------+--------+--------+--------+--------+--------+--------+--------+
-    * |          MAC Source addr          |  IP Type(MAC)   |Ver |IHL|   TOS  |
+    * |          MAC Source addr          |  IP Type(MAC)   |Ver |IHL|DSCP|ENC|
     * +--------+--------+--------+--------+--------+--------+--------+--------+
     * |      Total      |  Identification |Flags|Fragoff    |   TTL  |Protocol|               
     * |     Length      |    data octets  |                 |        |        |
@@ -117,6 +134,20 @@ always_comb begin
     next_is_tcp = is_tcp;
     next_is_udp = is_udp;
 
+    // debugging
+    total_len = MAC_payload_rcv[63:48];
+    frags_flag = MAC_payload_rcv[31:16];
+    ttl = MAC_payload_rcv[15:8];
+    flags = MAC_payload_rcv[31:29];
+    fragoff = MAC_payload_rcv[28:16];
+    test_valid[3] = (MAC_payload_rcv[63:48] <= 16'd1480);  // Total length check
+    test_valid[2] = (MAC_payload_rcv[28:16] == 0);         // Frag offset == 0
+    test_valid[1] = (MAC_payload_rcv[15:8] != 0);          // TTL != 0
+    test_valid[0] = (!MAC_payload_rcv[31]);                // MF == 0
+    ip_version = MAC_payload_rcv[15:12];
+    IP_flush = 1'b0;
+    is_src_addr = (MAC_payload_rcv[47:16] == IP_SRC_ADDR);
+
     if (MAC_valid) begin
         nbytes_rcv = bytes_rcv + bytes_rcv_len;
     end
@@ -132,11 +163,11 @@ always_comb begin
         RCV_VER_IHL_DSCP_ECN: begin
             if (MAC_valid) begin
                 chksum_en = 1'b1;
-                if (MAC_payload_rcv[63:60] == IP_VERSION) begin
+                if (MAC_payload_rcv[15:12] == IP_VERSION) begin
                     nstate = RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL;
                 end else begin
                     nstate = ERROR;
-                    IP_flush = 1'b1;
+                    //IP_flush = 1'b1;
                 end
             end
         end
@@ -151,15 +182,16 @@ always_comb begin
                 // Check the protocol type
                 next_is_tcp = (MAC_payload_rcv[7:0] == TCP_PROTOCOL);
                 next_is_udp = (MAC_payload_rcv[7:0] == UDP_PROTOCOL);
-    
-                if (MAC_payload_rcv[63:56] <= 16'd1480 && 
-                    MAC_payload_rcv[28:16] == 0 && //Fragoff
+
+                // todo check the timing
+                if (MAC_payload_rcv[63:48] <= 16'd1480 && //Total Length
+                    // MAC_payload_rcv[28:16] == 0 && //Fragoff
                     MAC_payload_rcv[15:8] !=0 && //Time to live
-                    !MAC_payload_rcv[31] && //MF != 1, no more segment
+                    !MAC_payload_rcv[31] && //MF != 1
                     (next_is_tcp || next_is_udp)) begin
                         nstate = RCV_SUM_SRC_ADDR_DEST_ADDR;
                     end else begin
-                        IP_flush = 1'b1;
+                        // IP_flush = 1'b1;
                         nstate = ERROR;
                     end
             end 
@@ -174,7 +206,7 @@ always_comb begin
                 nIP_checksum = MAC_payload_rcv[63:48];
                 ndst_addr = MAC_payload_rcv[15:0]; // store the destonation address as part of the element
                 
-                if (MAC_payload_rcv[47:16] == IP_SRC_ADDR) begin
+                if (is_src_addr) begin
                     nstate = RCV_PAYLOAD_DEST;
                     nIP_valid = 1'b1;
                 end else begin
@@ -195,7 +227,7 @@ always_comb begin
                     nstate = CHK_SUM;
                 end else begin
                     nstate = ERROR;
-                    IP_flush = 1'b1;
+                    // IP_flush = 1'b1;
                 end
             end
         end
@@ -213,7 +245,7 @@ always_comb begin
                 nIP_valid = 1'b1;
             end else begin
                 nstate = ERROR;
-                IP_flush = 1'b1;
+                // IP_flush = 1'b1;
             end
 
         end
@@ -235,7 +267,7 @@ always_comb begin
         end
 
         ERROR: begin
-            // IP_flush = 1'b1;
+            IP_flush = 1'b1;
             if (!MAC_valid) begin
                 nstate = IDLE;
             end

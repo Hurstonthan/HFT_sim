@@ -8,107 +8,77 @@
 RTL_DIR       := $(strip rtl)
 GEN_DIR_BASE  := $(strip generated)
 INC_DIR       := $(strip include)
-
+WAVE_CONFIGS_DIR    := $(strip wave_configs)
 # ---------- extra RTL ---------------------------------------------------
-SUR_FILES     := TCP_flow_ctrl      # add more, space-separated
+SUR_FILES     := 
 
 # ---------- verilator flags --------------------------------------------
-#-Wall -Wno-UNDRIVEN -Wno-UNUSEDSIGNAL
 VERI_FLAGS := \
-	-Wno-lint --error-limit 0 \
+	-Wno-lint \
+	--error-limit 0 \
+	--trace \
 	--trace-fst \
+	--debug \
 	-I$(INC_DIR) \
-	-CFLAGS "-I$(RTL_DIR)"
+	-I$(RTL_DIR) \
+	-CFLAGS "-I$(RTL_DIR) -I$(INC_DIR) -O0 -g"
 
 # ---------- derived file lists -----------------------------------------
-#   $* is the target stem (e.g. priority_encoder)
-# VFILES = $(RTL_DIR)/$*.sv $(addprefix $(RTL_DIR)/,$(SUR_FILES:=.sv))
 VFILES = $(RTL_DIR)/$*.sv
 TB_CPP = $(GEN_DIR_BASE)/$*/$*_tb.cpp
 DRIVE_CPP = $(GEN_DIR_BASE)/$*/$*_input.cpp
+MODULE_NAME := V$(subst -,_,$*) 
 
 # ---------- build & run (no waveform) ----------------------------------
 %.sim:
 	@echo "==> Building + running sim for '$*'"
-	verilator $(VERI_FLAGS)                       \
-	          --cc $(VFILES)                      \
-	          --top-module $*                     \
-	          --exe $(TB_CPP) $(DRIVE_CPP)        \
+	verilator $(VERI_FLAGS) \
+	          --cc $(VFILES) \
+	          --top-module $* \
+	          --exe $(TB_CPP) $(DRIVE_CPP) \
 	          --build
-	@./obj_dir/V$*
+	
+	@echo "==> Generated files in obj_dir:"
+	@ls -l obj_dir
+	
+	@echo "==> Simulation output:"
+	@if [ -f ./obj_dir/$(MODULE_NAME) ]; then \
+	    ./obj_dir/$(MODULE_NAME) 2>&1 | tee simulation.log; \
+	else \
+	    echo "Error: Executable not found! Trying alternative names..."; \
+	    if [ -f ./obj_dir/V$* ]; then \
+	        ./obj_dir/V$* 2>&1 | tee simulation.log; \
+	    elif [ -f ./obj_dir/V$(subst -,_,$*) ]; then \
+	        ./obj_dir/V$(subst -,_,$*) 2>&1 | tee simulation.log; \
+	    else \
+	        echo "No executable found in obj_dir:"; \
+	        ls -l obj_dir; \
+	        exit 1; \
+	    fi \
+	fi
 
 # ---------- build, run, then gtkwave -----------------------------------
 %.wav: %.sim
 	@echo "==> Opening GTKWave ..."
-	@gtkwave $*.vcd &
+	@if [ -f "$(WAVE_CONFIGS_DIR)/$*.gtkw" ]; then \
+		gtkwave $*.fst $(WAVE_CONFIGS_DIR)/$*.gtkw & \
+	elif [ -f "$*.gtkw" ]; then \
+		gtkwave $*.fst $*.gtkw & \
+	else \
+		echo "No saved configuration found"; \
+		gtkwave $*.fst & \
+	fi
 
 # ---------- housekeeping ------------------------------------------------
 .PHONY: clean
 clean:
-	rm -rf obj_dir *.vcd *.fst
+	rm -rf obj_dir *.vcd *.fst *.log
 
 .PHONY: help
 help:
 	@echo "make <top>.sim  – build & run test-bench"
 	@echo "make <top>.wav  – build, run, open gtkwave"
+	@echo "make view-log   – view simulation log"
 
-
-# ########################################################################
-# #  Verilator runner — supports:
-# #     make <top>.sim    → build & run C++ test-bench
-# #     make <top>.wav    → build w/ VCD tracing, run, open gtkwave
-# ########################################################################
-
-# ### -------- directories ------------------------------------------------
-# INCDIR     := include
-# SRCDIR     := rtl
-# TBDIR      := tb
-# BUILDDIR   := build
-# SUBFOLD	   := sub_mod
-# SUR_FILES  := TCP_flow_ctrl
-
-# ########################################################################
-
-
-# ### All RTL sources
-# VFILES     = $(SRCDIR)/$*.sv $(SRCDIR)/$(SUR_FILES).sv $(SRCDIR)/priority_encoder.sv
-# #VSUBs = $(wildcard $(SRCDIR)/$(SUBFOLD)/*.sv)
-# ### Common Verilator flags
-# VERI_FLAGS := -Wall -I$(INCDIR) -CFLAGS "-Irtl" -Wno-UNDRIVEN -Wno-UNUSEDSIGNAL 
-
-
-# %.sim:
-# 	@echo "==> Building + running sim for top '$*'"
-# 	@mkdir -p $(BUILDDIR)
-# 	verilator $(VERI_FLAGS) --trace-fst                  \
-# 	          --cc $(VFILES)                         \
-# 	          --top-module $*                        \
-# 	          --exe $(TBDIR)/$*_tb.cpp               \
-# 	          --build
-# 	@./obj_dir/V$*        
-
-
-# %.wav:
-# 	@echo "==> Building + tracing '$*' (VCD)"
-# 	@mkdir -p $(BUILDDIR)
-# 	verilator $(VERI_FLAGS) --trace-fst                  \
-# 	          --cc $(VFILES)                         \
-# 	          --top-module $*                        \
-# 	          --exe $(TBDIR)/$*_tb.cpp               \
-# 	          --build
-			  
-			  
-# 	@./obj_dir/V$*          # <-- actually *run* it
-# 	@echo "==> Launching GTKWave ..."
-# 	@gtkwave $*.vcd $*.gtkw &
-
-
-# .PHONY: clean help
-# clean:
-# 	rm -rf obj_dir $(BUILDDIR)
-# 	rm -f *.vcd
-
-# help:
-# 	@echo "Usage:"
-# 	@echo "  make <top>.sim   – build & run test-bench"
-# 	@echo "  make <top>.wav   – build w/ trace, run, open gtkwave"
+view-log:
+	@less simulation.log

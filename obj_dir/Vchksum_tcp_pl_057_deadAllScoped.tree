@@ -1,0 +1,150 @@
+Verilator Tree Dump (format 0x3900) from <e3173> to <e3216>
+     NETLIST 0x55555621be90 <e1> {a0aa}  $root [1ps/1ps]
+    1: MODULE 0x55555626a5f0 <e1991> {d1ai}  __024root  L1 [P] [1ps]
+    1:2: VAR 0x55555626a830 <e1995> {d5ar} @dt=0x555556256850@(G/w1)  CLK [PI] INPUT [CLK] [P] PORT
+    1:2: VAR 0x55555626aa80 <e2000> {d6ar} @dt=0x555556256850@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2: VAR 0x55555626adc0 <e2006> {d7ar} @dt=0x555556256850@(G/w1)  FIFO_rd_en [PI] INPUT [P] PORT
+    1:2: VAR 0x55555626b100 <e2012> {d8ar} @dt=0x555556256850@(G/w1)  clear [PI] INPUT [P] PORT
+    1:2: VAR 0x55555626b440 <e2018> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [PI] INPUT [P] PORT
+    1:2: VAR 0x55555626b780 <e2024> {d11az} @dt=0x555556259b30@(G/w16)  TCP_checksum_pl [PO] OUTPUT [P] PORT
+    1:2: VAR 0x55555625abb0 <e1399> {d14as} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__TCP_checksum [VSTATIC]  VAR
+    1:2: VAR 0x55555625b380 <e1872> {d14bg} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [VSTATIC]  VAR
+    1:2: TOPSCOPE 0x55555626c550 <e2640> {d1ai}
+    1:2:2: SCOPE 0x55555626e830 <e2798> {d1ai}  TOP [abovep=0] [cellp=0] [modp=0x55555626a5f0]
+    1:2:2:1: VARSCOPE 0x55555626e910 <e2642> {d5ar} u4=0x1 @dt=0x555556256850@(G/w1)  TOP->CLK [T] [scopep=0x55555626e830] -> VAR 0x55555626a830 <e1995> {d5ar} @dt=0x555556256850@(G/w1)  CLK [PI] INPUT [CLK] [P] PORT
+    1:2:2:1: VARSCOPE 0x55555626e9d0 <e2645> {d6ar} u4=0x1 @dt=0x555556256850@(G/w1)  TOP->nRST [T] [scopep=0x55555626e830] -> VAR 0x55555626aa80 <e2000> {d6ar} @dt=0x555556256850@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2:2:1: VARSCOPE 0x55555626ea90 <e2648> {d7ar} @dt=0x555556256850@(G/w1)  TOP->FIFO_rd_en [T] [scopep=0x55555626e830] -> VAR 0x55555626adc0 <e2006> {d7ar} @dt=0x555556256850@(G/w1)  FIFO_rd_en [PI] INPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x55555626eb90 <e2651> {d8ar} @dt=0x555556256850@(G/w1)  TOP->clear [T] [scopep=0x55555626e830] -> VAR 0x55555626b100 <e2012> {d8ar} @dt=0x555556256850@(G/w1)  clear [PI] INPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x55555626ec90 <e2654> {d9bk} @dt=0x555556258af0@(G/w64)  TOP->TCP_payload_tx [T] [scopep=0x55555626e830] -> VAR 0x55555626b440 <e2018> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [PI] INPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x55555626ed90 <e2657> {d11az} @dt=0x555556259b30@(G/w16)  TOP->TCP_checksum_pl [T] [scopep=0x55555626e830] -> VAR 0x55555626b780 <e2024> {d11az} @dt=0x555556259b30@(G/w16)  TCP_checksum_pl [PO] OUTPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x555556270350 <e2686> {d14as} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__TCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625abb0 <e1399> {d14as} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__TCP_checksum [VSTATIC]  VAR
+    1:2:2:1: VARSCOPE 0x555556270410 <e2689> {d14bg} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__nTCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625b380 <e1872> {d14bg} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2: ACTIVE 0x5555562889b0 <e2804> {d5ar} => SENTREE 0x555556288850 <e2803> {d5ar}
+    1:2:2:2:1: SENTREE 0x555556288850 <e2803> {d5ar}
+    1:2:2:2:1:1: SENITEM 0x555556288900 <e2800> {d5ar} [COMBO]
+    1:2:2:2:2: ALWAYS 0x555556289c50 <e2909> {d27af}
+    1:2:2:2:2:2: ASSIGN 0x555556289db0 <e2837> {d28ax} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:1: CONST 0x555556289e60 <e1913> {d28az} @dt=0x55555625a830@(G/w17)  17'h0
+    1:2:2:2:2:2:2: VARREF 0x555556289f60 <e1914> {d28aj} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [LV] => VARSCOPE 0x555556270410 <e2689> {d14bg} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__nTCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625b380 <e1872> {d14bg} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2:2:2: IF 0x55555628a500 <e2847> {d29aj}
+    1:2:2:2:2:2:1: VARREF 0x55555628a5b0 <e2846> {d29an} @dt=0x555556256850@(G/w1)  clear [RV] <- VARSCOPE 0x55555626eb90 <e2651> {d8ar} @dt=0x555556256850@(G/w1)  TOP->clear [T] [scopep=0x55555626e830] -> VAR 0x55555626b100 <e2012> {d8ar} @dt=0x555556256850@(G/w1)  clear [PI] INPUT [P] PORT
+    1:2:2:2:2:2:2: ASSIGN 0x55555628a980 <e2853> {d30bb} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:2:1: CONST 0x55555628aa30 <e1917> {d30bd} @dt=0x55555625a830@(G/w17)  17'h0
+    1:2:2:2:2:2:2:2: VARREF 0x55555628ab30 <e1918> {d30an} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [LV] => VARSCOPE 0x555556270410 <e2689> {d14bg} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__nTCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625b380 <e1872> {d14bg} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2:2:2:3: IF 0x55555628ad70 <e2858> {d31as}
+    1:2:2:2:2:2:3:1: VARREF 0x55555628ae20 <e2857> {d31aw} @dt=0x555556256850@(G/w1)  FIFO_rd_en [RV] <- VARSCOPE 0x55555626ea90 <e2648> {d7ar} @dt=0x555556256850@(G/w1)  TOP->FIFO_rd_en [T] [scopep=0x55555626e830] -> VAR 0x55555626adc0 <e2006> {d7ar} @dt=0x555556256850@(G/w1)  FIFO_rd_en [PI] INPUT [P] PORT
+    1:2:2:2:2:2:3:2: ASSIGN 0x55555628b3b0 <e2864> {d32bb} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:3:2:1: ADD 0x55555628b460 <e1972> {d32ej} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:3:2:1:1: ADD 0x55555628b510 <e1959> {d32dl} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:3:2:1:1:1: ADD 0x55555628b5c0 <e1946> {d32cn} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:3:2:1:1:1:1: ADD 0x55555628b670 <e1933> {d32bq} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:3:2:1:1:1:1:1: VARREF 0x55555628b720 <e1610> {d32bd} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__TCP_checksum [RV] <- VARSCOPE 0x555556270350 <e2686> {d14as} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__TCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625abb0 <e1399> {d14as} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__TCP_checksum [VSTATIC]  VAR
+    1:2:2:2:2:2:3:2:1:1:1:1:2: EXTEND 0x55555628b800 <e1932> {d32cg} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:3:2:1:1:1:1:2:1: SEL 0x55555628b8b0 <e1931> {d32cg} @dt=0x555556259b30@(G/w16) decl[63:0]]
+    1:2:2:2:2:2:3:2:1:1:1:1:2:1:1: VARREF 0x55555628b970 <e1623> {d32bs} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [RV] <- VARSCOPE 0x55555626ec90 <e2654> {d9bk} @dt=0x555556258af0@(G/w64)  TOP->TCP_payload_tx [T] [scopep=0x55555626e830] -> VAR 0x55555626b440 <e2018> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [PI] INPUT [P] PORT
+    1:2:2:2:2:2:3:2:1:1:1:1:2:1:2: CONST 0x55555628ba50 <e1649> {d32ck} @dt=0x555556267060@(G/sw6)  6'h0
+    1:2:2:2:2:2:3:2:1:1:1:1:2:1:3: CONST 0x55555628bb50 <e1930> {d32ch} @dt=0x5555562691f0@(G/w32)  32'h10
+    1:2:2:2:2:2:3:2:1:1:1:2: EXTEND 0x55555628bc50 <e1945> {d32dd} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:3:2:1:1:1:2:1: SEL 0x55555628bd00 <e1944> {d32dd} @dt=0x555556259b30@(G/w16) decl[63:0]]
+    1:2:2:2:2:2:3:2:1:1:1:2:1:1: VARREF 0x55555628bdc0 <e1671> {d32cp} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [RV] <- VARSCOPE 0x55555626ec90 <e2654> {d9bk} @dt=0x555556258af0@(G/w64)  TOP->TCP_payload_tx [T] [scopep=0x55555626e830] -> VAR 0x55555626b440 <e2018> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [PI] INPUT [P] PORT
+    1:2:2:2:2:2:3:2:1:1:1:2:1:2: CONST 0x55555628bea0 <e1699> {d32dh} @dt=0x555556267060@(G/sw6)  6'h10
+    1:2:2:2:2:2:3:2:1:1:1:2:1:3: CONST 0x55555628bfa0 <e1943> {d32de} @dt=0x5555562691f0@(G/w32)  32'h10
+    1:2:2:2:2:2:3:2:1:1:2: EXTEND 0x55555628c0a0 <e1958> {d32eb} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:3:2:1:1:2:1: SEL 0x55555628c150 <e1957> {d32eb} @dt=0x555556259b30@(G/w16) decl[63:0]]
+    1:2:2:2:2:2:3:2:1:1:2:1:1: VARREF 0x55555628c210 <e1721> {d32dn} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [RV] <- VARSCOPE 0x55555626ec90 <e2654> {d9bk} @dt=0x555556258af0@(G/w64)  TOP->TCP_payload_tx [T] [scopep=0x55555626e830] -> VAR 0x55555626b440 <e2018> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [PI] INPUT [P] PORT
+    1:2:2:2:2:2:3:2:1:1:2:1:2: CONST 0x55555628c2f0 <e1749> {d32ef} @dt=0x555556267060@(G/sw6)  6'h20
+    1:2:2:2:2:2:3:2:1:1:2:1:3: CONST 0x55555628c3f0 <e1956> {d32ec} @dt=0x5555562691f0@(G/w32)  32'h10
+    1:2:2:2:2:2:3:2:1:2: EXTEND 0x55555628c4f0 <e1971> {d32ez} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:3:2:1:2:1: SEL 0x55555628c5a0 <e1970> {d32ez} @dt=0x555556259b30@(G/w16) decl[63:0]]
+    1:2:2:2:2:2:3:2:1:2:1:1: VARREF 0x55555628c660 <e1771> {d32el} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [RV] <- VARSCOPE 0x55555626ec90 <e2654> {d9bk} @dt=0x555556258af0@(G/w64)  TOP->TCP_payload_tx [T] [scopep=0x55555626e830] -> VAR 0x55555626b440 <e2018> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [PI] INPUT [P] PORT
+    1:2:2:2:2:2:3:2:1:2:1:2: CONST 0x55555628c740 <e1799> {d32fd} @dt=0x555556267060@(G/sw6)  6'h30
+    1:2:2:2:2:2:3:2:1:2:1:3: CONST 0x55555628c840 <e1969> {d32fa} @dt=0x5555562691f0@(G/w32)  32'h10
+    1:2:2:2:2:2:3:2:2: VARREF 0x55555628c940 <e1973> {d32an} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [LV] => VARSCOPE 0x555556270410 <e2689> {d14bg} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__nTCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625b380 <e1872> {d14bg} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2:2: ASSIGNW 0x555556286b50 <e2830> {d16bc} @dt=0x555556259b30@(G/w16)
+    1:2:2:2:2:1: SEL 0x555556286c00 <e2539> {d16bq} @dt=0x555556259b30@(G/w16)
+    1:2:2:2:2:1:1: VARREF 0x555556286cc0 <e2528> {d14as} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__TCP_checksum [RV] <- VARSCOPE 0x555556270350 <e2686> {d14as} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__TCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625abb0 <e1399> {d14as} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__TCP_checksum [VSTATIC]  VAR
+    1:2:2:2:2:1:2: CONST 0x555556286da0 <e2529> {d16bq} @dt=0x5555562691f0@(G/w32)  32'h0
+    1:2:2:2:2:1:3: CONST 0x555556286ea0 <e2530> {d16bq} @dt=0x5555562691f0@(G/w32)  32'h10
+    1:2:2:2:2:2: VARREF 0x555556286fa0 <e2540> {d11az} @dt=0x555556259b30@(G/w16)  TCP_checksum_pl [LV] => VARSCOPE 0x55555626ed90 <e2657> {d11az} @dt=0x555556259b30@(G/w16)  TOP->TCP_checksum_pl [T] [scopep=0x55555626e830] -> VAR 0x55555626b780 <e2024> {d11az} @dt=0x555556259b30@(G/w16)  TCP_checksum_pl [PO] OUTPUT [P] PORT
+    1:2:2:2: ACTIVE 0x555556288e50 <e2819> {d18af}  sequent => SENTREE 0x555556288a80 <e2818> {d18ap}
+    1:2:2:2:1: SENTREE 0x555556288a80 <e2818> {d18ap}
+    1:2:2:2:1:1: SENITEM 0x555556288b30 <e737> {d18ar} [POS]
+    1:2:2:2:1:1:1: VARREF 0x555556288be0 <e1451> {d18az} @dt=0x555556256850@(G/w1)  CLK [RV] <- VARSCOPE 0x55555626e910 <e2642> {d5ar} u4=0x1 @dt=0x555556256850@(G/w1)  TOP->CLK [T] [scopep=0x55555626e830] -> VAR 0x55555626a830 <e1995> {d5ar} @dt=0x555556256850@(G/w1)  CLK [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:1:1: SENITEM 0x555556288cc0 <e742> {d18be} [NEG]
+    1:2:2:2:1:1:1: VARREF 0x555556288d70 <e1883> {d18bm} @dt=0x555556256850@(G/w1)  nRST [RV] <- VARSCOPE 0x55555626e9d0 <e2645> {d6ar} u4=0x1 @dt=0x555556256850@(G/w1)  TOP->nRST [T] [scopep=0x55555626e830] -> VAR 0x55555626aa80 <e2000> {d6ar} @dt=0x555556256850@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:2: ALWAYS 0x555556262590 <e2826> {d18af} [always_ff]
+    1:2:2:2:2:2: ASSIGNDLY 0x55555626ccd0 <e2554> {d22ba} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:1: COND 0x55555626cb50 <e2552> {d22by} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:1:1: VARREF 0x5555562706d0 <e2548> {d19ao} @dt=0x555556256850@(G/w1)  nRST [RV] <- VARSCOPE 0x55555626e9d0 <e2645> {d6ar} u4=0x1 @dt=0x555556256850@(G/w1)  TOP->nRST [T] [scopep=0x55555626e830] -> VAR 0x55555626aa80 <e2000> {d6ar} @dt=0x555556256850@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:2:2:1:2: ADD 0x55555626c9d0 <e2549> {d22by} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:1:2:1: EXTEND 0x5555562707b0 <e1898> {d22br} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:1:2:1:1: SEL 0x555556270860 <e1897> {d22br} @dt=0x555556259b30@(G/w16) decl[16:0]]
+    1:2:2:2:2:2:1:2:1:1:1: VARREF 0x555556270920 <e1886> {d22be} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [RV] <- VARSCOPE 0x555556270410 <e2689> {d14bg} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__nTCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625b380 <e1872> {d14bg} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2:2:2:1:2:1:1:2: CONST 0x555556270a00 <e1508> {d22bv} @dt=0x55555623c4d0@(G/sw5)  5'h0
+    1:2:2:2:2:2:1:2:1:1:3: CONST 0x555556270b00 <e1896> {d22bs} @dt=0x5555562691f0@(G/w32)  32'h10
+    1:2:2:2:2:2:1:2:2: EXTEND 0x555556270c00 <e1911> {d22cn} @dt=0x55555625a830@(G/w17)
+    1:2:2:2:2:2:1:2:2:1: SEL 0x555556270cb0 <e1910> {d22cn} @dt=0x555556256850@(G/w1) decl[16:0]]
+    1:2:2:2:2:2:1:2:2:1:1: VARREF 0x555556270d70 <e1899> {d22ca} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [RV] <- VARSCOPE 0x555556270410 <e2689> {d14bg} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__nTCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625b380 <e1872> {d14bg} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2:2:2:1:2:2:1:2: CONST 0x555556270e50 <e1546> {d22co} @dt=0x55555623c4d0@(G/sw5)  5'h10
+    1:2:2:2:2:2:1:2:2:1:3: CONST 0x555556270f50 <e1909> {d22cn} @dt=0x5555562691f0@(G/w32)  32'h1
+    1:2:2:2:2:2:1:3: CONST 0x555556271050 <e2550> {d20bd} @dt=0x55555625a830@(G/w17)  17'h0
+    1:2:2:2:2:2:2: VARREF 0x555556271150 <e1466> {d22an} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__TCP_checksum [LV] => VARSCOPE 0x555556270350 <e2686> {d14as} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__TCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625abb0 <e1399> {d14as} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__TCP_checksum [VSTATIC]  VAR
+    1:2:2:2: CFUNC 0x55555628d470 <e2971> {d1ai}  trace_init_sub__TOP__0 [SLOW]
+    1:2:2:2:2: CSTMT 0x55555628d5f0 <e2972> {d1ai}
+    1:2:2:2:2:1: TEXT 0x55555628d6a0 <e2973> {d1ai} "const int c = vlSymsp->__Vm_baseCode;..."
+    1:2:2:2:3: TRACEDECL 0x55555628d2a0 <e2968> {d5ar} @dt=0x555556256850@(G/w1)  CLK
+    1:2:2:2:3:1: VARREF 0x55555628d390 <e2969> {d5ar} @dt=0x555556256850@(G/w1)  CLK [RV] <- VARSCOPE 0x55555626e910 <e2642> {d5ar} u4=0x1 @dt=0x555556256850@(G/w1)  TOP->CLK [T] [scopep=0x55555626e830] -> VAR 0x55555626a830 <e1995> {d5ar} @dt=0x555556256850@(G/w1)  CLK [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:3: TRACEDECL 0x55555628d850 <e2981> {d6ar} @dt=0x555556256850@(G/w1)  nRST
+    1:2:2:2:3:1: VARREF 0x55555628d940 <e2980> {d6ar} @dt=0x555556256850@(G/w1)  nRST [RV] <- VARSCOPE 0x55555626e9d0 <e2645> {d6ar} u4=0x1 @dt=0x555556256850@(G/w1)  TOP->nRST [T] [scopep=0x55555626e830] -> VAR 0x55555626aa80 <e2000> {d6ar} @dt=0x555556256850@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:3: TRACEDECL 0x55555628db00 <e2989> {d7ar} @dt=0x555556256850@(G/w1)  FIFO_rd_en
+    1:2:2:2:3:1: VARREF 0x55555628dbf0 <e2988> {d7ar} @dt=0x555556256850@(G/w1)  FIFO_rd_en [RV] <- VARSCOPE 0x55555626ea90 <e2648> {d7ar} @dt=0x555556256850@(G/w1)  TOP->FIFO_rd_en [T] [scopep=0x55555626e830] -> VAR 0x55555626adc0 <e2006> {d7ar} @dt=0x555556256850@(G/w1)  FIFO_rd_en [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x55555628ddb0 <e2997> {d8ar} @dt=0x555556256850@(G/w1)  clear
+    1:2:2:2:3:1: VARREF 0x55555628dea0 <e2996> {d8ar} @dt=0x555556256850@(G/w1)  clear [RV] <- VARSCOPE 0x55555626eb90 <e2651> {d8ar} @dt=0x555556256850@(G/w1)  TOP->clear [T] [scopep=0x55555626e830] -> VAR 0x55555626b100 <e2012> {d8ar} @dt=0x555556256850@(G/w1)  clear [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x55555628e060 <e3005> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx
+    1:2:2:2:3:1: VARREF 0x55555628e150 <e3004> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [RV] <- VARSCOPE 0x55555626ec90 <e2654> {d9bk} @dt=0x555556258af0@(G/w64)  TOP->TCP_payload_tx [T] [scopep=0x55555626e830] -> VAR 0x55555626b440 <e2018> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x55555628e310 <e3013> {d11az} @dt=0x555556259b30@(G/w16)  TCP_checksum_pl
+    1:2:2:2:3:1: VARREF 0x55555628e400 <e3012> {d11az} @dt=0x555556259b30@(G/w16)  TCP_checksum_pl [RV] <- VARSCOPE 0x55555626ed90 <e2657> {d11az} @dt=0x555556259b30@(G/w16)  TOP->TCP_checksum_pl [T] [scopep=0x55555626e830] -> VAR 0x55555626b780 <e2024> {d11az} @dt=0x555556259b30@(G/w16)  TCP_checksum_pl [PO] OUTPUT [P] PORT
+    1:2:2:2:3: TRACEPUSHPREFIX 0x55555628e4e0 <e3017> {d1ai}
+    1:2:2:2:3: TRACEDECL 0x55555628e690 <e3023> {d2ap} @dt=0x555556269020@(G/sw32)  DATA_WIDTH
+    1:2:2:2:3:1: CONST 0x555556292650 <e3159> {d2ap} @dt=0x555556269020@(G/sw32)  32'sh40
+    1:2:2:2:3: TRACEDECL 0x55555628e940 <e3031> {d5ar} @dt=0x555556256850@(G/w1)  CLK
+    1:2:2:2:3:1: VARREF 0x555556292110 <e3129> {d5ar} @dt=0x555556256850@(G/w1)  CLK [RV] <- VARSCOPE 0x55555626e910 <e2642> {d5ar} u4=0x1 @dt=0x555556256850@(G/w1)  TOP->CLK [T] [scopep=0x55555626e830] -> VAR 0x55555626a830 <e1995> {d5ar} @dt=0x555556256850@(G/w1)  CLK [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:3: TRACEDECL 0x55555628ebf0 <e3039> {d6ar} @dt=0x555556256850@(G/w1)  nRST
+    1:2:2:2:3:1: VARREF 0x5555562921f0 <e3133> {d6ar} @dt=0x555556256850@(G/w1)  nRST [RV] <- VARSCOPE 0x55555626e9d0 <e2645> {d6ar} u4=0x1 @dt=0x555556256850@(G/w1)  TOP->nRST [T] [scopep=0x55555626e830] -> VAR 0x55555626aa80 <e2000> {d6ar} @dt=0x555556256850@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:3: TRACEDECL 0x55555628eea0 <e3047> {d7ar} @dt=0x555556256850@(G/w1)  FIFO_rd_en
+    1:2:2:2:3:1: VARREF 0x5555562922d0 <e3137> {d7ar} @dt=0x555556256850@(G/w1)  FIFO_rd_en [RV] <- VARSCOPE 0x55555626ea90 <e2648> {d7ar} @dt=0x555556256850@(G/w1)  TOP->FIFO_rd_en [T] [scopep=0x55555626e830] -> VAR 0x55555626adc0 <e2006> {d7ar} @dt=0x555556256850@(G/w1)  FIFO_rd_en [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x55555628f150 <e3055> {d8ar} @dt=0x555556256850@(G/w1)  clear
+    1:2:2:2:3:1: VARREF 0x5555562923b0 <e3141> {d8ar} @dt=0x555556256850@(G/w1)  clear [RV] <- VARSCOPE 0x55555626eb90 <e2651> {d8ar} @dt=0x555556256850@(G/w1)  TOP->clear [T] [scopep=0x55555626e830] -> VAR 0x55555626b100 <e2012> {d8ar} @dt=0x555556256850@(G/w1)  clear [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x55555628f400 <e3063> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx
+    1:2:2:2:3:1: VARREF 0x555556292490 <e3145> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [RV] <- VARSCOPE 0x55555626ec90 <e2654> {d9bk} @dt=0x555556258af0@(G/w64)  TOP->TCP_payload_tx [T] [scopep=0x55555626e830] -> VAR 0x55555626b440 <e2018> {d9bk} @dt=0x555556258af0@(G/w64)  TCP_payload_tx [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x55555628f6b0 <e3071> {d11az} @dt=0x555556259b30@(G/w16)  TCP_checksum_pl
+    1:2:2:2:3:1: VARREF 0x555556292570 <e3149> {d11az} @dt=0x555556259b30@(G/w16)  TCP_checksum_pl [RV] <- VARSCOPE 0x55555626ed90 <e2657> {d11az} @dt=0x555556259b30@(G/w16)  TOP->TCP_checksum_pl [T] [scopep=0x55555626e830] -> VAR 0x55555626b780 <e2024> {d11az} @dt=0x555556259b30@(G/w16)  TCP_checksum_pl [PO] OUTPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x55555628f960 <e3079> {d14as} @dt=0x55555625a830@(G/w17)  TCP_checksum
+    1:2:2:2:3:1: VARREF 0x55555628fa50 <e3078> {d14as} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__TCP_checksum [RV] <- VARSCOPE 0x555556270350 <e2686> {d14as} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__TCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625abb0 <e1399> {d14as} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__TCP_checksum [VSTATIC]  VAR
+    1:2:2:2:3: TRACEDECL 0x55555628fc10 <e3087> {d14bg} @dt=0x55555625a830@(G/w17)  nTCP_checksum
+    1:2:2:2:3:1: VARREF 0x55555628fd00 <e3086> {d14bg} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [RV] <- VARSCOPE 0x555556270410 <e2689> {d14bg} @dt=0x55555625a830@(G/w17)  TOP->chksum_tcp_pl__DOT__nTCP_checksum [T] [scopep=0x55555626e830] -> VAR 0x55555625b380 <e1872> {d14bg} @dt=0x55555625a830@(G/w17)  chksum_tcp_pl__DOT__nTCP_checksum [VSTATIC]  VAR
+    1:2:2:2:3: TRACEPOPPREFIX 0x55555628fde0 <e3091> {d1ai}
+    1:2:2:2: CFUNC 0x555556290030 <e3097> {d1ai}  trace_init_top [SLOW]
+    1:2:2:2:3: STMTEXPR 0x55555628ff80 <e3094> {a0aa}
+    1:2:2:2:3:1: CCALL 0x55555628fe90 <e3095> {a0aa} @dt=0x555556241900@(w0)void trace_init_sub__TOP__0 => CFUNC 0x55555628d470 <e2971> {d1ai}  trace_init_sub__TOP__0 [SLOW]
+    3: TYPETABLE 0x55555621c550 <e2> {a0aa}
+		detailed  ->  BASICDTYPE 0x555556256850 <e1337> {d5al} @dt=this@(G/w1)  logic [GENERIC] kwd=logic
+		detailed  ->  BASICDTYPE 0x55555623c4d0 <e1438> {d16bq} @dt=this@(G/sw5)  logic [GENERIC] kwd=logic range=[4:0]
+		detailed  ->  BASICDTYPE 0x555556267060 <e1641> {d32cg} @dt=this@(G/sw6)  logic [GENERIC] kwd=logic range=[5:0]
+		detailed  ->  BASICDTYPE 0x555556259b30 <e1390> {d11am} @dt=this@(G/w16)  logic [GENERIC] kwd=logic range=[15:0]
+		detailed  ->  BASICDTYPE 0x55555625a830 <e1398> {d14af} @dt=this@(G/w17)  logic [GENERIC] kwd=logic range=[16:0]
+		detailed  ->  BASICDTYPE 0x5555562691f0 <e1876> {d16br} @dt=this@(G/w32)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x555556269020 <e1862> {d2bc} @dt=this@(G/sw32)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x555556258af0 <e1382> {d9al} @dt=this@(G/w64)  logic [GENERIC] kwd=logic range=[63:0]
+    3:1: VOIDDTYPE 0x555556241900 <e127> {c51av} @dt=this@(w0)void
+    3:1: BASICDTYPE 0x555556256850 <e1337> {d5al} @dt=this@(G/w1)  logic [GENERIC] kwd=logic
+    3:1: BASICDTYPE 0x555556258af0 <e1382> {d9al} @dt=this@(G/w64)  logic [GENERIC] kwd=logic range=[63:0]
+    3:1: BASICDTYPE 0x555556259b30 <e1390> {d11am} @dt=this@(G/w16)  logic [GENERIC] kwd=logic range=[15:0]
+    3:1: BASICDTYPE 0x55555625a830 <e1398> {d14af} @dt=this@(G/w17)  logic [GENERIC] kwd=logic range=[16:0]
+    3:1: BASICDTYPE 0x55555623c4d0 <e1438> {d16bq} @dt=this@(G/sw5)  logic [GENERIC] kwd=logic range=[4:0]
+    3:1: BASICDTYPE 0x555556267060 <e1641> {d32cg} @dt=this@(G/sw6)  logic [GENERIC] kwd=logic range=[5:0]
+    3:1: BASICDTYPE 0x555556269020 <e1862> {d2bc} @dt=this@(G/sw32)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x5555562691f0 <e1876> {d16br} @dt=this@(G/w32)  logic [GENERIC] kwd=logic range=[31:0]
+    3: CONSTPOOL 0x55555621c740 <e7> {a0aa}
+    3:1: MODULE 0x55555621c8c0 <e6> {a0aa}  @CONST-POOL@  L0 [NONE]
+    3:1:2: SCOPE 0x55555621c9e0 <e2799> {a0aa}  TOP [abovep=0] [cellp=0] [modp=0x55555621c8c0]
