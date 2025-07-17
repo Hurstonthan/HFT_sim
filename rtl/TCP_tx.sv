@@ -116,6 +116,7 @@ always_comb begin
 
         SEND_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE: begin
             valid_checksum = 1'b0;
+            rd_en = 1'b1;
             nTCP_transmit = {window_size_tx[7:0], TCP_checksum[15:0], urgent_pointer_tx, 24'd0};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
             nTCP_transmit = {window_size_tx[7:0], TCP_checksum[15:0], urgent_pointer_tx, TCP_transmit[63:40]};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
             nstate = SEND_WINDOWSIZE_CHECKSUM_URGENT_PAYLOAD; // Move to the next state

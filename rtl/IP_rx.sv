@@ -161,6 +161,8 @@ always_comb begin
             end
         end
 
+        //This is where Offset IP is wrong
+
         RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL: begin
             chksum_en = 1'b1;
             if (MAC_valid) begin
