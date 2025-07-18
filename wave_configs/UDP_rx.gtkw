@@ -1,0 +1,45 @@
+[*]
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Thu Jul 17 20:37:35 2025
+[*]
+[dumpfile] "/home/polarbearbo/purdue/HFT_project/HFT_sim/UDP_rx.fst"
+[dumpfile_mtime] "Thu Jul 17 20:35:24 2025"
+[dumpfile_size] 1470
+[savefile] "/home/polarbearbo/purdue/HFT_project/HFT_sim/wave_configs/UDP_rx.gtkw"
+[timestart] 208
+[size] 1260 600
+[pos] -1 -1
+*-4.000000 234 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[sst_width] 278
+[signals_width] 307
+[sst_expanded] 1
+[sst_vpaned_height] 157
+@100000028
+TOP.CLK
+@28
+TOP.nRST
+TOP.IP_flush
+TOP.IP_valid
+@22
+TOP.IP_payload[63:0]
+@28
+TOP.is_udp
+TOP.UDP_flush
+@22
+TOP.UDP_payload[63:0]
+@28
+TOP.UDP_valid
+@100000028
+TOP.UDP_rx.current_state[2:0]
+TOP.UDP_rx.nstate[2:0]
+@22
+TOP.UDP_rx.next_UDP_len[15:0]
+TOP.UDP_rx.udp_dest_addr[15:0]
+TOP.UDP_rx.udp_src_addr[15:0]
+@28
+TOP.UDP_rx.is_udp_header
+@29
+TOP.UDP_rx.is_udp_source
+[pattern_trace] 1
+[pattern_trace] 0

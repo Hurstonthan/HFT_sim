@@ -15,12 +15,11 @@ const uint32_t SAMPLE_MAC_SRC_ADDR = 0x11223344;
 const uint32_t IP_TYPE_IPV4 = 0x0800;
 
 static void tick(VIP_rx *top, VerilatedFstC *tfp, vluint64_t &time) {
-    // Toggle the clock
-    top->CLK = 1;
+    top->CLK = 0;
     top->eval();
     tfp->dump(time++);
     
-    top->CLK = 0;
+    top->CLK = 1;
     top->eval();
     tfp->dump(time++);
 }
@@ -86,21 +85,26 @@ void send_ip_packet(VIP_rx *top, VerilatedFstC *tfp, vluint64_t &time,
     top->bytes_rcv_len = 8;
     top->MAC_payload_rcv = header0;
     tick(top, tfp, time);
+    tick(top, tfp, time);
     
     top->bytes_rcv_len = 8;
     top->MAC_payload_rcv = header1;
     tick(top, tfp, time);
+    // tick(top, tfp, time);
     
     top->bytes_rcv_len = 8;
     top->MAC_payload_rcv = header2;
     tick(top, tfp, time);
-    
+    // tick(top, tfp, time);
+
     top->bytes_rcv_len = 8;
     top->MAC_payload_rcv = header3;
     tick(top, tfp, time);
+    // tick(top, tfp, time);
     
     // send the payload
     for (size_t i = 0; i < payload.size(); i++) {
+        // tick(top, tfp, time);
         top->CLK = 0;
         top->bytes_rcv_len = (i == payload.size() - 1) ? last_bytes : 8;
         top->MAC_payload_rcv = payload[i];
@@ -123,9 +127,9 @@ void send_ip_packet(VIP_rx *top, VerilatedFstC *tfp, vluint64_t &time,
 
 int main(int argc, char **argv) {
     Verilated::commandArgs(argc, argv);
-    Verilated::traceEverOn(true);
-    
     VIP_rx *top = new VIP_rx;
+
+    Verilated::traceEverOn(true);
     VerilatedFstC *tfp = new VerilatedFstC;
     top->trace(tfp, 99);
     tfp->open("IP_rx.fst");

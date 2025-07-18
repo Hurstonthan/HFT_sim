@@ -13,7 +13,6 @@ module chksum_tcp_pl #(
 );
 
     logic [16:0] TCP_checksum, nTCP_checksum;
-
     assign TCP_checksum_pl = TCP_checksum[15:0];
 
     always_ff @(posedge CLK, negedge nRST) begin

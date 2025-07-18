@@ -19,7 +19,13 @@ module UDP_rx (
     logic [63:0] next_UDP_payload;
 
     always_ff @(posedge CLK, negedge nRST) begin
-        if (!nRST || IP_flush || UDP_flush) begin
+        if (!nRST) begin
+            current_state <= UDP_IDLE;
+            UDP_valid <= '0;
+            UDP_payload <= '0;
+            UDP_len <= '0;
+            cnt <= '0;
+        end else if (UDP_flush || IP_flush) begin
             current_state <= UDP_IDLE;
             UDP_valid <= '0;
             UDP_payload <= '0;
@@ -34,6 +40,14 @@ module UDP_rx (
         end
     end
 
+    //debugging 
+    // logic [15:0] udp_dest_addr, udp_src_addr;
+    logic is_udp_source, is_udp_dest; 
+    // udp_dest_addr = IP_payload[31:16];
+    //     udp_src_addr = IP_payload[47:32];
+    assign is_udp_source = (IP_payload[47:32] == UDP_SRC_ADDR);
+    assign is_udp_dest = (IP_payload[31:16] == UDP_DEST_ADDR);
+
     always_comb begin
         nstate = current_state;
         next_UDP_valid = '0; 
@@ -43,14 +57,15 @@ module UDP_rx (
 
         /* 0      7 8     15 16    23 24    31 32    39 40    47 48    55 56     63 
         * +--------+--------+--------+--------+--------+--------+--------+--------+
-        * |       IP        |   Destination   |   Destination   |       Length    |
+        * |       IP        |      Source     |   Destination   |       Length    |
         * |    Dest addr    |      Port       |      Port
         * +--------+--------+--------+--------+--------+--------+--------+--------+
         * |                 |                 
         * |    CHK_SUM      |    data octets ...     
         * +--------+--------+--------+--------+--------+--------+--------+--------+
         */
-        case(current_state) 
+        
+        casez(current_state) 
             UDP_IDLE: begin
                 if (IP_valid && is_udp) begin
                     nstate = UDP_HEADER;
@@ -58,18 +73,22 @@ module UDP_rx (
             end
 
             UDP_HEADER: begin
-                // todo check whether need tp swap 
-                if (IP_valid) begin
-                    if (IP_payload[31:16] == UDP_DEST_ADDR && IP_payload[47:32] == UDP_SRC_ADDR) begin
-                        nstate = UDP_CHK_SUM_PAYLOAD;
+                nstate = (IP_valid && is_udp_source && is_udp_dest)? UDP_CHK_SUM_PAYLOAD : UDP_ERROR;
+                if (IP_valid && is_udp_dest && is_udp_source) begin
+                    // if (is_udp_dest && is_udp_source) begin
                         next_UDP_len = IP_payload[15:0]; 
                         next_UDP_valid = 1'b1;
                         next_cnt = 16'd6; // 6 bytes from CHK_SUM is payload
-                    end else begin
-                        nstate = UDP_CHK_SUM;
-                        UDP_flush = 1'b1;
-                    end
+                        // nstate = UDP_CHK_SUM_PAYLOAD;
+                //     end else begin
+                //         nstate = UDP_ERROR;
+                //         // UDP_flush = 1'b1;
                 end
+                // if (IP_valid) begin
+                //     if (is_udp_dest && is_udp_source) begin
+                        
+                //     end
+                // end
             end
 
             UDP_CHK_SUM_PAYLOAD: begin
@@ -103,15 +122,15 @@ module UDP_rx (
             end
 
             // UDP_CHK_SUM: // optional
-
-            UDP_CHK_SUM: begin
+            
+            UDP_ERROR: begin
                 UDP_flush = 1'b1;
                 if (!IP_valid) begin
                     nstate = UDP_IDLE;
                 end
             end
 
-            default: nstate = UDP_IDLE; 
+            default: nstate = current_state; 
         endcase 
     end
 endmodule

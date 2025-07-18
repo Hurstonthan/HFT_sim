@@ -97,11 +97,6 @@ logic [15:0] frags_flag;
 logic [7:0] ttl;
 logic [2:0] flags;
 logic [12:0] fragoff;
-
-
-
-
-
 logic [3:0] test_valid;
 logic [3:0] ip_version;
 logic is_src_addr;
