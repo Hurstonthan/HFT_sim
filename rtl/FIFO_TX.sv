@@ -251,7 +251,7 @@ module FIFO_TX #(
                     nwr_FIFO_valid = 1'b1;
                     nwrt_ptr = wrt_ptr + 1;
                     nTCP_tx_order[wrt_ptr] = soupbin_TCP_payload;
-                    nbytes_msg_trk = bytes_msg_trk + len_seq;
+                    //nbytes_msg_trk = bytes_msg_trk + len_seq;
                     nwr_state = WRITING;
                 end
 
@@ -270,12 +270,12 @@ module FIFO_TX #(
                 nwr_FIFO_valid = 1'b1;
                 nwrt_ptr = wrt_ptr + 1;
                 nTCP_tx_order[wrt_ptr] = soupbin_TCP_payload;
-                nbytes_msg_trk = bytes_msg_trk + len_seq;
+                //nbytes_msg_trk = bytes_msg_trk + len_seq;
                 
                 if (axis_last) begin
                     nwr_FIFO_valid = 1'b0;
                     nmsg_end_ptr = msg_end_ptr + wrt_ptr + 1;
-                    nbytes_abt_sent_msg = bytes_abt_sent_msg + nbytes_msg_trk;
+                    nbytes_abt_sent_msg = bytes_abt_sent_msg + len_seq;
                     nwr_state = IDLE_WR;
                 end
 

@@ -1,0 +1,57 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Thu Jul 17 23:51:04 2025
+[*]
+[dumpfile] "/home/than0/HFT_sim/FIFO_TX.vcd"
+[dumpfile_mtime] "Thu Jul 17 23:50:05 2025"
+[dumpfile_size] 2251
+[savefile] "/home/than0/HFT_sim/FIFO_TX.gtkw"
+[timestart] 0
+[size] 3956 2432
+[pos] -1 -1
+*-5.719462 24 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[sst_width] 635
+[signals_width] 763
+[sst_expanded] 1
+[sst_vpaned_height] 756
+@100000028
+TOP.CLK
+@28
+TOP.axis_last
+@22
+TOP.soupbin_TCP_payload[63:0]
+@28
+TOP.wr_FIFO_en
+TOP.wr_FIFO_valid
+@100000028
+TOP.FIFO_TX.wr_state[1:0]
+@28
+TOP.nRST
+@200
+-
+@22
+TOP.FIFO_TX.TCP_tx_order[0][63:0]
+TOP.FIFO_TX.TCP_tx_order[1][63:0]
+TOP.FIFO_TX.TCP_tx_order[2][63:0]
+TOP.FIFO_TX.TCP_tx_order[3][63:0]
+TOP.FIFO_TX.TCP_tx_order[4][63:0]
+TOP.FIFO_TX.TCP_tx_order[5][63:0]
+@200
+-
+@28
+TOP.FIFO_TX.rd_FIFO_en
+TOP.FIFO_TX.rd_FIFO_last
+@22
+TOP.FIFO_TX.rd_FIFO_payload[63:0]
+@28
+TOP.FIFO_TX.rd_FIFO_valid
+@22
+TOP.FIFO_TX.rd_ptr[5:0]
+@100000028
+TOP.FIFO_TX.rd_state[1:0]
+@23
+TOP.FIFO_TX.dict_rd_ptr[3:0]
+TOP.FIFO_TX.dict_wrt_ptr[3:0]
+[pattern_trace] 1
+[pattern_trace] 0
