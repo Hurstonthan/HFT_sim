@@ -1,16 +1,16 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "VFIFO_TX__pch.h"
-#include "VFIFO_TX.h"
-#include "VFIFO_TX___024root.h"
+#include "Vchksum_tcp_pl__pch.h"
+#include "Vchksum_tcp_pl.h"
+#include "Vchksum_tcp_pl___024root.h"
 
 // FUNCTIONS
-VFIFO_TX__Syms::~VFIFO_TX__Syms()
+Vchksum_tcp_pl__Syms::~Vchksum_tcp_pl__Syms()
 {
 }
 
-VFIFO_TX__Syms::VFIFO_TX__Syms(VerilatedContext* contextp, const char* namep, VFIFO_TX* modelp)
+Vchksum_tcp_pl__Syms::Vchksum_tcp_pl__Syms(VerilatedContext* contextp, const char* namep, Vchksum_tcp_pl* modelp)
     : VerilatedSyms{contextp}
     // Setup internal state of the Syms class
     , __Vm_modelp{modelp}

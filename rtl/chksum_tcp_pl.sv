@@ -10,9 +10,11 @@ module chksum_tcp_pl #(
     input logic [DATA_WIDTH - 1:0] TCP_payload_tx, // Data to be processed
 
     output logic [15:0] TCP_checksum_pl // Payload data to be sent   
+    
 );
 
     logic [16:0] TCP_checksum, nTCP_checksum;
+    logic [19:0] temp;
 
     assign TCP_checksum_pl = TCP_checksum[15:0];
 
@@ -20,17 +22,20 @@ module chksum_tcp_pl #(
         if (!nRST) begin
             TCP_checksum <= 0;
         end else begin
-            TCP_checksum <= (nTCP_checksum[15:0] + nTCP_checksum[16]);
+            TCP_checksum <= nTCP_checksum;
         end
     end
 
 
     always_comb begin
-        nTCP_checksum = 0;
+        nTCP_checksum = TCP_checksum;
         if (clear) begin
             nTCP_checksum = 0;
         end else if (FIFO_rd_en) begin
-            nTCP_checksum = TCP_checksum + TCP_payload_tx[15:0] + TCP_payload_tx[31:16] + TCP_payload_tx[47:32] + TCP_payload_tx[63:48];
+            temp = {3'b0, TCP_checksum[15:0]} + TCP_payload_tx[15:0] + TCP_payload_tx[31:16] + TCP_payload_tx[47:32] + TCP_payload_tx[63:48];
+            temp = temp[15:0] + temp[19:16];
+            temp = temp[15:0] + temp[16];
+            nTCP_checksum = temp[16:0];
         end
     end
 

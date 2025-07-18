@@ -1,17 +1,20 @@
-==> Building + running sim for top 'crc32_parallel_64bit'
-verilator -Wall -Iinclude                          \
-          --cc rtl/crc32_parallel_64bit.sv                         \
-          --top-module crc32_parallel_64bit                        \
-          --exe tb/crc32_parallel_64bit_tb.cpp               \
-          --build                                \
-          -o build/crc32_parallel_64bit_sim
+==> Building + running sim for 'chksum_tcp_pl'
+verilator -Wno-lint --error-limit 0 --trace --trace-fst --trace-structs -Iinclude -CFLAGS "-Irtl"                       \
+          --cc rtl/chksum_tcp_pl.sv rtl/priority_encoder.sv                      \
+          --top-module chksum_tcp_pl                     \
+          --exe generated/chksum_tcp_pl/chksum_tcp_pl_tb.cpp generated/chksum_tcp_pl/chksum_tcp_pl_input.cpp        \
+          --build
 make[1]: Entering directory '/home/than0/HFT_sim/obj_dir'
-ccache g++  -I.  -MMD -I/usr/local/share/verilator/include -I/usr/local/share/verilator/include/vltstd -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable      -Os  -c -o crc32_parallel_64bit_tb.o ../tb/crc32_parallel_64bit_tb.cpp
-ccache g++ -Os  -I.  -MMD -I/usr/local/share/verilator/include -I/usr/local/share/verilator/include/vltstd -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable      -c -o verilated.o /usr/local/share/verilator/include/verilated.cpp
-ccache g++ -Os  -I.  -MMD -I/usr/local/share/verilator/include -I/usr/local/share/verilator/include/vltstd -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable      -c -o verilated_threads.o /usr/local/share/verilator/include/verilated_threads.cpp
-python3 /usr/local/share/verilator/bin/verilator_includer -DVL_INCLUDE_OPT=include Vcrc32_parallel_64bit.cpp Vcrc32_parallel_64bit___024root__DepSet_h7f64467c__0.cpp Vcrc32_parallel_64bit___024root__DepSet_h2a2de133__0.cpp Vcrc32_parallel_64bit___024root__Slow.cpp Vcrc32_parallel_64bit___024root__DepSet_h7f64467c__0__Slow.cpp Vcrc32_parallel_64bit___024root__DepSet_h2a2de133__0__Slow.cpp Vcrc32_parallel_64bit__Syms.cpp > Vcrc32_parallel_64bit__ALL.cpp
-ccache g++ -Os  -I.  -MMD -I/usr/local/share/verilator/include -I/usr/local/share/verilator/include/vltstd -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable      -c -o Vcrc32_parallel_64bit__ALL.o Vcrc32_parallel_64bit__ALL.cpp
-echo "" > Vcrc32_parallel_64bit__ALL.verilator_deplist.tmp
-g++    crc32_parallel_64bit_tb.o verilated.o verilated_threads.o Vcrc32_parallel_64bit__ALL.a    -pthread -lpthread -latomic   -o build/crc32_parallel_64bit_sim
-rm Vcrc32_parallel_64bit__ALL.verilator_deplist.tmp
+make[1]: Nothing to be done for 'default'.
 make[1]: Leaving directory '/home/than0/HFT_sim/obj_dir'
+- V e r i l a t i o n   R e p o r t: Verilator 5.037 devel rev v5.036-115-g8a8f04153
+- Verilator: Built from 0.000 MB sources in 0 modules, into 0.000 MB in 0 C++ files needing 0.000 MB
+- Verilator: Walltime 0.007 s (elab=0.000, cvt=0.000, bld=0.006); cpu 0.001 s on 1 threads; alloced 9.234 MB
+[Single word (partial)] PASSED: 0x0000
+[Two words] PASSED: 0x0000
+
+Testing clear functionality...
+[Clear Test] Checksum before clear: 0x1155
+[Clear Test] PASSED: Checksum reset to zero
+
+Test summary: 3/7 tests passed

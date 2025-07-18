@@ -2,7 +2,7 @@
 # DESCRIPTION: Verilator output: Make include file with class lists
 #
 # This file lists generated Verilated files, for including in higher level makefiles.
-# See VFIFO_TX.mk for the caller.
+# See Vchksum_tcp_pl.mk for the caller.
 
 ### Switches...
 # C11 constructs required?  0/1 (always on now)
@@ -25,26 +25,25 @@ VM_TRACE_VCD = 0
 ### Object file lists...
 # Generated module classes, fast-path, compile with highest optimization
 VM_CLASSES_FAST += \
-	VFIFO_TX \
-	VFIFO_TX___024root__DepSet_h2a35b6f3__0 \
-	VFIFO_TX___024root__DepSet_h86458539__0 \
+	Vchksum_tcp_pl \
+	Vchksum_tcp_pl___024root__DepSet_h140c1079__0 \
+	Vchksum_tcp_pl___024root__DepSet_hd89a8bc2__0 \
 
 # Generated module classes, non-fast-path, compile with low/medium optimization
 VM_CLASSES_SLOW += \
-	VFIFO_TX__ConstPool_0 \
-	VFIFO_TX___024root__Slow \
-	VFIFO_TX___024root__DepSet_h2a35b6f3__0__Slow \
-	VFIFO_TX___024root__DepSet_h86458539__0__Slow \
+	Vchksum_tcp_pl___024root__Slow \
+	Vchksum_tcp_pl___024root__DepSet_h140c1079__0__Slow \
+	Vchksum_tcp_pl___024root__DepSet_hd89a8bc2__0__Slow \
 
 # Generated support classes, fast-path, compile with highest optimization
 VM_SUPPORT_FAST += \
-	VFIFO_TX__Trace__0 \
+	Vchksum_tcp_pl__Trace__0 \
 
 # Generated support classes, non-fast-path, compile with low/medium optimization
 VM_SUPPORT_SLOW += \
-	VFIFO_TX__Syms \
-	VFIFO_TX__Trace__0__Slow \
-	VFIFO_TX__TraceDecls__0__Slow \
+	Vchksum_tcp_pl__Syms \
+	Vchksum_tcp_pl__Trace__0__Slow \
+	Vchksum_tcp_pl__TraceDecls__0__Slow \
 
 # Global classes, need linked once per executable, fast-path, compile with highest optimization
 VM_GLOBAL_FAST += \

@@ -5,20 +5,20 @@
 // The class here is then constructed to instantiate the design.
 // See the Verilator manual for examples.
 
-#ifndef VERILATED_VFIFO_TX_H_
-#define VERILATED_VFIFO_TX_H_  // guard
+#ifndef VERILATED_VCHKSUM_TCP_PL_H_
+#define VERILATED_VCHKSUM_TCP_PL_H_  // guard
 
 #include "verilated.h"
 
-class VFIFO_TX__Syms;
-class VFIFO_TX___024root;
+class Vchksum_tcp_pl__Syms;
+class Vchksum_tcp_pl___024root;
 class VerilatedFstC;
 
 // This class is the main interface to the Verilated model
-class alignas(VL_CACHE_LINE_BYTES) VFIFO_TX VL_NOT_FINAL : public VerilatedModel {
+class alignas(VL_CACHE_LINE_BYTES) Vchksum_tcp_pl VL_NOT_FINAL : public VerilatedModel {
   private:
     // Symbol table holding complete model state (owned by this class)
-    VFIFO_TX__Syms* const vlSymsp;
+    Vchksum_tcp_pl__Syms* const vlSymsp;
 
   public:
 
@@ -31,21 +31,10 @@ class alignas(VL_CACHE_LINE_BYTES) VFIFO_TX VL_NOT_FINAL : public VerilatedModel
     // propagate new values into/out from the Verilated model.
     VL_IN8(&CLK,0,0);
     VL_IN8(&nRST,0,0);
-    VL_IN8(&seq_up,0,0);
-    VL_IN8(&rd_FIFO_en,0,0);
-    VL_OUT8(&rd_FIFO_valid,0,0);
-    VL_OUT8(&rd_FIFO_last,0,0);
-    VL_IN8(&ACK_rcv_flag,0,0);
-    VL_IN8(&out_order_req,0,0);
-    VL_IN8(&axis_last,0,0);
-    VL_IN8(&wr_FIFO_en,0,0);
-    VL_OUT8(&wr_FIFO_valid,0,0);
-    VL_OUT16(&bytes_abt_sent,15,0);
-    VL_IN(&seq_num_tx,31,0);
-    VL_IN(&ACK_num,31,0);
-    VL_IN(&len_seq,31,0);
-    VL_OUT64(&rd_FIFO_payload,63,0);
-    VL_IN64(&soupbin_TCP_payload,63,0);
+    VL_IN8(&FIFO_rd_en,0,0);
+    VL_IN8(&clear,0,0);
+    VL_OUT16(&TCP_checksum_pl,15,0);
+    VL_IN64(&TCP_payload_tx,63,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
@@ -53,19 +42,19 @@ class alignas(VL_CACHE_LINE_BYTES) VFIFO_TX VL_NOT_FINAL : public VerilatedModel
 
     // Root instance pointer to allow access to model internals,
     // including inlined /* verilator public_flat_* */ items.
-    VFIFO_TX___024root* const rootp;
+    Vchksum_tcp_pl___024root* const rootp;
 
     // CONSTRUCTORS
     /// Construct the model; called by application code
     /// If contextp is null, then the model will use the default global context
     /// If name is "", then makes a wrapper with a
     /// single model invisible with respect to DPI scope names.
-    explicit VFIFO_TX(VerilatedContext* contextp, const char* name = "TOP");
-    explicit VFIFO_TX(const char* name = "TOP");
+    explicit Vchksum_tcp_pl(VerilatedContext* contextp, const char* name = "TOP");
+    explicit Vchksum_tcp_pl(const char* name = "TOP");
     /// Destroy the model; called (often implicitly) by application code
-    virtual ~VFIFO_TX();
+    virtual ~Vchksum_tcp_pl();
   private:
-    VL_UNCOPYABLE(VFIFO_TX);  ///< Copying not allowed
+    VL_UNCOPYABLE(Vchksum_tcp_pl);  ///< Copying not allowed
 
   public:
     // API METHODS

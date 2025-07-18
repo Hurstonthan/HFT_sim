@@ -2,9 +2,9 @@
 # DESCRIPTION: Verilator output: Makefile for building Verilated archive or executable
 #
 # Execute this makefile from the object directory:
-#    make -f VFIFO_TX.mk
+#    make -f Vchksum_tcp_pl.mk
 
-default: VFIFO_TX
+default: Vchksum_tcp_pl
 
 ### Constants...
 # Perl executable (from $PERL, defaults to 'perl' if not set)
@@ -32,9 +32,9 @@ VM_SC_TARGET_ARCH = linux
 
 ### Vars...
 # Design prefix (from --prefix)
-VM_PREFIX = VFIFO_TX
+VM_PREFIX = Vchksum_tcp_pl
 # Module prefix (from --prefix)
-VM_MODPREFIX = VFIFO_TX
+VM_MODPREFIX = Vchksum_tcp_pl
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
 	-Irtl \
@@ -45,31 +45,31 @@ VM_USER_LDLIBS = \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
-	FIFO_TX_input \
-	FIFO_TX_tb \
+	chksum_tcp_pl_input \
+	chksum_tcp_pl_tb \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
 	.. \
-	../generated/FIFO_TX \
+	../generated/chksum_tcp_pl \
 
 
 ### Default rules...
 # Include list of all generated classes
-include VFIFO_TX_classes.mk
+include Vchksum_tcp_pl_classes.mk
 # Include global rules
 include $(VERILATOR_ROOT)/include/verilated.mk
 
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-FIFO_TX_input.o: generated/FIFO_TX/FIFO_TX_input.cpp 
+chksum_tcp_pl_input.o: generated/chksum_tcp_pl/chksum_tcp_pl_input.cpp 
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST)  -c -o $@ $<
-FIFO_TX_tb.o: generated/FIFO_TX/FIFO_TX_tb.cpp 
+chksum_tcp_pl_tb.o: generated/chksum_tcp_pl/chksum_tcp_pl_tb.cpp 
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST)  -c -o $@ $<
 
 ### Link rules... (from --exe)
-VFIFO_TX: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
+Vchksum_tcp_pl: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
 	$(LINK) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o $@
 
 

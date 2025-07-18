@@ -11,9 +11,7 @@ VerilatedFstC *tfp = new VerilatedFstC;
 static void tick() {
     top->CLK = 1;         
     top->eval();           
-    tfp->dump(main_time++);
-
-    
+    tfp->dump(main_time++);   
     top->CLK = 0;          
     top->eval();           
     tfp->dump(main_time++);

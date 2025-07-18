@@ -1,0 +1,41 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Fri Jul 18 05:42:05 2025
+[*]
+[dumpfile] "/home/than0/HFT_sim/chksum_tcp_pl.vcd"
+[dumpfile_mtime] "Fri Jul 18 05:40:51 2025"
+[dumpfile_size] 779
+[savefile] "/home/than0/HFT_sim/chksum_tcp_pl.gtkw"
+[timestart] 0
+[size] 3956 2432
+[pos] -1 -1
+*-2.719462 45 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[sst_width] 388
+[signals_width] 680
+[sst_expanded] 1
+[sst_vpaned_height] 756
+@28
+TOP.CLK
+TOP.FIFO_rd_en
+@22
+TOP.TCP_checksum_pl[15:0]
+@28
+TOP.TCP_payload_tx[63:0]
+TOP.clear
+TOP.nRST
+@200
+-
+@28
+TOP.chksum_tcp_pl.FIFO_rd_en
+@29
+TOP.chksum_tcp_pl.TCP_checksum[16:0]
+@22
+TOP.chksum_tcp_pl.TCP_checksum_pl[15:0]
+TOP.chksum_tcp_pl.TCP_payload_tx[63:0]
+@28
+TOP.chksum_tcp_pl.clear
+TOP.chksum_tcp_pl.nRST
+TOP.chksum_tcp_pl.nTCP_checksum[16:0]
+[pattern_trace] 1
+[pattern_trace] 0

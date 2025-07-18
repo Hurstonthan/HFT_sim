@@ -1,5 +1,3 @@
-
-
 #include "Vchksum_tcp_pl.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
@@ -12,12 +10,13 @@ static vluint64_t main_time = 0;
 double sc_time_stamp() { return main_time; }
 
 static void tick(Vchksum_tcp_pl *top, VerilatedFstC *tfp) {
+
     top->CLK = 1;         
     top->eval();           
-       
+    tfp->dump(main_time++);   
     top->CLK = 0;          
     top->eval();           
-    
+    tfp->dump(main_time++);
 }
 
 void reset_module(Vchksum_tcp_pl *top, VerilatedFstC *tfp) {
@@ -64,12 +63,10 @@ void send_payload(Vchksum_tcp_pl *top, VerilatedFstC *tfp,
     top->clear = 1;
     top->FIFO_rd_en = 0;
     tick(top, tfp);
-    
     top->clear = 0;
     
     // Send payload words
     for (size_t i = 0; i < payload.size(); i++) {
-        std::cout << "Payload size " << payload.size() <<std::endl;
         top->FIFO_rd_en = 1;
         top->TCP_payload_tx = payload[i];
         tick(top, tfp);
@@ -131,7 +128,7 @@ int main(int argc, char **argv) {
     
     std::vector<TestCase> test_cases = {
         // Empty payload
-        {"Zero payload", {}, 0xFFFF},  // One's complement of 0 is 0xFFFF
+        {"Zero payload", {0x00}, 0xFFFF},  // One's complement of 0 is 0xFFFF
         
         // Single word tests
         {"Single word (full)", {0x0123456789ABCDEF}, calculate_expected_checksum({0x0123456789ABCDEF})}, 
@@ -155,16 +152,11 @@ int main(int argc, char **argv) {
         // Send payload
         send_payload(top, tfp, test.payload);
         
-        
         // Verify checksum
         if (verify_checksum(top, test.expected_checksum, test.name)) {
             passed++;
         }
-        // Apply clear
-        // top->clear = 1;
-        // tick(top, tfp);
-        // top->clear = 0;
-        // tick(top, tfp);
+        
         // Add some idle cycles between tests
         for (int i = 0; i < 5; i++) tick(top, tfp);
     }
