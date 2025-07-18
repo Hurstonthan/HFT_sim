@@ -16,7 +16,7 @@ module chksum_tcp_pl #(
     logic [16:0] TCP_checksum, nTCP_checksum;
     logic [19:0] temp;
 
-    assign TCP_checksum_pl = TCP_checksum[15:0];
+    assign TCP_checksum_pl = (TCP_checksum[15:0] == 16'h0) ? 16'hFFFF : TCP_checksum;
 
     always_ff @(posedge CLK, negedge nRST) begin
         if (!nRST) begin
