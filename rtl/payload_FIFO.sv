@@ -13,26 +13,33 @@ module payload_FIFO #(
     input logic CLK,
     input logic nRST,
 
-    //Writing request
+    //TCP_receiver interface
     input logic nw_segment, //Signal to indicate nw segment come and handle flush case
-    input logic handshake_done,
-    input logic [31:0] seq_rcv_start,
     input logic TCP_flush,
     input logic axis_t_last,
-
-    input  logic wr_FIFO_en,
     input  logic [63:0] axis_data_rx,
+
+
+
+    //TCP_flow_logic interface
+    //Writing request
+    input logic handshake_done,
+    input logic [31:0] seq_rcv_start,
+    input  logic wr_FIFO_en,
     input  logic [7:0] wr_FIFO_offset,
+
     output logic  [FIFO_WIDTH - 1:0] wr_ptr_out,
     output logic  [FIFO_WIDTH - 1:0] wr_FIFO_len,
 
-    output logic rd_FIFO_en,
-    output logic [31:0] seq_rx_FIFO_rd,
+    
 
     //Getting the rd_ptr and len for reading
     input logic rd_FIFO_valid,
     input logic [FIFO_WIDTH - 1:0] rd_FIFO_ptr,
     input logic [FIFO_WIDTH - 1:0] rd_FIFO_len,
+
+    output logic rd_FIFO_en,
+    output logic [31:0] seq_rx_FIFO_rd,
     
     input logic axis_r_en,
     output logic axis_r_valid,

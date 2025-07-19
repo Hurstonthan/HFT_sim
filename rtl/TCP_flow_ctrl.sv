@@ -11,6 +11,7 @@ module TCP_flow_ctrl #(
     input logic CLK,
     input logic nRST,
 
+    input logic rcv_data,
     input logic [7:0] TCP_control_rx,
     input logic [31:0] seq_num_rx,
     input logic [31:0] ACK_rx,
@@ -18,7 +19,8 @@ module TCP_flow_ctrl #(
     input logic [15:0] window_size_rx,
     input logic [15:0] checksum_rx,
     input logic [15:0] urgent_pointer_rx,
-    input logic rcv_data,
+    
+    input logic end_ss,
     output logic TCP_tx_en,
     output logic seq_up,
     output logic [7:0] TCP_control_tx,
@@ -28,9 +30,9 @@ module TCP_flow_ctrl #(
     output logic [15:0] window_size_tx,
     output logic [15:0] checksum_tx,
     output logic [15:0] urgent_pointer_tx,
-    output logic end_ss,
     output logic TCP_stop_flg,
-    output logic full,
+    
+    input logic full,
     input logic timeout_flag,
     output logic hand_shake_done,
     input logic [31:0] ISN_num,

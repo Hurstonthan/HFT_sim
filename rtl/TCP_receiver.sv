@@ -25,6 +25,7 @@ module TCP_receiver #(
     output logic [15:0] window_size_rx,
     output logic [15:0] checksum_rx,
     output logic [15:0] urgent_pointer_rx,
+    
     output logic [15:0] TCP_len_data,
     output logic [63:0] TCP_payload_rx,
     output logic        TCP_valid,
