@@ -1,0 +1,305 @@
+Verilator Tree Dump (format 0x3900) from <e0> to <e1582>
+     NETLIST 0x55555621bca0 <e1#> {a0aa}  $root [1ns/10ps]
+    1: MODULE 0x5555562652e0 <e1580#> {d4ai}  UDP_tx  L2 [1ns]
+    1:2: PORT 0x5555562656b0 <e844#> {d6ar}  CLK
+    1:2: VAR 0x555556265940 <e847#> {d6ar} @dt=0@  CLK INPUT PORT
+    1:2:1: BASICDTYPE 0x555556265870 <e846#> {d6al} @dt=this@(w1)  logic kwd=logic
+    1:2: PORT 0x555556265b40 <e852#> {d6aw}  nRST
+    1:2: VAR 0x555556265dd0 <e851#> {d6aw} @dt=0@  nRST INPUT PORT
+    1:2:1: BASICDTYPE 0x555556265d00 <e850#> {d6al} @dt=this@(w1)  logic kwd=logic
+    1:2: PORT 0x555556266100 <e861#> {d7ar}  UDP_valid
+    1:2: VAR 0x555556266390 <e860#> {d7ar} @dt=0@  UDP_valid INPUT PORT
+    1:2:1: BASICDTYPE 0x5555562662c0 <e859#> {d7al} @dt=this@(w1)  logic kwd=logic
+    1:2: PORT 0x555556266d10 <e885#> {d8ay}  UDP_payload
+    1:2: VAR 0x555556267250 <e884#> {d8ay} @dt=0@  UDP_payload INPUT PORT
+    1:2:1: BASICDTYPE 0x555556266ed0 <e883#> {d8al} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1: RANGE 0x555556266fa0 <e880#> {d8ar}
+    1:2:1:1:1: CONST 0x555556267050 <e878#> {d8as} @dt=0x5555562667f0@(G/swu32/6)  ?32?sh3f
+    1:2:1:1:2: CONST 0x555556267150 <e879#> {d8av} @dt=0x55555623e850@(G/swu32/1)  ?32?sh0
+    1:2: PORT 0x555556267bd0 <e912#> {d9ay}  UDP_len
+    1:2: VAR 0x555556268110 <e911#> {d9ay} @dt=0@  UDP_len INPUT PORT
+    1:2:1: BASICDTYPE 0x555556267d90 <e910#> {d9al} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1: RANGE 0x555556267e60 <e907#> {d9ar}
+    1:2:1:1:1: CONST 0x555556267f10 <e905#> {d9as} @dt=0x5555562676b0@(G/swu32/4)  ?32?shf
+    1:2:1:1:2: CONST 0x555556268010 <e906#> {d9av} @dt=0x55555623e850@(G/swu32/1)  ?32?sh0
+    1:2: PORT 0x555556268a40 <e940#> {d10ay}  UDP_src_port
+    1:2: VAR 0x555556268f80 <e939#> {d10ay} @dt=0@  UDP_src_port INPUT PORT
+    1:2:1: BASICDTYPE 0x555556268c00 <e938#> {d10al} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1: RANGE 0x555556268cd0 <e935#> {d10ar}
+    1:2:1:1:1: CONST 0x555556268d80 <e933#> {d10as} @dt=0x5555562676b0@(G/swu32/4)  ?32?shf
+    1:2:1:1:2: CONST 0x555556268e80 <e934#> {d10av} @dt=0x55555623e850@(G/swu32/1)  ?32?sh0
+    1:2: PORT 0x5555562698b0 <e968#> {d11ay}  UDP_dest_port
+    1:2: VAR 0x555556269df0 <e967#> {d11ay} @dt=0@  UDP_dest_port INPUT PORT
+    1:2:1: BASICDTYPE 0x555556269a70 <e966#> {d11al} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1: RANGE 0x555556269b40 <e963#> {d11ar}
+    1:2:1:1:1: CONST 0x555556269bf0 <e961#> {d11as} @dt=0x5555562676b0@(G/swu32/4)  ?32?shf
+    1:2:1:1:2: CONST 0x555556269cf0 <e962#> {d11av} @dt=0x55555623e850@(G/swu32/1)  ?32?sh0
+    1:2: PORT 0x55555626a120 <e980#> {d12ar}  UDP_last
+    1:2: VAR 0x55555626a3b0 <e979#> {d12ar} @dt=0@  UDP_last INPUT PORT
+    1:2:1: BASICDTYPE 0x55555626a2e0 <e978#> {d12al} @dt=this@(w1)  logic kwd=logic
+    1:2: PORT 0x55555626ace0 <e1005#> {d14az}  IP_payload
+    1:2: VAR 0x55555626b220 <e1004#> {d14az} @dt=0@  IP_payload OUTPUT PORT
+    1:2:1: BASICDTYPE 0x55555626aea0 <e1003#> {d14am} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1: RANGE 0x55555626af70 <e1000#> {d14as}
+    1:2:1:1:1: CONST 0x55555626b020 <e998#> {d14at} @dt=0x5555562667f0@(G/swu32/6)  ?32?sh3f
+    1:2:1:1:2: CONST 0x55555626b120 <e999#> {d14aw} @dt=0x55555623e850@(G/swu32/1)  ?32?sh0
+    1:2: PORT 0x55555626b550 <e1017#> {d15as}  IP_valid
+    1:2: VAR 0x55555626b7e0 <e1016#> {d15as} @dt=0@  IP_valid OUTPUT PORT
+    1:2:1: BASICDTYPE 0x55555626b710 <e1015#> {d15am} @dt=this@(w1)  logic kwd=logic
+    1:2: PORT 0x55555626bb10 <e1026#> {d16as}  IP_last
+    1:2: VAR 0x55555626bda0 <e1025#> {d16as} @dt=0@  IP_last OUTPUT PORT
+    1:2:1: BASICDTYPE 0x55555626bcd0 <e1024#> {d16am} @dt=this@(w1)  logic kwd=logic
+    1:2: PACKAGEIMPORT 0x55555626bfd0 <e1369#> {d18as}  * -> PACKAGE 0x55555625ae80 <e1582#> {e5aj}  rx_pkg  L3 [LIB] [1ns]
+    1:2: TYPEDEF 0x55555626d0a0 <e1061#> {d26ah} @dt=0@  UDP_tx_t -> DEFIMPLICITDTYPE 0x55555626cf20 <e1060#> {d20an} @dt=0@  __typeimpenum3
+    1:2:1: DEFIMPLICITDTYPE 0x55555626cf20 <e1060#> {d20an} @dt=0@  __typeimpenum3
+    1:2:1:1: ENUMDTYPE 0x55555626cdf0 <e1058#> {d20an} @dt=0@ enum
+    1:2:1:1:1: BASICDTYPE 0x55555626c230 <e1056#> {d20as} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1:1:1: RANGE 0x55555626c790 <e1047#> {d20ay}
+    1:2:1:1:1:1:1: CONST 0x55555626c360 <e1045#> {d20az} @dt=0x55555623e850@(G/swu32/1)  ?32?sh1
+    1:2:1:1:1:1:2: CONST 0x55555626c590 <e1046#> {d20bb} @dt=0x55555623e850@(G/swu32/1)  ?32?sh0
+    1:2:1:1:2: ENUMITEM 0x55555626c900 <e1048#> {d21aj} @dt=0@  IDLE
+    1:2:1:1:2: ENUMITEM 0x55555626ca60 <e1050#> {d22aj} @dt=0@  SEND_HEADER
+    1:2:1:1:2: ENUMITEM 0x55555626cbc0 <e1052#> {d23aj} @dt=0@  SEND_PAYLOAD
+    1:2:1:1:2: ENUMITEM 0x55555626cd20 <e1054#> {d24aj} @dt=0@  DONE
+    1:2: VAR 0x55555626d550 <e1068#> {d28ao} @dt=0@  current_state VAR
+    1:2:1: REFDTYPE 0x55555626d460 <e1064#> {d28af} @dt=0@  UDP_tx_t -> UNLINKED
+    1:2: VAR 0x55555626d840 <e1067#> {d28bd} @dt=0@  nstate VAR
+    1:2:1: REFDTYPE 0x55555626d750 <e1066#> {d28af} @dt=0@  UDP_tx_t -> UNLINKED
+    1:2: VAR 0x55555626e4c0 <e1091#> {d29as} @dt=0@  computed_len VAR
+    1:2:1: BASICDTYPE 0x55555626e140 <e1090#> {d29af} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1: RANGE 0x55555626e210 <e1086#> {d29al}
+    1:2:1:1:1: CONST 0x55555626e2c0 <e1084#> {d29am} @dt=0x5555562676b0@(G/swu32/4)  ?32?shf
+    1:2:1:1:2: CONST 0x55555626e3c0 <e1085#> {d29ap} @dt=0x55555623e850@(G/swu32/1)  ?32?sh0
+    1:2: VAR 0x55555626f140 <e1117#> {d30as} @dt=0@  header_reg VAR
+    1:2:1: BASICDTYPE 0x55555626edc0 <e1116#> {d30af} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1: RANGE 0x55555626ee90 <e1109#> {d30al}
+    1:2:1:1:1: CONST 0x55555626ef40 <e1107#> {d30am} @dt=0x5555562667f0@(G/swu32/6)  ?32?sh3f
+    1:2:1:1:2: CONST 0x55555626f040 <e1108#> {d30ap} @dt=0x55555623e850@(G/swu32/1)  ?32?sh0
+    1:2: ALWAYS 0x555556272250 <e1206#> {d33af} [always_ff]
+    1:2:2: EVENTCONTROL 0x5555562721a0 <e1203#> {d33ap}
+    1:2:2:1: SENTREE 0x55555626f7c0 <e1204#> {d33ap}
+    1:2:2:1:1: SENITEM 0x55555626f4d0 <e1119#> {d33ar} [POS]
+    1:2:2:1:1:1: PARSEREF 0x55555626f400 <e1120#> {d33az} @dt=0@  CLK [TEXT]
+    1:2:2:1:1: SENITEM 0x55555626f710 <e1124#> {d33be} [NEG]
+    1:2:2:1:1:1: PARSEREF 0x55555626f640 <e1123#> {d33bm} @dt=0@  nRST [TEXT]
+    1:2:2:2: BEGIN 0x55555626f8d0 <e1126#> {d33bs} [UNNAMED]
+    1:2:2:2:2: IF 0x5555562720c0 <e1201#> {d34aj}
+    1:2:2:2:2:1: LOGNOT 0x55555626fc50 <e1202#> {d34an} @dt=0x555556240a60@(G/w1)
+    1:2:2:2:2:1:1: PARSEREF 0x55555626fb80 <e1129#> {d34ao} @dt=0@  nRST [TEXT]
+    1:2:2:2:2:2: BEGIN 0x55555626fdc0 <e1131#> {d34au} [UNNAMED]
+    1:2:2:2:2:2:2: ASSIGNDLY 0x5555562701b0 <e1134#> {d35bb} @dt=0@
+    1:2:2:2:2:2:2:1: PARSEREF 0x5555562700e0 <e1135#> {d35be} @dt=0@  IDLE [TEXT]
+    1:2:2:2:2:2:2:2: PARSEREF 0x55555626ff80 <e1136#> {d35an} @dt=0@  current_state [TEXT]
+    1:2:2:2:2:2:2: ASSIGNDLY 0x555556270650 <e1147#> {d36ay} @dt=0@
+    1:2:2:2:2:2:2:1: CONST 0x555556270450 <e1145#> {d36bb} @dt=0x555556240a60@(G/w1)  '0
+    1:2:2:2:2:2:2:2: PARSEREF 0x5555562702f0 <e1146#> {d36an} @dt=0@  header_reg [TEXT]
+    1:2:2:2:2:3: BEGIN 0x555556270820 <e1148#> {d37as} [UNNAMED]
+    1:2:2:2:2:3:2: ASSIGNDLY 0x555556270c10 <e1151#> {d38bb} @dt=0@
+    1:2:2:2:2:3:2:1: PARSEREF 0x555556270b40 <e1152#> {d38be} @dt=0@  nstate [TEXT]
+    1:2:2:2:2:3:2:2: PARSEREF 0x5555562709e0 <e1153#> {d38an} @dt=0@  current_state [TEXT]
+    1:2:2:2:2:3:2: ASSIGNDLY 0x555556271fb0 <e1200#> {d39ay} @dt=0@
+    1:2:2:2:2:3:2:1: REPLICATE 0x555556271c10 <e1198#> {d39bb} @dt=0x555556271e90@(G/w0)
+    1:2:2:2:2:3:2:1:1: CONCAT 0x555556271b30 <e1191#> {d39cx} @dt=0@
+    1:2:2:2:2:3:2:1:1:1: CONCAT 0x555556271920 <e1182#> {d39ci} @dt=0@
+    1:2:2:2:2:3:2:1:1:1:1: CONCAT 0x555556271710 <e1178#> {d39bu} @dt=0@
+    1:2:2:2:2:3:2:1:1:1:1:1: SELEXTRACT 0x5555562714d0 <e1174#> {d39bo} @dt=0@
+    1:2:2:2:2:3:2:1:1:1:1:1:1: PARSEREF 0x555556270ee0 <e1169#> {d39bc} @dt=0@  IP_DEST_ADDR [TEXT]
+    1:2:2:2:2:3:2:1:1:1:1:1:2: CONST 0x555556271040 <e1170#> {d39bp} @dt=0x5555562676b0@(G/swu32/4)  ?32?shf
+    1:2:2:2:2:3:2:1:1:1:1:1:3: CONST 0x5555562712d0 <e1171#> {d39bs} @dt=0x55555623e850@(G/swu32/1)  ?32?sh0
+    1:2:2:2:2:3:2:1:1:1:1:2: PARSEREF 0x555556271640 <e1175#> {d39bw} @dt=0@  UDP_src_port [TEXT]
+    1:2:2:2:2:3:2:1:1:1:2: PARSEREF 0x555556271850 <e1179#> {d39ck} @dt=0@  UDP_dest_port [TEXT]
+    1:2:2:2:2:3:2:1:1:2: PARSEREF 0x555556271a60 <e1183#> {d39cz} @dt=0@  computed_len [TEXT]
+    1:2:2:2:2:3:2:1:2: CONST 0x555556271cc0 <e1192#> {d39bb} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:3:2:2: PARSEREF 0x555556270d50 <e1199#> {d39an} @dt=0@  header_reg [TEXT]
+    1:2: ASSIGNW 0x5555562727d0 <e1216#> {d45az} @dt=0@
+    1:2:1: ADD 0x555556272720 <e1214#> {d45bj} @dt=0@
+    1:2:1:1: PARSEREF 0x5555562724f0 <e1211#> {d45bb} @dt=0@  UDP_len [TEXT]
+    1:2:1:2: PARSEREF 0x555556272650 <e1212#> {d45bl} @dt=0@  UDP_HEADER_LENGTH [TEXT]
+    1:2:2: PARSEREF 0x555556272390 <e1215#> {d45am} @dt=0@  computed_len [TEXT]
+    1:2: ALWAYS 0x555556278b00 <e1368#> {d47af} [always_comb]
+    1:2:2: BEGIN 0x555556272970 <e1217#> {d47ar} [UNNAMED]
+    1:2:2:2: ASSIGN 0x555556272d60 <e1220#> {d58aq} @dt=0@
+    1:2:2:2:1: PARSEREF 0x555556272c90 <e1221#> {d58as} @dt=0@  current_state [TEXT]
+    1:2:2:2:2: PARSEREF 0x555556272b30 <e1222#> {d58aj} @dt=0@  nstate [TEXT]
+    1:2:2:2: ASSIGN 0x555556273200 <e1233#> {d59as} @dt=0@
+    1:2:2:2:1: CONST 0x555556273000 <e1231#> {d59au} @dt=0x555556240a60@(G/w1)  1'h0
+    1:2:2:2:2: PARSEREF 0x555556272ea0 <e1232#> {d59aj} @dt=0@  IP_valid [TEXT]
+    1:2:2:2: ASSIGN 0x5555562736a0 <e1244#> {d60au} @dt=0@
+    1:2:2:2:1: CONST 0x5555562734a0 <e1242#> {d60aw} @dt=0x555556240a60@(G/w1)  '0
+    1:2:2:2:2: PARSEREF 0x555556273340 <e1243#> {d60aj} @dt=0@  IP_payload [TEXT]
+    1:2:2:2: CASE 0x555556273910 <e1366#> {d62aj}
+    1:2:2:2:1: PARSEREF 0x555556273840 <e1247#> {d62ap} @dt=0@  current_state [TEXT]
+    1:2:2:2:2: CASEITEM 0x555556274a70 <e1270#> {d63ar}
+    1:2:2:2:2:1: PARSEREF 0x555556273a80 <e1248#> {d63an} @dt=0@  IDLE [TEXT]
+    1:2:2:2:2:2: BEGIN 0x555556273b80 <e1249#> {d63at} [UNNAMED]
+    1:2:2:2:2:2:2: IF 0x555556274930 <e1268#> {d64ar}
+    1:2:2:2:2:2:2:1: PARSEREF 0x555556273e00 <e1269#> {d64av} @dt=0@  UDP_valid [TEXT]
+    1:2:2:2:2:2:2:2: BEGIN 0x555556273f90 <e1251#> {d64bg} [UNNAMED]
+    1:2:2:2:2:2:2:2:2: ASSIGN 0x5555562744b0 <e1259#> {d65be} @dt=0@
+    1:2:2:2:2:2:2:2:2:1: CONST 0x5555562742b0 <e1260#> {d65bg} @dt=0x555556240a60@(G/w1)  1'h1
+    1:2:2:2:2:2:2:2:2:2: PARSEREF 0x555556274150 <e1261#> {d65av} @dt=0@  IP_valid [TEXT]
+    1:2:2:2:2:2:2:2:2: ASSIGN 0x555556274820 <e1267#> {d67bc} @dt=0@
+    1:2:2:2:2:2:2:2:2:1: PARSEREF 0x555556274750 <e1265#> {d67be} @dt=0@  SEND_HEADER [TEXT]
+    1:2:2:2:2:2:2:2:2:2: PARSEREF 0x5555562745f0 <e1266#> {d67av} @dt=0@  nstate [TEXT]
+    1:2:2:2:2: CASEITEM 0x555556275a20 <e1296#> {d71ay}
+    1:2:2:2:2:1: PARSEREF 0x555556274b50 <e1271#> {d71an} @dt=0@  SEND_HEADER [TEXT]
+    1:2:2:2:2:2: BEGIN 0x555556274cb0 <e1272#> {d71ba} [UNNAMED]
+    1:2:2:2:2:2:2: ASSIGN 0x5555562750a0 <e1275#> {d73ay} @dt=0@
+    1:2:2:2:2:2:2:1: PARSEREF 0x555556274fd0 <e1276#> {d73ba} @dt=0@  SEND_PAYLOAD [TEXT]
+    1:2:2:2:2:2:2:2: PARSEREF 0x555556274e70 <e1277#> {d73ar} @dt=0@  nstate [TEXT]
+    1:2:2:2:2:2:2: ASSIGN 0x555556275540 <e1288#> {d74ba} @dt=0@
+    1:2:2:2:2:2:2:1: CONST 0x555556275340 <e1286#> {d74bc} @dt=0x555556240a60@(G/w1)  1'h1
+    1:2:2:2:2:2:2:2: PARSEREF 0x5555562751e0 <e1287#> {d74ar} @dt=0@  IP_valid [TEXT]
+    1:2:2:2:2:2:2: ASSIGN 0x5555562758b0 <e1294#> {d75bc} @dt=0@
+    1:2:2:2:2:2:2:1: PARSEREF 0x5555562757e0 <e1292#> {d75be} @dt=0@  header_reg [TEXT]
+    1:2:2:2:2:2:2:2: PARSEREF 0x555556275680 <e1293#> {d75ar} @dt=0@  IP_payload [TEXT]
+    1:2:2:2:2: CASEITEM 0x555556277770 <e1337#> {d78az}
+    1:2:2:2:2:1: PARSEREF 0x555556275b00 <e1297#> {d78an} @dt=0@  SEND_PAYLOAD [TEXT]
+    1:2:2:2:2:2: BEGIN 0x555556275c60 <e1298#> {d78bb} [UNNAMED]
+    1:2:2:2:2:2:2: ASSIGN 0x555556276180 <e1306#> {d79ba} @dt=0@
+    1:2:2:2:2:2:2:1: CONST 0x555556275f80 <e1307#> {d79bc} @dt=0x555556240a60@(G/w1)  1'h1
+    1:2:2:2:2:2:2:2: PARSEREF 0x555556275e20 <e1308#> {d79ar} @dt=0@  IP_valid [TEXT]
+    1:2:2:2:2:2:2: ASSIGN 0x5555562764f0 <e1314#> {d80bc} @dt=0@
+    1:2:2:2:2:2:2:1: PARSEREF 0x555556276420 <e1312#> {d80be} @dt=0@  UDP_payload [TEXT]
+    1:2:2:2:2:2:2:2: PARSEREF 0x5555562762c0 <e1313#> {d80ar} @dt=0@  IP_payload [TEXT]
+    1:2:2:2:2:2:2: IF 0x555556277630 <e1335#> {d81ar}
+    1:2:2:2:2:2:2:1: PARSEREF 0x555556276690 <e1334#> {d81av} @dt=0@  UDP_last [TEXT]
+    1:2:2:2:2:2:2:2: BEGIN 0x555556276820 <e1316#> {d81bf} [UNNAMED]
+    1:2:2:2:2:2:2:2:2: ASSIGN 0x555556276c10 <e1319#> {d82bc} @dt=0@
+    1:2:2:2:2:2:2:2:2:1: PARSEREF 0x555556276b40 <e1320#> {d82be} @dt=0@  DONE [TEXT]
+    1:2:2:2:2:2:2:2:2:2: PARSEREF 0x5555562769e0 <e1321#> {d82av} @dt=0@  nstate [TEXT]
+    1:2:2:2:2:2:2:3: IF 0x555556277580 <e1331#> {d83ba}
+    1:2:2:2:2:2:2:3:1: NOT 0x555556276f10 <e1332#> {d83be} @dt=0@
+    1:2:2:2:2:2:2:3:1:1: PARSEREF 0x555556276e40 <e1324#> {d83bf} @dt=0@  UDP_valid [TEXT]
+    1:2:2:2:2:2:2:3:2: BEGIN 0x555556277080 <e1325#> {d83bq} [UNNAMED]
+    1:2:2:2:2:2:2:3:2:2: ASSIGN 0x555556277470 <e1328#> {d84bc} @dt=0@
+    1:2:2:2:2:2:2:3:2:2:1: PARSEREF 0x5555562773a0 <e1329#> {d84be} @dt=0@  IDLE [TEXT]
+    1:2:2:2:2:2:2:3:2:2:2: PARSEREF 0x555556277240 <e1330#> {d84av} @dt=0@  nstate [TEXT]
+    1:2:2:2:2: CASEITEM 0x555556278350 <e1357#> {d88ar}
+    1:2:2:2:2:1: PARSEREF 0x555556277850 <e1338#> {d88an} @dt=0@  DONE [TEXT]
+    1:2:2:2:2:2: BEGIN 0x5555562779b0 <e1339#> {d88at} [UNNAMED]
+    1:2:2:2:2:2:2: ASSIGN 0x555556277ed0 <e1347#> {d89az} @dt=0@
+    1:2:2:2:2:2:2:1: CONST 0x555556277cd0 <e1348#> {d89bb} @dt=0x555556240a60@(G/w1)  1'h1
+    1:2:2:2:2:2:2:2: PARSEREF 0x555556277b70 <e1349#> {d89ar} @dt=0@  IP_last [TEXT]
+    1:2:2:2:2:2:2: ASSIGN 0x555556278240 <e1355#> {d90ay} @dt=0@
+    1:2:2:2:2:2:2:1: PARSEREF 0x555556278170 <e1353#> {d90ba} @dt=0@  IDLE [TEXT]
+    1:2:2:2:2:2:2:2: PARSEREF 0x555556278010 <e1354#> {d90ar} @dt=0@  nstate [TEXT]
+    1:2:2:2:2: CASEITEM 0x5555562789f0 <e1365#> {d98an}
+    1:2:2:2:2:2: BEGIN 0x5555562784f0 <e1358#> {d98aw} [UNNAMED]
+    1:2:2:2:2:2:2: ASSIGN 0x5555562788e0 <e1361#> {d99ay} @dt=0@
+    1:2:2:2:2:2:2:1: PARSEREF 0x555556278810 <e1362#> {d99ba} @dt=0@  IDLE [TEXT]
+    1:2:2:2:2:2:2:2: PARSEREF 0x5555562786b0 <e1363#> {d99ar} @dt=0@  nstate [TEXT]
+    1: PACKAGE 0x55555625ae80 <e1582#> {e5aj}  rx_pkg  L3 [LIB] [1ns]
+    1:2: VAR 0x555556259340 <e593#> {e17ap} @dt=0@  FPGA_MAC GPARAM
+    1:2:1: BASICDTYPE 0x555556258aa0 <e594#> {e17ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x555556260d50 <e595#> {e17ba} @dt=0x55555625afa0@(G/w48)  48'h123456
+    1:2: VAR 0x55555625beb0 <e607#> {e18ap} @dt=0@  NASDAQ_MAC GPARAM
+    1:2:1: BASICDTYPE 0x55555625b6f0 <e605#> {e18ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x555556258b70 <e606#> {e18bc} @dt=0x55555625afa0@(G/w48)  48'h65431
+    1:2: VAR 0x55555625dc70 <e618#> {e19ap} @dt=0@  IP_TYPE GPARAM
+    1:2:1: BASICDTYPE 0x55555625d290 <e616#> {e19ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x55555625ca70 <e617#> {e19az} @dt=0x55555625cb70@(G/w16)  16'h800
+    1:2: VAR 0x55555625ecf0 <e629#> {e22ap} @dt=0@  IP_VERSION GPARAM
+    1:2:1: BASICDTYPE 0x55555625ec20 <e627#> {e22ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x55555625d360 <e628#> {e22bc} @dt=0x55555625eb00@(G/w4)  4'h4
+    1:2: VAR 0x55555625f160 <e641#> {e23ap} @dt=0@  IP_HDL GPARAM
+    1:2:1: BASICDTYPE 0x55555625f090 <e639#> {e23ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x55555625eec0 <e640#> {e23ay} @dt=0x55555625eb00@(G/w4)  4'h5
+    1:2: VAR 0x55555625f620 <e652#> {e24ap} @dt=0@  UDP_PROTOCOL GPARAM
+    1:2:1: BASICDTYPE 0x55555625f550 <e650#> {e24ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x55555625f330 <e651#> {e24be} @dt=0x55555625f430@(G/w8)  8'h11
+    1:2: VAR 0x55555625fa90 <e664#> {e25ap} @dt=0@  TCP_PROTOCOL GPARAM
+    1:2:1: BASICDTYPE 0x55555625f9c0 <e662#> {e25ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x55555625f7f0 <e663#> {e25be} @dt=0x55555625f430@(G/w8)  8'h6
+    1:2: VAR 0x55555625ff00 <e676#> {e26ap} @dt=0@  ICMP_PROTOCOL GPARAM
+    1:2:1: BASICDTYPE 0x55555625fe30 <e674#> {e26ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x55555625fc60 <e675#> {e26bf} @dt=0x55555625f430@(G/w8)  8'h1
+    1:2: VAR 0x555556260370 <e688#> {e27ap} @dt=0@  IP_TTL GPARAM
+    1:2:1: BASICDTYPE 0x5555562602a0 <e686#> {e27ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x5555562600d0 <e687#> {e27ay} @dt=0x55555625f430@(G/w8)  8'h40
+    1:2: VAR 0x555556260830 <e699#> {e28ap} @dt=0@  IP_SRC_ADDR GPARAM
+    1:2:1: BASICDTYPE 0x555556260760 <e697#> {e28ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x555556260540 <e698#> {e28bd} @dt=0x555556260640@(G/w32)  32'hffffffff
+    1:2: VAR 0x555556260ff0 <e711#> {e29ap} @dt=0@  IP_DEST_ADDR GPARAM
+    1:2:1: BASICDTYPE 0x555556260f20 <e709#> {e29ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x555556260a00 <e710#> {e29be} @dt=0x555556260640@(G/w32)  32'haaaaaaaa
+    1:2: VAR 0x555556261400 <e723#> {e32ap} @dt=0@  UDP_SRC_ADDR GPARAM
+    1:2:1: BASICDTYPE 0x555556261330 <e721#> {e32ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x555556261160 <e722#> {e32be} @dt=0x55555625cb70@(G/w16)  16'h1234
+    1:2: VAR 0x555556261810 <e735#> {e33ap} @dt=0@  UDP_DEST_ADDR GPARAM
+    1:2:1: BASICDTYPE 0x555556261740 <e733#> {e33ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x555556261570 <e734#> {e33bf} @dt=0x55555625cb70@(G/w16)  16'h4321
+    1:2: VAR 0x555556261c80 <e747#> {e34ap} @dt=0@  UDP_HEADER_LENGTH GPARAM
+    1:2:1: BASICDTYPE 0x555556261bb0 <e745#> {e34ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x5555562619e0 <e746#> {e34bj} @dt=0x55555625cb70@(G/w16)  16'h8
+    1:2: VAR 0x5555562621b0 <e759#> {e35ap} @dt=0@  UDP_CHECKSUM GPARAM
+    1:2:1: BASICDTYPE 0x5555562620e0 <e757#> {e35ap} @dt=this@(nw0)  LOGIC_IMPLICIT kwd=LOGIC_IMPLICIT
+    1:2:3: CONST 0x555556261ee0 <e758#> {e35be} @dt=0x55555625cb70@(G/w16)  16'h0
+    1:2: TYPEDEF 0x555556263a20 <e801#> {e47ah} @dt=0@  IP_t -> DEFIMPLICITDTYPE 0x5555562638a0 <e800#> {e37an} @dt=0@  __typeimpenum1
+    1:2:1: DEFIMPLICITDTYPE 0x5555562638a0 <e800#> {e37an} @dt=0@  __typeimpenum1
+    1:2:1:1: ENUMDTYPE 0x555556263770 <e798#> {e37an} @dt=0@ enum
+    1:2:1:1:1: BASICDTYPE 0x5555562623b0 <e796#> {e37as} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1:1:1: RANGE 0x5555562629d0 <e777#> {e37ay}
+    1:2:1:1:1:1:1: CONST 0x555556262540 <e775#> {e37az} @dt=0x55555624be30@(G/swu32/2)  ?32?sh3
+    1:2:1:1:1:1:2: CONST 0x5555562627d0 <e776#> {e37bb} @dt=0x55555623e850@(G/swu32/1)  ?32?sh0
+    1:2:1:1:2: ENUMITEM 0x555556262b40 <e778#> {e38aj} @dt=0@  IDLE
+    1:2:1:1:2: ENUMITEM 0x555556262ca0 <e780#> {e39aj} @dt=0@  RCV_VER_IHL_DSCP_ECN
+    1:2:1:1:2: ENUMITEM 0x555556262e00 <e782#> {e40aj} @dt=0@  RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL
+    1:2:1:1:2: ENUMITEM 0x555556262ff0 <e784#> {e41aj} @dt=0@  RCV_SUM_SRC_ADDR_DEST_ADDR
+    1:2:1:1:2: ENUMITEM 0x555556263120 <e786#> {e42aj} @dt=0@  RCV_PAYLOAD_DEST
+    1:2:1:1:2: ENUMITEM 0x555556263280 <e788#> {e43aj} @dt=0@  CHK_SUM
+    1:2:1:1:2: ENUMITEM 0x5555562633e0 <e790#> {e44aj} @dt=0@  RCV_PAYLOAD
+    1:2:1:1:2: ENUMITEM 0x555556263540 <e792#> {e45aj} @dt=0@  DONE
+    1:2:1:1:2: ENUMITEM 0x5555562636a0 <e794#> {e46aj} @dt=0@  ERROR
+    1:2: TYPEDEF 0x555556264fe0 <e839#> {e57ah} @dt=0@  UDP_t -> DEFIMPLICITDTYPE 0x555556264e60 <e838#> {e49an} @dt=0@  __typeimpenum2
+    1:2:1: DEFIMPLICITDTYPE 0x555556264e60 <e838#> {e49an} @dt=0@  __typeimpenum2
+    1:2:1:1: ENUMDTYPE 0x555556264d30 <e836#> {e49an} @dt=0@ enum
+    1:2:1:1:1: BASICDTYPE 0x555556263c90 <e834#> {e49as} @dt=this@(w1)  logic kwd=logic
+    1:2:1:1:1:1: RANGE 0x5555562642b0 <e819#> {e49ay}
+    1:2:1:1:1:1:1: CONST 0x555556263e20 <e817#> {e49az} @dt=0x55555624be30@(G/swu32/2)  ?32?sh2
+    1:2:1:1:1:1:2: CONST 0x5555562640b0 <e818#> {e49bb} @dt=0x55555623e850@(G/swu32/1)  ?32?sh0
+    1:2:1:1:2: ENUMITEM 0x555556264420 <e820#> {e50aj} @dt=0@  UDP_IDLE
+    1:2:1:1:2: ENUMITEM 0x555556264580 <e822#> {e51aj} @dt=0@  UDP_HEADER
+    1:2:1:1:2: ENUMITEM 0x5555562646e0 <e824#> {e52aj} @dt=0@  UDP_CHK_SUM_PAYLOAD
+    1:2:1:1:2: ENUMITEM 0x555556264840 <e826#> {e53aj} @dt=0@  UDP_PAYLOAD
+    1:2:1:1:2: ENUMITEM 0x5555562649a0 <e828#> {e54aj} @dt=0@  UDP_DONE
+    1:2:1:1:2: ENUMITEM 0x555556264b00 <e830#> {e55aj} @dt=0@  UDP_CHK_SUM
+    1:2:1:1:2: ENUMITEM 0x555556264c60 <e832#> {e56aj} @dt=0@  UDP_ERROR
+    3: TYPETABLE 0x55555621c360 <e2#> {a0aa}
+		 integer  -> BASICDTYPE 0x555556239200 <e26#> {c31bb} @dt=this@(G/sw32)  integer [GENERIC] kwd=integer range=[31:0]
+		   logic  -> BASICDTYPE 0x555556240a60 <e104#> {c50aw} @dt=this@(G/w1)  logic [GENERIC] kwd=logic
+		  string  -> BASICDTYPE 0x55555624f7a0 <e510#> {c156ak} @dt=this@(G/str)  string [GENERIC] kwd=string
+		detailed  ->  BASICDTYPE 0x555556271e90 <e1195#> {d39bb} @dt=this@(G/w0)  logic [GENERIC] kwd=logic
+		detailed  ->  BASICDTYPE 0x555556240a60 <e104#> {c50aw} @dt=this@(G/w1)  logic [GENERIC] kwd=logic
+		detailed  ->  BASICDTYPE 0x55555625eb00 <e622#> {e22bc} @dt=this@(G/w4)  logic [GENERIC] kwd=logic range=[3:0]
+		detailed  ->  BASICDTYPE 0x55555625f430 <e645#> {e24be} @dt=this@(G/w8)  logic [GENERIC] kwd=logic range=[7:0]
+		detailed  ->  BASICDTYPE 0x55555625cb70 <e611#> {e19az} @dt=this@(G/w16)  logic [GENERIC] kwd=logic range=[15:0]
+		detailed  ->  BASICDTYPE 0x55555623e850 <e47#> {c33bg} @dt=this@(G/swu32/1)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x55555624be30 <e434#> {c119aw} @dt=this@(G/swu32/2)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x55555624c610 <e451#> {c121aw} @dt=this@(G/swu32/3)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x5555562676b0 <e896#> {d9as} @dt=this@(G/swu32/4)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x5555562667f0 <e869#> {d8as} @dt=this@(G/swu32/6)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x555556260640 <e692#> {e28bd} @dt=this@(G/w32)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x555556239200 <e26#> {c31bb} @dt=this@(G/sw32)  integer [GENERIC] kwd=integer range=[31:0]
+		detailed  ->  BASICDTYPE 0x55555625afa0 <e589#> {e17ba} @dt=this@(G/w48)  logic [GENERIC] kwd=logic range=[47:0]
+		detailed  ->  BASICDTYPE 0x55555624f7a0 <e510#> {c156ak} @dt=this@(G/str)  string [GENERIC] kwd=string
+		detailed  ->  BASICDTYPE 0x55555624f500 <e504#> {c156ar} @dt=this@(G/w296)  logic [GENERIC] kwd=logic range=[295:0]
+    3:1: BASICDTYPE 0x555556239200 <e26#> {c31bb} @dt=this@(G/sw32)  integer [GENERIC] kwd=integer range=[31:0]
+    3:1: BASICDTYPE 0x55555623e850 <e47#> {c33bg} @dt=this@(G/swu32/1)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x555556240a60 <e104#> {c50aw} @dt=this@(G/w1)  logic [GENERIC] kwd=logic
+    3:1: VOIDDTYPE 0x5555562417d0 <e127#> {c51av} @dt=this@(w0)void
+    3:1: BASICDTYPE 0x55555624be30 <e434#> {c119aw} @dt=this@(G/swu32/2)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x55555624c610 <e451#> {c121aw} @dt=this@(G/swu32/3)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x55555624f500 <e504#> {c156ar} @dt=this@(G/w296)  logic [GENERIC] kwd=logic range=[295:0]
+    3:1: BASICDTYPE 0x55555624f7a0 <e510#> {c156ak} @dt=this@(G/str)  string [GENERIC] kwd=string
+    3:1: BASICDTYPE 0x55555625afa0 <e589#> {e17ba} @dt=this@(G/w48)  logic [GENERIC] kwd=logic range=[47:0]
+    3:1: BASICDTYPE 0x55555625cb70 <e611#> {e19az} @dt=this@(G/w16)  logic [GENERIC] kwd=logic range=[15:0]
+    3:1: BASICDTYPE 0x55555625eb00 <e622#> {e22bc} @dt=this@(G/w4)  logic [GENERIC] kwd=logic range=[3:0]
+    3:1: BASICDTYPE 0x55555625f430 <e645#> {e24be} @dt=this@(G/w8)  logic [GENERIC] kwd=logic range=[7:0]
+    3:1: BASICDTYPE 0x555556260640 <e692#> {e28bd} @dt=this@(G/w32)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x5555562667f0 <e869#> {d8as} @dt=this@(G/swu32/6)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x5555562676b0 <e896#> {d9as} @dt=this@(G/swu32/4)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: BASICDTYPE 0x555556271e90 <e1195#> {d39bb} @dt=this@(G/w0)  logic [GENERIC] kwd=logic
+    3: CONSTPOOL 0x55555621c550 <e7#> {a0aa}
+    3:1: MODULE 0x55555621c6d0 <e6#> {a0aa}  @CONST-POOL@  L0 [NONE]
+    3:1:2: SCOPE 0x55555621c7f0 <e5#> {a0aa}  @CONST-POOL@ [abovep=0] [cellp=0] [modp=0x55555621c6d0]

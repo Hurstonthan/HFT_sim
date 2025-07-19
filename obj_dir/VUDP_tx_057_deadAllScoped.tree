@@ -1,0 +1,346 @@
+Verilator Tree Dump (format 0x3900) from <e5324> to <e5510>
+     NETLIST 0x55555621bca0 <e1> {a0aa}  $root [1ns/10ps]
+    1: MODULE 0x55555627ffc0 <e2688> {d4ai}  __024root  L1 [P] [1ns]
+    1:2: VAR 0x55555627d9b0 <e2692> {d6ar} @dt=0x555556265870@(G/w1)  CLK [PI] INPUT [CLK] [P] PORT
+    1:2: VAR 0x55555627dc00 <e2697> {d6aw} @dt=0x555556265870@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2: VAR 0x55555627df40 <e2703> {d7ar} @dt=0x555556265870@(G/w1)  UDP_valid [PI] INPUT [P] PORT
+    1:2: VAR 0x55555627e280 <e2709> {d8ay} @dt=0x555556266ed0@(G/w64)  UDP_payload [PI] INPUT [P] PORT
+    1:2: VAR 0x55555627e5c0 <e2715> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len [PI] INPUT [P] PORT
+    1:2: VAR 0x55555627e900 <e2721> {d10ay} @dt=0x555556267d90@(G/w16)  UDP_src_port [PI] INPUT [P] PORT
+    1:2: VAR 0x55555627ec40 <e2727> {d11ay} @dt=0x555556267d90@(G/w16)  UDP_dest_port [PI] INPUT [P] PORT
+    1:2: VAR 0x55555627ef80 <e2733> {d12ar} @dt=0x555556265870@(G/w1)  UDP_last [PI] INPUT [P] PORT
+    1:2: VAR 0x55555627f2c0 <e2739> {d14az} @dt=0x555556266ed0@(G/w64)  IP_payload [PO] OUTPUT [P] PORT
+    1:2: VAR 0x55555627f600 <e2745> {d15as} @dt=0x555556265870@(G/w1)  IP_valid [PO] OUTPUT [P] PORT
+    1:2: VAR 0x55555628bf30 <e2751> {d16as} @dt=0x555556265870@(G/w1)  IP_last [PO] OUTPUT [P] [LATCHED] PORT
+    1:2: CELL 0x55555628c270 <e3879> {e5aj}  __PVT__rx_pkg -> PACKAGE 0x55555625ae80 <e2028> {e5aj}  rx_pkg  L3 [LIB] [1ns]
+    1:2: VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2: VAR 0x55555626d840 <e2292> {d28bd} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [VSTATIC]  VAR
+    1:2: VAR 0x55555626f140 <e2499> {d30as} @dt=0x555556266ed0@(G/w64)  UDP_tx__DOT__header_reg [VSTATIC]  VAR
+    1:2: TOPSCOPE 0x55555628bc80 <e3466> {d4ai}
+    1:2:2: SCOPE 0x55555629fe40 <e3880> {d4ai}  TOP [abovep=0] [cellp=0] [modp=0x55555627ffc0]
+    1:2:2:1: VARSCOPE 0x5555562a0b40 <e3468> {d6ar} u4=0x1 @dt=0x555556265870@(G/w1)  TOP->CLK [T] [scopep=0x55555629fe40] -> VAR 0x55555627d9b0 <e2692> {d6ar} @dt=0x555556265870@(G/w1)  CLK [PI] INPUT [CLK] [P] PORT
+    1:2:2:1: VARSCOPE 0x5555562a0c00 <e3471> {d6aw} u4=0x1 @dt=0x555556265870@(G/w1)  TOP->nRST [T] [scopep=0x55555629fe40] -> VAR 0x55555627dc00 <e2697> {d6aw} @dt=0x555556265870@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2:2:1: VARSCOPE 0x5555562a0cc0 <e3474> {d7ar} @dt=0x555556265870@(G/w1)  TOP->UDP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627df40 <e2703> {d7ar} @dt=0x555556265870@(G/w1)  UDP_valid [PI] INPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x5555562a0d80 <e3477> {d8ay} @dt=0x555556266ed0@(G/w64)  TOP->UDP_payload [T] [scopep=0x55555629fe40] -> VAR 0x55555627e280 <e2709> {d8ay} @dt=0x555556266ed0@(G/w64)  UDP_payload [PI] INPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x5555562a0e40 <e3480> {d9ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_len [T] [scopep=0x55555629fe40] -> VAR 0x55555627e5c0 <e2715> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len [PI] INPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x5555562a0f00 <e3483> {d10ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_src_port [T] [scopep=0x55555629fe40] -> VAR 0x55555627e900 <e2721> {d10ay} @dt=0x555556267d90@(G/w16)  UDP_src_port [PI] INPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x5555562a0fc0 <e3486> {d11ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_dest_port [T] [scopep=0x55555629fe40] -> VAR 0x55555627ec40 <e2727> {d11ay} @dt=0x555556267d90@(G/w16)  UDP_dest_port [PI] INPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x5555562a1080 <e3489> {d12ar} @dt=0x555556265870@(G/w1)  TOP->UDP_last [T] [scopep=0x55555629fe40] -> VAR 0x55555627ef80 <e2733> {d12ar} @dt=0x555556265870@(G/w1)  UDP_last [PI] INPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x5555562a1140 <e3492> {d14az} @dt=0x555556266ed0@(G/w64)  TOP->IP_payload [T] [scopep=0x55555629fe40] -> VAR 0x55555627f2c0 <e2739> {d14az} @dt=0x555556266ed0@(G/w64)  IP_payload [PO] OUTPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x5555562a1200 <e3495> {d15as} @dt=0x555556265870@(G/w1)  TOP->IP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627f600 <e2745> {d15as} @dt=0x555556265870@(G/w1)  IP_valid [PO] OUTPUT [P] PORT
+    1:2:2:1: VARSCOPE 0x5555562a12c0 <e3498> {d16as} @dt=0x555556265870@(G/w1)  TOP->IP_last [T] [scopep=0x55555629fe40] -> VAR 0x55555628bf30 <e2751> {d16as} @dt=0x555556265870@(G/w1)  IP_last [PO] OUTPUT [P] [LATCHED] PORT
+    1:2:2:1: VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:1: VARSCOPE 0x5555562a3af0 <e3547> {d28bd} @dt=0x55555626d750@(w2)ref  TOP->UDP_tx__DOT__nstate [T] [scopep=0x55555629fe40] -> VAR 0x55555626d840 <e2292> {d28bd} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [VSTATIC]  VAR
+    1:2:2:1: VARSCOPE 0x5555562a3cf0 <e3553> {d30as} @dt=0x555556266ed0@(G/w64)  TOP->UDP_tx__DOT__header_reg [T] [scopep=0x55555629fe40] -> VAR 0x55555626f140 <e2499> {d30as} @dt=0x555556266ed0@(G/w64)  UDP_tx__DOT__header_reg [VSTATIC]  VAR
+    1:2:2:2: ACTIVE 0x5555562afd50 <e3920> {d6ar} => SENTREE 0x5555562afae0 <e3919> {d6ar}
+    1:2:2:2:1: SENTREE 0x5555562afae0 <e3919> {d6ar}
+    1:2:2:2:1:1: SENITEM 0x5555562b01d0 <e3916> {d6ar} [COMBO]
+    1:2:2:2:2: ALWAYS 0x5555562b3700 <e4518> {d47af}
+    1:2:2:2:2:2: ASSIGN 0x5555562b3860 <e3977> {d58aq} @dt=0x55555626d750@(w2)ref
+    1:2:2:2:2:2:1: VARREF 0x5555562b3910 <e2412> {d58as} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:2: VARREF 0x5555562b39f0 <e2410> {d58aj} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [LV] => VARSCOPE 0x5555562a3af0 <e3547> {d28bd} @dt=0x55555626d750@(w2)ref  TOP->UDP_tx__DOT__nstate [T] [scopep=0x55555629fe40] -> VAR 0x55555626d840 <e2292> {d28bd} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [VSTATIC]  VAR
+    1:2:2:2:2:2: IF 0x5555562b5e30 <e4009> {d62ap}
+    1:2:2:2:2:2:1: SEL 0x5555562b5ee0 <e4008> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:1:1: VARREF 0x5555562b5fa0 <e3800> {d62ap} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:1:2: CONST 0x5555562b6080 <e3801> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:1:3: CONST 0x5555562b6180 <e3802> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:2: IF 0x5555562b91d0 <e4054> {d62ap}
+    1:2:2:2:2:2:2:1: SEL 0x5555562b9280 <e4053> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:2:1:1: VARREF 0x5555562b9340 <e3767> {d62ap} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:2:1:2: CONST 0x5555562b9420 <e3768> {d62ap} @dt=0x555556260640@(G/w32)  32'h0
+    1:2:2:2:2:2:2:1:3: CONST 0x5555562b9520 <e3769> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:2:2: ASSIGN 0x5555562ba410 <e4066> {d90ay} @dt=0x55555626d750@(w2)ref
+    1:2:2:2:2:2:2:2:1: CONST 0x5555562ba4c0 <e2656> {d90ba} @dt=0x55555626cdf0@(w2)enum  2'h0
+    1:2:2:2:2:2:2:2:2: VARREF 0x5555562ba5c0 <e2465> {d90ar} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [LV] => VARSCOPE 0x5555562a3af0 <e3547> {d28bd} @dt=0x55555626d750@(w2)ref  TOP->UDP_tx__DOT__nstate [T] [scopep=0x55555629fe40] -> VAR 0x55555626d840 <e2292> {d28bd} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [VSTATIC]  VAR
+    1:2:2:2:2:2:2:3: IF 0x5555562bb060 <e4078> {d81ar}
+    1:2:2:2:2:2:2:3:1: VARREF 0x5555562bb110 <e4077> {d81av} @dt=0x555556265870@(G/w1)  UDP_last [RV] <- VARSCOPE 0x5555562a1080 <e3489> {d12ar} @dt=0x555556265870@(G/w1)  TOP->UDP_last [T] [scopep=0x55555629fe40] -> VAR 0x55555627ef80 <e2733> {d12ar} @dt=0x555556265870@(G/w1)  UDP_last [PI] INPUT [P] PORT
+    1:2:2:2:2:2:2:3:2: ASSIGN 0x5555562bb4e0 <e4084> {d82bc} @dt=0x55555626d750@(w2)ref
+    1:2:2:2:2:2:2:3:2:1: CONST 0x5555562bb590 <e2629> {d82be} @dt=0x55555626cdf0@(w2)enum  2'h3
+    1:2:2:2:2:2:2:3:2:2: VARREF 0x5555562bb690 <e2453> {d82av} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [LV] => VARSCOPE 0x5555562a3af0 <e3547> {d28bd} @dt=0x55555626d750@(w2)ref  TOP->UDP_tx__DOT__nstate [T] [scopep=0x55555629fe40] -> VAR 0x55555626d840 <e2292> {d28bd} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [VSTATIC]  VAR
+    1:2:2:2:2:2:2:3:3: IF 0x5555562bb8d0 <e4089> {d83ba}
+    1:2:2:2:2:2:2:3:3:1: NOT 0x5555562bb980 <e4088> {d83be} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:2:3:3:1:1: VARREF 0x5555562bba30 <e2550> {d83bf} @dt=0x555556265870@(G/w1)  UDP_valid [RV] <- VARSCOPE 0x5555562a0cc0 <e3474> {d7ar} @dt=0x555556265870@(G/w1)  TOP->UDP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627df40 <e2703> {d7ar} @dt=0x555556265870@(G/w1)  UDP_valid [PI] INPUT [P] PORT
+    1:2:2:2:2:2:2:3:3:2: ASSIGN 0x5555562bbf20 <e4095> {d84bc} @dt=0x55555626d750@(w2)ref
+    1:2:2:2:2:2:2:3:3:2:1: CONST 0x5555562bbfd0 <e2638> {d84be} @dt=0x55555626cdf0@(w2)enum  2'h0
+    1:2:2:2:2:2:2:3:3:2:2: VARREF 0x5555562bc0d0 <e2456> {d84av} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [LV] => VARSCOPE 0x5555562a3af0 <e3547> {d28bd} @dt=0x55555626d750@(w2)ref  TOP->UDP_tx__DOT__nstate [T] [scopep=0x55555629fe40] -> VAR 0x55555626d840 <e2292> {d28bd} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [VSTATIC]  VAR
+    1:2:2:2:2:2:3: IF 0x5555562bd420 <e4115> {d62ap}
+    1:2:2:2:2:2:3:1: SEL 0x5555562bd4d0 <e4114> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:3:1:1: VARREF 0x5555562bd590 <e3730> {d62ap} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:3:1:2: CONST 0x5555562bd670 <e3731> {d62ap} @dt=0x555556260640@(G/w32)  32'h0
+    1:2:2:2:2:2:3:1:3: CONST 0x5555562bd770 <e3732> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:3:2: ASSIGN 0x5555562bde20 <e4121> {d73ay} @dt=0x55555626d750@(w2)ref
+    1:2:2:2:2:2:3:2:1: CONST 0x5555562bded0 <e2611> {d73ba} @dt=0x55555626cdf0@(w2)enum  2'h2
+    1:2:2:2:2:2:3:2:2: VARREF 0x5555562bdfd0 <e2439> {d73ar} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [LV] => VARSCOPE 0x5555562a3af0 <e3547> {d28bd} @dt=0x55555626d750@(w2)ref  TOP->UDP_tx__DOT__nstate [T] [scopep=0x55555629fe40] -> VAR 0x55555626d840 <e2292> {d28bd} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [VSTATIC]  VAR
+    1:2:2:2:2:2:3:3: IF 0x5555562bea00 <e4133> {d64ar}
+    1:2:2:2:2:2:3:3:1: VARREF 0x5555562beab0 <e4132> {d64av} @dt=0x555556265870@(G/w1)  UDP_valid [RV] <- VARSCOPE 0x5555562a0cc0 <e3474> {d7ar} @dt=0x555556265870@(G/w1)  TOP->UDP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627df40 <e2703> {d7ar} @dt=0x555556265870@(G/w1)  UDP_valid [PI] INPUT [P] PORT
+    1:2:2:2:2:2:3:3:2: ASSIGN 0x5555562bf110 <e4140> {d67bc} @dt=0x55555626d750@(w2)ref
+    1:2:2:2:2:2:3:3:2:1: CONST 0x5555562bf1c0 <e2593> {d67be} @dt=0x55555626cdf0@(w2)enum  2'h1
+    1:2:2:2:2:2:3:3:2:2: VARREF 0x5555562bf2c0 <e2434> {d67av} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [LV] => VARSCOPE 0x5555562a3af0 <e3547> {d28bd} @dt=0x55555626d750@(w2)ref  TOP->UDP_tx__DOT__nstate [T] [scopep=0x55555629fe40] -> VAR 0x55555626d840 <e2292> {d28bd} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [VSTATIC]  VAR
+    1:2:2:2:2: ALWAYS 0x5555562b3440 <e4447> {d47af}
+    1:2:2:2:2:2: ASSIGN 0x5555562b3ad0 <e3978> {d59as} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:1: CONST 0x5555562b3b80 <e2528> {d59au} @dt=0x555556265870@(G/w1)  1'h0
+    1:2:2:2:2:2:2: VARREF 0x5555562b3c80 <e2529> {d59aj} @dt=0x555556265870@(G/w1)  IP_valid [LV] => VARSCOPE 0x5555562a1200 <e3495> {d15as} @dt=0x555556265870@(G/w1)  TOP->IP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627f600 <e2745> {d15as} @dt=0x555556265870@(G/w1)  IP_valid [PO] OUTPUT [P] PORT
+    1:2:2:2:2:2: IF 0x5555562b52d0 <e3999> {d62ap}
+    1:2:2:2:2:2:1: SEL 0x5555562b5380 <e3998> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:1:1: VARREF 0x5555562b5440 <e3800> {d62ap} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:1:2: CONST 0x5555562b5520 <e3801> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:1:3: CONST 0x5555562b5620 <e3802> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:2: IF 0x5555562b8c20 <e4049> {d62ap}
+    1:2:2:2:2:2:2:1: LOGNOT 0x5555562c8100 <e5152> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:2:1:1: SEL 0x5555562b8cd0 <e5147> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:2:1:1:1: VARREF 0x5555562b8d90 <e3767> {d62ap} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:2:1:1:2: CONST 0x5555562b8e70 <e3768> {d62ap} @dt=0x555556260640@(G/w32)  32'h0
+    1:2:2:2:2:2:2:1:1:3: CONST 0x5555562b8f70 <e3769> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:2:2: ASSIGN 0x5555562ba6a0 <e5144> {d79ba} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:2:2:1: CONST 0x5555562ba750 <e2544> {d79bc} @dt=0x555556265870@(G/w1)  1'h1
+    1:2:2:2:2:2:2:2:2: VARREF 0x5555562ba850 <e2545> {d79ar} @dt=0x555556265870@(G/w1)  IP_valid [LV] => VARSCOPE 0x5555562a1200 <e3495> {d15as} @dt=0x555556265870@(G/w1)  TOP->IP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627f600 <e2745> {d15as} @dt=0x555556265870@(G/w1)  IP_valid [PO] OUTPUT [P] PORT
+    1:2:2:2:2:2:3: IF 0x5555562bc8c0 <e4105> {d62ap}
+    1:2:2:2:2:2:3:1: SEL 0x5555562bc970 <e4104> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:3:1:1: VARREF 0x5555562bca30 <e3730> {d62ap} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:3:1:2: CONST 0x5555562bcb10 <e3731> {d62ap} @dt=0x555556260640@(G/w32)  32'h0
+    1:2:2:2:2:2:3:1:3: CONST 0x5555562bcc10 <e3732> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:3:2: ASSIGN 0x5555562be0b0 <e4122> {d74ba} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:3:2:1: CONST 0x5555562be160 <e2538> {d74bc} @dt=0x555556265870@(G/w1)  1'h1
+    1:2:2:2:2:2:3:2:2: VARREF 0x5555562be260 <e2539> {d74ar} @dt=0x555556265870@(G/w1)  IP_valid [LV] => VARSCOPE 0x5555562a1200 <e3495> {d15as} @dt=0x555556265870@(G/w1)  TOP->IP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627f600 <e2745> {d15as} @dt=0x555556265870@(G/w1)  IP_valid [PO] OUTPUT [P] PORT
+    1:2:2:2:2:2:3:3: IF 0x5555562be710 <e4128> {d64ar}
+    1:2:2:2:2:2:3:3:1: VARREF 0x5555562be7c0 <e4127> {d64av} @dt=0x555556265870@(G/w1)  UDP_valid [RV] <- VARSCOPE 0x5555562a0cc0 <e3474> {d7ar} @dt=0x555556265870@(G/w1)  TOP->UDP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627df40 <e2703> {d7ar} @dt=0x555556265870@(G/w1)  UDP_valid [PI] INPUT [P] PORT
+    1:2:2:2:2:2:3:3:2: ASSIGN 0x5555562bee80 <e4139> {d65be} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:3:3:2:1: CONST 0x5555562bef30 <e2535> {d65bg} @dt=0x555556265870@(G/w1)  1'h1
+    1:2:2:2:2:2:3:3:2:2: VARREF 0x5555562bf030 <e2536> {d65av} @dt=0x555556265870@(G/w1)  IP_valid [LV] => VARSCOPE 0x5555562a1200 <e3495> {d15as} @dt=0x555556265870@(G/w1)  TOP->IP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627f600 <e2745> {d15as} @dt=0x555556265870@(G/w1)  IP_valid [PO] OUTPUT [P] PORT
+    1:2:2:2:2: ALWAYS 0x5555562b32e0 <e4425> {d47af}
+    1:2:2:2:2:2: ASSIGN 0x5555562b3d60 <e3979> {d60au} @dt=0x555556266ed0@(G/w64)
+    1:2:2:2:2:2:1: CONST 0x5555562b3e10 <e2531> {d60aw} @dt=0x555556266ed0@(G/w64)  64'h0
+    1:2:2:2:2:2:2: VARREF 0x5555562b3f10 <e2532> {d60aj} @dt=0x555556266ed0@(G/w64)  IP_payload [LV] => VARSCOPE 0x5555562a1140 <e3492> {d14az} @dt=0x555556266ed0@(G/w64)  TOP->IP_payload [T] [scopep=0x55555629fe40] -> VAR 0x55555627f2c0 <e2739> {d14az} @dt=0x555556266ed0@(G/w64)  IP_payload [PO] OUTPUT [P] PORT
+    1:2:2:2:2:2: IF 0x5555562b4d20 <e3994> {d62ap}
+    1:2:2:2:2:2:1: SEL 0x5555562b4dd0 <e3993> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:1:1: VARREF 0x5555562b4e90 <e3800> {d62ap} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:1:2: CONST 0x5555562b4f70 <e3801> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:1:3: CONST 0x5555562b5070 <e3802> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:2: IF 0x5555562b8670 <e4044> {d62ap}
+    1:2:2:2:2:2:2:1: LOGNOT 0x5555562c9da0 <e5158> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:2:1:1: SEL 0x5555562b8720 <e5157> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:2:1:1:1: VARREF 0x5555562b87e0 <e3767> {d62ap} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:2:1:1:2: CONST 0x5555562b88c0 <e3768> {d62ap} @dt=0x555556260640@(G/w32)  32'h0
+    1:2:2:2:2:2:2:1:1:3: CONST 0x5555562b89c0 <e3769> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:2:2: ASSIGN 0x5555562ba930 <e5154> {d80bc} @dt=0x555556266ed0@(G/w64)
+    1:2:2:2:2:2:2:2:1: VARREF 0x5555562ba9e0 <e2452> {d80be} @dt=0x555556266ed0@(G/w64)  UDP_payload [RV] <- VARSCOPE 0x5555562a0d80 <e3477> {d8ay} @dt=0x555556266ed0@(G/w64)  TOP->UDP_payload [T] [scopep=0x55555629fe40] -> VAR 0x55555627e280 <e2709> {d8ay} @dt=0x555556266ed0@(G/w64)  UDP_payload [PI] INPUT [P] PORT
+    1:2:2:2:2:2:2:2:2: VARREF 0x5555562baac0 <e2547> {d80ar} @dt=0x555556266ed0@(G/w64)  IP_payload [LV] => VARSCOPE 0x5555562a1140 <e3492> {d14az} @dt=0x555556266ed0@(G/w64)  TOP->IP_payload [T] [scopep=0x55555629fe40] -> VAR 0x55555627f2c0 <e2739> {d14az} @dt=0x555556266ed0@(G/w64)  IP_payload [PO] OUTPUT [P] PORT
+    1:2:2:2:2:2:3: IF 0x5555562bc310 <e4100> {d62ap}
+    1:2:2:2:2:2:3:1: SEL 0x5555562bc3c0 <e4099> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:3:1:1: VARREF 0x5555562bc480 <e3730> {d62ap} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:3:1:2: CONST 0x5555562bc560 <e3731> {d62ap} @dt=0x555556260640@(G/w32)  32'h0
+    1:2:2:2:2:2:3:1:3: CONST 0x5555562bc660 <e3732> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:3:2: ASSIGN 0x5555562be340 <e4123> {d75bc} @dt=0x555556266ed0@(G/w64)
+    1:2:2:2:2:2:3:2:1: VARREF 0x5555562be3f0 <e2541> {d75be} @dt=0x555556266ed0@(G/w64)  UDP_tx__DOT__header_reg [RV] <- VARSCOPE 0x5555562a3cf0 <e3553> {d30as} @dt=0x555556266ed0@(G/w64)  TOP->UDP_tx__DOT__header_reg [T] [scopep=0x55555629fe40] -> VAR 0x55555626f140 <e2499> {d30as} @dt=0x555556266ed0@(G/w64)  UDP_tx__DOT__header_reg [VSTATIC]  VAR
+    1:2:2:2:2:2:3:2:2: VARREF 0x5555562be4d0 <e2542> {d75ar} @dt=0x555556266ed0@(G/w64)  IP_payload [LV] => VARSCOPE 0x5555562a1140 <e3492> {d14az} @dt=0x555556266ed0@(G/w64)  TOP->IP_payload [T] [scopep=0x55555629fe40] -> VAR 0x55555627f2c0 <e2739> {d14az} @dt=0x555556266ed0@(G/w64)  IP_payload [PO] OUTPUT [P] PORT
+    1:2:2:2:2: ALWAYS 0x5555562b2c00 <e4269> {d47af}
+    1:2:2:2:2:2: IF 0x5555562b63e0 <e4014> {d62ap}
+    1:2:2:2:2:2:1: SEL 0x5555562b6490 <e4013> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:1:1: VARREF 0x5555562b6550 <e3800> {d62ap} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:1:2: CONST 0x5555562b6630 <e3801> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:1:3: CONST 0x5555562b6730 <e3802> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:2: IF 0x5555562b9780 <e4059> {d62ap}
+    1:2:2:2:2:2:2:1: SEL 0x5555562b9830 <e4058> {d62ap} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:2:1:1: VARREF 0x5555562b98f0 <e3767> {d62ap} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2:2:2:1:2: CONST 0x5555562b99d0 <e3768> {d62ap} @dt=0x555556260640@(G/w32)  32'h0
+    1:2:2:2:2:2:2:1:3: CONST 0x5555562b9ad0 <e3769> {d62ap} @dt=0x555556260640@(G/w32)  32'h1
+    1:2:2:2:2:2:2:2: ASSIGN 0x5555562ba180 <e4065> {d89az} @dt=0x555556265870@(G/w1)
+    1:2:2:2:2:2:2:2:1: CONST 0x5555562ba230 <e2552> {d89bb} @dt=0x555556265870@(G/w1)  1'h1
+    1:2:2:2:2:2:2:2:2: VARREF 0x5555562ba330 <e2553> {d89ar} @dt=0x555556265870@(G/w1)  IP_last [LV] => VARSCOPE 0x5555562a12c0 <e3498> {d16as} @dt=0x555556265870@(G/w1)  TOP->IP_last [T] [scopep=0x55555629fe40] -> VAR 0x55555628bf30 <e2751> {d16as} @dt=0x555556265870@(G/w1)  IP_last [PO] OUTPUT [P] [LATCHED] PORT
+    1:2:2:2: ACTIVE 0x5555562b0660 <e3945> {d33af}  sequent => SENTREE 0x5555562aff50 <e3944> {d33ap}
+    1:2:2:2:1: SENTREE 0x5555562aff50 <e3944> {d33ap}
+    1:2:2:2:1:1: SENITEM 0x5555562b0000 <e1119> {d33ar} [POS]
+    1:2:2:2:1:1:1: VARREF 0x5555562b03f0 <e2309> {d33az} @dt=0x555556265870@(G/w1)  CLK [RV] <- VARSCOPE 0x5555562a0b40 <e3468> {d6ar} u4=0x1 @dt=0x555556265870@(G/w1)  TOP->CLK [T] [scopep=0x55555629fe40] -> VAR 0x55555627d9b0 <e2692> {d6ar} @dt=0x555556265870@(G/w1)  CLK [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:1:1: SENITEM 0x5555562b04d0 <e1124> {d33be} [NEG]
+    1:2:2:2:1:1:1: VARREF 0x5555562b0580 <e2500> {d33bm} @dt=0x555556265870@(G/w1)  nRST [RV] <- VARSCOPE 0x5555562a0c00 <e3471> {d6aw} u4=0x1 @dt=0x555556265870@(G/w1)  TOP->nRST [T] [scopep=0x55555629fe40] -> VAR 0x55555627dc00 <e2697> {d6aw} @dt=0x555556265870@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:2: ALWAYS 0x5555562bf500 <e4176> {d33af}
+    1:2:2:2:2:2: ASSIGNDLY 0x5555562c0090 <e5170> {d38bb} @dt=0x55555626d460@(w2)ref
+    1:2:2:2:2:2:1: COND 0x5555562c9e50 <e5168> {d38be} @dt=0x55555626d750@(w2)ref
+    1:2:2:2:2:2:1:1: VARREF 0x5555562bfcc0 <e5164> {d34ao} @dt=0x555556265870@(G/w1)  nRST [RV] <- VARSCOPE 0x5555562a0c00 <e3471> {d6aw} u4=0x1 @dt=0x555556265870@(G/w1)  TOP->nRST [T] [scopep=0x55555629fe40] -> VAR 0x55555627dc00 <e2697> {d6aw} @dt=0x555556265870@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:2:2:1:2: VARREF 0x5555562c0140 <e5165> {d38be} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [RV] <- VARSCOPE 0x5555562a3af0 <e3547> {d28bd} @dt=0x55555626d750@(w2)ref  TOP->UDP_tx__DOT__nstate [T] [scopep=0x55555629fe40] -> VAR 0x55555626d840 <e2292> {d28bd} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [VSTATIC]  VAR
+    1:2:2:2:2:2:1:3: CONST 0x5555562c0af0 <e5166> {d35be} @dt=0x55555626cdf0@(w2)enum  2'h0
+    1:2:2:2:2:2:2: VARREF 0x5555562c0220 <e2329> {d38an} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [LV] => VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:2: ALWAYS 0x5555562bf3a0 <e4166> {d33af}
+    1:2:2:2:2:2: ASSIGNDLY 0x5555562c0300 <e5134> {d39ay} @dt=0x555556266ed0@(G/w64)
+    1:2:2:2:2:2:1: COND 0x5555562c93e0 <e5132> {d39cx} @dt=0x555556266ed0@(G/w64)
+    1:2:2:2:2:2:1:1: VARREF 0x5555562bf9d0 <e5128> {d34ao} @dt=0x555556265870@(G/w1)  nRST [RV] <- VARSCOPE 0x5555562a0c00 <e3471> {d6aw} u4=0x1 @dt=0x555556265870@(G/w1)  TOP->nRST [T] [scopep=0x55555629fe40] -> VAR 0x55555627dc00 <e2697> {d6aw} @dt=0x555556265870@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:2:2:1:2: CONCAT 0x5555562c03b0 <e5129> {d39cx} @dt=0x555556266ed0@(G/w64)
+    1:2:2:2:2:2:1:2:1: CONCAT 0x5555562c0460 <e2795> {d39bu} @dt=0x555556260640@(G/w32)
+    1:2:2:2:2:2:1:2:1:1: CONST 0x5555562c0510 <e2782> {d39bo} @dt=0x555556267d90@(G/w16)  16'haaaa
+    1:2:2:2:2:2:1:2:1:2: VARREF 0x5555562c0610 <e2517> {d39bw} @dt=0x555556267d90@(G/w16)  UDP_src_port [RV] <- VARSCOPE 0x5555562a0f00 <e3483> {d10ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_src_port [T] [scopep=0x55555629fe40] -> VAR 0x55555627e900 <e2721> {d10ay} @dt=0x555556267d90@(G/w16)  UDP_src_port [PI] INPUT [P] PORT
+    1:2:2:2:2:2:1:2:2: CONCAT 0x5555562c06f0 <e2796> {d39ci} @dt=0x555556260640@(G/w32)
+    1:2:2:2:2:2:1:2:2:1: VARREF 0x5555562c07a0 <e2788> {d39ck} @dt=0x555556267d90@(G/w16)  UDP_dest_port [RV] <- VARSCOPE 0x5555562a0fc0 <e3486> {d11ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_dest_port [T] [scopep=0x55555629fe40] -> VAR 0x55555627ec40 <e2727> {d11ay} @dt=0x555556267d90@(G/w16)  UDP_dest_port [PI] INPUT [P] PORT
+    1:2:2:2:2:2:1:2:2:2: ADD 0x5555562c8b60 <e5120> {d45bj} @dt=0x555556267d90@(G/w16)
+    1:2:2:2:2:2:1:2:2:2:1: CONST 0x5555562cc990 <e3278> {d45bl} @dt=0x555556267d90@(G/w16)  16'h8
+    1:2:2:2:2:2:1:2:2:2:2: VARREF 0x5555562cca90 <e3279> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len [RV] <- VARSCOPE 0x5555562a0e40 <e3480> {d9ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_len [T] [scopep=0x55555629fe40] -> VAR 0x55555627e5c0 <e2715> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len [PI] INPUT [P] PORT
+    1:2:2:2:2:2:1:3: CONST 0x5555562c0d80 <e5130> {d36bb} @dt=0x555556266ed0@(G/w64)  64'h0
+    1:2:2:2:2:2:2: VARREF 0x5555562c0960 <e2522> {d39an} @dt=0x555556266ed0@(G/w64)  UDP_tx__DOT__header_reg [LV] => VARSCOPE 0x5555562a3cf0 <e3553> {d30as} @dt=0x555556266ed0@(G/w64)  TOP->UDP_tx__DOT__header_reg [T] [scopep=0x55555629fe40] -> VAR 0x55555626f140 <e2499> {d30as} @dt=0x555556266ed0@(G/w64)  UDP_tx__DOT__header_reg [VSTATIC]  VAR
+    1:2:2:2: CFUNC 0x5555562b0df0 <e4631> {d4ai}  trace_init_sub__TOP__0 [SLOW]
+    1:2:2:2:2: CSTMT 0x5555562b1620 <e4632> {d4ai}
+    1:2:2:2:2:1: TEXT 0x5555562b1720 <e4633> {d4ai} "const int c = vlSymsp->__Vm_baseCode;..."
+    1:2:2:2:3: TRACEDECL 0x5555562b14a0 <e4628> {d6ar} @dt=0x555556265870@(G/w1)  CLK
+    1:2:2:2:3:1: VARREF 0x5555562af8b0 <e4629> {d6ar} @dt=0x555556265870@(G/w1)  CLK [RV] <- VARSCOPE 0x5555562a0b40 <e3468> {d6ar} u4=0x1 @dt=0x555556265870@(G/w1)  TOP->CLK [T] [scopep=0x55555629fe40] -> VAR 0x55555627d9b0 <e2692> {d6ar} @dt=0x555556265870@(G/w1)  CLK [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562b09c0 <e4641> {d6aw} @dt=0x555556265870@(G/w1)  nRST
+    1:2:2:2:3:1: VARREF 0x5555562b0ab0 <e4640> {d6aw} @dt=0x555556265870@(G/w1)  nRST [RV] <- VARSCOPE 0x5555562a0c00 <e3471> {d6aw} u4=0x1 @dt=0x555556265870@(G/w1)  TOP->nRST [T] [scopep=0x55555629fe40] -> VAR 0x55555627dc00 <e2697> {d6aw} @dt=0x555556265870@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562b0c70 <e4649> {d7ar} @dt=0x555556265870@(G/w1)  UDP_valid
+    1:2:2:2:3:1: VARREF 0x5555562b1ec0 <e4648> {d7ar} @dt=0x555556265870@(G/w1)  UDP_valid [RV] <- VARSCOPE 0x5555562a0cc0 <e3474> {d7ar} @dt=0x555556265870@(G/w1)  TOP->UDP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627df40 <e2703> {d7ar} @dt=0x555556265870@(G/w1)  UDP_valid [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562b2080 <e4657> {d8ay} @dt=0x555556266ed0@(G/w64)  UDP_payload
+    1:2:2:2:3:1: VARREF 0x5555562b2170 <e4656> {d8ay} @dt=0x555556266ed0@(G/w64)  UDP_payload [RV] <- VARSCOPE 0x5555562a0d80 <e3477> {d8ay} @dt=0x555556266ed0@(G/w64)  TOP->UDP_payload [T] [scopep=0x55555629fe40] -> VAR 0x55555627e280 <e2709> {d8ay} @dt=0x555556266ed0@(G/w64)  UDP_payload [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562b2330 <e4665> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len
+    1:2:2:2:3:1: VARREF 0x5555562b2420 <e4664> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len [RV] <- VARSCOPE 0x5555562a0e40 <e3480> {d9ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_len [T] [scopep=0x55555629fe40] -> VAR 0x55555627e5c0 <e2715> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562b25e0 <e4673> {d10ay} @dt=0x555556267d90@(G/w16)  UDP_src_port
+    1:2:2:2:3:1: VARREF 0x5555562b26d0 <e4672> {d10ay} @dt=0x555556267d90@(G/w16)  UDP_src_port [RV] <- VARSCOPE 0x5555562a0f00 <e3483> {d10ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_src_port [T] [scopep=0x55555629fe40] -> VAR 0x55555627e900 <e2721> {d10ay} @dt=0x555556267d90@(G/w16)  UDP_src_port [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c1a50 <e4681> {d11ay} @dt=0x555556267d90@(G/w16)  UDP_dest_port
+    1:2:2:2:3:1: VARREF 0x5555562c1b40 <e4680> {d11ay} @dt=0x555556267d90@(G/w16)  UDP_dest_port [RV] <- VARSCOPE 0x5555562a0fc0 <e3486> {d11ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_dest_port [T] [scopep=0x55555629fe40] -> VAR 0x55555627ec40 <e2727> {d11ay} @dt=0x555556267d90@(G/w16)  UDP_dest_port [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c1d00 <e4689> {d12ar} @dt=0x555556265870@(G/w1)  UDP_last
+    1:2:2:2:3:1: VARREF 0x5555562c1df0 <e4688> {d12ar} @dt=0x555556265870@(G/w1)  UDP_last [RV] <- VARSCOPE 0x5555562a1080 <e3489> {d12ar} @dt=0x555556265870@(G/w1)  TOP->UDP_last [T] [scopep=0x55555629fe40] -> VAR 0x55555627ef80 <e2733> {d12ar} @dt=0x555556265870@(G/w1)  UDP_last [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c1fb0 <e4697> {d14az} @dt=0x555556266ed0@(G/w64)  IP_payload
+    1:2:2:2:3:1: VARREF 0x5555562c20a0 <e4696> {d14az} @dt=0x555556266ed0@(G/w64)  IP_payload [RV] <- VARSCOPE 0x5555562a1140 <e3492> {d14az} @dt=0x555556266ed0@(G/w64)  TOP->IP_payload [T] [scopep=0x55555629fe40] -> VAR 0x55555627f2c0 <e2739> {d14az} @dt=0x555556266ed0@(G/w64)  IP_payload [PO] OUTPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c2260 <e4705> {d15as} @dt=0x555556265870@(G/w1)  IP_valid
+    1:2:2:2:3:1: VARREF 0x5555562c2350 <e4704> {d15as} @dt=0x555556265870@(G/w1)  IP_valid [RV] <- VARSCOPE 0x5555562a1200 <e3495> {d15as} @dt=0x555556265870@(G/w1)  TOP->IP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627f600 <e2745> {d15as} @dt=0x555556265870@(G/w1)  IP_valid [PO] OUTPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c2510 <e4713> {d16as} @dt=0x555556265870@(G/w1)  IP_last
+    1:2:2:2:3:1: VARREF 0x5555562c2600 <e4712> {d16as} @dt=0x555556265870@(G/w1)  IP_last [RV] <- VARSCOPE 0x5555562a12c0 <e3498> {d16as} @dt=0x555556265870@(G/w1)  TOP->IP_last [T] [scopep=0x55555629fe40] -> VAR 0x55555628bf30 <e2751> {d16as} @dt=0x555556265870@(G/w1)  IP_last [PO] OUTPUT [P] [LATCHED] PORT
+    1:2:2:2:3: TRACEPUSHPREFIX 0x5555562c7b70 <e4973> {e5aj}
+    1:2:2:2:3: STMTEXPR 0x5555562b2890 <e4970> {e5aj}
+    1:2:2:2:3:1: CCALL 0x5555562c7c40 <e4969> {e5aj} @dt=0x5555562417d0@(w0)void trace_init_sub__TOP__rx_pkg__0 => CFUNC 0x5555562c5380 <e4848> {e5aj}  trace_init_sub__TOP__rx_pkg__0 [SLOW]
+    1:2:2:2:3: TRACEPOPPREFIX 0x5555562c7d30 <e4972> {e5aj}
+    1:2:2:2:3: TRACEPUSHPREFIX 0x5555562c27b0 <e4719> {d4ai}
+    1:2:2:2:3: TRACEDECL 0x5555562c2960 <e4725> {d6ar} @dt=0x555556265870@(G/w1)  CLK
+    1:2:2:2:3:1: VARREF 0x5555562ca5e0 <e5046> {d6ar} @dt=0x555556265870@(G/w1)  CLK [RV] <- VARSCOPE 0x5555562a0b40 <e3468> {d6ar} u4=0x1 @dt=0x555556265870@(G/w1)  TOP->CLK [T] [scopep=0x55555629fe40] -> VAR 0x55555627d9b0 <e2692> {d6ar} @dt=0x555556265870@(G/w1)  CLK [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c2c10 <e4733> {d6aw} @dt=0x555556265870@(G/w1)  nRST
+    1:2:2:2:3:1: VARREF 0x5555562c9520 <e5050> {d6aw} @dt=0x555556265870@(G/w1)  nRST [RV] <- VARSCOPE 0x5555562a0c00 <e3471> {d6aw} u4=0x1 @dt=0x555556265870@(G/w1)  TOP->nRST [T] [scopep=0x55555629fe40] -> VAR 0x55555627dc00 <e2697> {d6aw} @dt=0x555556265870@(G/w1)  nRST [PI] INPUT [CLK] [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c2ec0 <e4741> {d7ar} @dt=0x555556265870@(G/w1)  UDP_valid
+    1:2:2:2:3:1: VARREF 0x5555562cbfd0 <e5054> {d7ar} @dt=0x555556265870@(G/w1)  UDP_valid [RV] <- VARSCOPE 0x5555562a0cc0 <e3474> {d7ar} @dt=0x555556265870@(G/w1)  TOP->UDP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627df40 <e2703> {d7ar} @dt=0x555556265870@(G/w1)  UDP_valid [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c3170 <e4749> {d8ay} @dt=0x555556266ed0@(G/w64)  UDP_payload
+    1:2:2:2:3:1: VARREF 0x5555562cc0b0 <e5058> {d8ay} @dt=0x555556266ed0@(G/w64)  UDP_payload [RV] <- VARSCOPE 0x5555562a0d80 <e3477> {d8ay} @dt=0x555556266ed0@(G/w64)  TOP->UDP_payload [T] [scopep=0x55555629fe40] -> VAR 0x55555627e280 <e2709> {d8ay} @dt=0x555556266ed0@(G/w64)  UDP_payload [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c3420 <e4757> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len
+    1:2:2:2:3:1: VARREF 0x5555562cc190 <e5062> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len [RV] <- VARSCOPE 0x5555562a0e40 <e3480> {d9ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_len [T] [scopep=0x55555629fe40] -> VAR 0x55555627e5c0 <e2715> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c36d0 <e4765> {d10ay} @dt=0x555556267d90@(G/w16)  UDP_src_port
+    1:2:2:2:3:1: VARREF 0x5555562cc270 <e5066> {d10ay} @dt=0x555556267d90@(G/w16)  UDP_src_port [RV] <- VARSCOPE 0x5555562a0f00 <e3483> {d10ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_src_port [T] [scopep=0x55555629fe40] -> VAR 0x55555627e900 <e2721> {d10ay} @dt=0x555556267d90@(G/w16)  UDP_src_port [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c3980 <e4773> {d11ay} @dt=0x555556267d90@(G/w16)  UDP_dest_port
+    1:2:2:2:3:1: VARREF 0x5555562cc350 <e5070> {d11ay} @dt=0x555556267d90@(G/w16)  UDP_dest_port [RV] <- VARSCOPE 0x5555562a0fc0 <e3486> {d11ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_dest_port [T] [scopep=0x55555629fe40] -> VAR 0x55555627ec40 <e2727> {d11ay} @dt=0x555556267d90@(G/w16)  UDP_dest_port [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c3c30 <e4781> {d12ar} @dt=0x555556265870@(G/w1)  UDP_last
+    1:2:2:2:3:1: VARREF 0x5555562cc430 <e5074> {d12ar} @dt=0x555556265870@(G/w1)  UDP_last [RV] <- VARSCOPE 0x5555562a1080 <e3489> {d12ar} @dt=0x555556265870@(G/w1)  TOP->UDP_last [T] [scopep=0x55555629fe40] -> VAR 0x55555627ef80 <e2733> {d12ar} @dt=0x555556265870@(G/w1)  UDP_last [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c3ee0 <e4789> {d14az} @dt=0x555556266ed0@(G/w64)  IP_payload
+    1:2:2:2:3:1: VARREF 0x5555562cc510 <e5078> {d14az} @dt=0x555556266ed0@(G/w64)  IP_payload [RV] <- VARSCOPE 0x5555562a1140 <e3492> {d14az} @dt=0x555556266ed0@(G/w64)  TOP->IP_payload [T] [scopep=0x55555629fe40] -> VAR 0x55555627f2c0 <e2739> {d14az} @dt=0x555556266ed0@(G/w64)  IP_payload [PO] OUTPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c4190 <e4797> {d15as} @dt=0x555556265870@(G/w1)  IP_valid
+    1:2:2:2:3:1: VARREF 0x5555562cc5f0 <e5082> {d15as} @dt=0x555556265870@(G/w1)  IP_valid [RV] <- VARSCOPE 0x5555562a1200 <e3495> {d15as} @dt=0x555556265870@(G/w1)  TOP->IP_valid [T] [scopep=0x55555629fe40] -> VAR 0x55555627f600 <e2745> {d15as} @dt=0x555556265870@(G/w1)  IP_valid [PO] OUTPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c4440 <e4805> {d16as} @dt=0x555556265870@(G/w1)  IP_last
+    1:2:2:2:3:1: VARREF 0x5555562cc6d0 <e5086> {d16as} @dt=0x555556265870@(G/w1)  IP_last [RV] <- VARSCOPE 0x5555562a12c0 <e3498> {d16as} @dt=0x555556265870@(G/w1)  TOP->IP_last [T] [scopep=0x55555629fe40] -> VAR 0x55555628bf30 <e2751> {d16as} @dt=0x555556265870@(G/w1)  IP_last [PO] OUTPUT [P] [LATCHED] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c46f0 <e4813> {d28ao} @dt=0x55555626d460@(w2)ref  current_state
+    1:2:2:2:3:1: VARREF 0x5555562c47e0 <e4812> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [RV] <- VARSCOPE 0x5555562a39f0 <e3544> {d28ao} @dt=0x55555626d460@(w2)ref  TOP->UDP_tx__DOT__current_state [T] [scopep=0x55555629fe40] -> VAR 0x55555626d550 <e2288> {d28ao} @dt=0x55555626d460@(w2)ref  UDP_tx__DOT__current_state [VSTATIC]  VAR
+    1:2:2:2:3: TRACEDECL 0x5555562c49a0 <e4821> {d28bd} @dt=0x55555626d750@(w2)ref  nstate
+    1:2:2:2:3:1: VARREF 0x5555562c4a90 <e4820> {d28bd} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [RV] <- VARSCOPE 0x5555562a3af0 <e3547> {d28bd} @dt=0x55555626d750@(w2)ref  TOP->UDP_tx__DOT__nstate [T] [scopep=0x55555629fe40] -> VAR 0x55555626d840 <e2292> {d28bd} @dt=0x55555626d750@(w2)ref  UDP_tx__DOT__nstate [VSTATIC]  VAR
+    1:2:2:2:3: TRACEDECL 0x5555562c4c50 <e4829> {d29as} @dt=0x555556267d90@(G/w16)  computed_len
+    1:2:2:2:3:1: ADD 0x5555562c8250 <e5090> {d45bj} @dt=0x555556267d90@(G/w16)
+    1:2:2:2:3:1:1: CONST 0x5555562cc7b0 <e3278> {d45bl} @dt=0x555556267d90@(G/w16)  16'h8
+    1:2:2:2:3:1:2: VARREF 0x5555562cc8b0 <e3279> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len [RV] <- VARSCOPE 0x5555562a0e40 <e3480> {d9ay} @dt=0x555556267d90@(G/w16)  TOP->UDP_len [T] [scopep=0x55555629fe40] -> VAR 0x55555627e5c0 <e2715> {d9ay} @dt=0x555556267d90@(G/w16)  UDP_len [PI] INPUT [P] PORT
+    1:2:2:2:3: TRACEDECL 0x5555562c4f00 <e4837> {d30as} @dt=0x555556266ed0@(G/w64)  header_reg
+    1:2:2:2:3:1: VARREF 0x5555562c4ff0 <e4836> {d30as} @dt=0x555556266ed0@(G/w64)  UDP_tx__DOT__header_reg [RV] <- VARSCOPE 0x5555562a3cf0 <e3553> {d30as} @dt=0x555556266ed0@(G/w64)  TOP->UDP_tx__DOT__header_reg [T] [scopep=0x55555629fe40] -> VAR 0x55555626f140 <e2499> {d30as} @dt=0x555556266ed0@(G/w64)  UDP_tx__DOT__header_reg [VSTATIC]  VAR
+    1:2:2:2:3: TRACEPOPPREFIX 0x5555562b1380 <e4841> {d4ai}
+    1:2:2:2: CFUNC 0x5555562c5380 <e4848> {e5aj}  trace_init_sub__TOP__rx_pkg__0 [SLOW]
+    1:2:2:2:2: CSTMT 0x5555562b1da0 <e4849> {e5aj}
+    1:2:2:2:2:1: TEXT 0x5555562c5500 <e4850> {e5aj} "const int c = vlSymsp->__Vm_baseCode;..."
+    1:2:2:2:3: TRACEDECL 0x5555562c51b0 <e4845> {e17ap} @dt=0x55555625afa0@(G/w48)  FPGA_MAC
+    1:2:2:2:3:1: CONST 0x5555562c8710 <e5178> {e17ap} @dt=0x55555625afa0@(G/w48)  48'h123456
+    1:2:2:2:3: TRACEDECL 0x5555562c56b0 <e4858> {e18ap} @dt=0x55555625afa0@(G/w48)  NASDAQ_MAC
+    1:2:2:2:3:1: CONST 0x5555562c9930 <e5186> {e18ap} @dt=0x55555625afa0@(G/w48)  48'h65431
+    1:2:2:2:3: TRACEDECL 0x5555562c5960 <e4866> {e19ap} @dt=0x555556267d90@(G/w16)  IP_TYPE
+    1:2:2:2:3:1: CONST 0x5555562cb180 <e5194> {e19ap} @dt=0x555556267d90@(G/w16)  16'h800
+    1:2:2:2:3: TRACEDECL 0x5555562c5c10 <e4874> {e22ap} @dt=0x55555625eb00@(G/w4)  IP_VERSION
+    1:2:2:2:3:1: CONST 0x5555562cb350 <e5202> {e22ap} @dt=0x55555625eb00@(G/w4)  4'h4
+    1:2:2:2:3: TRACEDECL 0x5555562c5ec0 <e4882> {e23ap} @dt=0x55555625eb00@(G/w4)  IP_HDL
+    1:2:2:2:3:1: CONST 0x5555562c9ff0 <e5210> {e23ap} @dt=0x55555625eb00@(G/w4)  4'h5
+    1:2:2:2:3: TRACEDECL 0x5555562c6170 <e4890> {e24ap} @dt=0x55555625f430@(G/w8)  UDP_PROTOCOL
+    1:2:2:2:3:1: CONST 0x5555562ca1c0 <e5218> {e24ap} @dt=0x55555625f430@(G/w8)  8'h11
+    1:2:2:2:3: TRACEDECL 0x5555562c6420 <e4898> {e25ap} @dt=0x55555625f430@(G/w8)  TCP_PROTOCOL
+    1:2:2:2:3:1: CONST 0x5555562ca390 <e5226> {e25ap} @dt=0x55555625f430@(G/w8)  8'h6
+    1:2:2:2:3: TRACEDECL 0x5555562c66d0 <e4906> {e26ap} @dt=0x55555625f430@(G/w8)  ICMP_PROTOCOL
+    1:2:2:2:3:1: CONST 0x5555562cb590 <e5234> {e26ap} @dt=0x55555625f430@(G/w8)  8'h1
+    1:2:2:2:3: TRACEDECL 0x5555562c6980 <e4914> {e27ap} @dt=0x55555625f430@(G/w8)  IP_TTL
+    1:2:2:2:3:1: CONST 0x5555562cb760 <e5242> {e27ap} @dt=0x55555625f430@(G/w8)  8'h40
+    1:2:2:2:3: TRACEDECL 0x5555562c6c30 <e4922> {e28ap} @dt=0x555556260640@(G/w32)  IP_SRC_ADDR
+    1:2:2:2:3:1: CONST 0x5555562cb930 <e5250> {e28ap} @dt=0x555556260640@(G/w32)  32'hffffffff
+    1:2:2:2:3: TRACEDECL 0x5555562c6ee0 <e4930> {e29ap} @dt=0x555556260640@(G/w32)  IP_DEST_ADDR
+    1:2:2:2:3:1: CONST 0x5555562cbb00 <e5258> {e29ap} @dt=0x555556260640@(G/w32)  32'haaaaaaaa
+    1:2:2:2:3: TRACEDECL 0x5555562c7190 <e4938> {e32ap} @dt=0x555556267d90@(G/w16)  UDP_SRC_ADDR
+    1:2:2:2:3:1: CONST 0x5555562cbcd0 <e5266> {e32ap} @dt=0x555556267d90@(G/w16)  16'h1234
+    1:2:2:2:3: TRACEDECL 0x5555562c7440 <e4946> {e33ap} @dt=0x555556267d90@(G/w16)  UDP_DEST_ADDR
+    1:2:2:2:3:1: CONST 0x5555562cbea0 <e5274> {e33ap} @dt=0x555556267d90@(G/w16)  16'h4321
+    1:2:2:2:3: TRACEDECL 0x5555562c76f0 <e4954> {e34ap} @dt=0x555556267d90@(G/w16)  UDP_HEADER_LENGTH
+    1:2:2:2:3:1: CONST 0x5555562ca790 <e5282> {e34ap} @dt=0x555556267d90@(G/w16)  16'h8
+    1:2:2:2:3: TRACEDECL 0x5555562c79a0 <e4962> {e35ap} @dt=0x555556267d90@(G/w16)  UDP_CHECKSUM
+    1:2:2:2:3:1: CONST 0x5555562ca960 <e5290> {e35ap} @dt=0x555556267d90@(G/w16)  16'h0
+    1:2:2:2: CFUNC 0x5555562c7f80 <e4982> {d4ai}  trace_init_top [SLOW]
+    1:2:2:2:3: STMTEXPR 0x5555562c7ed0 <e4979> {a0aa}
+    1:2:2:2:3:1: CCALL 0x5555562c7de0 <e4980> {a0aa} @dt=0x5555562417d0@(w0)void trace_init_sub__TOP__0 => CFUNC 0x5555562b0df0 <e4631> {d4ai}  trace_init_sub__TOP__0 [SLOW]
+    1: PACKAGE 0x55555625ae80 <e2028> {e5aj}  rx_pkg  L3 [LIB] [1ns]
+    1:2: SCOPE 0x55555629ff20 <e3896> {e5aj}  TOP.__PVT__rx_pkg [abovep=0x55555629fe40] [cellp=0x55555628c270] [modp=0x55555625ae80]
+    3: TYPETABLE 0x55555621c360 <e2> {a0aa}
+		detailed  ->  BASICDTYPE 0x555556265870 <e2186> {d6al} @dt=this@(G/w1)  logic [GENERIC] kwd=logic
+		detailed  ->  BASICDTYPE 0x555556282ed0 <e2258> {d21aj} @dt=this@(G/w2)  logic [GENERIC] kwd=logic range=[1:0]
+		detailed  ->  BASICDTYPE 0x555556282220 <e2137> {e50aj} @dt=this@(G/w3)  logic [GENERIC] kwd=logic range=[2:0]
+		detailed  ->  BASICDTYPE 0x55555625eb00 <e622> {e22bc} @dt=this@(G/w4)  logic [GENERIC] kwd=logic range=[3:0]
+		detailed  ->  BASICDTYPE 0x55555625f430 <e645> {e24be} @dt=this@(G/w8)  logic [GENERIC] kwd=logic range=[7:0]
+		detailed  ->  BASICDTYPE 0x555556267d90 <e2208> {d9al} @dt=this@(G/w16)  logic [GENERIC] kwd=logic range=[15:0]
+		detailed  ->  BASICDTYPE 0x555556260640 <e692> {e28bd} @dt=this@(G/w32)  logic [GENERIC] kwd=logic range=[31:0]
+		detailed  ->  BASICDTYPE 0x55555625afa0 <e589> {e17ba} @dt=this@(G/w48)  logic [GENERIC] kwd=logic range=[47:0]
+		detailed  ->  BASICDTYPE 0x555556266ed0 <e2200> {d8al} @dt=this@(G/w64)  logic [GENERIC] kwd=logic range=[63:0]
+    3:1: VOIDDTYPE 0x5555562417d0 <e127> {c51av} @dt=this@(w0)void
+    3:1: BASICDTYPE 0x55555625afa0 <e589> {e17ba} @dt=this@(G/w48)  logic [GENERIC] kwd=logic range=[47:0]
+    3:1: BASICDTYPE 0x55555625eb00 <e622> {e22bc} @dt=this@(G/w4)  logic [GENERIC] kwd=logic range=[3:0]
+    3:1: BASICDTYPE 0x55555625f430 <e645> {e24be} @dt=this@(G/w8)  logic [GENERIC] kwd=logic range=[7:0]
+    3:1: BASICDTYPE 0x555556260640 <e692> {e28bd} @dt=this@(G/w32)  logic [GENERIC] kwd=logic range=[31:0]
+    3:1: ENUMDTYPE 0x555556263770 <e2117> {e37an} @dt=this@(w4)enum  rx_pkg::IP_t refdt=0x55555625eb00(G/w4) enum
+    3:1:2: ENUMITEM 0x555556262b40 <e2044> {e38aj} @dt=0x555556263770@(w4)enum  IDLE
+    3:1:2:2: CONST 0x55555627b800 <e2059> {e38aj} @dt=0x55555625eb00@(G/w4)  4'h0
+    3:1:2: ENUMITEM 0x555556262ca0 <e2045> {e39aj} @dt=0x555556263770@(w4)enum  RCV_VER_IHL_DSCP_ECN
+    3:1:2:2: CONST 0x55555627b9d0 <e2066> {e39aj} @dt=0x55555625eb00@(G/w4)  4'h1
+    3:1:2: ENUMITEM 0x555556262e00 <e2046> {e40aj} @dt=0x555556263770@(w4)enum  RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL
+    3:1:2:2: CONST 0x55555627bba0 <e2073> {e40aj} @dt=0x55555625eb00@(G/w4)  4'h2
+    3:1:2: ENUMITEM 0x555556262ff0 <e2047> {e41aj} @dt=0x555556263770@(w4)enum  RCV_SUM_SRC_ADDR_DEST_ADDR
+    3:1:2:2: CONST 0x55555627bd70 <e2080> {e41aj} @dt=0x55555625eb00@(G/w4)  4'h3
+    3:1:2: ENUMITEM 0x555556263120 <e2048> {e42aj} @dt=0x555556263770@(w4)enum  RCV_PAYLOAD_DEST
+    3:1:2:2: CONST 0x555556281710 <e2087> {e42aj} @dt=0x55555625eb00@(G/w4)  4'h4
+    3:1:2: ENUMITEM 0x555556263280 <e2049> {e43aj} @dt=0x555556263770@(w4)enum  CHK_SUM
+    3:1:2:2: CONST 0x5555562818e0 <e2094> {e43aj} @dt=0x55555625eb00@(G/w4)  4'h5
+    3:1:2: ENUMITEM 0x5555562633e0 <e2050> {e44aj} @dt=0x555556263770@(w4)enum  RCV_PAYLOAD
+    3:1:2:2: CONST 0x555556281ab0 <e2101> {e44aj} @dt=0x55555625eb00@(G/w4)  4'h6
+    3:1:2: ENUMITEM 0x555556263540 <e2051> {e45aj} @dt=0x555556263770@(w4)enum  DONE
+    3:1:2:2: CONST 0x555556281c80 <e2108> {e45aj} @dt=0x55555625eb00@(G/w4)  4'h7
+    3:1:2: ENUMITEM 0x5555562636a0 <e2052> {e46aj} @dt=0x555556263770@(w4)enum  ERROR
+    3:1:2:2: CONST 0x555556281ed0 <e2115> {e46aj} @dt=0x55555625eb00@(G/w4)  4'h8
+    3:1: BASICDTYPE 0x555556282220 <e2137> {e50aj} @dt=this@(G/w3)  logic [GENERIC] kwd=logic range=[2:0]
+    3:1: ENUMDTYPE 0x555556264d30 <e2183> {e49an} @dt=this@(w3)enum  rx_pkg::UDP_t refdt=0x555556282220(G/w3) enum
+    3:1:2: ENUMITEM 0x555556264420 <e2127> {e50aj} @dt=0x555556264d30@(w3)enum  UDP_IDLE
+    3:1:2:2: CONST 0x555556282120 <e2139> {e50aj} @dt=0x555556282220@(G/w3)  3'h0
+    3:1:2: ENUMITEM 0x555556264580 <e2128> {e51aj} @dt=0x555556264d30@(w3)enum  UDP_HEADER
+    3:1:2:2: CONST 0x5555562822f0 <e2146> {e51aj} @dt=0x555556282220@(G/w3)  3'h1
+    3:1:2: ENUMITEM 0x5555562646e0 <e2129> {e52aj} @dt=0x555556264d30@(w3)enum  UDP_CHK_SUM_PAYLOAD
+    3:1:2:2: CONST 0x5555562824c0 <e2153> {e52aj} @dt=0x555556282220@(G/w3)  3'h2
+    3:1:2: ENUMITEM 0x555556264840 <e2130> {e53aj} @dt=0x555556264d30@(w3)enum  UDP_PAYLOAD
+    3:1:2:2: CONST 0x555556282690 <e2160> {e53aj} @dt=0x555556282220@(G/w3)  3'h3
+    3:1:2: ENUMITEM 0x5555562649a0 <e2131> {e54aj} @dt=0x555556264d30@(w3)enum  UDP_DONE
+    3:1:2:2: CONST 0x555556282860 <e2167> {e54aj} @dt=0x555556282220@(G/w3)  3'h4
+    3:1:2: ENUMITEM 0x555556264b00 <e2132> {e55aj} @dt=0x555556264d30@(w3)enum  UDP_CHK_SUM
+    3:1:2:2: CONST 0x555556282a30 <e2174> {e55aj} @dt=0x555556282220@(G/w3)  3'h5
+    3:1:2: ENUMITEM 0x555556264c60 <e2133> {e56aj} @dt=0x555556264d30@(w3)enum  UDP_ERROR
+    3:1:2:2: CONST 0x555556282c00 <e2181> {e56aj} @dt=0x555556282220@(G/w3)  3'h6
+    3:1: BASICDTYPE 0x555556265870 <e2186> {d6al} @dt=this@(G/w1)  logic [GENERIC] kwd=logic
+    3:1: BASICDTYPE 0x555556266ed0 <e2200> {d8al} @dt=this@(G/w64)  logic [GENERIC] kwd=logic range=[63:0]
+    3:1: BASICDTYPE 0x555556267d90 <e2208> {d9al} @dt=this@(G/w16)  logic [GENERIC] kwd=logic range=[15:0]
+    3:1: BASICDTYPE 0x555556282ed0 <e2258> {d21aj} @dt=this@(G/w2)  logic [GENERIC] kwd=logic range=[1:0]
+    3:1: ENUMDTYPE 0x55555626cdf0 <e2283> {d20an} @dt=this@(w2)enum  UDP_tx.UDP_tx_t refdt=0x555556282ed0(G/w2) enum
+    3:1:2: ENUMITEM 0x55555626c900 <e2251> {d21aj} @dt=0x55555626cdf0@(w2)enum  IDLE
+    3:1:2:2: CONST 0x555556282dd0 <e2260> {d21aj} @dt=0x555556282ed0@(G/w2)  2'h0
+    3:1:2: ENUMITEM 0x55555626ca60 <e2252> {d22aj} @dt=0x55555626cdf0@(w2)enum  SEND_HEADER
+    3:1:2:2: CONST 0x555556282fa0 <e2267> {d22aj} @dt=0x555556282ed0@(G/w2)  2'h1
+    3:1:2: ENUMITEM 0x55555626cbc0 <e2253> {d23aj} @dt=0x55555626cdf0@(w2)enum  SEND_PAYLOAD
+    3:1:2:2: CONST 0x555556283170 <e2274> {d23aj} @dt=0x555556282ed0@(G/w2)  2'h2
+    3:1:2: ENUMITEM 0x55555626cd20 <e2254> {d24aj} @dt=0x55555626cdf0@(w2)enum  DONE
+    3:1:2:2: CONST 0x555556283340 <e2281> {d24aj} @dt=0x555556282ed0@(G/w2)  2'h3
+    3:1: REFDTYPE 0x55555626d460 <e2287> {d28af} @dt=0x55555626cdf0@(w2)enum  UDP_tx_t refdt=0x55555626cdf0(w2)enum -> ENUMDTYPE 0x55555626cdf0 <e2283> {d20an} @dt=this@(w2)enum  UDP_tx.UDP_tx_t refdt=0x555556282ed0(G/w2) enum
+    3:1: REFDTYPE 0x55555626d750 <e2291> {d28af} @dt=0x55555626cdf0@(w2)enum  UDP_tx_t refdt=0x55555626cdf0(w2)enum -> ENUMDTYPE 0x55555626cdf0 <e2283> {d20an} @dt=this@(w2)enum  UDP_tx.UDP_tx_t refdt=0x555556282ed0(G/w2) enum
+    3: CONSTPOOL 0x55555621c550 <e7> {a0aa}
+    3:1: MODULE 0x55555621c6d0 <e6> {a0aa}  @CONST-POOL@  L0 [NONE]
+    3:1:2: SCOPE 0x55555621c7f0 <e3897> {a0aa}  TOP [abovep=0] [cellp=0] [modp=0x55555621c6d0]

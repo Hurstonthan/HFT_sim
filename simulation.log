@@ -1,5 +1,0 @@
-Starting Test Case 1: Valid TCP Packet
-Starting Test Case 2: Valid UDP Packet
-Starting Test Case 3: Invalid Packet (Wrong Checksum)
-Starting Test Case 4: Ping (ICMP)
-Simulation completed successfully.
