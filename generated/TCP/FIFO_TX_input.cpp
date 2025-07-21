@@ -1,5 +1,5 @@
 #include "FIFO_TX_input.hpp"
-#include <iostream>
+
 std::uint8_t CLK;
 std::uint8_t nRST;
 std::uint8_t seq_up;
@@ -33,7 +33,7 @@ void reset_input_FIFO_TX() {
 }
 
 void drive_input_FIFO_TX(std::uint8_t CLK_in, std::uint8_t nRST_in, std::uint8_t seq_up_in, std::uint32_t seq_num_tx_in, std::uint8_t rd_FIFO_en_in, std::uint8_t TX_en_in, std::uint16_t checksum_TX_in, std::uint32_t ACK_num_in, std::uint8_t ACK_rcv_flag_in, std::uint8_t out_order_req_in, std::uint8_t axis_last_in, std::uint8_t wr_FIFO_en_in, std::uint32_t len_seq_in, std::uint8_t soupbin_TCP_payload_in) {
-    CLK = CLK_in;
+    CLK=CLK_in;
     nRST=nRST_in;
     seq_up=seq_up_in;
     seq_num_tx=seq_num_tx_in;

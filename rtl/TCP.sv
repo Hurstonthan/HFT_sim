@@ -2,9 +2,8 @@
 `include "TCP_flow_if.vh"
 `include "TCP_receiver_if.vh"
 module TCP #(
-    parameter DATA_WIDTH = 64 // Width of the data bus
+    parameter DATA_WIDTH = 64, // Width of the data bus
     parameter int FIFO_DEPTH  = 5,               // words  (must be power‑of‑2)
-    parameter int DATA_WIDTH  = 64,
     parameter int CTRL_WIDTH = 8,
     localparam int WORD_BYTES = DATA_WIDTH / 8,
     localparam int FIFO_WIDTH = $clog2(FIFO_DEPTH),
@@ -69,8 +68,8 @@ module TCP #(
     input logic TCP_send,
     output logic TCP_transmit,
 
-    input logic re_trans;
-    input logic [15:0] checksum_re_trans;
+    input logic re_trans,
+    input logic [15:0] checksum_re_trans,
 
     //DEBUG SIGNALS
     output logic [31:0] rcv_next,
@@ -205,7 +204,7 @@ module TCP #(
         .TCP_send(TCP_send),
         .TCP_transmit(TCP_transmit),
         .TCP_basesum_payload(TCP_basesum_payload)
-    )
+    );
     TCP_ISN ISN_gen (
         .CLK(CLK),
         .nRST(nRST),
