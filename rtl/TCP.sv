@@ -3,36 +3,82 @@
 `include "TCP_receiver_if.vh"
 module TCP #(
     parameter DATA_WIDTH = 64 // Width of the data bus
+    parameter int FIFO_DEPTH  = 5,               // words  (must be power‑of‑2)
+    parameter int DATA_WIDTH  = 64,
+    parameter int CTRL_WIDTH = 8,
+    localparam int WORD_BYTES = DATA_WIDTH / 8,
+    localparam int FIFO_WIDTH = $clog2(FIFO_DEPTH),
+    localparam int WINDOW_BYTES = FIFO_DEPTH * WORD_BYTES
 ) (
     input  logic CLK,          // Clock signal
     input  logic nRST,         // Active low reset signal
+
+    //global transmit TX_en
+    input logic TX_en,
     
-    //TCP_rx interface
-    input logic [63:0] IP_payload_rx,
-    input logic valid_IP_header_rx,
-    input logic IP_flush,
-    input logic [15:0] IP_pseuder,
-    input logic [15:0] TCP_len,
-    output logic [15:0] TCP_len_data,
-    output logic [63:0] TCP_payload_rx,
-    output logic TCP_valid,
+    //Interface between TCP_rcv and IP_rcv
+    input  logic IP_valid,     // Indicates if the IP packet is valid
+    input  logic IP_flush,     // Flush signal for IP packet
+    input  logic [15:0] IP_pseuder, // Pseudo header for TCP
+    input  logic [63:0] IP_payload, // Payload of the IP packet
+    input  logic [15:0] TCP_len, // Length of the TCP segment
+    input  logic [7:0] IP_bytes_rcv, // Number of bytes received
+
+    
+    
+    //Interface between TCP rcv and payload rcv
+    output logic nw_segment,
+    output logic axis_t_last,
     output logic TCP_flush,
-    output logic [31:0] rcv_next,
-    output logic [31:0] seq_num,
+    output logic [63:0] axis_data_rx,
 
-    //TCP_tx interface
-    input logic TCP_send,
-    output logic [DATA_WIDTH - 1 : 0] TCP_transmit,
-    //TCP_tx_payload
-    input logic end_ss,
-    input logic [DATA_WIDTH - 1 : 0] TCP_payload_tx,
-    input logic [31:0] bytes_abt_sent,
+
+    //Interface between TCP_flow_logic and FIFO_rcv side
+    output logic handshake_done,
+    output logic [31:0] seq_rcv_start,
+    output logic wr_FIFO_en,
+    output logic [7:0] wr_FIFO_offset,
+    output  logic rd_FIFO_valid,
+    output  logic [FIFO_WIDTH - 1:0] rd_FIFO_ptr,
+    output  logic [FIFO_WIDTH - 1:0] rd_FIFO_len,
+    input  logic [FIFO_WIDTH - 1:0] wr_ptr_out,
+    input  logic [FIFO_WIDTH - 1:0] wr_FIFO_len,
+    input logic rd_FIFO_en,
+    input logic [31:0] seq_rx_FIFO_rd,
     input logic full,
-    output logic rd_en,
-    output logic TCP_stop_flg
-);
 
-    //TCP_rx variable
+
+    //Interface between TCP_flow_logic and FIFO_tx side
+    output logic [31:0] ACK_num,
+    output logic ACK_rcv_flag,
+    output logic out_order_req,
+    output logic TCP_stop_flg,
+    input logic end_ss,
+
+
+    
+
+    //Interface between TCP_tx and FIFO
+    input logic [63:0] rd_FIFO_payload,
+    input logic rd_FIFO_valid,
+    input logic rd_FIFO_last,
+    input logic [15:0] bytes_abt_sent,
+    output logic rd_FIFO_en,
+
+    //Interface between TCP_tx and IP_tx
+    input logic TCP_send,
+    output logic TCP_transmit,
+
+    input logic re_trans;
+    input logic [15:0] checksum_re_trans;
+
+    //DEBUG SIGNALS
+    output logic [31:0] rcv_next,
+    output logic [31:0] seq_num
+);
+    
+    //Interafce between TCP_rcv and TCP_flow_logic
+    logic rcv_data;
     logic [7:0] TCP_control_rx;
     logic [31:0] seq_num_rx;
     logic [31:0] ACK_rx;
@@ -40,69 +86,109 @@ module TCP #(
     logic [15:0] window_size_rx;
     logic [15:0] checksum_rx;
     logic [15:0] urgent_pointer_rx;
-    logic [15:0] IP_length;
-    logic rcv_data, TCP_valid, TCP_flush;
-    logic [63:0] TCP_payload_rx;
+    logic [15:0] payload_len_rx; // Length of the TCP payload
+    logic TCP_flush;
 
-    TCP_flow_if TCP_ctrl();
-    TCP_receiver_if TCP_rx();
 
-    assign TCP_rx.IP_payload_rx = IP_payload_rx;
-    assign TCP_rx.valid_IP_header_rx = IP_header_rx;
-    assign TCP_rx.IP_flush = IP_flush;
-    assign TCP_rx.IP_pseuder = IP_pseuder;
-    assign TCP_rx.TCP_len = TCP_len;
-
-    assign TCP_ctrl.rcv_data = TCP_rx.rcv_data;
-    assign TCP_ctrl.TCP_control_rx = TCP_rx.TCP_control_rx;
-    assign TCP_ctrl.seq_num_rx = TCP_rx.seq_num_rx;
-    assign TCP_ctrl.ACK_rx = TCP_rx.ACK_rx;
-    assign TCP_ctrl.offset_rx = TCP_rx.offset_rx;
-    assign TCP_ctrl.window_size_rx = TCP_rx.window_size_rx;
-    assign TCP_ctrl.checksum_rx = TCP_rx.checksum_rx;
-    assign TCP_ctrl.urgent_pointer_rx = TCP_rx.urgent_pointer_rx;
-    assign TCP_ctrl.payload_len_rx = TCP_rx.payload_len_rx;
-    assign rcv_next = TCP_ctrl.rcv_next;
-    assign seq_num = TCP_ctrl.seq_num;
-
-    assign TCP_payload_rx = TCP_rx.TCP_payload_rx;
-    assign TCP_len_data = TCP_rx.TCP_len_data;
-    assign TCP_valid  = TCP_rx.TCP_valid;
-    assign TCP_flush  = TCP_rx.TCP_flush;
-    
-
-    TCP_receiver TCP_rx_inst (
-        .CLK(CLK),
-        .nRST(nRST),
-        .TCP_rx(TCP_rx)
-    );
-
+    //Interface between TCP_tx and TCP_flow_logic
+    logic seq_up;
     logic [7:0] TCP_control_tx;
     logic [31:0] seq_num_tx;
     logic [31:0] ACK_tx;
+    logic [31:0] ISN_num;
+    logic [31:0] bytes_sent;
     logic [3:0] offset_tx;
     logic [15:0] window_size_tx;
     logic [15:0] urgent_pointer_tx;
-    logic seq_up;
-    logic [31:0] bytes_sent;
+
+    //Instantiate FIFO_TX
     logic [15:0] TCP_basesum_payload;
-    
+    logic [15:0] TCP_checksum_out;
 
-    assign TCP_control_tx = TCP_ctrl.TCP_control_tx;
-    assign seq_num_tx = TCP_ctrl.seq_num_tx;
-    assign ACK_tx = TCP_ctrl.ACK_tx;
-    assign offset_tx = TCP_ctrl.offset_tx;
-    assign window_size_tx = TCP_ctrl.window_size_tx;
-    assign urgent_pointer_tx = TCP_ctrl.urgent_pointer_tx;
-    
+    always_comb begin
+        if (re_trans) begin
+            TCP_basesum_payload = checksum_re_trans;
+        end else begin
+            TCP_basesum_payload = TCP_checksum_out;
+        end
+    end
+    TCP_flow_ctrl tcp_flow (
+        .rcv_data(rcv_data),
+        .TCP_control_rx(TCP_control_rx),
+        .seq_num_rx(seq_num_rx),
+        .ACK_rx(ACK_rx),
+        .offset_rx(offset_rx),
+        .window_size_rx(window_size_rx),
+        .checksum_rx(checksum_rx),
+        .urgent_pointer_rx(urgent_pointer_rx),
+        ////////////////////
 
+        .end_ss(end_ss),
+        .seq_up(seq_up),
+        .TCP_control_tx(TCP_control_tx),
+        .seq_num_tx(seq_num_tx),
+        .ACK_tx(ACK_tx),
+        .offset_tx(offset_tx),
+        .window_size_tx(window_size_tx),
+        .urgent_pointer_tx(urgent_pointer_tx),
+        .TCP_stop_flg(TCP_stop_flg),
+        .full(full),
+        .timeout_flag(timeout_flag),
+        .hand_shake_done(hand_shake_done),
+        .seq_rcv_str(seq_rcv_str),
+        .ISN_num (ISN_num),
+        .bytes_sent(bytes_sent),
+        .bytes_abt_sent(bytes_abt_sent),
+        .payload_len_rx(payload_len_rx),
+        .TCP_last (axis_t_last),
+        .rcv_next_out(rcv_next),
+        .seq_num_out(seq_num),
+        .seq_rx_FIFO_rd(seq_rx_FIFO_rd),
+        .TCP_bytes_trk(IP_bytes_rcv),
+        .wr_FIFO_offset(wr_FIFO_offset),
+        .wr_FIFO_len(wr_FIFO_len),
+        .rd_FIFO_len(rd_FIFO_len),
+        .wr_FIFO_ptr(wr_FIFO_ptr),
+        .rd_FIFO_ptr(rd_FIFO_ptr),
+        .wr_FIFO_en(wr_FIFO_en),
+        .rd_FIFO_en(rd_FIFO_en),
+        .nw_segment(nw_segment),
+        .TCP_flush(TCP_flush),
+        .rd_FIFO_valid(rd_FIFO_valid),
+        .ACK_num(ACK_num),
+        .ACK_rcv_flag(ACK_rcv_flag),
+        .out_order_req(out_order_req)
 
-    TCP_tx #(
-    .DATA_WIDTH(64),
-    .OFF_SET(5),
-    .SRC_PORT(16'h1234),
-    .DEST_PORT(16'h5678)
-    ) tcp_tx_inst (
+    );
+
+    TCP_receiver tcp_rcv (
+        .CLK(CLK),
+        .nRST(nRST),
+        .IP_payload_rx(IP_payload),
+        .valid_IP_header_rx(IP_valid),
+        .IP_flush(IP_flush),
+        .TCP_len(TCP_len),
+        .IP_pseuder(IP_pseuder),
+
+        .rcv_data(rcv_data),
+        .TCP_control_rx(TCP_control_rx),
+        .seq_num_rx(seq_num_rx),
+        .ACK_rx(ACK_rx),
+        .offset_rx(offset_rx),
+        .window_size_rx(window_size_rx),
+        .checksum_rx(checksum_rx),
+        .urgent_pointer_rx(urgent_pointer_rx),
+        .TCP_len_data(payload_len_rx), // Output TCP length data
+        .TCP_payload_rx(axis_data_rx), // Output payload
+        .TCP_valid(rd_FIFO_valid), // Valid signal for the TCP payload
+        .TCP_flush(TCP_flush), // Flush signal for TCP
+
+        //output logic add for TCP_flow_ctrl and FIFO
+        .nw_segment(nw_segment), // New segment flag
+        .TCP_last(axis_t_last) // Last segment flag    
+    );
+
+    TCP_tx TCP_tx (
         .CLK(CLK),
         .nRST(nRST),
         .TCP_control_tx(TCP_control_tx),
@@ -111,49 +197,34 @@ module TCP #(
         .offset_tx(offset_tx),
         .window_size_tx(window_size_tx),
         .urgent_pointer_tx(urgent_pointer_tx),
+        .rd_FIFO_en(rd_FIFO_en),
         .bytes_abt_sent(bytes_abt_sent),
+        .rd_FIFO_payload(rd_FIFO_payload),
         .seq_up(seq_up),
         .bytes_sent(bytes_sent),
-        .rd_en(rd_en),
         .TCP_send(TCP_send),
-        .TCP_basesum_payload(TCP_basesum_payload),
-        .TCP_payload_tx(TCP_payload_tx),
-        .TCP_transmit(TCP_transmit)
-    );
-
-    logic timeout_flag;
-    logic [31:0] ISN_num;
-
+        .TCP_transmit(TCP_transmit),
+        .TCP_basesum_payload(TCP_basesum_payload)
+    )
     TCP_ISN ISN_gen (
         .CLK(CLK),
         .nRST(nRST),
-        .gen_en(seq_up),
-        .ISN_num (ISN_num)
-    );
-
-    assign TCP_ctrl.ISN_num = ISN_num;
-    assign TCP_ctrl.end_ss = end_ss;
-    assign TCP_ctrl.bytes_sent = bytes_sent;
-    assign TCP_ctrl.seq_up = seq_up;
-    assign TCP_ctrl.full = full;
-    assign TCP_stop_flg = TCP_ctrl.TCP_stop_flg;
-
-
-    TCP_flow_ctrl ctrl (
-        .CLK(CLK),
-        .nRST(nRST),
-        .myrx(TCP_ctrl.rx), // bind modports
-        .mytx(TCP_ctrl.tx)  // bind modports
-    );
-
-    chksum_tcp_pl #(
+        .gen_en(1'b0),
+        .ISN_num(ISN_num)
+    );    
+    
+    checksum_TCP #(
         .DATA_WIDTH(DATA_WIDTH)
-    ) chksum_tcp_pl_inst (
+    ) inst (
         .CLK(CLK),
         .nRST(nRST),
-        .FIFO_rd_en(rd_en),
-        .TCP_payload_tx(TCP_payload_tx), // Data to be processed
-        .TCP_checksum_pl(TCP_basesum_payload) // Payload data to be sent   
+        .clear(1'b0),
+        .wr_FIFO_en(wr_FIFO_en),
+        .axis_last(axis_last),
+        .TCP_payload_tx(rd_FIFO_payload),
+        .TX_en(TX_en),
+        .re_trans(re_trans),
+        .TCP_checksum_out(TCP_checksum_out)
     );
 
 

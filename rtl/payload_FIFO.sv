@@ -27,20 +27,16 @@ module payload_FIFO #(
     input logic [31:0] seq_rcv_start,
     input  logic wr_FIFO_en,
     input  logic [7:0] wr_FIFO_offset,
-
     output logic  [FIFO_WIDTH - 1:0] wr_ptr_out,
     output logic  [FIFO_WIDTH - 1:0] wr_FIFO_len,
-
-    
-
-    //Getting the rd_ptr and len for reading
     input logic rd_FIFO_valid,
     input logic [FIFO_WIDTH - 1:0] rd_FIFO_ptr,
     input logic [FIFO_WIDTH - 1:0] rd_FIFO_len,
-
     output logic rd_FIFO_en,
     output logic [31:0] seq_rx_FIFO_rd,
-    
+    output logic full,
+
+    //Interface between Payload_rcv and APP readgin
     input logic axis_r_en,
     output logic axis_r_valid,
     output logic [DATA_WIDTH - 1 : 0] axis_rd_data
@@ -82,9 +78,9 @@ module payload_FIFO #(
     assign bytes_offset3 = TCP_FIFO[2].bytes_offset;
     assign bytes_offset4 = TCP_FIFO[3].bytes_offset;
     assign bytes_offset5 = TCP_FIFO[4].bytes_offset;
-
-    
     assign bytes_len = wr_FIFO_offset[7] + wr_FIFO_offset[6] + wr_FIFO_offset[5] + wr_FIFO_offset[4] + wr_FIFO_offset[3] + wr_FIFO_offset[2] + wr_FIFO_offset[1] + wr_FIFO_offset[0]; 
+
+    assign full = ((rd_ptr - 1) == wr_ptr_out);
 
     // priority_encoder bytes_convert (
     //     .din(),

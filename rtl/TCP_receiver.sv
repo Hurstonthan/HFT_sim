@@ -57,7 +57,7 @@ module TCP_receiver #(
     logic checksum_en, nchecksum_en;
     
 
-    logic n_nw_setment, nTCP_last;
+    logic n_nw_segment, nTCP_last;
     //assign IP_payload_rx =IP_payload_rx;
 
     typedef enum logic [2:0] {
@@ -126,7 +126,7 @@ module TCP_receiver #(
                 TCP_valid <= nTCP_valid;
                 rcv_data <= nrcv_data;
                 bytes_trk <= nbytes_trk;
-                nw_segment <= n_nw_setment;
+                nw_segment <= n_nw_segment;
                 TCP_last <= nTCP_last;
 
             end
@@ -136,7 +136,7 @@ module TCP_receiver #(
 
     //Next state logic
     always_comb begin
-        n_nw_setment = nw_segment;
+        n_nw_segment = nw_segment;
         nTCP_last = TCP_last;
         nstate = state; // Default to current state
         nbytes_trk = 0; // Default to current bytes tracked
@@ -186,7 +186,7 @@ module TCP_receiver #(
                 nstate = RCV_DATA;
 
                 nTCP_valid = 1'b1;
-                n_nw_setment = 1'b1;
+                n_nw_segment = 1'b1;
                 nTCP_payload_rx = IP_payload_rx[15:0];
                 
                 
@@ -196,6 +196,7 @@ module TCP_receiver #(
 
             RCV_DATA: begin
                 // Process the received data here (e.g., store it, send ACK, etc.)
+                n_nw_segment = 1'b1;
                 nbytes_trk = bytes_trk + 8; // Increment bytes tracked
                 nTCP_checksum = IP_payload_rx[63:48] + IP_payload_rx[47:32] + IP_payload_rx[31:16] + IP_payload_rx[15:0];
                 TCP_payload_rx = IP_payload_rx; // Store received payload     

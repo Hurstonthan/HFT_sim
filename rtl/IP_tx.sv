@@ -18,7 +18,7 @@ module IP_tx #(
     parameter WORD_WIDTH         = 64,
     
     parameter IPV4_VER           = 8'h45,      // IPv4 + header length = 5 words (20 bytes)
-    parameter LENGTH             = 16'd40,     // Total IP length (20 bytes IP header + 20 bytes TCP header)
+    parameter LENGTH             = 16'd5,     // Total IP length (20 bytes IP header + 20 bytes TCP header)
     parameter IP_IDENFICATION    = 16'h0001,   // Example identification
     parameter IP_FLAG_OFFSET     = 16'h4000,   // Don't Fragment flag (DF = 1, offset = 0)
     parameter IP_TLL             = 8'h40,      // Time to Live (64)
@@ -83,7 +83,7 @@ module IP_tx #(
         nIPv4_chk_sum = IPv4_chk_sum;
         if (chk_sum_valid) begin
             //0x4884 is including everything but TCP payload length, and the checksum
-           nIPv4_chk_sum = 16'h4884 + TCP_len_data;
+           nIPv4_chk_sum = 16'h4884 + TCP_len_data + 2; // 2 is extra 2 bytes for TCP transmission
         end
     end
 
@@ -99,27 +99,28 @@ module IP_tx #(
 
                 if (IP_send) begin
                     nxIP_state = SEND_ETYPE_IPV4_MSB_LENGTH;
-                    nxIP_transmit_l = {32'b0, ETHER_TYPE, IPV4_VER ,LENGTH[15:8]}; //Send EtherType and length
-                    chk_sum_valid = 1'b1;
+                    // nxIP_transmit_l = {32'b0, ETHER_TYPE, IPV4_VER ,LENGTH[15:8]}; //Send EtherType and length
+                    nxIP_transmit_l = {32'b0, ETHER_TYPE, IPV4_VER ,8'h0}; //Send EtherType and length
                 end  
             end
             SEND_ETYPE_IPV4_MSB_LENGTH: begin
 
                 nxIP_state = SEND_IP_HEADER1;
-                nxIP_transmit_l = {LENGTH[7:0], IP_IDENFICATION, IP_FLAG_OFFSET, IP_TLL, IP_PROTOCOL, IPv4_chk_sum[15:8]}; //Send length LSB, IP_iden, IP_flag, IP offset,IP TLL, IP protocol, IP checksum MSB
+                nxIP_transmit_l = {LENGTH[15:0], IP_IDENFICATION, IP_FLAG_OFFSET, IP_TLL, IP_PROTOCOL}; //Send length LSB, IP_iden, IP_flag, IP offset,IP TLL, IP protocol, IP checksum MSB
+                chk_sum_valid = 1'b1;
         
             end
             SEND_IP_HEADER1: begin
 
                 nxIP_state = SEND_IP_HEADER2;
-                nxIP_transmit_l = {IPv4_chk_sum[7:0], IP_SRC_ADDR, IP_DEST_ADDR[31:8]};
+                nxIP_transmit_l = {IPv4_chk_sum[15:0], IP_SRC_ADDR, IP_DEST_ADDR[31:16]};
                 TCP_send = 1'b1; //Indicate that TCP header is being sent
         
             end
             SEND_IP_HEADER2: begin
                 TCP_send = 1'b1; //Indicate that TCP header is being sent
                 nxIP_state = SEND_IP_HEADER3;
-                nxIP_transmit_l = {IP_DEST_ADDR[7:0], TCP_transmit[55:0]}; //Send dest IP LSB
+                nxIP_transmit_l = {IP_DEST_ADDR[15:0], TCP_transmit[47:0]}; //Send dest IP LSB
         
             end
             SEND_IP_HEADER3: begin

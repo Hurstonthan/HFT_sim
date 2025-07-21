@@ -21,20 +21,21 @@ module TCP_flow_ctrl #(
     input logic [15:0] urgent_pointer_rx,
     
     input logic end_ss,
-    output logic TCP_tx_en,
-    output logic seq_up,
+    // output logic TCP_tx_en,
+    input logic seq_up,
     output logic [7:0] TCP_control_tx,
     output logic [31:0] seq_num_tx,
     output logic [31:0] ACK_tx,
     output logic [3:0] offset_tx,
     output logic [15:0] window_size_tx,
-    output logic [15:0] checksum_tx,
+    // output logic [15:0] checksum_tx,
     output logic [15:0] urgent_pointer_tx,
     output logic TCP_stop_flg,
     
     input logic full,
     input logic timeout_flag,
     output logic hand_shake_done,
+    output logic [31:0] seq_rcv_str,
     input logic [31:0] ISN_num,
     input logic [31:0] bytes_sent,
     input logic [31:0] bytes_abt_sent,
@@ -50,10 +51,16 @@ module TCP_flow_ctrl #(
     input logic [FIFO_WIDTH - 1:0] wr_FIFO_ptr,
     output logic [FIFO_WIDTH - 1:0] rd_FIFO_ptr,
     output logic wr_FIFO_en,
-    output logic rd_FIFO_en,
+    input logic rd_FIFO_en,
     input logic nw_segment,
     input logic TCP_flush,
-    output logic rd_FIFO_valid
+    output logic rd_FIFO_valid,
+
+    output logic [31:0] ACK_num,
+    output logic ACK_rcv_flag,
+    output logic out_order_req
+
+
 );
 
     import ether_pkg::*;
@@ -95,7 +102,8 @@ module TCP_flow_ctrl #(
     logic [15:0] window_size, nwindow_size;
     logic [31:0] bytes_in_flight;
     logic [31:0] wnd_allow;
-
+    logic nhand_shake_done;
+    logic [31:0] nseq_rcv_str;
 
 
     
@@ -127,6 +135,9 @@ module TCP_flow_ctrl #(
     assign TCP_control_tx = tx_pkg_type;
     assign rcv_next_out = rcv_next;
     assign seq_num_out = seq_num.seq_num;
+    assign ACK_num = ACK_rx;
+    assign ACK_rcv_flag = rcv_data && rcv_pkg_type.ACK ;
+    
 
     
     // initial begin
@@ -188,6 +199,8 @@ module TCP_flow_ctrl #(
             flush_ptr <= 0;
             flush_list <= 0;
             len_flush_ptr <= 0;
+            hand_shake_done <= 0;
+            seq_rcv_str <= 0;
         end else if (TCP_flush) begin
             seq_rx_trk <= 0;
             flush_ptr <= 0;
@@ -199,6 +212,8 @@ module TCP_flow_ctrl #(
             flush_ptr <= nflush_ptr;
             len_flush_ptr <= nlen_flush_ptr;
             flush_list <= nflush_list;
+            hand_shake_done <= nhand_shake_done;
+            seq_rcv_str = nseq_rcv_str;
             
           
 
@@ -207,7 +222,7 @@ module TCP_flow_ctrl #(
     always_ff @(posedge CLK, negedge nRST) begin
         if (!nRST) begin
             ack_num <= '0;
-            seq_num <= '0; //Set the initial sequence number
+            seq_num <= ISN_num; //Set the initial sequence number
             window_size <= 16'd40; //Set the initial number
             TCP_order <= 0;
             rcv_next <= '0;
@@ -269,6 +284,11 @@ module TCP_flow_ctrl #(
 
         case_bug = case_debug_t'(2'b00);
         case_bug_0 = 1'b0;
+
+        //Case for handshake
+        nhand_shake_done = 1'b0;
+        nseq_rcv_str = seq_rcv_str;
+        out_order_req = 1'b0;
 
         
 
@@ -374,11 +394,16 @@ module TCP_flow_ctrl #(
             WAIT_SYN_ACK: begin
                 //If we receive SYN_ACK, we will increment seq_num and 
                 TCP_stop_flg = 1'b1;
+                // if (TCP_flush) begin
+                //     nstate = IDLE;
+                // end
+                
                 if (rcv_data && rcv_pkg_type.SYN && rcv_pkg_type.ACK) begin                    
                     nstate = SEND_ACK;
                     // nseq_num.seq_num = seq_num.seq_num + 1;
                     nack_num.ACK_num = ACK_rx; //This should be this
-                    nrcv_next = seq_num_rx + 1; 
+                    nrcv_next = seq_num_rx + 1;
+                    nseq_rcv_str = seq_num_rx + 1; 
                     nwindow_size = window_size_rx;
                 end 
                 //Logic of timeout issue
@@ -391,6 +416,8 @@ module TCP_flow_ctrl #(
                 if (seq_up) begin
                     //nseq_num.seq_num = seq_num.seq_num + 1;
                     nstate = DATA_CONNECTED;
+                    nhand_shake_done = 1'b1;
+                    
                 end
             end
 
@@ -418,6 +445,7 @@ module TCP_flow_ctrl #(
                             //Logic of 3 duplicated ACK and transmit the data again
                             //Need a flag to indicate that the data is sent again
                             nack_num.dup_chk = 0;
+                            out_order_req = 1'b1;
                             nseq_num.seq_num = ACK_rx; //Right??? this is how we update the sequence number if a packege is lost?
                         end else begin
                             nack_num.dup_chk = ack_num.dup_chk + 1;
@@ -489,7 +517,7 @@ module TCP_flow_ctrl #(
         seq_num_tx = '0;
         ACK_tx = '0;
         window_size_tx = (full) ? 16'd0 : 16'hFFFF;
-        hand_shake_done = 1'b0; //Reset the handshake done flag
+        nhand_shake_done = 1'b0; //Reset the handshake done flag
 
         case (state)
             IDLE: begin
@@ -509,7 +537,7 @@ module TCP_flow_ctrl #(
                 seq_num_tx = seq_num.seq_num;
                 ACK_tx = rcv_next;
                 if (seq_up) begin
-                    hand_shake_done = 1'b1; //Handshake is done
+                    nhand_shake_done = 1'b1; //Handshake is done
                 end
         
             end

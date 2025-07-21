@@ -16,9 +16,9 @@ module TCP_tx #(
     input logic [15:0] urgent_pointer_tx,
     
     
-    output logic rd_en,
+    output logic rd_FIFO_en,
     input logic [31:0] bytes_abt_sent,
-    input logic [DATA_WIDTH - 1 : 0] TCP_payload_tx,
+    input logic [DATA_WIDTH - 1 : 0] rd_FIFO_payload,
 
     output logic seq_up,
     output logic [31:0] bytes_sent,
@@ -26,8 +26,9 @@ module TCP_tx #(
 
     // Interface between TCP_tx and IP_tx
     input logic TCP_send,
-    input logic [15:0] TCP_basesum_payload,
-    output logic [DATA_WIDTH - 1 : 0] TCP_transmit
+    output logic [DATA_WIDTH - 1 : 0] TCP_transmit,
+    input logic [15:0] TCP_basesum_payload
+    
 );
 
 import ether_pkg::*;
@@ -96,37 +97,38 @@ always_comb begin
     nbytes_sent = bytes_sent;
     seq_up = 1'b0; // Reset sequence update flag
     valid_checksum = 1'b0;
-    rd_en = 1'b0; // Reset read enable flag
+    rd_FIFO_en = 1'b0; // Reset read enable flag
     nseq_up = 1'b0; // Reset sequence update flag for next state
+
 
 
     case(state)
         IDLE: begin
             if (TCP_send) begin
                 nstate = SEND_SRC_DEST_SEQ;
-                nTCP_transmit = {8'b0,src_port, dest_port, seq_num_tx[31:8]}; // Send source port, destination port, and the first 24 bits of sequence number
+                nTCP_transmit = {16'b0,src_port, dest_port, seq_num_tx[31:16]}; // Send source port, destination port, and the first 24 bits of sequence number
             end
         end
 
         SEND_SRC_DEST_SEQ: begin
             nstate = SEND_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE;
-            nTCP_transmit = {seq_num_tx[7:0], ACK_tx, {offset_tx, 4'b0}, TCP_control_tx, window_size_tx[15:8]}; // Send the last 8 bits of sequence number, ACK number, offset, control flags, and window size
+            nTCP_transmit = {seq_num_tx[15:0], ACK_tx, {offset_tx, 4'b0}, TCP_control_tx}; // Send the last 8 bits of sequence number, ACK number, offset, control flags, and window size
             valid_checksum = 1'b1; // Enable checksum calculation
         end
 
         SEND_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE: begin
             valid_checksum = 1'b0;
-            rd_en = 1'b1;
-            nTCP_transmit = {window_size_tx[7:0], TCP_checksum[15:0], urgent_pointer_tx, 24'd0};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
-            nTCP_transmit = {window_size_tx[7:0], TCP_checksum[15:0], urgent_pointer_tx, TCP_transmit[63:40]};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
+            rd_FIFO_en = 1'b1;
+            nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, 16'd0};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
+            // nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, TCP_transmit[63:48]};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
             nstate = SEND_WINDOWSIZE_CHECKSUM_URGENT_PAYLOAD; // Move to the next state
             // nTCP_transmit = {seq_num_tx[7:0], ACK_tx, {offset_tx, 4'b0}, TCP_control_tx, window_size_tx[15:8]}; // Send the last 8 bits of sequence number, ACK number, offset, control flags, and window size
         end
 
         SEND_WINDOWSIZE_CHECKSUM_URGENT_PAYLOAD: begin
-            rd_en = 1'b1; // Enable read from FIFO
+            rd_FIFO_en = 1'b1; // Enable read from FIFO
             if (|bytes_abt_sent) begin
-                nTCP_transmit = TCP_payload_tx; // Send the TCP payload
+                nTCP_transmit = rd_FIFO_payload; // Send the TCP payload
                 nstate = SEND_TCP_PAYLOAD; // Move to the next state
             end else begin
                 
@@ -136,8 +138,8 @@ always_comb begin
         end
 
         SEND_TCP_PAYLOAD: begin
-            rd_en = 1'b1; // Enable read from FIFO
-            nTCP_transmit = TCP_payload_tx; // Send the rest of the TCP payload
+            rd_FIFO_en = 1'b1; // Enable read from FIFO
+            nTCP_transmit = rd_FIFO_payload; // Send the rest of the TCP payload
             
 
             if (bytes_sent >= bytes_abt_sent - 1) begin

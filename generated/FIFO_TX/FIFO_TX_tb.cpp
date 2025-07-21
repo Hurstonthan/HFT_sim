@@ -38,6 +38,9 @@ static void write_FIFO (int len) {
 static void rd_FIFO () {
     top -> rd_FIFO_en = 1;
     for (int i = 0; i < 30; i++) {
+        if (top -> rd_FIFO_last) {
+            top -> rd_FIFO_en = 0;
+        }
         printf ("Cycle: %d, rd_FIFO_valid: %d, rd_FIFO_last: %d, rd_FIFO_payload: %ld, bytes_abt_sent: %d\n", i, top -> rd_FIFO_valid, top -> rd_FIFO_last, top -> rd_FIFO_payload, top -> bytes_abt_sent);
         tick();
     }
