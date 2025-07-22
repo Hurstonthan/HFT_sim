@@ -8,6 +8,8 @@
 #include "TCP_input.hpp"
 #include "FIFO_TX_input.hpp"
 #include "payload_FIFO_input.hpp"
+#include <iostream>
+#include <vector>
 
 static vluint64_t main_time = 0;
 double sc_time_stamp() { return main_time; }
@@ -16,6 +18,8 @@ double sc_time_stamp() { return main_time; }
 VTCP *TCP = new VTCP;
 VFIFO_TX *FIFO_TX = new VFIFO_TX;
 Vpayload_FIFO *payload_FIFO = new Vpayload_FIFO;
+
+
 
 static void tick_all() {
     // posedge
@@ -34,6 +38,38 @@ int main(int argc,char** argv){
     Verilated::commandArgs(argc, argv);
     Verilated::traceEverOn(true);
 
+    struct IP_rx_in {
+        std::string name;
+        std::vector<uint64_t> payload;
+    };
+
+    const uint32_t ISN_seq_rx = 0x00;
+    uint32_t seq_num_rx;
+    uint32_t ACK_num_rx;
+    uint16_t seq_num_MSB;
+    uint16_t seq_num_LSB;
+    uint16_t window_size_rx;
+    uint16_t checksum_rx;
+    uint16_t urgent_pointer_rx;
+    uint8_t TCP_control_tx;
+
+
+    seq_num_rx =  ISN_seq_rx;
+    seq_num_MSB = (seq_num_rx >> 16) && 0xFFFF;
+    seq_num_LSB = seq_num_rx && 0xFFFF;
+    urgent_pointer_rx = 0;
+    ACK_num_rx = 0;
+    TCP_control_rx = 0x00;
+    window_size_rx = 0x00_00;
+    checksum_rx = 0x00_00;
+    urgent
+    //The TCP receiving is starting off with receiving 48 bits
+    //Then start receivng 64 bits
+    std::vector<IP_rx_in> TCP_header = {
+        {"48bits source_port dest port and MSB seq", {0x1234_5678, seq_num_MSB}}, 
+        {"64bits LSB seq ACK, offset/header size 4 resever flag TCP control flag", {seq_num_LSB, ACK_num_rx, 0x50, TCP_control_rx}}.
+        {"64bits window_size, TCP checksum, urgent pointer and 16'd0", {window_size_rx, checksum_rx, }}
+    };
     // construct models + trace handles
     auto *tfp_TCP=new VerilatedFstC; TCP->trace(tfp_TCP,99); tfp_TCP->open("TCP.vcd");
     auto *tfp_FIFO_TX=new VerilatedFstC; FIFO_TX->trace(tfp_FIFO_TX,99); tfp_FIFO_TX->open("FIFO_TX.vcd");
