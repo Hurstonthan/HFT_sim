@@ -37,12 +37,12 @@ module TCP #(
     output logic [31:0] seq_rcv_start,
     output logic wr_FIFO_en,
     output logic [7:0] wr_FIFO_offset,
-    output  logic rd_FIFO_valid,
+    output  logic rd_FIFO_valid_rcv,
     output  logic [FIFO_WIDTH - 1:0] rd_FIFO_ptr,
     output  logic [FIFO_WIDTH - 1:0] rd_FIFO_len,
     input  logic [FIFO_WIDTH - 1:0] wr_ptr_out,
     input  logic [FIFO_WIDTH - 1:0] wr_FIFO_len,
-    input logic rd_FIFO_en,
+    input logic rd_FIFO_en_rcv,
     input logic [31:0] seq_rx_FIFO_rd,
     input logic full,
 
@@ -59,14 +59,14 @@ module TCP #(
 
     //Interface between TCP_tx and FIFO
     input logic [63:0] rd_FIFO_payload,
-    input logic rd_FIFO_valid,
+    input logic rd_FIFO_valid_tx,
     input logic rd_FIFO_last,
     input logic [15:0] bytes_abt_sent,
-    output logic rd_FIFO_en,
+    output logic rd_FIFO_en_tx,
 
     //Interface between TCP_tx and IP_tx
     input logic TCP_send,
-    output logic TCP_transmit,
+    output logic [63:0] TCP_transmit,
 
     input logic re_trans,
     input logic [15:0] checksum_re_trans,
@@ -86,7 +86,7 @@ module TCP #(
     logic [15:0] checksum_rx;
     logic [15:0] urgent_pointer_rx;
     logic [15:0] payload_len_rx; // Length of the TCP payload
-    logic TCP_flush;
+
 
 
     //Interface between TCP_tx and TCP_flow_logic
@@ -102,7 +102,7 @@ module TCP #(
 
     //Instantiate FIFO_TX
     logic [15:0] TCP_basesum_payload;
-    logic [15:0] TCP_checksum_out;
+    // logic [15:0] TCP_checksum_out;
 
     always_comb begin
         if (re_trans) begin
@@ -150,10 +150,10 @@ module TCP #(
         .wr_FIFO_ptr(wr_FIFO_ptr),
         .rd_FIFO_ptr(rd_FIFO_ptr),
         .wr_FIFO_en(wr_FIFO_en),
-        .rd_FIFO_en(rd_FIFO_en),
         .nw_segment(nw_segment),
         .TCP_flush(TCP_flush),
-        .rd_FIFO_valid(rd_FIFO_valid),
+        .rd_FIFO_en(rd_FIFO_en_rcv),
+        .rd_FIFO_valid(rd_FIFO_valid_rcv),
         .ACK_num(ACK_num),
         .ACK_rcv_flag(ACK_rcv_flag),
         .out_order_req(out_order_req)
@@ -196,7 +196,9 @@ module TCP #(
         .offset_tx(offset_tx),
         .window_size_tx(window_size_tx),
         .urgent_pointer_tx(urgent_pointer_tx),
-        .rd_FIFO_en(rd_FIFO_en),
+        .rd_FIFO_en(rd_FIFO_en_tx),
+        .rd_FIFO_valid (rd_FIFO_valid_tx),
+        .rd_FIFO_last (rd_FIFO_last),
         .bytes_abt_sent(bytes_abt_sent),
         .rd_FIFO_payload(rd_FIFO_payload),
         .seq_up(seq_up),

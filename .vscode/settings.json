@@ -1,3 +1,9 @@
 {
-    "idf.pythonInstallPath": "/home/than0/.espressif/python_env/idf5.4_py3.10_env/bin/python"
+    "idf.pythonInstallPath": "/home/than0/.espressif/python_env/idf5.4_py3.10_env/bin/python",
+    "files.associations": {
+        "array": "cpp",
+        "initializer_list": "cpp",
+        "string_view": "cpp",
+        "utility": "cpp"
+    }
 }

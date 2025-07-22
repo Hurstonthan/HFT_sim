@@ -10,7 +10,7 @@ GEN_DIR_BASE  := $(strip generated)
 INC_DIR       := $(strip include)
 
 # ---------- extra RTL ---------------------------------------------------
-SUR_FILES     := priority_encoder   # add more, space-separated
+SUR_FILES     := priority_encoder TCP_ISN checksum_TCP TCP_tx TCP_receiver TCP_flow_ctrl FIFO_TX payload_FIFO TCP  # add more, space-separated
 
 # ---------- verilator flags --------------------------------------------
 #-Wall -Wno-UNDRIVEN -Wno-UNUSEDSIGNAL
@@ -34,7 +34,7 @@ DRIVE_CPP = $(GEN_DIR_BASE)/$*/$*_input.cpp
 	@echo "==> Building + running sim for '$*'"
 	verilator $(VERI_FLAGS)                       \
 	          --cc $(VFILES)                      \
-	          --top-module $*                     \
+	          --top-module $*  \
 	          --exe $(TB_CPP) $(DRIVE_CPP)        \
 	          --build
 	@./obj_dir/V$*

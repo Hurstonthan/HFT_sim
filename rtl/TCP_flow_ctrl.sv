@@ -213,7 +213,7 @@ module TCP_flow_ctrl #(
             len_flush_ptr <= nlen_flush_ptr;
             flush_list <= nflush_list;
             hand_shake_done <= nhand_shake_done;
-            seq_rcv_str = nseq_rcv_str;
+            seq_rcv_str <= nseq_rcv_str;
             
           
 
@@ -286,7 +286,6 @@ module TCP_flow_ctrl #(
         case_bug_0 = 1'b0;
 
         //Case for handshake
-        nhand_shake_done = 1'b0;
         nseq_rcv_str = seq_rcv_str;
         out_order_req = 1'b0;
 
@@ -416,8 +415,6 @@ module TCP_flow_ctrl #(
                 if (seq_up) begin
                     //nseq_num.seq_num = seq_num.seq_num + 1;
                     nstate = DATA_CONNECTED;
-                    nhand_shake_done = 1'b1;
-                    
                 end
             end
 

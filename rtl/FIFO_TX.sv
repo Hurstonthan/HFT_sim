@@ -1,6 +1,6 @@
 `timescale 1ns / 10ps
 module FIFO_TX #(
-    parameter DATA_WIDRH = 64,
+    parameter DATA_WIDTH = 64,
     parameter FIFO_DEPTH = 64, // Depth of the FIFO
     parameter FIFO_WIDTH = $clog2(FIFO_DEPTH) // Width of the FIFO address
 )(
@@ -17,7 +17,7 @@ module FIFO_TX #(
 
     output logic rd_FIFO_valid,
     output logic rd_FIFO_last,
-    output logic [DATA_WIDRH - 1:0] rd_FIFO_payload,
+    output logic [DATA_WIDTH - 1:0] rd_FIFO_payload,
     output logic [15:0] bytes_abt_sent,
 
     //TCP flow CTRL interface
@@ -31,12 +31,12 @@ module FIFO_TX #(
     input logic axis_last,
     input logic wr_FIFO_en,
     input logic [31:0] len_seq,
-    input logic [DATA_WIDRH - 1:0] soupbin_TCP_payload,
-    output logic wr_FIFO_valid //FULL case
+    input logic [DATA_WIDTH - 1:0] soupbin_TCP_payload,
+    output logic wr_FIFO_valid, //FULL case
 
     //Checksum interface
-    output logic re_trans;
-    output logic [15:0] checksum_re_trans;
+    output logic re_trans,
+    output logic [15:0] checksum_re_trans
     
 );
 
@@ -202,7 +202,7 @@ module FIFO_TX #(
         nrd_FIFO_payload = rd_FIFO_payload;
         nrd_FIFO_valid = rd_FIFO_valid;
         nout_order_req_l = out_order_req_l;
-        nrd_upd = rd_up;
+        nrd_upd = rd_upd;
         nbytes_abt_sent_msg_rd = bytes_abt_sent_msg_rd;
 
 
@@ -231,7 +231,7 @@ module FIFO_TX #(
                         nptr_str = dict_tx[dict_rd_ptr].ptr_str;
                         nptr_end = dict_tx[dict_rd_ptr].ptr_end;
                         nbytes_abt_sent = dict_tx[dict_rd_ptr].len_seq;
-                        nchecksum_l = dic_tx[dict_rd_ptr].checksum;
+                        nchecksum_l = dict_tx[dict_rd_ptr].checksum;
                         
                     end else begin
                         nrd_state = IN_ORDER_DATA;

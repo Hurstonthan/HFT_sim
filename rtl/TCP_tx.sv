@@ -17,8 +17,12 @@ module TCP_tx #(
     
     
     output logic rd_FIFO_en,
+    input  logic rd_FIFO_valid,
+    input  logic rd_FIFO_last,
+    input  logic [DATA_WIDTH - 1 : 0] rd_FIFO_payload,
+
     input logic [31:0] bytes_abt_sent,
-    input logic [DATA_WIDTH - 1 : 0] rd_FIFO_payload,
+    
 
     output logic seq_up,
     output logic [31:0] bytes_sent,
@@ -26,6 +30,8 @@ module TCP_tx #(
 
     // Interface between TCP_tx and IP_tx
     input logic TCP_send,
+    output logic TCP_tx_valid,
+    output logic TCP_tx_last,
     output logic [DATA_WIDTH - 1 : 0] TCP_transmit,
     input logic [15:0] TCP_basesum_payload
     
@@ -53,6 +59,7 @@ typedef enum logic [6:0] {
 
 TCP_state_t state, nstate;
 logic [DATA_WIDTH - 1: 0] nTCP_transmit;
+logic nTCP_tx_valid, nTCP_tx_last;
 logic nseq_up;
 
 always_ff @(posedge CLK, negedge nRST) begin
@@ -62,9 +69,13 @@ always_ff @(posedge CLK, negedge nRST) begin
         bytes_sent <= '0;
         TCP_checksum <= '0;
         seq_up <= 1'b0;
+        TCP_tx_valid <= 0;
+        TCP_tx_last <= 0;
     end else begin
         state <= nstate;
         TCP_transmit <= nTCP_transmit;
+        TCP_tx_valid <= nTCP_tx_valid;
+        TCP_tx_last <= nTCP_tx_last;
         bytes_sent <= nbytes_sent;
         seq_up <= nseq_up;
         if (valid_checksum) begin
@@ -94,8 +105,9 @@ end
 always_comb begin
     nstate = state;
     nTCP_transmit = TCP_transmit;
+    nTCP_tx_valid = TCP_tx_valid;
+    nTCP_tx_last = TCP_tx_last;
     nbytes_sent = bytes_sent;
-    seq_up = 1'b0; // Reset sequence update flag
     valid_checksum = 1'b0;
     rd_FIFO_en = 1'b0; // Reset read enable flag
     nseq_up = 1'b0; // Reset sequence update flag for next state
@@ -142,14 +154,23 @@ always_comb begin
             nTCP_transmit = rd_FIFO_payload; // Send the rest of the TCP payload
             
 
-            if (bytes_sent >= bytes_abt_sent - 1) begin
+            // if (bytes_sent >= bytes_abt_sent - 1) begin
+            //     nstate = IDLE;
+            //     nseq_up = 1'b1; // Indicate that the sequence number should be updated
+            //     if (TCP_control_tx[1] || TCP_control_tx[0]) begin
+            //         nbytes_sent = bytes_sent + 32'd1; // Update the number of bytes sent
+            //     end
+            // end
+            
+            if (rd_FIFO_last) begin
                 nstate = IDLE;
+                nTCP_tx_last = 1'b1;
                 nseq_up = 1'b1; // Indicate that the sequence number should be updated
                 if (TCP_control_tx[1] || TCP_control_tx[0]) begin
                     nbytes_sent = bytes_sent + 32'd1; // Update the number of bytes sent
                 end
             end
-            
+
             // if (!TCP_send && (TCP_control_tx[1] || TCP_control_tx[0])) begin 
             //     nbytes_sent = bytes_sent + 32'd1; // Update the number of bytes sent
             //     nstate = IDLE; // Go back to IDLE after sending the payload

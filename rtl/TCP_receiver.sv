@@ -17,6 +17,7 @@ module TCP_receiver #(
     input  logic [15:0] TCP_len,
     input  logic [15:0] IP_pseuder,
 
+
     output logic        rcv_data,
     output logic [7:0]  TCP_control_rx,
     output logic [31:0] seq_num_rx,
@@ -46,13 +47,12 @@ module TCP_receiver #(
     logic [31:0] nseq_num_rx, nACK_rx; // Sequence and acknowledgment numbers
     logic [3:0] noffset_rx; // Offset
     logic [15:0] nwindow_size_rx, nchecksum_rx, nurgent_pointer_rx; // Window size, checksum, and urgent pointer
-    logic [15:0] checksum_rx, nchecksum_rx; // Checksum for received data
     logic [15:0] bytes_trk, nbytes_trk;
     logic [15:0] checksum_in;
+    logic [15:0] nTCP_len_data;
     logic [16:0] TCP_checksum, nTCP_checksum;
     logic [7:0] TCP_data_dl, nTCP_data_dl;
     logic [63:0] nTCP_payload_rx;
-    logic [63:0] IP_payload_rx;
     logic nTCP_valid, nrcv_data;
     logic checksum_en, nchecksum_en;
     
@@ -144,7 +144,7 @@ module TCP_receiver #(
         nTCP_len_data = TCP_len_data; // Default to current length
         nTCP_payload_rx = TCP_payload_rx;
         nTCP_valid = TCP_valid;
-        nTCP_control_rx = TCP_rx_control_rx;
+        nTCP_control_rx = TCP_control_rx;
         nseq_num_rx     = seq_num_rx;
         nACK_rx         = ACK_rx;
         noffset_rx      = offset_rx;
@@ -156,17 +156,18 @@ module TCP_receiver #(
 
         case (state)
             IDLE: begin
-                if (IP_header_rx && IP_payload_rx[63:48] == SRC_PORT && 
+                if (valid_IP_header_rx && IP_payload_rx[63:48] == SRC_PORT && 
                     IP_payload_rx[47:32] == DEST_PORT) begin
                     nseq_num_rx[31:16] = IP_payload_rx[31:16]; // Extract sequence number
                     nstate = RCV_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE;
                     nTCP_checksum = IP_payload_rx[63:48] + IP_payload_rx[47:32] + IP_payload_rx[31:16] + IP_pseuder;
-                    end else begin
-                        nstate = ERR_CASE; // Invalid header, go to error case
-                    end
+                end else if (valid_IP_header_rx) begin
+                    nstate = ERR_CASE; // Invalid header, go to error case
+                end
             end
 
             RCV_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE: begin
+                
                 nseq_num_rx[15:0] = IP_payload_rx[63:48]; // Extract sequence number
                 nACK_rx = IP_payload_rx[47:16]; // Extract acknowledgment number
                 noffset_rx = IP_payload_rx[15:12]; // Extract offset
@@ -199,7 +200,7 @@ module TCP_receiver #(
                 n_nw_segment = 1'b1;
                 nbytes_trk = bytes_trk + 8; // Increment bytes tracked
                 nTCP_checksum = IP_payload_rx[63:48] + IP_payload_rx[47:32] + IP_payload_rx[31:16] + IP_payload_rx[15:0];
-                TCP_payload_rx = IP_payload_rx; // Store received payload     
+                nTCP_payload_rx = IP_payload_rx; // Store received payload     
                 if (bytes_trk + 8 < TCP_len_data) begin
                     nbytes_trk = bytes_trk + 8;
                 end else begin
