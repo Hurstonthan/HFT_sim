@@ -68,7 +68,6 @@ MODULE_NAME := V$(subst -,_,$*)
 		echo "No saved configuration found"; \
 		gtkwave $*.fst & \
 	fi
-
 # ---------- housekeeping ------------------------------------------------
 .PHONY: clean
 clean:
@@ -82,3 +81,4 @@ help:
 
 view-log:
 	@less simulation.log
+

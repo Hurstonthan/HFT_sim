@@ -1,31 +1,34 @@
 `timescale 1ns/10ps
-`include "rx_pkg.sv"
-
-module UDP_tx(
-    //todo check whetehr i can set src port address as UDP_dest
+module UDP_tx
+#(
+    parameter UDP_DEST_ADDR = 16'h1234, 
+    parameter UDP_SRC_ADDR = 16'h4321, 
+    parameter UDP_HEADER_LENGTH = 16'h08, 
+    parameter UDP_CHECKSUM = 16'h0000 
+)
+(
     input logic CLK, nRST,
     input logic UDP_valid, // sended from 
     input logic [63:0] UDP_payload, // payload to send
     input logic [15:0] UDP_len, // length of the UDP packet
-    input logic [15:0] UDP_src_port, 
-    input logic [15:0] UDP_dest_port, 
+    // input logic [15:0] UDP_src_port, 
+    // input logic [15:0] UDP_dest_port, 
     input logic UDP_last, // end of the payload latched already
 
     output logic [63:0] IP_payload, // including the UDP header and payload
     output logic IP_valid, // signal to indicate that the IP packet is ready to be sent
-    output logic IP_last
+    output logic IP_last,
+    output logic [15:0] IP_len 
 );
-    import rx_pkg::*;
-
     typedef enum logic [1:0] {
         IDLE,
         SEND_HEADER,
         SEND_PAYLOAD,
         DONE
         // ERROR
-    } UDP_tx_t;
+    } state_t;
 
-    UDP_tx_t current_state, nstate;
+    state_t current_state, nstate;
     logic [15:0] computed_len; 
     logic [63:0] header_reg;
     // logic last_reg; 
@@ -36,13 +39,14 @@ module UDP_tx(
             header_reg <= '0;
         end else begin
             current_state <= nstate;
-            header_reg <= {IP_DEST_ADDR[15:0], UDP_src_port, UDP_dest_port, computed_len};
+            // may need to change the header_reg
+            header_reg <= {UDP_SRC_ADDR, UDP_DEST_ADDR, IP_len, UDP_CHECKSUM};
             // may need to change the chksum
 
         end
     end
 
-    assign computed_len = UDP_len + UDP_HEADER_LENGTH; 
+    assign IP_len = UDP_len + UDP_HEADER_LENGTH; 
 
     always_comb begin
         /* 0      7 8     15 16    23 24    31 32    39 40    47 48    55 56     63 
@@ -58,7 +62,7 @@ module UDP_tx(
         nstate = current_state;
         IP_valid = 1'b0;
         IP_payload = '0; 
-        
+        IP_last = 1'b0;
         casez(current_state)
             IDLE: begin
                 if (UDP_valid) begin
