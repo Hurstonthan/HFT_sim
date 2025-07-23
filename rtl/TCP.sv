@@ -147,7 +147,7 @@ module TCP #(
         .wr_FIFO_offset(wr_FIFO_offset),
         .wr_FIFO_len(wr_FIFO_len),
         .rd_FIFO_len(rd_FIFO_len),
-        .wr_FIFO_ptr(wr_FIFO_ptr),
+        .wr_FIFO_ptr(wr_FIFO_ptr_out),
         .rd_FIFO_ptr(rd_FIFO_ptr),
         .wr_FIFO_en(wr_FIFO_en),
         .nw_segment(nw_segment),
