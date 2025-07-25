@@ -3,7 +3,7 @@
 `include "ether_pkg.vh"
 
 module TCP_flow_ctrl #(
-    parameter N = 16,
+    parameter N = 10,
     parameter int FIFO_DEPTH  = 2048,               // words  (must be power‑of‑2)
     parameter int FIFO_WIDTH = $clog2(FIFO_DEPTH)
 
@@ -83,11 +83,12 @@ module TCP_flow_ctrl #(
     } case_debug_t;
 
     typedef struct packed {
+        logic v;
         logic [31:0] seq_num;
         logic [15:0] seq_length;
         logic [15:0] rd_ptr;
         logic [15:0] length_ptr;
-        logic v;
+        
     } TCP_order_t;
 
     case_debug_t case_bug;
@@ -107,7 +108,8 @@ module TCP_flow_ctrl #(
 
 
     
-    TCP_order_t [N-1:0]nTCP_order, TCP_order;
+    TCP_order_t  nTCP_order [N-1:0]; 
+    TCP_order_t TCP_order  [N-1:0];
     
     
     logic [31:0] rcv_next, nrcv_next;
@@ -121,6 +123,7 @@ module TCP_flow_ctrl #(
     logic [N -1 : 0] overlap_mask;
     logic [3:0] flush_ptr, nflush_ptr, len_flush_ptr;
     logic [7:0] nlen_flush_ptr;
+    logic debug;
     // logic overlap_condition;
     
     genvar  k;
@@ -137,6 +140,7 @@ module TCP_flow_ctrl #(
     assign seq_num_out = seq_num.seq_num;
     assign ACK_num = ACK_rx;
     assign ACK_rcv_flag = rcv_data && rcv_pkg_type.ACK ;
+    assign debug = TCP_last ? seq_num.valid : 1;
     
 
     
@@ -214,17 +218,19 @@ module TCP_flow_ctrl #(
             flush_list <= nflush_list;
             hand_shake_done <= nhand_shake_done;
             seq_rcv_str <= nseq_rcv_str;
-            
-          
 
         end
     end
     always_ff @(posedge CLK, negedge nRST) begin
         if (!nRST) begin
             ack_num <= '0;
-            seq_num <= ISN_num; //Set the initial sequence number
+            seq_num.valid <= 1'b0;
+            seq_num.seq_num <= ISN_num; //Set the initial sequence number
             window_size <= 16'd40; //Set the initial number
-            TCP_order <= 0;
+            // TCP_order <= 0;
+            for (int x = 0; x < N; x++) begin
+                TCP_order[x] <= 0;
+            end
             rcv_next <= '0;
             state <= IDLE;
         end 
@@ -233,6 +239,12 @@ module TCP_flow_ctrl #(
             seq_num <= nseq_num;
             window_size <= nwindow_size;
             TCP_order <= nTCP_order;
+            // TCP_order <= '1;
+
+            for (int x = 0; x < N; x++) begin
+                TCP_order[x] <= nTCP_order[x];
+            end
+            
             state <= nstate;
             if (match_found) begin
                 if (TCP_order[match_idx].seq_num == rcv_next) begin
@@ -257,8 +269,13 @@ module TCP_flow_ctrl #(
             
         end
     end 
-    //ACK num is rely on the sequence receive
-    //Seq num is rely on the amount of bytes that have sent???
+    
+
+    always_ff @(posedge CLK) begin
+        $display("[%0t] nRST=%0b  nTCP_order[0].v=%0b  TCP_order[0].v=%0b  debug=%0b",
+             $time, nRST, nTCP_order[0].v, TCP_order[0].v, debug);
+    end
+
     always_comb begin //NEXT_STAGE logic
         nstate = state;
         nack_num = ack_num;
@@ -322,7 +339,6 @@ module TCP_flow_ctrl #(
                         nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
                         nTCP_order[free_idx].length_ptr = wr_FIFO_len;//length_ptr will be 
                         nTCP_order[free_idx].v = 1'b1;//length_ptr will be 
-                        
                         nflush_list[len_flush_ptr] = free_idx;
                         nlen_flush_ptr = len_flush_ptr + 1;
                     end
@@ -378,7 +394,7 @@ module TCP_flow_ctrl #(
         case (state)
             //During the IDLE, client will send the SYN packet first
             IDLE: begin
-                nseq_num.seq_num = 32'd0;
+                nseq_num.seq_num = seq_num;
                 
                 // if (SYN_sent) begin
                 //     nstate = WAIT_SYN_ACK;
@@ -514,7 +530,7 @@ module TCP_flow_ctrl #(
         seq_num_tx = '0;
         ACK_tx = '0;
         window_size_tx = (full) ? 16'd0 : 16'hFFFF;
-        nhand_shake_done = 1'b0; //Reset the handshake done flag
+        nhand_shake_done = hand_shake_done; //Reset the handshake done flag
 
         case (state)
             IDLE: begin

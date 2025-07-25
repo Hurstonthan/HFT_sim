@@ -218,7 +218,7 @@ module TCP_receiver #(
                 temp = temp[15:0] + temp[16];
                 nTCP_checksum = temp[16:0];
                 nTCP_payload_rx = IP_payload_rx; // Store received payload     
-                if (bytes_trk + 8 <= TCP_len_data) begin
+                if (bytes_trk + 8 < TCP_len_data) begin
                     nbytes_trk = bytes_trk + 8;
                 end else begin
                     nbytes_trk = bytes_trk + ((bytes_trk + 8) - TCP_len_data);

@@ -20,7 +20,7 @@ module TCP_ISN #(
 
     always_ff @(posedge CLK or negedge nRST) begin
         if (!nRST) begin
-            ISN_num <= '0;
+            ISN_num <= 32'hABCDE123;
         end else if (gen_en) begin
             ISN_num <= counter;            // Capture the ISN_num on request
         end

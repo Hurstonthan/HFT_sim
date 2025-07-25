@@ -27,6 +27,7 @@ struct IP_payload_t {
 };
 
 
+
 Vtop *top = new Vtop;
 VerilatedFstC *tfp = new VerilatedFstC;
 
@@ -35,9 +36,13 @@ IP_rx_in in2;
 IP_rx_in in3;
 
 std::vector<IP_payload_t> testcase1 {
-    {8, 0x1111222233334444},
-    {8, 0xDEADAAAABCBC5555},
-    {8, 0xA5A5A5A5A55AA55A}
+    {8, 0x1111222233334444}
+    // {8, 0xDEADAAAABCBC5555},
+    // {8, 0xA5A5A5A5A55AA55A}
+};
+
+std::vector<IP_payload_t> zero_case{
+    {0, 0x00}
 };
 
 IP_addr IP_pseudo = {
@@ -67,64 +72,15 @@ uint16_t getting_tcp_len (
     }
     return tcp_len;
 }
-// uint16_t calc_tcp_checksum(const IP_addr& ip,
-//                            const std::vector<IP_rx_in>& hdr64,
-//                            const std::vector<IP_payload_t>& payload
-//                            )   // header+payload length in bytes
-// {
-//     uint32_t sum = 0;
-//     uint16_t tcp_len_bytes = getting_tcp_len(payload);
-//     int trk = 0;
-
-//     auto add16 = [&](uint16_t w) {
-//         // printf("Checksum in ----- %u\n", w);
-//         sum += w;
-//         while (sum >> 16)                // catch any outstanding carry
-//             sum = (sum & 0xFFFF) + (sum >> 16);
-//     };
-    
-    
-
-//     /* ---------- 1. pseudo-header ---------- */
-//     printf("Checksum in ---------%X\n",(static_cast<uint16_t>((ip.src_ip >> 16) & 0xFFFF)));
-//     add16(((ip.src_ip)  >> 16) & 0xFFFF);
-//     add16(static_cast<uint16_t>( ip.src_ip         & 0xFFFF));
-//     add16((static_cast<uint16_t>(ip.dest_ip) >> 16) & 0xFFFF);
-//     add16(static_cast<uint16_t>( ip.dest_ip        & 0xFFFF));
-//     add16(0x0006);                          // next-header / protocol = TCP
-//     add16(20);            // length in **network order**
-    
-
-//     /* ---------- 2. TCP header ---------- */
-//     for (const auto& word64 : hdr64) {
-//         for (int i = 0; i < 4; ++i)
-//             add16(static_cast<uint16_t>((word64.payload >> (48 - 16*i)) & 0xFFFF));
-//     }
-    
-//     /* ---------- 3. TCP payload ---------- */
-//     // for (const auto& word64 : payload) {
-//     //     for (int i = 0; i < 4; ++i)
-//     //         add16(static_cast<uint16_t>((word64.payload >> (48 - 16*i)) & 0xFFFF));
-//     // }
-
-//     // /* handle odd payload length (pad with one zero byte) */
-//     // // if (tcp_len_bytes & 1)           // odd?
-//     // //     add16(0x0000);
-
-//     /* ---------- 4. final fold + one’s complement ---------- */
-//     while (sum >> 16)                // catch any outstanding carry
-//         sum = (sum & 0xFFFF) + (sum >> 16);
-
-//     return static_cast<uint16_t>(~sum);
-// }
 
 
 uint16_t calc_tcp_checksum(const IP_addr& ip,
                            const std::vector<IP_rx_in>& hdr64,
-                           const std::vector<IP_payload_t>& payload)
+                           const std::vector<IP_payload_t>& payload,
+                           uint16_t tcp_len_cal)
 {
     uint32_t sum = 0;
-    const uint16_t tcp_len = static_cast<uint16_t>(getting_tcp_len(payload));
+    // const uint16_t tcp_len = static_cast<uint16_t>(getting_tcp_len(payload));
     int trk = 0;
 
     auto add16 = [&](uint16_t w)
@@ -142,7 +98,8 @@ uint16_t calc_tcp_checksum(const IP_addr& ip,
     add16(static_cast<uint16_t>((ip.dest_ip>>16) & 0xFFFF));
     add16(static_cast<uint16_t>( ip.dest_ip       & 0xFFFF));
     add16(0x0006);                         // protocol = TCP
-    add16(20 + tcp_len + 2);                        // length (no htons)
+    add16(20 + tcp_len_cal);                        // length (no htons)
+    
 
     /* ───── 2. TCP header ───── */
     size_t word16_idx = 0;                 // counts 16-bit words
@@ -165,18 +122,7 @@ uint16_t calc_tcp_checksum(const IP_addr& ip,
         ++word16_idx;
     }
 
-    /* ───── 3. TCP payload ───── */
-    for (const auto& w : payload)
-    {
-        uint64_t v = w.payload;
-        add16(static_cast<uint16_t>( v        & 0xFFFF));
-        add16(static_cast<uint16_t>((v >> 16) & 0xFFFF));
-        add16(static_cast<uint16_t>((v >> 32) & 0xFFFF));
-        add16(static_cast<uint16_t>((v >> 48) & 0xFFFF));
-    }
-
-    /* pad one zero byte if payload length is odd */
-    if (tcp_len & 1) add16(0x0000);
+    if (tcp_len_cal & 1) add16(0x0000);
 
     /* ───── 4. final one’s-complement ───── */
     while (sum >> 16)                      // just in case
@@ -187,7 +133,7 @@ uint16_t calc_tcp_checksum(const IP_addr& ip,
 
 
 
-std::vector<IP_rx_in> prepare_header (uint32_t seq_num_rx, uint32_t ACK_num_rx, uint8_t TCP_control_rx_arg, std::vector<IP_payload_t>& payload) {
+std::vector<IP_rx_in> prepare_header (uint32_t seq_num_rx, uint32_t ACK_num_rx, uint8_t TCP_control_rx_arg, std::vector<IP_payload_t>& payload, uint16_t tcp_len) {
     uint16_t seq_num_MSB      = (seq_num_rx >> 16) & 0xFFFF;
     uint16_t seq_num_LSB      =  seq_num_rx        & 0xFFFF;
     uint16_t window_size_rx   = 0x1111;
@@ -211,25 +157,23 @@ std::vector<IP_rx_in> prepare_header (uint32_t seq_num_rx, uint32_t ACK_num_rx, 
     
     TCP_header = {in1, in2, in3};
 
-    checksum_rx = calc_tcp_checksum (IP_pseudo, TCP_header, payload);
+    checksum_rx = calc_tcp_checksum (IP_pseudo, TCP_header, payload, tcp_len);
 
     in3.payload = (static_cast<uint64_t>(window_size_rx)     << 48) |
                   (static_cast<uint64_t>(checksum_rx)        << 32) |
                   (static_cast<uint64_t>(urgent_pointer_rx)  << 16) |
-                  (static_cast<uint64_t>(0xAADD));
+                  (static_cast<uint64_t>(0x0000));
 
-    // printf("Seq_num rx --------->  %X\n", seq_num_rx);
-    // printf("ACK_num rx --------->  %X\n", ACK_num_rx);
-    // printf("TCP_control_rx --------->  %X\n", TCP_control_rx);
-    // printf("Checksum_rx --------->  %X\n", checksum_rx);
     TCP_header = {in1, in2, in3};
     return TCP_header;
 }
 
-uint16_t IP_pseuder_cal (IP_addr ip_pseudo, std::vector<IP_payload_t> payload) {
+
+
+uint16_t IP_pseuder_cal (IP_addr ip_pseudo, std::vector<IP_payload_t> payload, int16_t tcp_len) {
     uint32_t sum = 0;
-    uint16_t tcp_len;
-    tcp_len = getting_tcp_len (payload) + 2;
+    // uint16_t tcp_len;
+    // tcp_len = getting_tcp_len (payload) + 2;
     auto add16 = [&](uint16_t w)
     {
         // printf("Checksum in ----- %X\n", w);
@@ -246,15 +190,12 @@ uint16_t IP_pseuder_cal (IP_addr ip_pseudo, std::vector<IP_payload_t> payload) {
     add16(static_cast<uint16_t>( ip_pseudo.dest_ip       & 0xFFFF));
     add16(0x0006);                         // protocol = TCP
     add16(20 + tcp_len);                        // length (no htons)
-    
-
-    // printf("IP pseuder ----> %X\n", sum);
     return static_cast<uint16_t> (sum);
 
 }
 
 void rcv_IP (const std::vector<IP_rx_in>& IP_payloads, const std::vector<IP_payload_t>& payload) {
-    top -> IP_pseuder = IP_pseuder_cal(IP_pseudo, payload);
+    top -> IP_pseuder = IP_pseuder_cal(IP_pseudo, payload, 0);
     top -> TCP_len = getting_tcp_len (payload) + 2;
     // top -> TCP_len = 0;
 
@@ -283,15 +224,52 @@ void rcv_IP (const std::vector<IP_rx_in>& IP_payloads, const std::vector<IP_payl
     tick(top, tfp);
 }
 
-int main(int argc, char **argv) {
-    Verilated::commandArgs(argc, argv);
-    
-    Verilated::traceEverOn(true);
-    
-    top->trace(tfp, 99);
-    tfp->open("top.vcd");
 
-        /* --------------------- example header-building code ------------------- */
+//--------------------- FUNCTION for TX --------------------------//
+void sending_TCP() {
+    top -> TX_en = 1;
+    tick(top, tfp);
+    top -> TX_en = 0;
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+    top -> TCP_send = 1;
+    for (int i = 0; i < 25; i++) {
+        if (top -> TCP_last == 1) {
+            top -> TCP_send = 0;
+        }
+        tick(top, tfp);
+    }
+    top -> TX_en = 0;
+    top -> TCP_send = 0;
+    tick(top,tfp);
+}
+//--------------------- FUNCTION for FIFO_TX --------------------------//
+
+void wr_FIFO_TX () {
+    int32_t len_seq = 24;
+    int i;
+    top -> wr_FIFO_en = 1;
+    top -> len_seq    = len_seq;
+
+    for (i = 0; i < ((len_seq / 8) - 1); i++) {
+        top -> soupbin_TCP_payload = i + 1;
+        tick(top, tfp);
+    }
+
+    top -> soupbin_TCP_payload = i + 1;
+    top -> axis_last = 1;
+    tick(top, tfp);
+
+    top -> wr_FIFO_en = 0;
+    top -> axis_last = 0;
+}
+
+
+//-------------------------- FUNCTION for TCP_logic-------------------//
+
+void setup_handshake() {
+    /* --------------------- example header-building code ------------------- */
     const uint32_t ISN_seq_rx = 0xBBCCDADA;
     uint32_t seq_num_rx       = ISN_seq_rx;
     uint32_t ACK_num_rx       = 0x1234ABCD;
@@ -301,22 +279,54 @@ int main(int argc, char **argv) {
     uint16_t window_size_rx   = 0x0000;
     uint16_t checksum_rx      = 0x0000;
     uint16_t urgent_pointer_rx= 0x0000;
-    uint8_t  TCP_control_rx   = 0xFF;
+    uint8_t  TCP_control_rx   = 0x12;
 
     std::vector<IP_rx_in> TCP_header;
-    TCP_header = prepare_header (seq_num_rx, ACK_num_rx, TCP_control_rx, testcase1);
+    TCP_header = prepare_header (seq_num_rx, ACK_num_rx, TCP_control_rx, zero_case,0);
+    sending_TCP();
+    rcv_IP (TCP_header, zero_case);
+    tick(top, tfp);
+    tick(top, tfp);
+    sending_TCP();
 
+    std::cout << "Hand shake setup done" << std::endl;
+
+}
+
+
+int main(int argc, char **argv) {
+    Verilated::commandArgs(argc, argv);
+    
+    Verilated::traceEverOn(true);
+    
+    top->trace(tfp, 99);
+    tfp->open("top.vcd");
+
+    
     // Reset phase
     reset_input_top();
     tick(top, tfp);
 
     // Example stimulus
     drive_input_top(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
     top -> nRST = 1;
     tick(top, tfp);
     tick(top, tfp);
-    rcv_IP (TCP_header, testcase1);
-    // for (int i = 0; i < 20; ++i) tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+
+    setup_handshake();
+    wr_FIFO_TX();
+    sending_TCP();
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+
 
     tfp->close();
     delete top;

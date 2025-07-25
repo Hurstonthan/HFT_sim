@@ -2,7 +2,7 @@
 `include "ether_pkg.vh"
 
 module payload_FIFO #(
-    parameter int FIFO_DEPTH  = 5,               // words  (must be power‑of‑2)
+    parameter int FIFO_DEPTH  = 10,               // words  (must be power‑of‑2)
     parameter int DATA_WIDTH  = 64,
     parameter int CTRL_WIDTH = 8,
     localparam int WORD_BYTES = DATA_WIDTH / 8,
@@ -97,20 +97,24 @@ module payload_FIFO #(
             wr_ptr <= 0;
             rd_ptr <= 0;
             flush_ptr <= 0;
-            //rd_FIFO_en <= 0;
+            rd_FIFO_en <= 0;
             seq_trk_rd <= 0;
             rd_len_ptr <= 0;
             len_TCP_flush <= 0;
             axis_r_valid <= 0;
             TCP_flush_l <= 0;
             axis_rd_data <= 0;
+            wr_FIFO_len <= 0;
+            seq_rx_FIFO_rd <= 0;
+
             for (int i = 0; i < FIFO_DEPTH; i++) begin
                 TCP_FIFO[i]  <= 0;
             end
         end else begin
             wr_ptr <= nwr_ptr;
             rd_ptr <= nrd_ptr;
-            //rd_FIFO_en <= axis_r_en;
+            rd_FIFO_en <= axis_r_en;
+            seq_rx_FIFO_rd <= seq_trk_rd;
             flush_ptr <= nflush_ptr;
             len_TCP_flush <= nlen_TCP_flush;
             axis_r_valid <= naxis_r_valid;
@@ -121,6 +125,9 @@ module payload_FIFO #(
             end else begin
                 seq_trk_rd <= nseq_trk_rd;
             end
+
+            //Ouput
+            wr_FIFO_len <= wr_ptr;
 
             if (!wr_FIFO_en) begin
                 wr_ptr_out<= wr_ptr;
@@ -150,12 +157,7 @@ module payload_FIFO #(
         nseq_trk_rd = seq_trk_rd;
         nrd_FIFO_valid_l = rd_FIFO_valid_l;
         naxis_r_valid = axis_r_valid;
-
-        //Ouput
-        wr_FIFO_len = wr_ptr;
-
-        rd_FIFO_en = axis_r_en;
-        seq_rx_FIFO_rd = seq_trk_rd;
+        
         
 
         if (TCP_flush || TCP_flush_l) begin

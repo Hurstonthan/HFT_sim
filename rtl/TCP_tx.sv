@@ -116,6 +116,7 @@ always_comb begin
 
     case(state)
         IDLE: begin
+            nTCP_tx_last = 1'b0;
             if (TCP_send) begin
                 nstate = SEND_SRC_DEST_SEQ;
                 nTCP_transmit = {16'b0,src_port, dest_port, seq_num_tx[31:16]}; // Send source port, destination port, and the first 24 bits of sequence number
@@ -134,7 +135,16 @@ always_comb begin
             nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, 16'd0};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
             // nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, TCP_transmit[63:48]};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
             nstate = SEND_WINDOWSIZE_CHECKSUM_URGENT_PAYLOAD; // Move to the next state
-            // nTCP_transmit = {seq_num_tx[7:0], ACK_tx, {offset_tx, 4'b0}, TCP_control_tx, window_size_tx[15:8]}; // Send the last 8 bits of sequence number, ACK number, offset, control flags, and window size
+            
+
+            if (|bytes_abt_sent) begin
+                nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, 16'd0}; // Send the TCP payload
+                nstate = SEND_WINDOWSIZE_CHECKSUM_URGENT_PAYLOAD; // Move to the next state
+            end else begin
+                nstate = IDLE;
+                nseq_up = 1;
+                nTCP_tx_last = 1;    
+            end
         end
 
         SEND_WINDOWSIZE_CHECKSUM_URGENT_PAYLOAD: begin

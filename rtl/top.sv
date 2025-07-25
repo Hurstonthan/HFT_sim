@@ -2,8 +2,8 @@
 
 module top #(
     parameter int DATA_WIDTH    = 64,
-    parameter int FIFO_DEPTH_TX = 64,
-    parameter int FIFO_DEPTH_RX = 5,
+    parameter int FIFO_DEPTH_TX = 10,
+    parameter int FIFO_DEPTH_RX = 10,
     parameter int CTRL_WIDTH    = 8
 ) (
     input  logic                           CLK,
@@ -16,6 +16,7 @@ module top #(
     input  logic [7:0]                     IP_bytes_rcv,
     input  logic                           TCP_send,
     output logic [63:0]                    TCP_transmit,
+    output logic                           TCP_last,
     input  logic                           TX_en,
 
     input  logic                           axis_last,
@@ -155,11 +156,16 @@ module top #(
 
         // IP transmit handshake
         .TCP_send           (TCP_send),
+        .TCP_last           (TCP_last),
         .TCP_transmit       (TCP_transmit),
 
         // Retransmission feedback
         .re_trans           (re_trans_int),
         .checksum_re_trans  (checksum_re_trans_int),
+
+        .wr_FIFO_TX_en(wr_FIFO_en),
+        .wr_axis_last(axis_last),
+        .soupbin_TCP_payload(soupbin_TCP_payload),
 
         // Debug
         .rcv_next           (rcv_next),
@@ -213,6 +219,7 @@ module top #(
         // Application write path
         .seq_up             (seq_up),
         .seq_num_tx         (seq_num_tx),
+        .hand_shake_done    (handshake_done_int),
 
         .rd_FIFO_en         (rd_ftx_en_int),
         .TX_en              (TX_en),

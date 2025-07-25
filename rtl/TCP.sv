@@ -3,7 +3,7 @@
 `include "TCP_receiver_if.vh"
 module TCP #(
     parameter DATA_WIDTH = 64, // Width of the data bus
-    parameter int FIFO_DEPTH  = 5,               // words  (must be power‑of‑2)
+    parameter int FIFO_DEPTH  = 10,               // words  (must be power‑of‑2)
     parameter int CTRL_WIDTH = 8,
     localparam int WORD_BYTES = DATA_WIDTH / 8,
     localparam int FIFO_WIDTH = $clog2(FIFO_DEPTH),
@@ -66,10 +66,17 @@ module TCP #(
 
     //Interface between TCP_tx and IP_tx
     input logic TCP_send,
+    output logic TCP_last,
     output logic [63:0] TCP_transmit,
 
     input logic re_trans,
     input logic [15:0] checksum_re_trans,
+
+    //Interface between TCP_checksum and FIFO_TX
+    input logic wr_FIFO_TX_en,
+    input logic wr_axis_last,
+    input logic [63:0] soupbin_TCP_payload,
+
 
     //DEBUG SIGNALS
     output logic [31:0] rcv_next,
@@ -102,7 +109,7 @@ module TCP #(
 
     //Instantiate FIFO_TX
     logic [15:0] TCP_basesum_payload;
-    // logic [15:0] TCP_checksum_out;
+    logic [15:0] TCP_checksum_out;
 
     always_comb begin
         if (re_trans) begin
@@ -112,6 +119,8 @@ module TCP #(
         end
     end
     TCP_flow_ctrl tcp_flow (
+        .CLK(CLK),
+        .nRST(nRST),
         .rcv_data(rcv_data),
         .TCP_control_rx(TCP_control_rx),
         .seq_num_rx(seq_num_rx),
@@ -133,7 +142,7 @@ module TCP #(
         .TCP_stop_flg(TCP_stop_flg),
         .full(full),
         .timeout_flag(timeout_flag),
-        .hand_shake_done(hand_shake_done),
+        .hand_shake_done(handshake_done),
         .seq_rcv_str(seq_rcv_str),
         .ISN_num (ISN_num),
         .bytes_sent(bytes_sent),
@@ -205,6 +214,7 @@ module TCP #(
         .bytes_sent(bytes_sent),
         .TCP_send(TCP_send),
         .TCP_transmit(TCP_transmit),
+        .TCP_tx_last(TCP_last),
         .TCP_basesum_payload(TCP_basesum_payload)
     );
     TCP_ISN ISN_gen (
@@ -220,9 +230,9 @@ module TCP #(
         .CLK(CLK),
         .nRST(nRST),
         .clear(1'b0),
-        .wr_FIFO_en(wr_FIFO_en),
-        .axis_last(axis_last),
-        .TCP_payload_tx(rd_FIFO_payload),
+        .wr_FIFO_en(wr_FIFO_TX_en),
+        .axis_last(wr_axis_last),
+        .TCP_payload_tx(soupbin_TCP_payload),
         .TX_en(TX_en),
         .re_trans(re_trans),
         .TCP_checksum_out(TCP_checksum_out)

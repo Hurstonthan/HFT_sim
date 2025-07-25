@@ -1,7 +1,7 @@
 `timescale 1ns / 10ps
 module FIFO_TX #(
     parameter DATA_WIDTH = 64,
-    parameter FIFO_DEPTH = 64, // Depth of the FIFO
+    parameter FIFO_DEPTH = 10, // Depth of the FIFO
     parameter FIFO_WIDTH = $clog2(FIFO_DEPTH) // Width of the FIFO address
 )(
     input logic CLK,
@@ -12,6 +12,7 @@ module FIFO_TX #(
     input logic [31:0] seq_num_tx,
     input logic rd_FIFO_en,
     input logic TX_en, //The signal determine what we are gonna send in 
+    input logic hand_shake_done,
     input logic [15:0] checksum_TX,
     
 
@@ -64,6 +65,7 @@ module FIFO_TX #(
 
     typedef enum logic [1:0] { 
         IDLE_RD,
+        HAND_SHAKE_DONE,
         IN_ORDER_DATA,
         OUT_ORDER_DATA
     } rd_state_t;
@@ -86,7 +88,7 @@ module FIFO_TX #(
     logic nwr_FIFO_valid;
     logic [$clog2(16) -1 : 0] dict_wrt_ptr, ndict_wrt_ptr, dict_rd_ptr, ndict_rd_ptr;
     logic [FIFO_WIDTH - 1:0] rd_ptr, nrd_ptr, wrt_ptr, nwrt_ptr;
-    logic [DATA_WIDTH - 1:0] [FIFO_DEPTH - 1:0] TCP_tx_order, nTCP_tx_order;
+    logic [FIFO_DEPTH - 1:0] [DATA_WIDTH - 1:0] TCP_tx_order, nTCP_tx_order;
 
     logic out_order_req_l, nout_order_req_l;
     logic ACK_rcv_flag_l, nACK_rcv_flag_l;
@@ -225,14 +227,26 @@ module FIFO_TX #(
         case (rd_state)
 
             IDLE_RD: begin
+                nbytes_abt_sent = 0;
+                nchecksum_l = 0;
+                nrd_FIFO_last = 1'b1;
+                if (hand_shake_done) begin
+                    nrd_state = HAND_SHAKE_DONE;
+                    
+                end
+
+            end
+
+            HAND_SHAKE_DONE: begin
+                nbytes_abt_sent = 0;
+                nchecksum_l = 0;
                 if (TX_en) begin
                     if (out_order_req_l) begin
                         nrd_state = OUT_ORDER_DATA;
                         nptr_str = dict_tx[dict_rd_ptr].ptr_str;
                         nptr_end = dict_tx[dict_rd_ptr].ptr_end;
                         nbytes_abt_sent = dict_tx[dict_rd_ptr].len_seq;
-                        nchecksum_l = dict_tx[dict_rd_ptr].checksum;
-                        
+                        nchecksum_l = dict_tx[dict_rd_ptr].checksum;        
                     end else begin
                         nrd_state = IN_ORDER_DATA;
                         nptr_str = rd_ptr;
@@ -241,7 +255,6 @@ module FIFO_TX #(
                         nchecksum_l = checksum_TX;
                     end
                 end
-
             end
 
             IN_ORDER_DATA: begin
@@ -256,7 +269,7 @@ module FIFO_TX #(
                     nrd_ptr = rd_ptr + 1;
                     nrd_FIFO_payload = TCP_tx_order[rd_ptr];
                     //msg_end_ptr is in writing side
-                    if ((rd_ptr + 1) == ptr_end) begin
+                    if ((rd_ptr) == ptr_end) begin
                         ndict_tx[dict_wrt_ptr].valid = 1'b1;
                         ndict_tx[dict_wrt_ptr].seq_num = seq_num_tx;
                         ndict_tx[dict_wrt_ptr].len_seq = bytes_abt_sent;
@@ -264,7 +277,7 @@ module FIFO_TX #(
                         ndict_tx[dict_wrt_ptr].ptr_end = rd_ptr;
                         ndict_tx[dict_wrt_ptr].checksum = checksum_l;
                         nrd_FIFO_last = 1'b1;
-                        nrd_state = IDLE_RD;
+                        nrd_state = HAND_SHAKE_DONE;
                         nrd_upd = 1'b1;
                         nbytes_abt_sent_msg_rd = bytes_abt_sent;
                         ndict_wrt_ptr = dict_wrt_ptr + 1;
@@ -279,7 +292,7 @@ module FIFO_TX #(
                     nptr_str = ptr_str + 1;
                     if (ptr_str == (ptr_end - 1)) begin
                         nrd_FIFO_last = 1'b1;
-                        nrd_state = IDLE_RD;
+                        nrd_state = HAND_SHAKE_DONE;
                         nout_order_req_l = 1'b0;
                     end 
                 end

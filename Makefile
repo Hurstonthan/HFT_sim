@@ -16,11 +16,12 @@ SUR_FILES     := priority_encoder TCP_ISN checksum_TCP TCP_tx TCP_receiver TCP_f
 #-Wall -Wno-UNDRIVEN -Wno-UNUSEDSIGNAL
 VERI_FLAGS := \
 	-Wno-lint --error-limit 0 \
-	--trace \
+	--trace\
 	--trace-fst \
 	--trace-structs \
+	--trace-depth 99 \
 	-I$(INC_DIR) \
-	-CFLAGS "-I$(RTL_DIR)"
+	-O0 -CFLAGS "-Iinclude$(-O0 RTL_DIR)"
 
 # ---------- derived file lists -----------------------------------------
 #   $* is the target stem (e.g. priority_encoder)

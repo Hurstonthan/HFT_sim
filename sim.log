@@ -1,0 +1,23 @@
+111100000000AADD
+Checksum in ----- AAAA
+Checksum in ----- BBBB
+Checksum in ----- CCCC
+Checksum in ----- DDDD
+Checksum in ----- 6
+Checksum in ----- 1E
+payload -------------> 12345678BBCC0000
+Checksum in ----- 0
+Checksum in ----- BBCC
+Checksum in ----- 5678
+Checksum in ----- 1234
+payload -------------> DADA1234ABCD50FF
+Checksum in ----- 50FF
+Checksum in ----- ABCD
+Checksum in ----- 1234
+Checksum in ----- DADA
+payload -------------> 111100000000AADD
+Checksum in ----- AADD
+Checksum in ----- 0
+Checksum in ----- 0
+Checksum in ----- 1111
+trk:  0 ------------- check sum: 2487

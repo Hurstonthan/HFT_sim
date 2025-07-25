@@ -34,7 +34,8 @@ module checksum_TCP #(
         end else begin
             TCP_checksum <= nTCP_checksum;
             TCP_checksum_send <= nTCP_checksum_send;
-            TCP_checksum_out <= (nTCP_checksum_out == 16'h0) ? 16'hFFFF : nTCP_checksum_out;
+            // TCP_checksum_out <= (nTCP_checksum_out == 16'h0) ? 16'hFFFF : nTCP_checksum_out;
+            TCP_checksum_out <= nTCP_checksum_out;
 
         end
     end
@@ -43,7 +44,7 @@ module checksum_TCP #(
     always_comb begin
         nTCP_checksum = TCP_checksum;
         nTCP_checksum_send = TCP_checksum_send;
-        nTCP_checksum_out = 0;
+        nTCP_checksum_out = TCP_checksum_out;
 
         
         if (up_send) begin
