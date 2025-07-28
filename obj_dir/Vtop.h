@@ -34,6 +34,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop VL_NOT_FINAL : public VerilatedModel {
     // propagate new values into/out from the Verilated model.
     VL_IN8(&CLK,0,0);
     VL_IN8(&nRST,0,0);
+    VL_IN8(&tb_count,7,0);
     VL_IN8(&IP_valid,0,0);
     VL_IN8(&IP_flush,0,0);
     VL_IN8(&IP_bytes_rcv,7,0);

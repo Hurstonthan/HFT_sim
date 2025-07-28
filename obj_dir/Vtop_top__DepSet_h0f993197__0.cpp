@@ -11,7 +11,7 @@ VL_INLINE_OPT void Vtop_top___ico_sequent__TOP__top__0(Vtop_top* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
-    vlSymsp->TOP__top__u_tcp.__PVT__TCP_len = vlSelfRef.TCP_len;
+    vlSymsp->TOP__top__u_tcp.__PVT__IP_bytes_rcv = vlSelfRef.IP_bytes_rcv;
     vlSymsp->TOP__top__u_tcp.__PVT__IP_flush = vlSelfRef.IP_flush;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__nRST = vlSelfRef.nRST;
     vlSymsp->TOP__top__u_fifo_tx.__PVT__nRST = vlSelfRef.nRST;
@@ -34,10 +34,10 @@ VL_INLINE_OPT void Vtop_top___ico_sequent__TOP__top__0(Vtop_top* vlSelf) {
     vlSymsp->TOP__top__u_tcp.__PVT__TX_en = vlSelfRef.TX_en;
     vlSymsp->TOP__top__u_fifo_tx.__PVT__TX_en = vlSelfRef.TX_en;
     vlSymsp->TOP__top__u_tcp.__PVT__TCP_send = vlSelfRef.TCP_send;
+    vlSymsp->TOP__top__u_tcp.__PVT__TCP_len = vlSelfRef.TCP_len;
     vlSymsp->TOP__top__u_tcp.__PVT__IP_payload = vlSelfRef.IP_payload;
     vlSymsp->TOP__top__u_tcp.__PVT__IP_pseuder = vlSelfRef.IP_pseuder;
     vlSymsp->TOP__top__u_tcp.__PVT__IP_valid = vlSelfRef.IP_valid;
-    vlSymsp->TOP__top__u_tcp.__PVT__IP_bytes_rcv = vlSelfRef.IP_bytes_rcv;
 }
 
 VL_INLINE_OPT void Vtop_top___ico_sequent__TOP__top__1(Vtop_top* vlSelf) {
@@ -60,18 +60,18 @@ VL_INLINE_OPT void Vtop_top___ico_sequent__TOP__top__2(Vtop_top* vlSelf) {
     // Body
     vlSelfRef.__PVT__TCP_stop_flg_int = vlSymsp->TOP__top__u_tcp.__PVT__TCP_stop_flg;
     vlSelfRef.__PVT__wr_pfifo_en_int = vlSymsp->TOP__top__u_tcp.__PVT__wr_FIFO_en;
-    vlSelfRef.__PVT__rd_pfifo_valid_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_valid_rcv;
     vlSelfRef.__PVT__wr_pfifo_offset_int = vlSymsp->TOP__top__u_tcp.__PVT__wr_FIFO_offset;
+    vlSelfRef.__PVT__rd_pfifo_valid_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_valid_rcv;
     vlSelfRef.__PVT__out_order_req_int = vlSymsp->TOP__top__u_tcp.__PVT__out_order_req;
     vlSelfRef.__PVT__rd_pfifo_ptr_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_ptr;
     vlSelfRef.__PVT__rd_pfifo_len_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_len;
     vlSelfRef.TCP_stop_flag = vlSelfRef.__PVT__TCP_stop_flg_int;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__wr_FIFO_en 
         = vlSelfRef.__PVT__wr_pfifo_en_int;
-    vlSymsp->TOP__top__u_payload_fifo.__PVT__rd_FIFO_valid 
-        = vlSelfRef.__PVT__rd_pfifo_valid_int;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__wr_FIFO_offset 
         = vlSelfRef.__PVT__wr_pfifo_offset_int;
+    vlSymsp->TOP__top__u_payload_fifo.__PVT__rd_FIFO_valid 
+        = vlSelfRef.__PVT__rd_pfifo_valid_int;
     vlSymsp->TOP__top__u_fifo_tx.__PVT__out_order_req 
         = vlSelfRef.__PVT__out_order_req_int;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__rd_FIFO_ptr 
@@ -106,9 +106,12 @@ VL_INLINE_OPT void Vtop_top___nba_sequent__TOP__top__1(Vtop_top* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
+    vlSelfRef.__PVT__seq_rcv_start_int = vlSymsp->TOP__top__u_tcp.__PVT__seq_rcv_start;
     vlSelfRef.__PVT__handshake_done_int = vlSymsp->TOP__top__u_tcp.__PVT__handshake_done;
     vlSelfRef.rcv_next = vlSymsp->TOP__top__u_tcp.__PVT__rcv_next;
     vlSelfRef.seq_num = vlSymsp->TOP__top__u_tcp.__PVT__seq_num;
+    vlSymsp->TOP__top__u_payload_fifo.__PVT__seq_rcv_start 
+        = vlSelfRef.__PVT__seq_rcv_start_int;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__handshake_done 
         = vlSelfRef.__PVT__handshake_done_int;
     vlSymsp->TOP__top__u_fifo_tx.__PVT__hand_shake_done 
@@ -185,9 +188,9 @@ VL_INLINE_OPT void Vtop_top___nba_comb__TOP__top__0(Vtop_top* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
-    vlSelfRef.__PVT__rd_ftx_en_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_en_tx;
-    vlSymsp->TOP__top__u_fifo_tx.__PVT__rd_FIFO_en 
-        = vlSelfRef.__PVT__rd_ftx_en_int;
+    vlSelfRef.__PVT__seq_num_tx = vlSymsp->TOP__top__u_tcp.__PVT__seq_num_tx_out;
+    vlSymsp->TOP__top__u_fifo_tx.__PVT__seq_num_tx 
+        = vlSelfRef.__PVT__seq_num_tx;
 }
 
 VL_INLINE_OPT void Vtop_top___nba_comb__TOP__top__1(Vtop_top* vlSelf) {
@@ -195,20 +198,30 @@ VL_INLINE_OPT void Vtop_top___nba_comb__TOP__top__1(Vtop_top* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
+    vlSelfRef.__PVT__rd_ftx_en_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_en_tx;
+    vlSymsp->TOP__top__u_fifo_tx.__PVT__rd_FIFO_en 
+        = vlSelfRef.__PVT__rd_ftx_en_int;
+}
+
+VL_INLINE_OPT void Vtop_top___nba_comb__TOP__top__2(Vtop_top* vlSelf) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+      Vtop_top___nba_comb__TOP__top__2\n"); );
+    Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
+    auto& vlSelfRef = std::ref(*vlSelf).get();
+    // Body
     vlSelfRef.__PVT__TCP_stop_flg_int = vlSymsp->TOP__top__u_tcp.__PVT__TCP_stop_flg;
     vlSelfRef.__PVT__wr_pfifo_en_int = vlSymsp->TOP__top__u_tcp.__PVT__wr_FIFO_en;
-    vlSelfRef.__PVT__rd_pfifo_valid_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_valid_rcv;
     vlSelfRef.__PVT__wr_pfifo_offset_int = vlSymsp->TOP__top__u_tcp.__PVT__wr_FIFO_offset;
+    vlSelfRef.__PVT__rd_pfifo_valid_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_valid_rcv;
     vlSelfRef.__PVT__out_order_req_int = vlSymsp->TOP__top__u_tcp.__PVT__out_order_req;
     vlSelfRef.__PVT__rd_pfifo_ptr_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_ptr;
     vlSelfRef.__PVT__rd_pfifo_len_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_len;
     vlSelfRef.TCP_stop_flag = vlSelfRef.__PVT__TCP_stop_flg_int;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__wr_FIFO_en 
         = vlSelfRef.__PVT__wr_pfifo_en_int;
-    vlSymsp->TOP__top__u_payload_fifo.__PVT__rd_FIFO_valid 
-        = vlSelfRef.__PVT__rd_pfifo_valid_int;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__wr_FIFO_offset 
         = vlSelfRef.__PVT__wr_pfifo_offset_int;
+    vlSymsp->TOP__top__u_payload_fifo.__PVT__rd_FIFO_valid 
+        = vlSelfRef.__PVT__rd_pfifo_valid_int;
     vlSymsp->TOP__top__u_fifo_tx.__PVT__out_order_req 
         = vlSelfRef.__PVT__out_order_req_int;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__rd_FIFO_ptr 

@@ -16,9 +16,9 @@
 // INCLUDE MODULE CLASSES
 #include "Vtop___024root.h"
 #include "Vtop_top.h"
-#include "Vtop_FIFO_TX.h"
 #include "Vtop_payload_FIFO.h"
-#include "Vtop_TCP.h"
+#include "Vtop_TCP__F10.h"
+#include "Vtop_FIFO_TX__F10.h"
 #include "Vtop_TCP_ISN.h"
 #include "Vtop_checksum_TCP.h"
 #include "Vtop_TCP_tx.h"
@@ -40,9 +40,9 @@ class alignas(VL_CACHE_LINE_BYTES)Vtop__Syms final : public VerilatedSyms {
     // MODULE INSTANCE STATE
     Vtop___024root                 TOP;
     Vtop_top                       TOP__top;
-    Vtop_FIFO_TX                   TOP__top__u_fifo_tx;
+    Vtop_FIFO_TX__F10              TOP__top__u_fifo_tx;
     Vtop_payload_FIFO              TOP__top__u_payload_fifo;
-    Vtop_TCP                       TOP__top__u_tcp;
+    Vtop_TCP__F10                  TOP__top__u_tcp;
     Vtop_TCP_ISN                   TOP__top__u_tcp__ISN_gen;
     Vtop_TCP_tx                    TOP__top__u_tcp__TCP_tx;
     Vtop_checksum_TCP              TOP__top__u_tcp__inst;

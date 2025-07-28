@@ -6,8 +6,8 @@
 #define VERILATED_VTOP_TOP_H_  // guard
 
 #include "verilated.h"
-class Vtop_FIFO_TX;
-class Vtop_TCP;
+class Vtop_FIFO_TX__F10;
+class Vtop_TCP__F10;
 class Vtop_payload_FIFO;
 
 
@@ -16,13 +16,14 @@ class Vtop__Syms;
 class alignas(VL_CACHE_LINE_BYTES) Vtop_top final : public VerilatedModule {
   public:
     // CELLS
-    Vtop_TCP* __PVT__u_tcp;
+    Vtop_TCP__F10* __PVT__u_tcp;
     Vtop_payload_FIFO* __PVT__u_payload_fifo;
-    Vtop_FIFO_TX* __PVT__u_fifo_tx;
+    Vtop_FIFO_TX__F10* __PVT__u_fifo_tx;
 
     // DESIGN SPECIFIC STATE
     VL_IN8(CLK,0,0);
     VL_IN8(nRST,0,0);
+    VL_IN8(tb_count,7,0);
     VL_IN8(IP_valid,0,0);
     VL_IN8(IP_flush,0,0);
     VL_IN8(IP_bytes_rcv,7,0);

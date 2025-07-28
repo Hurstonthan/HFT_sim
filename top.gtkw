@@ -1,18 +1,19 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Fri Jul 25 00:00:04 2025
+[*] Mon Jul 28 08:14:14 2025
 [*]
 [dumpfile] "/home/than0/HFT_sim/top.vcd"
-[dumpfile_mtime] "Thu Jul 24 23:59:07 2025"
-[dumpfile_size] 9746
+[dumpfile_mtime] "Mon Jul 28 08:12:54 2025"
+[dumpfile_size] 14991
 [savefile] "/home/than0/HFT_sim/top.gtkw"
-[timestart] 144
+[timestart] 438
 [size] 1634 1001
-[pos] 70 329
-*-3.723291 163 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] 70 150
+*-3.723291 450 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.top.
 [treeopen] TOP.top.u_tcp.
+[treeopen] TOP.top.u_tcp.tcp_flow.
 [treeopen] TOP.top.u_tcp.tcp_flow.me.
 [sst_width] 420
 [signals_width] 416
@@ -22,30 +23,34 @@
 TOP.CLK
 @28
 TOP.nRST
+@22
+TOP.tb_count[7:0]
+@28
 TOP.TX_en
 @22
 TOP.top.IP_bytes_rcv[7:0]
 @200
 -
 -TCP_flow_ctrl_start
+@22
+TOP.top.u_tcp.tcp_flow.seq_num_out[31:0]
+TOP.top.u_tcp.tcp_flow.bytes_abt_sent[31:0]
 @28
-TOP.top.u_tcp.tcp_flow.rcv_pkg_type.ACK
-TOP.top.u_tcp.tcp_flow.rcv_pkg_type.CWR
-TOP.top.u_tcp.tcp_flow.rcv_pkg_type.ECE
-TOP.top.u_tcp.tcp_flow.rcv_pkg_type.FIN
-TOP.top.u_tcp.tcp_flow.rcv_pkg_type.PSH
-TOP.top.u_tcp.tcp_flow.rcv_pkg_type.RST
-TOP.top.u_tcp.tcp_flow.rcv_pkg_type.SYN
-TOP.top.u_tcp.tcp_flow.rcv_pkg_type.URG
+TOP.top.u_tcp.tcp_flow.seq_up
+TOP.top.u_tcp.tcp_flow.rcv_data
+@22
+TOP.top.u_tcp.tcp_flow.rcv_next[31:0]
+TOP.top.u_tcp.tcp_rcv.seq_num_rx[31:0]
 @100000028
 TOP.top.u_tcp.tcp_flow.state[6:0]
 @200
 -TCP_flow_ctrl_end
--TCP_TX_start
+-----------TX-------------
+-FIFO_TX_start
 @28
 TOP.top.u_tcp.inst.wr_FIFO_en
-@29
-TOP.top.u_tcp.TCP_tx.rd_FIFO_last
+@100000028
+TOP.top.u_fifo_tx.wr_state[1:0]
 @28
 TOP.top.u_fifo_tx.hand_shake_done
 @22
@@ -53,8 +58,36 @@ TOP.top.u_tcp.inst.TCP_checksum_send[16:0]
 TOP.top.u_tcp.inst.TCP_checksum_out[15:0]
 @24
 TOP.top.u_fifo_tx.bytes_abt_sent_msg[15:0]
+@200
+-
 @100000028
 TOP.top.u_fifo_tx.rd_state[1:0]
+@28
+TOP.top.u_fifo_tx.rd_FIFO_en
+TOP.top.u_tcp.TCP_tx.rd_FIFO_last
+@22
+TOP.top.u_fifo_tx.rd_FIFO_payload[63:0]
+@200
+-
+@22
+TOP.top.u_fifo_tx.ptr_str[3:0]
+TOP.top.u_fifo_tx.rd_ptr[3:0]
+TOP.top.u_fifo_tx.ptr_end[3:0]
+@200
+-
+@22
+TOP.top.u_fifo_tx.dict_tx[0].checksum[15:0]
+@24
+TOP.top.u_fifo_tx.dict_tx[0].len_seq[31:0]
+@22
+TOP.top.u_fifo_tx.dict_tx[0].ptr_end[3:0]
+TOP.top.u_fifo_tx.dict_tx[0].ptr_str[3:0]
+TOP.top.u_tcp.tcp_flow.seq_num.seq_num[31:0]
+@28
+TOP.top.u_fifo_tx.ACK_rcv_flag_l
+TOP.top.u_fifo_tx.dict_tx[0].valid
+@200
+-
 @22
 TOP.top.u_fifo_tx.TCP_tx_order[0][63:0]
 TOP.top.u_fifo_tx.TCP_tx_order[1][63:0]
@@ -67,6 +100,36 @@ TOP.top.u_fifo_tx.TCP_tx_order[7][63:0]
 TOP.top.u_fifo_tx.TCP_tx_order[8][63:0]
 TOP.top.u_fifo_tx.TCP_tx_order[9][63:0]
 @200
+-
+@100000028
+TOP.top.u_fifo_tx.wr_state[1:0]
+@22
+TOP.top.u_fifo_tx.ACK_num_l[31:0]
+TOP.top.u_fifo_tx.dict_rd_ptr[3:0]
+TOP.top.u_fifo_tx.dict_wrt_ptr[3:0]
+TOP.top.u_fifo_tx.flush_ptr[3:0]
+@200
+-dict_tx_0
+@22
+TOP.top.u_fifo_tx.dict_tx[0].checksum[15:0]
+TOP.top.u_fifo_tx.dict_tx[0].len_seq[31:0]
+TOP.top.u_fifo_tx.dict_tx[0].ptr_end[3:0]
+TOP.top.u_fifo_tx.dict_tx[0].ptr_str[3:0]
+TOP.top.u_fifo_tx.dict_tx[0].seq_num[31:0]
+@28
+TOP.top.u_fifo_tx.dict_tx[0].valid
+@200
+-dict_tx_1
+@22
+TOP.top.u_fifo_tx.dict_tx[1].checksum[15:0]
+TOP.top.u_fifo_tx.dict_tx[1].len_seq[31:0]
+TOP.top.u_fifo_tx.dict_tx[1].ptr_end[3:0]
+TOP.top.u_fifo_tx.dict_tx[1].ptr_str[3:0]
+TOP.top.u_fifo_tx.dict_tx[1].seq_num[31:0]
+@28
+TOP.top.u_fifo_tx.dict_tx[1].valid
+@200
+-FIFO_TX_end
 -TX_Module
 @100000028
 TOP.top.u_tcp.TCP_tx.state[6:0]
@@ -88,11 +151,16 @@ TOP.top.u_tcp.TCP_tx.TCP_control_tx[7:0]
 TOP.top.u_tcp.TCP_tx.TCP_transmit[63:0]
 @200
 -TCP_TX_end
+-
+----------- RX ----------
 @28
 TOP.top.IP_valid
 TOP.top.IP_flush
 @22
 TOP.top.u_tcp.IP_payload[63:0]
+@24
+TOP.top.u_tcp.tcp_rcv.bytes_trk[15:0]
+@22
 TOP.top.u_tcp.IP_bytes_rcv[7:0]
 TOP.top.IP_pseuder[15:0]
 @100000028
@@ -100,6 +168,7 @@ TOP.top.u_tcp.tcp_rcv.state[2:0]
 @22
 TOP.top.u_tcp.tcp_rcv.seq_num_rx[31:0]
 TOP.top.u_tcp.tcp_rcv.ACK_rx[31:0]
+TOP.top.u_tcp.tcp_flow.seq_num.seq_num[31:0]
 TOP.top.u_tcp.tcp_rcv.TCP_control_rx[7:0]
 TOP.top.u_tcp.tcp_rcv.offset_rx[3:0]
 TOP.top.u_tcp.tcp_rcv.urgent_pointer_rx[15:0]
@@ -132,6 +201,7 @@ TOP.top.u_tcp.tcp_rcv.bytes_trk[15:0]
 TOP.top.u_tcp.tcp_rcv.TCP_len_data[15:0]
 @28
 TOP.top.u_tcp.tcp_rcv.rcv_data
+[color] 3
 TOP.top.u_tcp.tcp_rcv.nw_segment
 TOP.top.u_tcp.tcp_rcv.TCP_last
 TOP.top.u_tcp.tcp_rcv.TCP_flush
@@ -139,7 +209,10 @@ TOP.top.u_tcp.tcp_rcv.TCP_flush
 TOP.top.u_tcp.tcp_rcv.TCP_payload_rx[63:0]
 @200
 -FIFO_rcv_start
+@28
+TOP.top.u_payload_fifo.handshake_done
 @22
+TOP.top.u_payload_fifo.seq_trk_rd[31:0]
 TOP.top.u_payload_fifo.axis_data_rx[63:0]
 @28
 TOP.top.u_payload_fifo.axis_t_last
@@ -153,32 +226,131 @@ TOP.top.u_tcp.tcp_flow.case_bug[1:0]
 @22
 TOP.top.u_payload_fifo.wr_FIFO_offset[7:0]
 @200
--TCO_FIFO_start
+-
+-rd_FIFO
 @28
-TOP.top.u_payload_fifo.TCP_FIFO[0].bytes_offset[7:0]
+TOP.top.u_payload_fifo.rd_FIFO_valid
+TOP.top.u_payload_fifo.handshake_done
 @22
-TOP.top.u_payload_fifo.TCP_FIFO[0].payload[63:0]
-TOP.top.u_payload_fifo.TCP_FIFO[1].bytes_offset[7:0]
-TOP.top.u_payload_fifo.TCP_FIFO[1].payload[63:0]
-TOP.top.u_payload_fifo.TCP_FIFO[2].bytes_offset[7:0]
-TOP.top.u_payload_fifo.TCP_FIFO[2].payload[63:0]
-TOP.top.u_payload_fifo.TCP_FIFO[3].bytes_offset[7:0]
-TOP.top.u_payload_fifo.TCP_FIFO[3].payload[63:0]
-TOP.top.u_payload_fifo.TCP_FIFO[4].bytes_offset[7:0]
-TOP.top.u_payload_fifo.TCP_FIFO[4].payload[63:0]
+TOP.top.u_payload_fifo.seq_trk_rd[31:0]
+TOP.top.u_tcp.tcp_flow.rcv_next_out[31:0]
+@28
+TOP.top.u_payload_fifo.rd_FIFO_valid_l
+@22
+TOP.top.u_payload_fifo.rd_FIFO_ptr[3:0]
+TOP.top.u_payload_fifo.rd_FIFO_len[3:0]
+TOP.top.u_payload_fifo.rd_len_ptr[3:0]
+TOP.top.u_payload_fifo.rd_ptr[3:0]
+@28
+TOP.top.u_payload_fifo.axis_r_valid
+@22
+TOP.top.u_payload_fifo.axis_rd_data[63:0]
+@200
+-TCO_FIFO_start
+@22
+TOP.top.u_payload_fifo.bytes_offset[0][7:0]
+TOP.top.u_payload_fifo.bytes_offset[1][7:0]
+TOP.top.u_payload_fifo.bytes_offset[2][7:0]
+TOP.top.u_payload_fifo.bytes_offset[3][7:0]
+TOP.top.u_payload_fifo.bytes_offset[4][7:0]
+TOP.top.u_payload_fifo.bytes_offset[5][7:0]
+TOP.top.u_payload_fifo.bytes_offset[6][7:0]
+TOP.top.u_payload_fifo.bytes_offset[7][7:0]
+TOP.top.u_payload_fifo.bytes_offset[8][7:0]
+TOP.top.u_payload_fifo.bytes_offset[9][7:0]
+TOP.top.u_payload_fifo.bytes_offset[10][7:0]
+TOP.top.u_payload_fifo.bytes_offset[11][7:0]
+TOP.top.u_payload_fifo.bytes_offset[12][7:0]
+TOP.top.u_payload_fifo.bytes_offset[13][7:0]
+TOP.top.u_payload_fifo.bytes_offset[14][7:0]
+TOP.top.u_payload_fifo.bytes_offset[15][7:0]
+TOP.top.u_payload_fifo.payload[0][63:0]
+TOP.top.u_payload_fifo.payload[1][63:0]
+TOP.top.u_payload_fifo.payload[2][63:0]
+TOP.top.u_payload_fifo.payload[3][63:0]
+TOP.top.u_payload_fifo.payload[4][63:0]
+TOP.top.u_payload_fifo.payload[5][63:0]
+TOP.top.u_payload_fifo.payload[6][63:0]
+TOP.top.u_payload_fifo.payload[7][63:0]
+TOP.top.u_payload_fifo.payload[8][63:0]
+TOP.top.u_payload_fifo.payload[9][63:0]
+TOP.top.u_payload_fifo.payload[10][63:0]
+TOP.top.u_payload_fifo.payload[11][63:0]
+TOP.top.u_payload_fifo.payload[12][63:0]
+TOP.top.u_payload_fifo.payload[13][63:0]
+TOP.top.u_payload_fifo.payload[14][63:0]
+TOP.top.u_payload_fifo.payload[15][63:0]
 @200
 -TCP_FIFO_end
 -TCP_order
 @28
 TOP.top.u_tcp.tcp_flow.debug
+@22
+TOP.top.u_payload_fifo.wr_ptr_out[3:0]
+TOP.top.u_payload_fifo.wr_FIFO_len[3:0]
+TOP.top.u_payload_fifo.seq_trk_rd[31:0]
+@28
 TOP.top.u_tcp.tcp_flow.TCP_last
 TOP.top.u_tcp.tcp_flow.free_mask
+@200
+-
+-reading RX
+@28
+TOP.top.u_tcp.tcp_flow.rd_FIFO_en
 @22
+TOP.top.u_tcp.tcp_flow.rd_FIFO_ptr[10:0]
+TOP.top.u_tcp.tcp_flow.rd_FIFO_len[7:0]
+@28
+TOP.top.u_tcp.tcp_flow.rd_FIFO_valid
+@22
+TOP.top.u_payload_fifo.seq_trk_rd[31:0]
+@200
+-TCP_order_0
+@c00022
 TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+@28
+(0)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(1)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(2)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(3)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(4)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(5)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(6)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(7)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(8)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(9)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(10)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(11)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(12)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(13)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(14)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+(15)TOP.top.u_tcp.tcp_flow.TCP_order[0].length_ptr[15:0]
+@1401200
+-group_end
+@22
 TOP.top.u_tcp.tcp_flow.TCP_order[0].rd_ptr[15:0]
 TOP.top.u_tcp.tcp_flow.TCP_order[0].seq_length[15:0]
 TOP.top.u_tcp.tcp_flow.TCP_order[0].seq_num[31:0]
 @28
 TOP.top.u_tcp.tcp_flow.TCP_order[0].v
+@200
+-TCP_order_1
+@22
+TOP.top.u_tcp.tcp_flow.TCP_order[1].length_ptr[15:0]
+TOP.top.u_tcp.tcp_flow.TCP_order[1].rd_ptr[15:0]
+TOP.top.u_tcp.tcp_flow.TCP_order[1].seq_length[15:0]
+TOP.top.u_tcp.tcp_flow.TCP_order[1].seq_num[31:0]
+@28
+TOP.top.u_tcp.tcp_flow.TCP_order[1].v
+@200
+-TCP_order_2
+@22
+TOP.top.u_tcp.tcp_flow.TCP_order[2].length_ptr[15:0]
+TOP.top.u_tcp.tcp_flow.TCP_order[2].rd_ptr[15:0]
+TOP.top.u_tcp.tcp_flow.TCP_order[2].seq_length[15:0]
+@23
+TOP.top.u_tcp.tcp_flow.TCP_order[2].seq_num[31:0]
+@28
+TOP.top.u_tcp.tcp_flow.TCP_order[2].v
 [pattern_trace] 1
 [pattern_trace] 0

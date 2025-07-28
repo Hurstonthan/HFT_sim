@@ -21,6 +21,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
     // DESIGN SPECIFIC STATE
     VL_IN8(CLK,0,0);
     VL_IN8(nRST,0,0);
+    VL_IN8(tb_count,7,0);
     VL_IN8(IP_valid,0,0);
     VL_IN8(IP_flush,0,0);
     VL_IN8(IP_bytes_rcv,7,0);
@@ -39,10 +40,10 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
     CData/*0:0*/ __VicoExecute;
     CData/*0:0*/ __VicoFirstIteration;
     CData/*0:0*/ __VicoContinue;
-    CData/*0:0*/ __Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__CLK__0;
-    CData/*0:0*/ __Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__nRST__0;
     CData/*0:0*/ __Vtrigprevexpr___TOP__top__u_payload_fifo____PVT__CLK__0;
     CData/*0:0*/ __Vtrigprevexpr___TOP__top__u_payload_fifo____PVT__nRST__0;
+    CData/*0:0*/ __Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__CLK__0;
+    CData/*0:0*/ __Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__nRST__0;
     CData/*0:0*/ __Vtrigprevexpr___TOP__top__u_tcp__ISN_gen____PVT__CLK__0;
     CData/*0:0*/ __Vtrigprevexpr___TOP__top__u_tcp__ISN_gen____PVT__nRST__0;
     CData/*0:0*/ __Vtrigprevexpr___TOP__top__u_tcp__inst____PVT__CLK__0;

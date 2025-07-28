@@ -12,6 +12,7 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , vlSymsp{new Vtop__Syms(contextp(), _vcname__, this)}
     , CLK{vlSymsp->TOP.CLK}
     , nRST{vlSymsp->TOP.nRST}
+    , tb_count{vlSymsp->TOP.tb_count}
     , IP_valid{vlSymsp->TOP.IP_valid}
     , IP_flush{vlSymsp->TOP.IP_flush}
     , IP_bytes_rcv{vlSymsp->TOP.IP_bytes_rcv}

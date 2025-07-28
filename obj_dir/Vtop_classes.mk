@@ -29,9 +29,9 @@ VM_CLASSES_FAST += \
 	Vtop___024root__DepSet_h84412442__0 \
 	Vtop___024root__DepSet_heccd7ead__0 \
 	Vtop_top__DepSet_h0f993197__0 \
-	Vtop_FIFO_TX__DepSet_hf0c4c852__0 \
 	Vtop_payload_FIFO__DepSet_h13d3c5d8__0 \
-	Vtop_TCP__DepSet_h468c49b5__0 \
+	Vtop_TCP__F10__DepSet_he170ba7a__0 \
+	Vtop_FIFO_TX__F10__DepSet_h1ea2f4f0__0 \
 	Vtop_TCP_ISN__DepSet_hdb9f5fb0__0 \
 	Vtop_checksum_TCP__DepSet_hd35c62f6__0 \
 	Vtop_TCP_tx__DepSet_h8703877c__0 \
@@ -49,13 +49,13 @@ VM_CLASSES_SLOW += \
 	Vtop_top__Slow \
 	Vtop_top__DepSet_h0f993197__0__Slow \
 	Vtop_top__DepSet_h6315917a__0__Slow \
-	Vtop_FIFO_TX__Slow \
-	Vtop_FIFO_TX__DepSet_hf0c4c852__0__Slow \
 	Vtop_payload_FIFO__Slow \
 	Vtop_payload_FIFO__DepSet_h13d3c5d8__0__Slow \
-	Vtop_TCP__Slow \
-	Vtop_TCP__DepSet_ha28302eb__0__Slow \
-	Vtop_TCP__DepSet_h468c49b5__0__Slow \
+	Vtop_TCP__F10__Slow \
+	Vtop_TCP__F10__DepSet_h5210b812__0__Slow \
+	Vtop_TCP__F10__DepSet_he170ba7a__0__Slow \
+	Vtop_FIFO_TX__F10__Slow \
+	Vtop_FIFO_TX__F10__DepSet_h1ea2f4f0__0__Slow \
 	Vtop_TCP_ISN__Slow \
 	Vtop_TCP_ISN__DepSet_hdb9f5fb0__0__Slow \
 	Vtop_checksum_TCP__Slow \

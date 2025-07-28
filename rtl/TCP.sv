@@ -63,6 +63,7 @@ module TCP #(
     input logic rd_FIFO_last,
     input logic [15:0] bytes_abt_sent,
     output logic rd_FIFO_en_tx,
+    output logic [31:0] seq_num_tx_out,
 
     //Interface between TCP_tx and IP_tx
     input logic TCP_send,
@@ -86,6 +87,7 @@ module TCP #(
     //Interafce between TCP_rcv and TCP_flow_logic
     logic rcv_data;
     logic [7:0] TCP_control_rx;
+    logic [7:0] bytes_rcv;
     logic [31:0] seq_num_rx;
     logic [31:0] ACK_rx;
     logic [3:0] offset_rx;
@@ -118,6 +120,8 @@ module TCP #(
             TCP_basesum_payload = TCP_checksum_out;
         end
     end
+
+    assign seq_num_tx_out = seq_num_tx;
     TCP_flow_ctrl tcp_flow (
         .CLK(CLK),
         .nRST(nRST),
@@ -143,7 +147,7 @@ module TCP #(
         .full(full),
         .timeout_flag(timeout_flag),
         .hand_shake_done(handshake_done),
-        .seq_rcv_str(seq_rcv_str),
+        .seq_rcv_str(seq_rcv_start),
         .ISN_num (ISN_num),
         .bytes_sent(bytes_sent),
         .bytes_abt_sent(bytes_abt_sent),
@@ -152,11 +156,12 @@ module TCP #(
         .rcv_next_out(rcv_next),
         .seq_num_out(seq_num),
         .seq_rx_FIFO_rd(seq_rx_FIFO_rd),
-        .TCP_bytes_trk(IP_bytes_rcv),
+        //.TCP_bytes_trk(IP_bytes_rcv),
+        .TCP_bytes_trk (bytes_rcv),
         .wr_FIFO_offset(wr_FIFO_offset),
         .wr_FIFO_len(wr_FIFO_len),
         .rd_FIFO_len(rd_FIFO_len),
-        .wr_FIFO_ptr(wr_FIFO_ptr_out),
+        .wr_FIFO_ptr(wr_ptr_out),
         .rd_FIFO_ptr(rd_FIFO_ptr),
         .wr_FIFO_en(wr_FIFO_en),
         .nw_segment(nw_segment),
@@ -166,7 +171,6 @@ module TCP #(
         .ACK_num(ACK_num),
         .ACK_rcv_flag(ACK_rcv_flag),
         .out_order_req(out_order_req)
-
     );
 
     TCP_receiver tcp_rcv (
@@ -177,7 +181,7 @@ module TCP #(
         .IP_flush(IP_flush),
         .TCP_len(TCP_len),
         .IP_pseuder(IP_pseuder),
-
+        .bytes_rcv(bytes_rcv),
         .rcv_data(rcv_data),
         .TCP_control_rx(TCP_control_rx),
         .seq_num_rx(seq_num_rx),

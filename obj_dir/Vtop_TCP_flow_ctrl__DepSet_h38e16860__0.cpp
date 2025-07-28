@@ -6,8 +6,8 @@
 #include "Vtop_TCP_flow_ctrl.h"
 #include "Vtop__Syms.h"
 
-VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__1(Vtop_TCP_flow_ctrl* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+          Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__1\n"); );
+VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__0(Vtop_TCP_flow_ctrl* vlSelf) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+          Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__0\n"); );
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
@@ -353,126 +353,6 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__
                                   [9U], 0x30U, 0x20U)) 
                      & VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
                                       [9U], 0x50U)));
-    VL_ASSIGNBIT_II(0U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [0U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [0U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [0U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(1U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [1U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [1U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [1U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(2U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [2U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [2U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [2U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(3U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [3U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [3U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [3U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(4U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [4U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [4U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [4U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(5U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [5U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [5U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [5U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(6U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [6U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [6U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [6U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(7U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [7U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [7U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [7U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(8U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [8U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [8U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [8U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(9U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [9U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [9U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [9U], 0x30U, 0x20U)))));
     VL_ASSIGNSEL_II(10,2,0U, vlSelfRef.__PVT__v_vec, 
                     VL_CONCAT_III(2,1,1, (1U & VL_BITSEL_IWII(81, 
                                                               vlSelfRef.__PVT__TCP_order
@@ -515,8 +395,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__
         = vlSelfRef.__PVT__free_vec;
 }
 
-VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__2(Vtop_TCP_flow_ctrl* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+          Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__2\n"); );
+VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__1(Vtop_TCP_flow_ctrl* vlSelf) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+          Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__1\n"); );
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body

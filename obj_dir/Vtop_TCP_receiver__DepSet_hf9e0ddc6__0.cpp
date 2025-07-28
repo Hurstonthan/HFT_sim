@@ -25,6 +25,7 @@ VL_INLINE_OPT void Vtop_TCP_receiver___ico_sequent__TOP__top__u_tcp__tcp_rcv__0(
     vlSelfRef.__PVT__nTCP_last = vlSelfRef.__PVT__TCP_last;
     vlSelfRef.__PVT__nstate = vlSelfRef.__PVT__state;
     vlSelfRef.__PVT__nbytes_trk = 0U;
+    vlSelfRef.__PVT__nbytes_rcv = vlSelfRef.__PVT__bytes_rcv;
     vlSelfRef.__PVT__nTCP_checksum = vlSelfRef.__PVT__TCP_checksum;
     vlSelfRef.__PVT__nTCP_len_data = vlSelfRef.__PVT__TCP_len_data;
     vlSelfRef.__PVT__nTCP_payload_rx = vlSelfRef.__PVT__TCP_payload_rx;
@@ -156,16 +157,23 @@ VL_INLINE_OPT void Vtop_TCP_receiver___ico_sequent__TOP__top__u_tcp__tcp_rcv__0(
         vlSelfRef.__PVT__temp = __Vtemp_6;
         vlSelfRef.__PVT__nTCP_checksum = (0x1ffffU 
                                           & VL_SEL_IIII(20, vlSelfRef.__PVT__temp, 0U, 0x11U));
-        vlSelfRef.__PVT__nbytes_trk = (0xffffU & ((IData)(2U) 
-                                                  + (IData)(vlSelfRef.__PVT__bytes_trk)));
-        vlSelfRef.__PVT__nstate = 3U;
-        vlSelfRef.__PVT__nTCP_valid = 1U;
-        vlSelfRef.__PVT__n_nw_segment = 1U;
-        vlSelfRef.__PVT__nTCP_payload_rx = VL_EXTEND_QI(64,16, 
-                                                        (0xffffU 
-                                                         & VL_SEL_IQII(64, vlSelfRef.__PVT__IP_payload_rx, 0U, 0x10U)));
+        if (VL_REDOR_I((IData)(vlSelfRef.__PVT__TCP_len))) {
+            vlSelfRef.__PVT__nbytes_trk = (0xffffU 
+                                           & ((IData)(2U) 
+                                              + (IData)(vlSelfRef.__PVT__bytes_trk)));
+            vlSelfRef.__PVT__nTCP_valid = 1U;
+            vlSelfRef.__PVT__n_nw_segment = 1U;
+            vlSelfRef.__PVT__nbytes_rcv = 2U;
+            vlSelfRef.__PVT__nTCP_payload_rx = VL_EXTEND_QI(64,16, 
+                                                            (0xffffU 
+                                                             & VL_SEL_IQII(64, vlSelfRef.__PVT__IP_payload_rx, 0U, 0x10U)));
+            vlSelfRef.__PVT__nstate = 3U;
+        } else {
+            vlSelfRef.__PVT__nstate = 4U;
+        }
     } else if ((3U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__n_nw_segment = 1U;
+        vlSelfRef.__PVT__nbytes_rcv = 8U;
         vlSelfRef.__PVT__nbytes_trk = (0xffffU & ((IData)(8U) 
                                                   + (IData)(vlSelfRef.__PVT__bytes_trk)));
         vlSelfRef.__PVT__temp = (0xfffffU & ((((VL_EXTEND_II(20,16, 
@@ -213,11 +221,12 @@ VL_INLINE_OPT void Vtop_TCP_receiver___ico_sequent__TOP__top__u_tcp__tcp_rcv__0(
                                                  - (IData)(vlSelfRef.__PVT__TCP_len_data))));
             vlSelfRef.__PVT__nTCP_valid = 0U;
             vlSelfRef.__PVT__nTCP_last = 1U;
-            vlSelfRef.__PVT__nTCP_checksum = vlSelfRef.__PVT__TCP_checksum;
+            vlSelfRef.__PVT__n_nw_segment = 1U;
             vlSelfRef.__PVT__nstate = 4U;
         }
     } else if ((4U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__n_nw_segment = 0U;
+        vlSelfRef.__PVT__nTCP_last = 0U;
         vlSelfRef.__PVT__TCP_checksum_comp = (0xffffU 
                                               & (~ 
                                                  VL_SEL_IIII(17, vlSelfRef.__PVT__TCP_checksum, 0U, 0x10U)));
@@ -225,6 +234,7 @@ VL_INLINE_OPT void Vtop_TCP_receiver___ico_sequent__TOP__top__u_tcp__tcp_rcv__0(
              == (IData)(vlSelfRef.__PVT__checksum_rx))) {
             vlSelfRef.__PVT__nrcv_data = 1U;
             vlSelfRef.__PVT__nstate = 0U;
+            vlSelfRef.__PVT__nTCP_checksum = 0U;
         } else {
             vlSelfRef.__PVT__nstate = 5U;
         }
@@ -266,6 +276,7 @@ VL_INLINE_OPT void Vtop_TCP_receiver___nba_sequent__TOP__top__u_tcp__tcp_rcv__0(
     vlSelfRef.__Vdly__nw_segment = vlSelfRef.__PVT__nw_segment;
     vlSelfRef.__Vdly__ACK_rx = vlSelfRef.__PVT__ACK_rx;
     vlSelfRef.__Vdly__TCP_control_rx = vlSelfRef.__PVT__TCP_control_rx;
+    vlSelfRef.__Vdly__bytes_rcv = vlSelfRef.__PVT__bytes_rcv;
     if (vlSelfRef.__PVT__nRST) {
         if (vlSelfRef.__PVT__IP_flush) {
             vlSelfRef.__Vdly__state = 0U;
@@ -284,6 +295,7 @@ VL_INLINE_OPT void Vtop_TCP_receiver___nba_sequent__TOP__top__u_tcp__tcp_rcv__0(
             vlSelfRef.__Vdly__bytes_trk = 0U;
             vlSelfRef.__Vdly__nw_segment = 0U;
             vlSelfRef.__Vdly__TCP_last = 0U;
+            vlSelfRef.__Vdly__bytes_rcv = 0U;
         } else {
             vlSelfRef.__Vdly__state = vlSelfRef.__PVT__nstate;
             vlSelfRef.__Vdly__TCP_control_rx = vlSelfRef.__PVT__nTCP_control_rx;
@@ -299,6 +311,7 @@ VL_INLINE_OPT void Vtop_TCP_receiver___nba_sequent__TOP__top__u_tcp__tcp_rcv__0(
             vlSelfRef.__Vdly__TCP_valid = vlSelfRef.__PVT__nTCP_valid;
             vlSelfRef.__Vdly__rcv_data = vlSelfRef.__PVT__nrcv_data;
             vlSelfRef.__Vdly__bytes_trk = vlSelfRef.__PVT__nbytes_trk;
+            vlSelfRef.__Vdly__bytes_rcv = vlSelfRef.__PVT__nbytes_rcv;
             vlSelfRef.__Vdly__nw_segment = vlSelfRef.__PVT__n_nw_segment;
             vlSelfRef.__Vdly__TCP_last = vlSelfRef.__PVT__nTCP_last;
         }
@@ -317,6 +330,7 @@ VL_INLINE_OPT void Vtop_TCP_receiver___nba_sequent__TOP__top__u_tcp__tcp_rcv__0(
         vlSelfRef.__Vdly__rcv_data = 0U;
         vlSelfRef.__Vdly__TCP_checksum = 0U;
         vlSelfRef.__Vdly__bytes_trk = 0U;
+        vlSelfRef.__Vdly__bytes_rcv = 0U;
         vlSelfRef.__Vdly__nw_segment = 0U;
         vlSelfRef.__Vdly__TCP_last = 0U;
     }
@@ -336,12 +350,14 @@ VL_INLINE_OPT void Vtop_TCP_receiver___nba_sequent__TOP__top__u_tcp__tcp_rcv__0(
     vlSelfRef.__PVT__nw_segment = vlSelfRef.__Vdly__nw_segment;
     vlSelfRef.__PVT__ACK_rx = vlSelfRef.__Vdly__ACK_rx;
     vlSelfRef.__PVT__TCP_control_rx = vlSelfRef.__Vdly__TCP_control_rx;
+    vlSelfRef.__PVT__bytes_rcv = vlSelfRef.__Vdly__bytes_rcv;
     vlSelfRef.__PVT__TCP_checksum_comp = (0xffffU & 
                                           (~ VL_SEL_IIII(17, vlSelfRef.__PVT__TCP_checksum, 0U, 0x10U)));
     vlSelfRef.__PVT__n_nw_segment = vlSelfRef.__PVT__nw_segment;
     vlSelfRef.__PVT__nTCP_last = vlSelfRef.__PVT__TCP_last;
     vlSelfRef.__PVT__nstate = vlSelfRef.__PVT__state;
     vlSelfRef.__PVT__nbytes_trk = 0U;
+    vlSelfRef.__PVT__nbytes_rcv = vlSelfRef.__PVT__bytes_rcv;
     vlSelfRef.__PVT__nTCP_checksum = vlSelfRef.__PVT__TCP_checksum;
     vlSelfRef.__PVT__nTCP_len_data = vlSelfRef.__PVT__TCP_len_data;
     vlSelfRef.__PVT__nTCP_payload_rx = vlSelfRef.__PVT__TCP_payload_rx;
@@ -473,16 +489,23 @@ VL_INLINE_OPT void Vtop_TCP_receiver___nba_sequent__TOP__top__u_tcp__tcp_rcv__0(
         vlSelfRef.__PVT__temp = __Vtemp_6;
         vlSelfRef.__PVT__nTCP_checksum = (0x1ffffU 
                                           & VL_SEL_IIII(20, vlSelfRef.__PVT__temp, 0U, 0x11U));
-        vlSelfRef.__PVT__nbytes_trk = (0xffffU & ((IData)(2U) 
-                                                  + (IData)(vlSelfRef.__PVT__bytes_trk)));
-        vlSelfRef.__PVT__nstate = 3U;
-        vlSelfRef.__PVT__nTCP_valid = 1U;
-        vlSelfRef.__PVT__n_nw_segment = 1U;
-        vlSelfRef.__PVT__nTCP_payload_rx = VL_EXTEND_QI(64,16, 
-                                                        (0xffffU 
-                                                         & VL_SEL_IQII(64, vlSelfRef.__PVT__IP_payload_rx, 0U, 0x10U)));
+        if (VL_REDOR_I((IData)(vlSelfRef.__PVT__TCP_len))) {
+            vlSelfRef.__PVT__nbytes_trk = (0xffffU 
+                                           & ((IData)(2U) 
+                                              + (IData)(vlSelfRef.__PVT__bytes_trk)));
+            vlSelfRef.__PVT__nTCP_valid = 1U;
+            vlSelfRef.__PVT__n_nw_segment = 1U;
+            vlSelfRef.__PVT__nbytes_rcv = 2U;
+            vlSelfRef.__PVT__nTCP_payload_rx = VL_EXTEND_QI(64,16, 
+                                                            (0xffffU 
+                                                             & VL_SEL_IQII(64, vlSelfRef.__PVT__IP_payload_rx, 0U, 0x10U)));
+            vlSelfRef.__PVT__nstate = 3U;
+        } else {
+            vlSelfRef.__PVT__nstate = 4U;
+        }
     } else if ((3U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__n_nw_segment = 1U;
+        vlSelfRef.__PVT__nbytes_rcv = 8U;
         vlSelfRef.__PVT__nbytes_trk = (0xffffU & ((IData)(8U) 
                                                   + (IData)(vlSelfRef.__PVT__bytes_trk)));
         vlSelfRef.__PVT__temp = (0xfffffU & ((((VL_EXTEND_II(20,16, 
@@ -530,11 +553,12 @@ VL_INLINE_OPT void Vtop_TCP_receiver___nba_sequent__TOP__top__u_tcp__tcp_rcv__0(
                                                  - (IData)(vlSelfRef.__PVT__TCP_len_data))));
             vlSelfRef.__PVT__nTCP_valid = 0U;
             vlSelfRef.__PVT__nTCP_last = 1U;
-            vlSelfRef.__PVT__nTCP_checksum = vlSelfRef.__PVT__TCP_checksum;
+            vlSelfRef.__PVT__n_nw_segment = 1U;
             vlSelfRef.__PVT__nstate = 4U;
         }
     } else if ((4U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__n_nw_segment = 0U;
+        vlSelfRef.__PVT__nTCP_last = 0U;
         vlSelfRef.__PVT__TCP_checksum_comp = (0xffffU 
                                               & (~ 
                                                  VL_SEL_IIII(17, vlSelfRef.__PVT__TCP_checksum, 0U, 0x10U)));
@@ -542,6 +566,7 @@ VL_INLINE_OPT void Vtop_TCP_receiver___nba_sequent__TOP__top__u_tcp__tcp_rcv__0(
              == (IData)(vlSelfRef.__PVT__checksum_rx))) {
             vlSelfRef.__PVT__nrcv_data = 1U;
             vlSelfRef.__PVT__nstate = 0U;
+            vlSelfRef.__PVT__nTCP_checksum = 0U;
         } else {
             vlSelfRef.__PVT__nstate = 5U;
         }

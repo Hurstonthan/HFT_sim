@@ -3,16 +3,16 @@
 // See Vtop.h for the primary calling header
 
 #include "Vtop__pch.h"
-#include "Vtop_FIFO_TX__F40.h"
+#include "Vtop_FIFO_TX__F10.h"
 
-VL_INLINE_OPT void Vtop_FIFO_TX__F40___ico_sequent__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX__F40* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+        Vtop_FIFO_TX__F40___ico_sequent__TOP__top__u_fifo_tx__0\n"); );
+VL_INLINE_OPT void Vtop_FIFO_TX__F10___ico_sequent__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX__F10* vlSelf) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+        Vtop_FIFO_TX__F10___ico_sequent__TOP__top__u_fifo_tx__0\n"); );
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
     vlSelfRef.__PVT__nwrt_ptr = vlSelfRef.__PVT__wrt_ptr;
-    VL_ASSIGN_W(4096,vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__TCP_tx_order);
-    VL_ASSIGN_W(1488,vlSelfRef.__PVT__ndict_tx, vlSelfRef.__PVT__dict_tx);
+    VL_ASSIGN_W(1024,vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__TCP_tx_order);
+    VL_ASSIGN_W(1424,vlSelfRef.__PVT__ndict_tx, vlSelfRef.__PVT__dict_tx);
     vlSelfRef.__PVT__ndict_rd_ptr = vlSelfRef.__PVT__dict_rd_ptr;
     vlSelfRef.__PVT__ndict_wrt_ptr = vlSelfRef.__PVT__dict_wrt_ptr;
     vlSelfRef.__PVT__nwr_FIFO_valid = 0U;
@@ -53,88 +53,89 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___ico_sequent__TOP__top__u_fifo_tx__0(Vtop_
         vlSelfRef.__PVT__nrd_FIFO_last = 1U;
         if (vlSelfRef.__PVT__hand_shake_done) {
             vlSelfRef.__PVT__nrd_state = 1U;
+            vlSelfRef.__PVT__nrd_FIFO_last = 1U;
         }
     } else if ((1U == (IData)(vlSelfRef.__PVT__rd_state))) {
-        vlSelfRef.__PVT__nbytes_abt_sent = 0U;
+        vlSelfRef.__PVT__nbytes_abt_sent = vlSelfRef.__PVT__bytes_abt_sent;
         vlSelfRef.__PVT__nchecksum_l = 0U;
+        vlSelfRef.__PVT__nrd_FIFO_valid = 0U;
+        vlSelfRef.__PVT__nrd_FIFO_last = 0U;
+        vlSelfRef.__PVT__nrd_upd = 0U;
+        vlSelfRef.__PVT__test_case = std::string{"Handshake done"};
         if (vlSelfRef.__PVT__TX_en) {
             if (vlSelfRef.__PVT__out_order_req_l) {
                 vlSelfRef.__PVT__nrd_state = 3U;
-                vlSelfRef.__PVT__nptr_str = (0x3fU 
-                                             & ((0x5cfU 
-                                                 >= 
-                                                 ((IData)(6U) 
-                                                  + 
-                                                  VL_EXTEND_II(32,11, 
-                                                               (0x7ffU 
-                                                                & VL_SEL_IIII(32, 
-                                                                              ((IData)(0x5dU) 
-                                                                               * 
-                                                                               VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
-                                                 ? 
-                                                VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                                            ((IData)(6U) 
-                                                             + 
+                vlSelfRef.__PVT__nptr_str = (0xfU & 
+                                             ((0x58fU 
+                                               >= ((IData)(4U) 
+                                                   + 
+                                                   VL_EXTEND_II(32,11, 
+                                                                (0x7ffU 
+                                                                 & VL_SEL_IIII(32, 
+                                                                               ((IData)(0x59U) 
+                                                                                * 
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
+                                               ? VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                                                             ((IData)(4U) 
+                                                              + 
+                                                              VL_EXTEND_II(32,11, 
+                                                                           (0x7ffU 
+                                                                            & VL_SEL_IIII(32, 
+                                                                                ((IData)(0x59U) 
+                                                                                * 
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 4U)
+                                               : 0U));
+                vlSelfRef.__PVT__nptr_end = (0xfU & 
+                                             ((0x58fU 
+                                               >= (0x7ffU 
+                                                   & VL_SEL_IIII(32, 
+                                                                 ((IData)(0x59U) 
+                                                                  * 
+                                                                  VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))
+                                               ? VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
                                                              VL_EXTEND_II(32,11, 
                                                                           (0x7ffU 
                                                                            & VL_SEL_IIII(32, 
-                                                                                ((IData)(0x5dU) 
+                                                                                ((IData)(0x59U) 
                                                                                 * 
-                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 6U)
-                                                 : 0U));
-                vlSelfRef.__PVT__nptr_end = (0x3fU 
-                                             & ((0x5cfU 
-                                                 >= 
-                                                 (0x7ffU 
-                                                  & VL_SEL_IIII(32, 
-                                                                ((IData)(0x5dU) 
-                                                                 * 
-                                                                 VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))
-                                                 ? 
-                                                VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                                            VL_EXTEND_II(32,11, 
-                                                                         (0x7ffU 
-                                                                          & VL_SEL_IIII(32, 
-                                                                                ((IData)(0x5dU) 
-                                                                                * 
-                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU))), 6U)
-                                                 : 0U));
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU))), 4U)
+                                               : 0U));
                 vlSelfRef.__PVT__nbytes_abt_sent = 
-                    (0xffffU & ((0x5cfU >= ((IData)(0x1cU) 
+                    (0xffffU & ((0x58fU >= ((IData)(0x18U) 
                                             + VL_EXTEND_II(32,11, 
                                                            (0x7ffU 
                                                             & VL_SEL_IIII(32, 
-                                                                          ((IData)(0x5dU) 
+                                                                          ((IData)(0x59U) 
                                                                            * 
                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
-                                 ? VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                               ((IData)(0x1cU) 
+                                 ? VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                                               ((IData)(0x18U) 
                                                 + VL_EXTEND_II(32,11, 
                                                                (0x7ffU 
                                                                 & VL_SEL_IIII(32, 
-                                                                              ((IData)(0x5dU) 
+                                                                              ((IData)(0x59U) 
                                                                                * 
                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 0x10U)
                                  : 0U));
                 vlSelfRef.__PVT__nchecksum_l = (0xffffU 
-                                                & ((0x5cfU 
+                                                & ((0x58fU 
                                                     >= 
-                                                    ((IData)(0xcU) 
+                                                    ((IData)(8U) 
                                                      + 
                                                      VL_EXTEND_II(32,11, 
                                                                   (0x7ffU 
                                                                    & VL_SEL_IIII(32, 
-                                                                                ((IData)(0x5dU) 
+                                                                                ((IData)(0x59U) 
                                                                                 * 
                                                                                 VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
                                                     ? 
-                                                   VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                                               ((IData)(0xcU) 
+                                                   VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                                                               ((IData)(8U) 
                                                                 + 
                                                                 VL_EXTEND_II(32,11, 
                                                                              (0x7ffU 
                                                                               & VL_SEL_IIII(32, 
-                                                                                ((IData)(0x5dU) 
+                                                                                ((IData)(0x59U) 
                                                                                 * 
                                                                                 VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 0x10U)
                                                     : 0U));
@@ -150,118 +151,118 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___ico_sequent__TOP__top__u_fifo_tx__0(Vtop_
         vlSelfRef.__PVT__rd_debug_1 = (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr)) 
                                        != (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr)) 
                                            - (IData)(1U)));
-        vlSelfRef.__PVT__rd_debug_2 = ((VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__rd_ptr)) 
+        vlSelfRef.__PVT__rd_debug_2 = ((VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)) 
                                         - (IData)(1U)) 
-                                       != VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__msg_end_ptr)));
+                                       != VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__msg_end_ptr)));
         if ((((IData)(vlSelfRef.__PVT__rd_FIFO_en) 
               & (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr)) 
                  != (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr)) 
-                     - (IData)(1U)))) & (VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__rd_ptr)) 
-                                         != (VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__msg_end_ptr)) 
-                                             - (IData)(1U))))) {
+                     - (IData)(1U)))) & ((IData)(vlSelfRef.__PVT__rd_ptr) 
+                                         != (IData)(vlSelfRef.__PVT__msg_end_ptr)))) {
             vlSelfRef.__PVT__nrd_FIFO_valid = 1U;
-            vlSelfRef.__PVT__nrd_ptr = (0x3fU & ((IData)(1U) 
-                                                 + (IData)(vlSelfRef.__PVT__rd_ptr)));
-            vlSelfRef.__PVT__nrd_FIFO_payload = VL_SEL_QWII(4096, vlSelfRef.__PVT__TCP_tx_order, 
-                                                            (0xfffU 
+            vlSelfRef.__PVT__nrd_ptr = (0xfU & ((IData)(1U) 
+                                                + (IData)(vlSelfRef.__PVT__rd_ptr)));
+            vlSelfRef.__PVT__nrd_FIFO_payload = VL_SEL_QWII(1024, vlSelfRef.__PVT__TCP_tx_order, 
+                                                            (0x3ffU 
                                                              & VL_SEL_IIII(32, 
                                                                            VL_SHIFTL_III(32,32,32, 
-                                                                                VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__rd_ptr)), 6U), 0U, 0xcU)), 0x40U);
-            if ((((IData)(1U) + VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__rd_ptr))) 
-                 == VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__ptr_end)))) {
-                vlSelfRef.__Vlvbound_haf2ea56c__0 = 1U;
-                if (VL_LIKELY(((0x5cfU >= ((IData)(0x5cU) 
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)), 6U), 0U, 0xaU)), 0x40U);
+            if ((VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)) 
+                 == (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_end)) 
+                     - (IData)(1U)))) {
+                vlSelfRef.__Vlvbound_h85ca1f99__0 = 1U;
+                if (VL_LIKELY(((0x58fU >= ((IData)(0x58U) 
                                            + VL_EXTEND_II(32,11, 
                                                           (0x7ffU 
                                                            & VL_SEL_IIII(32, 
-                                                                         ((IData)(0x5dU) 
+                                                                         ((IData)(0x59U) 
                                                                           * 
                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))))) {
-                    VL_ASSIGNBIT_WI(((IData)(0x5cU) 
+                    VL_ASSIGNBIT_WI(((IData)(0x58U) 
                                      + VL_EXTEND_II(32,11, 
                                                     (0x7ffU 
                                                      & VL_SEL_IIII(32, 
-                                                                   ((IData)(0x5dU) 
+                                                                   ((IData)(0x59U) 
                                                                     * 
-                                                                    VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_haf2ea56c__0);
+                                                                    VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_h85ca1f99__0);
                 }
-                vlSelfRef.__Vlvbound_hc0d8fad9__0 = vlSelfRef.__PVT__seq_num_tx;
-                if (VL_LIKELY(((0x5cfU >= ((IData)(0x3cU) 
+                vlSelfRef.__Vlvbound_h4e9bd7ab__0 = vlSelfRef.__PVT__seq_num_tx;
+                if (VL_LIKELY(((0x58fU >= ((IData)(0x38U) 
                                            + VL_EXTEND_II(32,11, 
                                                           (0x7ffU 
                                                            & VL_SEL_IIII(32, 
-                                                                         ((IData)(0x5dU) 
+                                                                         ((IData)(0x59U) 
                                                                           * 
                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))))) {
-                    VL_ASSIGNSEL_WI(1488,32,((IData)(0x3cU) 
+                    VL_ASSIGNSEL_WI(1424,32,((IData)(0x38U) 
                                              + VL_EXTEND_II(32,11, 
                                                             (0x7ffU 
                                                              & VL_SEL_IIII(32, 
-                                                                           ((IData)(0x5dU) 
+                                                                           ((IData)(0x59U) 
                                                                             * 
-                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_hc0d8fad9__0);
+                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_h4e9bd7ab__0);
                 }
-                vlSelfRef.__Vlvbound_hc2048635__0 = 
+                vlSelfRef.__Vlvbound_h4f266110__0 = 
                     VL_EXTEND_II(32,16, (IData)(vlSelfRef.__PVT__bytes_abt_sent));
-                if (VL_LIKELY(((0x5cfU >= ((IData)(0x1cU) 
+                if (VL_LIKELY(((0x58fU >= ((IData)(0x18U) 
                                            + VL_EXTEND_II(32,11, 
                                                           (0x7ffU 
                                                            & VL_SEL_IIII(32, 
-                                                                         ((IData)(0x5dU) 
+                                                                         ((IData)(0x59U) 
                                                                           * 
                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))))) {
-                    VL_ASSIGNSEL_WI(1488,32,((IData)(0x1cU) 
+                    VL_ASSIGNSEL_WI(1424,32,((IData)(0x18U) 
                                              + VL_EXTEND_II(32,11, 
                                                             (0x7ffU 
                                                              & VL_SEL_IIII(32, 
-                                                                           ((IData)(0x5dU) 
+                                                                           ((IData)(0x59U) 
                                                                             * 
-                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_hc2048635__0);
+                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_h4f266110__0);
                 }
-                vlSelfRef.__Vlvbound_h2122588a__0 = vlSelfRef.__PVT__ptr_str;
-                if (VL_LIKELY(((0x5cfU >= ((IData)(6U) 
+                vlSelfRef.__Vlvbound_hbe720894__0 = vlSelfRef.__PVT__ptr_str;
+                if (VL_LIKELY(((0x58fU >= ((IData)(4U) 
                                            + VL_EXTEND_II(32,11, 
                                                           (0x7ffU 
                                                            & VL_SEL_IIII(32, 
-                                                                         ((IData)(0x5dU) 
+                                                                         ((IData)(0x59U) 
                                                                           * 
                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))))) {
-                    VL_ASSIGNSEL_WI(1488,6,((IData)(6U) 
+                    VL_ASSIGNSEL_WI(1424,4,((IData)(4U) 
                                             + VL_EXTEND_II(32,11, 
                                                            (0x7ffU 
                                                             & VL_SEL_IIII(32, 
-                                                                          ((IData)(0x5dU) 
+                                                                          ((IData)(0x59U) 
                                                                            * 
-                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_h2122588a__0);
+                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_hbe720894__0);
                 }
-                vlSelfRef.__Vlvbound_heca601dc__0 = vlSelfRef.__PVT__rd_ptr;
-                if (VL_LIKELY(((0x5cfU >= (0x7ffU & 
+                vlSelfRef.__Vlvbound_h6397fe4a__0 = vlSelfRef.__PVT__rd_ptr;
+                if (VL_LIKELY(((0x58fU >= (0x7ffU & 
                                            VL_SEL_IIII(32, 
-                                                       ((IData)(0x5dU) 
+                                                       ((IData)(0x59U) 
                                                         * 
                                                         VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))) {
-                    VL_ASSIGNSEL_WI(1488,6,VL_EXTEND_II(32,11, 
+                    VL_ASSIGNSEL_WI(1424,4,VL_EXTEND_II(32,11, 
                                                         (0x7ffU 
                                                          & VL_SEL_IIII(32, 
-                                                                       ((IData)(0x5dU) 
+                                                                       ((IData)(0x59U) 
                                                                         * 
-                                                                        VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_heca601dc__0);
+                                                                        VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_h6397fe4a__0);
                 }
-                vlSelfRef.__Vlvbound_hbcdbd758__0 = vlSelfRef.__PVT__checksum_l;
-                if (VL_LIKELY(((0x5cfU >= ((IData)(0xcU) 
+                vlSelfRef.__Vlvbound_hda89a6fa__0 = vlSelfRef.__PVT__checksum_l;
+                if (VL_LIKELY(((0x58fU >= ((IData)(8U) 
                                            + VL_EXTEND_II(32,11, 
                                                           (0x7ffU 
                                                            & VL_SEL_IIII(32, 
-                                                                         ((IData)(0x5dU) 
+                                                                         ((IData)(0x59U) 
                                                                           * 
                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))))) {
-                    VL_ASSIGNSEL_WI(1488,16,((IData)(0xcU) 
+                    VL_ASSIGNSEL_WI(1424,16,((IData)(8U) 
                                              + VL_EXTEND_II(32,11, 
                                                             (0x7ffU 
                                                              & VL_SEL_IIII(32, 
-                                                                           ((IData)(0x5dU) 
+                                                                           ((IData)(0x59U) 
                                                                             * 
-                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_hbcdbd758__0);
+                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_hda89a6fa__0);
                 }
                 vlSelfRef.__PVT__nrd_FIFO_last = 1U;
                 vlSelfRef.__PVT__nrd_state = 1U;
@@ -276,15 +277,15 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___ico_sequent__TOP__top__u_fifo_tx__0(Vtop_
     } else if ((3U == (IData)(vlSelfRef.__PVT__rd_state))) {
         if (vlSelfRef.__PVT__rd_FIFO_en) {
             vlSelfRef.__PVT__nrd_FIFO_valid = 1U;
-            vlSelfRef.__PVT__nrd_FIFO_payload = VL_SEL_QWII(4096, vlSelfRef.__PVT__TCP_tx_order, 
-                                                            (0xfffU 
+            vlSelfRef.__PVT__nrd_FIFO_payload = VL_SEL_QWII(1024, vlSelfRef.__PVT__TCP_tx_order, 
+                                                            (0x3ffU 
                                                              & VL_SEL_IIII(32, 
                                                                            VL_SHIFTL_III(32,32,32, 
-                                                                                VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__ptr_str)), 6U), 0U, 0xcU)), 0x40U);
-            vlSelfRef.__PVT__nptr_str = (0x3fU & ((IData)(1U) 
-                                                  + (IData)(vlSelfRef.__PVT__ptr_str)));
-            if ((VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__ptr_str)) 
-                 == (VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__ptr_end)) 
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_str)), 6U), 0U, 0xaU)), 0x40U);
+            vlSelfRef.__PVT__nptr_str = (0xfU & ((IData)(1U) 
+                                                 + (IData)(vlSelfRef.__PVT__ptr_str)));
+            if ((VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_str)) 
+                 == (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_end)) 
                      - (IData)(1U)))) {
                 vlSelfRef.__PVT__nrd_FIFO_last = 1U;
                 vlSelfRef.__PVT__nrd_state = 1U;
@@ -293,91 +294,93 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___ico_sequent__TOP__top__u_fifo_tx__0(Vtop_
         }
     }
     if ((0U == (IData)(vlSelfRef.__PVT__wr_state))) {
-        if (((((0x5cfU >= ((IData)(0x3cU) + VL_EXTEND_II(32,11, 
+        if (((((0x58fU >= ((IData)(0x38U) + VL_EXTEND_II(32,11, 
                                                          (0x7ffU 
                                                           & VL_SEL_IIII(32, 
-                                                                        ((IData)(0x5dU) 
+                                                                        ((IData)(0x59U) 
                                                                          * 
                                                                          VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
-                ? VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                              ((IData)(0x3cU) + VL_EXTEND_II(32,11, 
+                ? VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                              ((IData)(0x38U) + VL_EXTEND_II(32,11, 
                                                              (0x7ffU 
                                                               & VL_SEL_IIII(32, 
-                                                                            ((IData)(0x5dU) 
+                                                                            ((IData)(0x59U) 
                                                                              * 
                                                                              VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 0x20U)
                 : 0U) < vlSelfRef.__PVT__ACK_num_l) 
              & ((IData)(vlSelfRef.__PVT__dict_rd_ptr) 
                 != (IData)(vlSelfRef.__PVT__dict_wrt_ptr)))) {
             vlSelfRef.__PVT__nwr_state = 2U;
-            vlSelfRef.__PVT__nflush_ptr = (0x3fU & 
-                                           ((0x5cfU 
-                                             >= ((IData)(6U) 
-                                                 + 
-                                                 VL_EXTEND_II(32,11, 
-                                                              (0x7ffU 
-                                                               & VL_SEL_IIII(32, 
-                                                                             ((IData)(0x5dU) 
-                                                                              * 
-                                                                              VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
-                                             ? VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                                           ((IData)(6U) 
-                                                            + 
-                                                            VL_EXTEND_II(32,11, 
-                                                                         (0x7ffU 
-                                                                          & VL_SEL_IIII(32, 
-                                                                                ((IData)(0x5dU) 
+            vlSelfRef.__PVT__nflush_ptr = (0xfU & (
+                                                   (0x58fU 
+                                                    >= 
+                                                    ((IData)(4U) 
+                                                     + 
+                                                     VL_EXTEND_II(32,11, 
+                                                                  (0x7ffU 
+                                                                   & VL_SEL_IIII(32, 
+                                                                                ((IData)(0x59U) 
                                                                                 * 
-                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 6U)
-                                             : 0U));
-            vlSelfRef.__PVT__ndict_rd_ptr = (0xfU & 
-                                             ((IData)(1U) 
-                                              + (IData)(vlSelfRef.__PVT__dict_rd_ptr)));
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
+                                                    ? 
+                                                   VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                                                               ((IData)(4U) 
+                                                                + 
+                                                                VL_EXTEND_II(32,11, 
+                                                                             (0x7ffU 
+                                                                              & VL_SEL_IIII(32, 
+                                                                                ((IData)(0x59U) 
+                                                                                * 
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 4U)
+                                                    : 0U));
         } else if (((IData)(vlSelfRef.__PVT__wr_FIFO_en) 
                     & (~ (IData)(vlSelfRef.__PVT__full)))) {
             vlSelfRef.__PVT__nwr_FIFO_valid = 1U;
-            vlSelfRef.__PVT__nwrt_ptr = (0x3fU & ((IData)(1U) 
-                                                  + (IData)(vlSelfRef.__PVT__wrt_ptr)));
-            VL_ASSIGNSEL_WQ(4096,64,(0xfffU & VL_SEL_IIII(32, 
+            vlSelfRef.__PVT__nwrt_ptr = (0xfU & ((IData)(1U) 
+                                                 + (IData)(vlSelfRef.__PVT__wrt_ptr)));
+            VL_ASSIGNSEL_WQ(1024,64,(0x3ffU & VL_SEL_IIII(32, 
                                                           VL_SHIFTL_III(32,32,32, 
-                                                                        VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__wrt_ptr)), 6U), 0U, 0xcU)), vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__soupbin_TCP_payload);
+                                                                        VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__wrt_ptr)), 6U), 0U, 0xaU)), vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__soupbin_TCP_payload);
             vlSelfRef.__PVT__nwr_state = 1U;
         }
     } else if ((2U == (IData)(vlSelfRef.__PVT__wr_state))) {
-        vlSelfRef.__PVT__nflush_ptr = (0x3fU & ((IData)(1U) 
-                                                + (IData)(vlSelfRef.__PVT__flush_ptr)));
-        VL_ASSIGNSEL_WQ(4096,64,(0xfffU & VL_SEL_IIII(32, 
+        vlSelfRef.__PVT__nflush_ptr = (0xfU & ((IData)(1U) 
+                                               + (IData)(vlSelfRef.__PVT__flush_ptr)));
+        VL_ASSIGNSEL_WQ(1024,64,(0x3ffU & VL_SEL_IIII(32, 
                                                       VL_SHIFTL_III(32,32,32, 
-                                                                    VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__flush_ptr)), 6U), 0U, 0xcU)), vlSelfRef.__PVT__nTCP_tx_order, 0ULL);
+                                                                    VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__flush_ptr)), 6U), 0U, 0xaU)), vlSelfRef.__PVT__nTCP_tx_order, 0ULL);
         if (((IData)(vlSelfRef.__PVT__flush_ptr) == 
-             (0x3fU & ((0x5cfU >= (0x7ffU & VL_SEL_IIII(32, 
-                                                        ((IData)(0x5dU) 
-                                                         * 
-                                                         VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))
-                        ? VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                      VL_EXTEND_II(32,11, 
-                                                   (0x7ffU 
-                                                    & VL_SEL_IIII(32, 
-                                                                  ((IData)(0x5dU) 
-                                                                   * 
-                                                                   VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU))), 6U)
-                        : 0U)))) {
+             (0xfU & ((0x58fU >= (0x7ffU & VL_SEL_IIII(32, 
+                                                       ((IData)(0x59U) 
+                                                        * 
+                                                        VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))
+                       ? VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                                     VL_EXTEND_II(32,11, 
+                                                  (0x7ffU 
+                                                   & VL_SEL_IIII(32, 
+                                                                 ((IData)(0x59U) 
+                                                                  * 
+                                                                  VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU))), 4U)
+                       : 0U)))) {
             vlSelfRef.__PVT__nACK_rcv_flag_l = 0U;
+            vlSelfRef.__PVT__ndict_rd_ptr = (0xfU & 
+                                             ((IData)(1U) 
+                                              + (IData)(vlSelfRef.__PVT__dict_rd_ptr)));
             vlSelfRef.__PVT__nwr_state = 0U;
         }
     } else if ((1U == (IData)(vlSelfRef.__PVT__wr_state))) {
         vlSelfRef.__PVT__nwr_FIFO_valid = 1U;
-        vlSelfRef.__PVT__nwrt_ptr = (0x3fU & ((IData)(1U) 
-                                              + (IData)(vlSelfRef.__PVT__wrt_ptr)));
-        VL_ASSIGNSEL_WQ(4096,64,(0xfffU & VL_SEL_IIII(32, 
+        vlSelfRef.__PVT__nwrt_ptr = (0xfU & ((IData)(1U) 
+                                             + (IData)(vlSelfRef.__PVT__wrt_ptr)));
+        VL_ASSIGNSEL_WQ(1024,64,(0x3ffU & VL_SEL_IIII(32, 
                                                       VL_SHIFTL_III(32,32,32, 
-                                                                    VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__wrt_ptr)), 6U), 0U, 0xcU)), vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__soupbin_TCP_payload);
+                                                                    VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__wrt_ptr)), 6U), 0U, 0xaU)), vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__soupbin_TCP_payload);
         if (vlSelfRef.__PVT__axis_last) {
             vlSelfRef.__PVT__nwr_FIFO_valid = 0U;
-            vlSelfRef.__PVT__nmsg_end_ptr = (0x3fU 
-                                             & ((IData)(1U) 
-                                                + ((IData)(vlSelfRef.__PVT__msg_end_ptr) 
-                                                   + (IData)(vlSelfRef.__PVT__wrt_ptr))));
+            vlSelfRef.__PVT__nmsg_end_ptr = (0xfU & 
+                                             ((IData)(1U) 
+                                              + ((IData)(vlSelfRef.__PVT__msg_end_ptr) 
+                                                 + (IData)(vlSelfRef.__PVT__wrt_ptr))));
             vlSelfRef.__PVT__nbytes_abt_sent_msg = 
                 (0xffffU & ((IData)(vlSelfRef.__PVT__bytes_abt_sent_msg) 
                             + VL_SEL_IIII(32, vlSelfRef.__PVT__len_seq, 0U, 0x10U)));
@@ -386,18 +389,18 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___ico_sequent__TOP__top__u_fifo_tx__0(Vtop_
     }
 }
 
-extern const VlWide<128>/*4095:0*/ Vtop__ConstPool__CONST_h6e0f3f36_0;
-extern const VlWide<47>/*1503:0*/ Vtop__ConstPool__CONST_h719e8777_0;
+extern const VlWide<32>/*1023:0*/ Vtop__ConstPool__CONST_hd6b7ba52_0;
+extern const VlWide<45>/*1439:0*/ Vtop__ConstPool__CONST_hc6030581_0;
 
-VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_sequent__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX__F40* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+        Vtop_FIFO_TX__F40___nba_sequent__TOP__top__u_fifo_tx__0\n"); );
+VL_INLINE_OPT void Vtop_FIFO_TX__F10___nba_sequent__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX__F10* vlSelf) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+        Vtop_FIFO_TX__F10___nba_sequent__TOP__top__u_fifo_tx__0\n"); );
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
     vlSelfRef.__Vdly__bytes_msg_trk = vlSelfRef.__PVT__bytes_msg_trk;
     vlSelfRef.__Vdly__wr_FIFO_valid = vlSelfRef.__PVT__wr_FIFO_valid;
     vlSelfRef.__Vdly__wr_state = vlSelfRef.__PVT__wr_state;
-    VL_ASSIGN_W(4096,vlSelfRef.__Vdly__TCP_tx_order, vlSelfRef.__PVT__TCP_tx_order);
+    VL_ASSIGN_W(1024,vlSelfRef.__Vdly__TCP_tx_order, vlSelfRef.__PVT__TCP_tx_order);
     vlSelfRef.__Vdly__dict_wrt_ptr = vlSelfRef.__PVT__dict_wrt_ptr;
     vlSelfRef.__Vdly__dict_rd_ptr = vlSelfRef.__PVT__dict_rd_ptr;
     vlSelfRef.__Vdly__flush_ptr = vlSelfRef.__PVT__flush_ptr;
@@ -408,7 +411,7 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_sequent__TOP__top__u_fifo_tx__0(Vtop_
     vlSelfRef.__Vdly__wrt_ptr = vlSelfRef.__PVT__wrt_ptr;
     vlSelfRef.__Vdly__ptr_str = vlSelfRef.__PVT__ptr_str;
     vlSelfRef.__Vdly__ptr_end = vlSelfRef.__PVT__ptr_end;
-    VL_ASSIGN_W(1488,vlSelfRef.__Vdly__dict_tx, vlSelfRef.__PVT__dict_tx);
+    VL_ASSIGN_W(1424,vlSelfRef.__Vdly__dict_tx, vlSelfRef.__PVT__dict_tx);
     vlSelfRef.__Vdly__ACK_rcv_flag_l = vlSelfRef.__PVT__ACK_rcv_flag_l;
     vlSelfRef.__Vdly__rd_state = vlSelfRef.__PVT__rd_state;
     vlSelfRef.__Vdly__ACK_num_l = vlSelfRef.__PVT__ACK_num_l;
@@ -422,7 +425,7 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_sequent__TOP__top__u_fifo_tx__0(Vtop_
     if (vlSelfRef.__PVT__nRST) {
         vlSelfRef.__Vdly__wr_state = vlSelfRef.__PVT__nwr_state;
         vlSelfRef.__Vdly__wrt_ptr = vlSelfRef.__PVT__nwrt_ptr;
-        VL_ASSIGN_W(4096,vlSelfRef.__Vdly__TCP_tx_order, vlSelfRef.__PVT__nTCP_tx_order);
+        VL_ASSIGN_W(1024,vlSelfRef.__Vdly__TCP_tx_order, vlSelfRef.__PVT__nTCP_tx_order);
         vlSelfRef.__Vdly__dict_wrt_ptr = vlSelfRef.__PVT__ndict_wrt_ptr;
         vlSelfRef.__Vdly__dict_rd_ptr = vlSelfRef.__PVT__ndict_rd_ptr;
         vlSelfRef.__Vdly__wr_FIFO_valid = vlSelfRef.__PVT__nwr_FIFO_valid;
@@ -434,7 +437,7 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_sequent__TOP__top__u_fifo_tx__0(Vtop_
         vlSelfRef.__Vdly__checksum_l = vlSelfRef.__PVT__nchecksum_l;
     } else {
         vlSelfRef.__Vdly__wrt_ptr = 0U;
-        VL_ASSIGN_W(4096,vlSelfRef.__Vdly__TCP_tx_order, Vtop__ConstPool__CONST_h6e0f3f36_0);
+        VL_ASSIGN_W(1024,vlSelfRef.__Vdly__TCP_tx_order, Vtop__ConstPool__CONST_hd6b7ba52_0);
         vlSelfRef.__Vdly__dict_wrt_ptr = 0U;
         vlSelfRef.__Vdly__dict_rd_ptr = 0U;
         vlSelfRef.__Vdly__wr_FIFO_valid = 0U;
@@ -450,7 +453,7 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_sequent__TOP__top__u_fifo_tx__0(Vtop_
         vlSelfRef.__Vdly__ptr_str = vlSelfRef.__PVT__nptr_str;
         vlSelfRef.__Vdly__ptr_end = vlSelfRef.__PVT__nptr_end;
         vlSelfRef.__Vdly__bytes_abt_sent = vlSelfRef.__PVT__nbytes_abt_sent;
-        VL_ASSIGN_W(1488,vlSelfRef.__Vdly__dict_tx, vlSelfRef.__PVT__ndict_tx);
+        VL_ASSIGN_W(1424,vlSelfRef.__Vdly__dict_tx, vlSelfRef.__PVT__ndict_tx);
         vlSelfRef.__Vdly__ACK_rcv_flag_l = vlSelfRef.__PVT__nACK_rcv_flag_l;
         vlSelfRef.__Vdly__rd_state = vlSelfRef.__PVT__nrd_state;
         vlSelfRef.__Vdly__rd_FIFO_valid = vlSelfRef.__PVT__nrd_FIFO_valid;
@@ -469,7 +472,7 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_sequent__TOP__top__u_fifo_tx__0(Vtop_
         vlSelfRef.__Vdly__rd_FIFO_last = 0U;
         vlSelfRef.__Vdly__rd_FIFO_payload = 0ULL;
         vlSelfRef.__Vdly__rd_FIFO_valid = 0U;
-        VL_ASSIGN_W(1488,vlSelfRef.__Vdly__dict_tx, Vtop__ConstPool__CONST_h719e8777_0);
+        VL_ASSIGN_W(1424,vlSelfRef.__Vdly__dict_tx, Vtop__ConstPool__CONST_hc6030581_0);
         vlSelfRef.__Vdly__out_order_req_l = 0U;
         vlSelfRef.__Vdly__ACK_rcv_flag_l = 0U;
         vlSelfRef.__Vdly__ACK_num_l = 0U;
@@ -478,7 +481,7 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_sequent__TOP__top__u_fifo_tx__0(Vtop_
     vlSelfRef.__PVT__bytes_msg_trk = vlSelfRef.__Vdly__bytes_msg_trk;
     vlSelfRef.__PVT__wr_FIFO_valid = vlSelfRef.__Vdly__wr_FIFO_valid;
     vlSelfRef.__PVT__wr_state = vlSelfRef.__Vdly__wr_state;
-    VL_ASSIGN_W(4096,vlSelfRef.__PVT__TCP_tx_order, vlSelfRef.__Vdly__TCP_tx_order);
+    VL_ASSIGN_W(1024,vlSelfRef.__PVT__TCP_tx_order, vlSelfRef.__Vdly__TCP_tx_order);
     vlSelfRef.__PVT__dict_wrt_ptr = vlSelfRef.__Vdly__dict_wrt_ptr;
     vlSelfRef.__PVT__dict_rd_ptr = vlSelfRef.__Vdly__dict_rd_ptr;
     vlSelfRef.__PVT__flush_ptr = vlSelfRef.__Vdly__flush_ptr;
@@ -489,7 +492,7 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_sequent__TOP__top__u_fifo_tx__0(Vtop_
     vlSelfRef.__PVT__wrt_ptr = vlSelfRef.__Vdly__wrt_ptr;
     vlSelfRef.__PVT__ptr_str = vlSelfRef.__Vdly__ptr_str;
     vlSelfRef.__PVT__ptr_end = vlSelfRef.__Vdly__ptr_end;
-    VL_ASSIGN_W(1488,vlSelfRef.__PVT__dict_tx, vlSelfRef.__Vdly__dict_tx);
+    VL_ASSIGN_W(1424,vlSelfRef.__PVT__dict_tx, vlSelfRef.__Vdly__dict_tx);
     vlSelfRef.__PVT__ACK_rcv_flag_l = vlSelfRef.__Vdly__ACK_rcv_flag_l;
     vlSelfRef.__PVT__rd_state = vlSelfRef.__Vdly__rd_state;
     vlSelfRef.__PVT__ACK_num_l = vlSelfRef.__Vdly__ACK_num_l;
@@ -503,18 +506,18 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_sequent__TOP__top__u_fifo_tx__0(Vtop_
     vlSelfRef.__PVT__re_trans = vlSelfRef.__PVT__out_order_req_l;
     vlSelfRef.__PVT__empty = ((IData)(vlSelfRef.__PVT__wrt_ptr) 
                               == (IData)(vlSelfRef.__PVT__rd_ptr));
-    vlSelfRef.__PVT__full = ((VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__rd_ptr)) 
-                              - (IData)(1U)) == VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__wrt_ptr)));
+    vlSelfRef.__PVT__full = ((VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)) 
+                              - (IData)(1U)) == VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__wrt_ptr)));
 }
 
-VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_comb__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX__F40* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+        Vtop_FIFO_TX__F40___nba_comb__TOP__top__u_fifo_tx__0\n"); );
+VL_INLINE_OPT void Vtop_FIFO_TX__F10___nba_comb__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX__F10* vlSelf) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+        Vtop_FIFO_TX__F10___nba_comb__TOP__top__u_fifo_tx__0\n"); );
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
     vlSelfRef.__PVT__nwrt_ptr = vlSelfRef.__PVT__wrt_ptr;
-    VL_ASSIGN_W(4096,vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__TCP_tx_order);
-    VL_ASSIGN_W(1488,vlSelfRef.__PVT__ndict_tx, vlSelfRef.__PVT__dict_tx);
+    VL_ASSIGN_W(1024,vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__TCP_tx_order);
+    VL_ASSIGN_W(1424,vlSelfRef.__PVT__ndict_tx, vlSelfRef.__PVT__dict_tx);
     vlSelfRef.__PVT__ndict_rd_ptr = vlSelfRef.__PVT__dict_rd_ptr;
     vlSelfRef.__PVT__ndict_wrt_ptr = vlSelfRef.__PVT__dict_wrt_ptr;
     vlSelfRef.__PVT__nwr_FIFO_valid = 0U;
@@ -555,88 +558,89 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_comb__TOP__top__u_fifo_tx__0(Vtop_FIF
         vlSelfRef.__PVT__nrd_FIFO_last = 1U;
         if (vlSelfRef.__PVT__hand_shake_done) {
             vlSelfRef.__PVT__nrd_state = 1U;
+            vlSelfRef.__PVT__nrd_FIFO_last = 1U;
         }
     } else if ((1U == (IData)(vlSelfRef.__PVT__rd_state))) {
-        vlSelfRef.__PVT__nbytes_abt_sent = 0U;
+        vlSelfRef.__PVT__nbytes_abt_sent = vlSelfRef.__PVT__bytes_abt_sent;
         vlSelfRef.__PVT__nchecksum_l = 0U;
+        vlSelfRef.__PVT__nrd_FIFO_valid = 0U;
+        vlSelfRef.__PVT__nrd_FIFO_last = 0U;
+        vlSelfRef.__PVT__nrd_upd = 0U;
+        vlSelfRef.__PVT__test_case = std::string{"Handshake done"};
         if (vlSelfRef.__PVT__TX_en) {
             if (vlSelfRef.__PVT__out_order_req_l) {
                 vlSelfRef.__PVT__nrd_state = 3U;
-                vlSelfRef.__PVT__nptr_str = (0x3fU 
-                                             & ((0x5cfU 
-                                                 >= 
-                                                 ((IData)(6U) 
-                                                  + 
-                                                  VL_EXTEND_II(32,11, 
-                                                               (0x7ffU 
-                                                                & VL_SEL_IIII(32, 
-                                                                              ((IData)(0x5dU) 
-                                                                               * 
-                                                                               VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
-                                                 ? 
-                                                VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                                            ((IData)(6U) 
-                                                             + 
+                vlSelfRef.__PVT__nptr_str = (0xfU & 
+                                             ((0x58fU 
+                                               >= ((IData)(4U) 
+                                                   + 
+                                                   VL_EXTEND_II(32,11, 
+                                                                (0x7ffU 
+                                                                 & VL_SEL_IIII(32, 
+                                                                               ((IData)(0x59U) 
+                                                                                * 
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
+                                               ? VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                                                             ((IData)(4U) 
+                                                              + 
+                                                              VL_EXTEND_II(32,11, 
+                                                                           (0x7ffU 
+                                                                            & VL_SEL_IIII(32, 
+                                                                                ((IData)(0x59U) 
+                                                                                * 
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 4U)
+                                               : 0U));
+                vlSelfRef.__PVT__nptr_end = (0xfU & 
+                                             ((0x58fU 
+                                               >= (0x7ffU 
+                                                   & VL_SEL_IIII(32, 
+                                                                 ((IData)(0x59U) 
+                                                                  * 
+                                                                  VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))
+                                               ? VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
                                                              VL_EXTEND_II(32,11, 
                                                                           (0x7ffU 
                                                                            & VL_SEL_IIII(32, 
-                                                                                ((IData)(0x5dU) 
+                                                                                ((IData)(0x59U) 
                                                                                 * 
-                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 6U)
-                                                 : 0U));
-                vlSelfRef.__PVT__nptr_end = (0x3fU 
-                                             & ((0x5cfU 
-                                                 >= 
-                                                 (0x7ffU 
-                                                  & VL_SEL_IIII(32, 
-                                                                ((IData)(0x5dU) 
-                                                                 * 
-                                                                 VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))
-                                                 ? 
-                                                VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                                            VL_EXTEND_II(32,11, 
-                                                                         (0x7ffU 
-                                                                          & VL_SEL_IIII(32, 
-                                                                                ((IData)(0x5dU) 
-                                                                                * 
-                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU))), 6U)
-                                                 : 0U));
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU))), 4U)
+                                               : 0U));
                 vlSelfRef.__PVT__nbytes_abt_sent = 
-                    (0xffffU & ((0x5cfU >= ((IData)(0x1cU) 
+                    (0xffffU & ((0x58fU >= ((IData)(0x18U) 
                                             + VL_EXTEND_II(32,11, 
                                                            (0x7ffU 
                                                             & VL_SEL_IIII(32, 
-                                                                          ((IData)(0x5dU) 
+                                                                          ((IData)(0x59U) 
                                                                            * 
                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
-                                 ? VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                               ((IData)(0x1cU) 
+                                 ? VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                                               ((IData)(0x18U) 
                                                 + VL_EXTEND_II(32,11, 
                                                                (0x7ffU 
                                                                 & VL_SEL_IIII(32, 
-                                                                              ((IData)(0x5dU) 
+                                                                              ((IData)(0x59U) 
                                                                                * 
                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 0x10U)
                                  : 0U));
                 vlSelfRef.__PVT__nchecksum_l = (0xffffU 
-                                                & ((0x5cfU 
+                                                & ((0x58fU 
                                                     >= 
-                                                    ((IData)(0xcU) 
+                                                    ((IData)(8U) 
                                                      + 
                                                      VL_EXTEND_II(32,11, 
                                                                   (0x7ffU 
                                                                    & VL_SEL_IIII(32, 
-                                                                                ((IData)(0x5dU) 
+                                                                                ((IData)(0x59U) 
                                                                                 * 
                                                                                 VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
                                                     ? 
-                                                   VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                                               ((IData)(0xcU) 
+                                                   VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                                                               ((IData)(8U) 
                                                                 + 
                                                                 VL_EXTEND_II(32,11, 
                                                                              (0x7ffU 
                                                                               & VL_SEL_IIII(32, 
-                                                                                ((IData)(0x5dU) 
+                                                                                ((IData)(0x59U) 
                                                                                 * 
                                                                                 VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 0x10U)
                                                     : 0U));
@@ -652,118 +656,118 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_comb__TOP__top__u_fifo_tx__0(Vtop_FIF
         vlSelfRef.__PVT__rd_debug_1 = (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr)) 
                                        != (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr)) 
                                            - (IData)(1U)));
-        vlSelfRef.__PVT__rd_debug_2 = ((VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__rd_ptr)) 
+        vlSelfRef.__PVT__rd_debug_2 = ((VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)) 
                                         - (IData)(1U)) 
-                                       != VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__msg_end_ptr)));
+                                       != VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__msg_end_ptr)));
         if ((((IData)(vlSelfRef.__PVT__rd_FIFO_en) 
               & (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr)) 
                  != (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr)) 
-                     - (IData)(1U)))) & (VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__rd_ptr)) 
-                                         != (VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__msg_end_ptr)) 
-                                             - (IData)(1U))))) {
+                     - (IData)(1U)))) & ((IData)(vlSelfRef.__PVT__rd_ptr) 
+                                         != (IData)(vlSelfRef.__PVT__msg_end_ptr)))) {
             vlSelfRef.__PVT__nrd_FIFO_valid = 1U;
-            vlSelfRef.__PVT__nrd_ptr = (0x3fU & ((IData)(1U) 
-                                                 + (IData)(vlSelfRef.__PVT__rd_ptr)));
-            vlSelfRef.__PVT__nrd_FIFO_payload = VL_SEL_QWII(4096, vlSelfRef.__PVT__TCP_tx_order, 
-                                                            (0xfffU 
+            vlSelfRef.__PVT__nrd_ptr = (0xfU & ((IData)(1U) 
+                                                + (IData)(vlSelfRef.__PVT__rd_ptr)));
+            vlSelfRef.__PVT__nrd_FIFO_payload = VL_SEL_QWII(1024, vlSelfRef.__PVT__TCP_tx_order, 
+                                                            (0x3ffU 
                                                              & VL_SEL_IIII(32, 
                                                                            VL_SHIFTL_III(32,32,32, 
-                                                                                VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__rd_ptr)), 6U), 0U, 0xcU)), 0x40U);
-            if ((((IData)(1U) + VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__rd_ptr))) 
-                 == VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__ptr_end)))) {
-                vlSelfRef.__Vlvbound_haf2ea56c__0 = 1U;
-                if (VL_LIKELY(((0x5cfU >= ((IData)(0x5cU) 
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)), 6U), 0U, 0xaU)), 0x40U);
+            if ((VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)) 
+                 == (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_end)) 
+                     - (IData)(1U)))) {
+                vlSelfRef.__Vlvbound_h85ca1f99__0 = 1U;
+                if (VL_LIKELY(((0x58fU >= ((IData)(0x58U) 
                                            + VL_EXTEND_II(32,11, 
                                                           (0x7ffU 
                                                            & VL_SEL_IIII(32, 
-                                                                         ((IData)(0x5dU) 
+                                                                         ((IData)(0x59U) 
                                                                           * 
                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))))) {
-                    VL_ASSIGNBIT_WI(((IData)(0x5cU) 
+                    VL_ASSIGNBIT_WI(((IData)(0x58U) 
                                      + VL_EXTEND_II(32,11, 
                                                     (0x7ffU 
                                                      & VL_SEL_IIII(32, 
-                                                                   ((IData)(0x5dU) 
+                                                                   ((IData)(0x59U) 
                                                                     * 
-                                                                    VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_haf2ea56c__0);
+                                                                    VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_h85ca1f99__0);
                 }
-                vlSelfRef.__Vlvbound_hc0d8fad9__0 = vlSelfRef.__PVT__seq_num_tx;
-                if (VL_LIKELY(((0x5cfU >= ((IData)(0x3cU) 
+                vlSelfRef.__Vlvbound_h4e9bd7ab__0 = vlSelfRef.__PVT__seq_num_tx;
+                if (VL_LIKELY(((0x58fU >= ((IData)(0x38U) 
                                            + VL_EXTEND_II(32,11, 
                                                           (0x7ffU 
                                                            & VL_SEL_IIII(32, 
-                                                                         ((IData)(0x5dU) 
+                                                                         ((IData)(0x59U) 
                                                                           * 
                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))))) {
-                    VL_ASSIGNSEL_WI(1488,32,((IData)(0x3cU) 
+                    VL_ASSIGNSEL_WI(1424,32,((IData)(0x38U) 
                                              + VL_EXTEND_II(32,11, 
                                                             (0x7ffU 
                                                              & VL_SEL_IIII(32, 
-                                                                           ((IData)(0x5dU) 
+                                                                           ((IData)(0x59U) 
                                                                             * 
-                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_hc0d8fad9__0);
+                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_h4e9bd7ab__0);
                 }
-                vlSelfRef.__Vlvbound_hc2048635__0 = 
+                vlSelfRef.__Vlvbound_h4f266110__0 = 
                     VL_EXTEND_II(32,16, (IData)(vlSelfRef.__PVT__bytes_abt_sent));
-                if (VL_LIKELY(((0x5cfU >= ((IData)(0x1cU) 
+                if (VL_LIKELY(((0x58fU >= ((IData)(0x18U) 
                                            + VL_EXTEND_II(32,11, 
                                                           (0x7ffU 
                                                            & VL_SEL_IIII(32, 
-                                                                         ((IData)(0x5dU) 
+                                                                         ((IData)(0x59U) 
                                                                           * 
                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))))) {
-                    VL_ASSIGNSEL_WI(1488,32,((IData)(0x1cU) 
+                    VL_ASSIGNSEL_WI(1424,32,((IData)(0x18U) 
                                              + VL_EXTEND_II(32,11, 
                                                             (0x7ffU 
                                                              & VL_SEL_IIII(32, 
-                                                                           ((IData)(0x5dU) 
+                                                                           ((IData)(0x59U) 
                                                                             * 
-                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_hc2048635__0);
+                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_h4f266110__0);
                 }
-                vlSelfRef.__Vlvbound_h2122588a__0 = vlSelfRef.__PVT__ptr_str;
-                if (VL_LIKELY(((0x5cfU >= ((IData)(6U) 
+                vlSelfRef.__Vlvbound_hbe720894__0 = vlSelfRef.__PVT__ptr_str;
+                if (VL_LIKELY(((0x58fU >= ((IData)(4U) 
                                            + VL_EXTEND_II(32,11, 
                                                           (0x7ffU 
                                                            & VL_SEL_IIII(32, 
-                                                                         ((IData)(0x5dU) 
+                                                                         ((IData)(0x59U) 
                                                                           * 
                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))))) {
-                    VL_ASSIGNSEL_WI(1488,6,((IData)(6U) 
+                    VL_ASSIGNSEL_WI(1424,4,((IData)(4U) 
                                             + VL_EXTEND_II(32,11, 
                                                            (0x7ffU 
                                                             & VL_SEL_IIII(32, 
-                                                                          ((IData)(0x5dU) 
+                                                                          ((IData)(0x59U) 
                                                                            * 
-                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_h2122588a__0);
+                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_hbe720894__0);
                 }
-                vlSelfRef.__Vlvbound_heca601dc__0 = vlSelfRef.__PVT__rd_ptr;
-                if (VL_LIKELY(((0x5cfU >= (0x7ffU & 
+                vlSelfRef.__Vlvbound_h6397fe4a__0 = vlSelfRef.__PVT__rd_ptr;
+                if (VL_LIKELY(((0x58fU >= (0x7ffU & 
                                            VL_SEL_IIII(32, 
-                                                       ((IData)(0x5dU) 
+                                                       ((IData)(0x59U) 
                                                         * 
                                                         VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))) {
-                    VL_ASSIGNSEL_WI(1488,6,VL_EXTEND_II(32,11, 
+                    VL_ASSIGNSEL_WI(1424,4,VL_EXTEND_II(32,11, 
                                                         (0x7ffU 
                                                          & VL_SEL_IIII(32, 
-                                                                       ((IData)(0x5dU) 
+                                                                       ((IData)(0x59U) 
                                                                         * 
-                                                                        VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_heca601dc__0);
+                                                                        VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_h6397fe4a__0);
                 }
-                vlSelfRef.__Vlvbound_hbcdbd758__0 = vlSelfRef.__PVT__checksum_l;
-                if (VL_LIKELY(((0x5cfU >= ((IData)(0xcU) 
+                vlSelfRef.__Vlvbound_hda89a6fa__0 = vlSelfRef.__PVT__checksum_l;
+                if (VL_LIKELY(((0x58fU >= ((IData)(8U) 
                                            + VL_EXTEND_II(32,11, 
                                                           (0x7ffU 
                                                            & VL_SEL_IIII(32, 
-                                                                         ((IData)(0x5dU) 
+                                                                         ((IData)(0x59U) 
                                                                           * 
                                                                           VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))))))) {
-                    VL_ASSIGNSEL_WI(1488,16,((IData)(0xcU) 
+                    VL_ASSIGNSEL_WI(1424,16,((IData)(8U) 
                                              + VL_EXTEND_II(32,11, 
                                                             (0x7ffU 
                                                              & VL_SEL_IIII(32, 
-                                                                           ((IData)(0x5dU) 
+                                                                           ((IData)(0x59U) 
                                                                             * 
-                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_hbcdbd758__0);
+                                                                            VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr))), 0U, 0xbU)))), vlSelfRef.__PVT__ndict_tx, vlSelfRef.__Vlvbound_hda89a6fa__0);
                 }
                 vlSelfRef.__PVT__nrd_FIFO_last = 1U;
                 vlSelfRef.__PVT__nrd_state = 1U;
@@ -778,15 +782,15 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_comb__TOP__top__u_fifo_tx__0(Vtop_FIF
     } else if ((3U == (IData)(vlSelfRef.__PVT__rd_state))) {
         if (vlSelfRef.__PVT__rd_FIFO_en) {
             vlSelfRef.__PVT__nrd_FIFO_valid = 1U;
-            vlSelfRef.__PVT__nrd_FIFO_payload = VL_SEL_QWII(4096, vlSelfRef.__PVT__TCP_tx_order, 
-                                                            (0xfffU 
+            vlSelfRef.__PVT__nrd_FIFO_payload = VL_SEL_QWII(1024, vlSelfRef.__PVT__TCP_tx_order, 
+                                                            (0x3ffU 
                                                              & VL_SEL_IIII(32, 
                                                                            VL_SHIFTL_III(32,32,32, 
-                                                                                VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__ptr_str)), 6U), 0U, 0xcU)), 0x40U);
-            vlSelfRef.__PVT__nptr_str = (0x3fU & ((IData)(1U) 
-                                                  + (IData)(vlSelfRef.__PVT__ptr_str)));
-            if ((VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__ptr_str)) 
-                 == (VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__ptr_end)) 
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_str)), 6U), 0U, 0xaU)), 0x40U);
+            vlSelfRef.__PVT__nptr_str = (0xfU & ((IData)(1U) 
+                                                 + (IData)(vlSelfRef.__PVT__ptr_str)));
+            if ((VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_str)) 
+                 == (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_end)) 
                      - (IData)(1U)))) {
                 vlSelfRef.__PVT__nrd_FIFO_last = 1U;
                 vlSelfRef.__PVT__nrd_state = 1U;
@@ -795,91 +799,93 @@ VL_INLINE_OPT void Vtop_FIFO_TX__F40___nba_comb__TOP__top__u_fifo_tx__0(Vtop_FIF
         }
     }
     if ((0U == (IData)(vlSelfRef.__PVT__wr_state))) {
-        if (((((0x5cfU >= ((IData)(0x3cU) + VL_EXTEND_II(32,11, 
+        if (((((0x58fU >= ((IData)(0x38U) + VL_EXTEND_II(32,11, 
                                                          (0x7ffU 
                                                           & VL_SEL_IIII(32, 
-                                                                        ((IData)(0x5dU) 
+                                                                        ((IData)(0x59U) 
                                                                          * 
                                                                          VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
-                ? VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                              ((IData)(0x3cU) + VL_EXTEND_II(32,11, 
+                ? VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                              ((IData)(0x38U) + VL_EXTEND_II(32,11, 
                                                              (0x7ffU 
                                                               & VL_SEL_IIII(32, 
-                                                                            ((IData)(0x5dU) 
+                                                                            ((IData)(0x59U) 
                                                                              * 
                                                                              VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 0x20U)
                 : 0U) < vlSelfRef.__PVT__ACK_num_l) 
              & ((IData)(vlSelfRef.__PVT__dict_rd_ptr) 
                 != (IData)(vlSelfRef.__PVT__dict_wrt_ptr)))) {
             vlSelfRef.__PVT__nwr_state = 2U;
-            vlSelfRef.__PVT__nflush_ptr = (0x3fU & 
-                                           ((0x5cfU 
-                                             >= ((IData)(6U) 
-                                                 + 
-                                                 VL_EXTEND_II(32,11, 
-                                                              (0x7ffU 
-                                                               & VL_SEL_IIII(32, 
-                                                                             ((IData)(0x5dU) 
-                                                                              * 
-                                                                              VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
-                                             ? VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                                           ((IData)(6U) 
-                                                            + 
-                                                            VL_EXTEND_II(32,11, 
-                                                                         (0x7ffU 
-                                                                          & VL_SEL_IIII(32, 
-                                                                                ((IData)(0x5dU) 
+            vlSelfRef.__PVT__nflush_ptr = (0xfU & (
+                                                   (0x58fU 
+                                                    >= 
+                                                    ((IData)(4U) 
+                                                     + 
+                                                     VL_EXTEND_II(32,11, 
+                                                                  (0x7ffU 
+                                                                   & VL_SEL_IIII(32, 
+                                                                                ((IData)(0x59U) 
                                                                                 * 
-                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 6U)
-                                             : 0U));
-            vlSelfRef.__PVT__ndict_rd_ptr = (0xfU & 
-                                             ((IData)(1U) 
-                                              + (IData)(vlSelfRef.__PVT__dict_rd_ptr)));
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))))
+                                                    ? 
+                                                   VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                                                               ((IData)(4U) 
+                                                                + 
+                                                                VL_EXTEND_II(32,11, 
+                                                                             (0x7ffU 
+                                                                              & VL_SEL_IIII(32, 
+                                                                                ((IData)(0x59U) 
+                                                                                * 
+                                                                                VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))), 4U)
+                                                    : 0U));
         } else if (((IData)(vlSelfRef.__PVT__wr_FIFO_en) 
                     & (~ (IData)(vlSelfRef.__PVT__full)))) {
             vlSelfRef.__PVT__nwr_FIFO_valid = 1U;
-            vlSelfRef.__PVT__nwrt_ptr = (0x3fU & ((IData)(1U) 
-                                                  + (IData)(vlSelfRef.__PVT__wrt_ptr)));
-            VL_ASSIGNSEL_WQ(4096,64,(0xfffU & VL_SEL_IIII(32, 
+            vlSelfRef.__PVT__nwrt_ptr = (0xfU & ((IData)(1U) 
+                                                 + (IData)(vlSelfRef.__PVT__wrt_ptr)));
+            VL_ASSIGNSEL_WQ(1024,64,(0x3ffU & VL_SEL_IIII(32, 
                                                           VL_SHIFTL_III(32,32,32, 
-                                                                        VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__wrt_ptr)), 6U), 0U, 0xcU)), vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__soupbin_TCP_payload);
+                                                                        VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__wrt_ptr)), 6U), 0U, 0xaU)), vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__soupbin_TCP_payload);
             vlSelfRef.__PVT__nwr_state = 1U;
         }
     } else if ((2U == (IData)(vlSelfRef.__PVT__wr_state))) {
-        vlSelfRef.__PVT__nflush_ptr = (0x3fU & ((IData)(1U) 
-                                                + (IData)(vlSelfRef.__PVT__flush_ptr)));
-        VL_ASSIGNSEL_WQ(4096,64,(0xfffU & VL_SEL_IIII(32, 
+        vlSelfRef.__PVT__nflush_ptr = (0xfU & ((IData)(1U) 
+                                               + (IData)(vlSelfRef.__PVT__flush_ptr)));
+        VL_ASSIGNSEL_WQ(1024,64,(0x3ffU & VL_SEL_IIII(32, 
                                                       VL_SHIFTL_III(32,32,32, 
-                                                                    VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__flush_ptr)), 6U), 0U, 0xcU)), vlSelfRef.__PVT__nTCP_tx_order, 0ULL);
+                                                                    VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__flush_ptr)), 6U), 0U, 0xaU)), vlSelfRef.__PVT__nTCP_tx_order, 0ULL);
         if (((IData)(vlSelfRef.__PVT__flush_ptr) == 
-             (0x3fU & ((0x5cfU >= (0x7ffU & VL_SEL_IIII(32, 
-                                                        ((IData)(0x5dU) 
-                                                         * 
-                                                         VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))
-                        ? VL_SEL_IWII(1488, vlSelfRef.__PVT__dict_tx, 
-                                      VL_EXTEND_II(32,11, 
-                                                   (0x7ffU 
-                                                    & VL_SEL_IIII(32, 
-                                                                  ((IData)(0x5dU) 
-                                                                   * 
-                                                                   VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU))), 6U)
-                        : 0U)))) {
+             (0xfU & ((0x58fU >= (0x7ffU & VL_SEL_IIII(32, 
+                                                       ((IData)(0x59U) 
+                                                        * 
+                                                        VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU)))
+                       ? VL_SEL_IWII(1424, vlSelfRef.__PVT__dict_tx, 
+                                     VL_EXTEND_II(32,11, 
+                                                  (0x7ffU 
+                                                   & VL_SEL_IIII(32, 
+                                                                 ((IData)(0x59U) 
+                                                                  * 
+                                                                  VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr))), 0U, 0xbU))), 4U)
+                       : 0U)))) {
             vlSelfRef.__PVT__nACK_rcv_flag_l = 0U;
+            vlSelfRef.__PVT__ndict_rd_ptr = (0xfU & 
+                                             ((IData)(1U) 
+                                              + (IData)(vlSelfRef.__PVT__dict_rd_ptr)));
             vlSelfRef.__PVT__nwr_state = 0U;
         }
     } else if ((1U == (IData)(vlSelfRef.__PVT__wr_state))) {
         vlSelfRef.__PVT__nwr_FIFO_valid = 1U;
-        vlSelfRef.__PVT__nwrt_ptr = (0x3fU & ((IData)(1U) 
-                                              + (IData)(vlSelfRef.__PVT__wrt_ptr)));
-        VL_ASSIGNSEL_WQ(4096,64,(0xfffU & VL_SEL_IIII(32, 
+        vlSelfRef.__PVT__nwrt_ptr = (0xfU & ((IData)(1U) 
+                                             + (IData)(vlSelfRef.__PVT__wrt_ptr)));
+        VL_ASSIGNSEL_WQ(1024,64,(0x3ffU & VL_SEL_IIII(32, 
                                                       VL_SHIFTL_III(32,32,32, 
-                                                                    VL_EXTEND_II(32,6, (IData)(vlSelfRef.__PVT__wrt_ptr)), 6U), 0U, 0xcU)), vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__soupbin_TCP_payload);
+                                                                    VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__wrt_ptr)), 6U), 0U, 0xaU)), vlSelfRef.__PVT__nTCP_tx_order, vlSelfRef.__PVT__soupbin_TCP_payload);
         if (vlSelfRef.__PVT__axis_last) {
             vlSelfRef.__PVT__nwr_FIFO_valid = 0U;
-            vlSelfRef.__PVT__nmsg_end_ptr = (0x3fU 
-                                             & ((IData)(1U) 
-                                                + ((IData)(vlSelfRef.__PVT__msg_end_ptr) 
-                                                   + (IData)(vlSelfRef.__PVT__wrt_ptr))));
+            vlSelfRef.__PVT__nmsg_end_ptr = (0xfU & 
+                                             ((IData)(1U) 
+                                              + ((IData)(vlSelfRef.__PVT__msg_end_ptr) 
+                                                 + (IData)(vlSelfRef.__PVT__wrt_ptr))));
             vlSelfRef.__PVT__nbytes_abt_sent_msg = 
                 (0xffffU & ((IData)(vlSelfRef.__PVT__bytes_abt_sent_msg) 
                             + VL_SEL_IIII(32, vlSelfRef.__PVT__len_seq, 0U, 0x10U)));

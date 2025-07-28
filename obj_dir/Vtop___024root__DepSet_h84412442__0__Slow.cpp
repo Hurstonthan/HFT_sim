@@ -11,14 +11,14 @@ VL_ATTR_COLD void Vtop___024root___eval_static(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
-    vlSelfRef.__Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__CLK__0 
-        = vlSymsp->TOP__top__u_fifo_tx.__PVT__CLK;
-    vlSelfRef.__Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__nRST__0 
-        = vlSymsp->TOP__top__u_fifo_tx.__PVT__nRST;
     vlSelfRef.__Vtrigprevexpr___TOP__top__u_payload_fifo____PVT__CLK__0 
         = vlSymsp->TOP__top__u_payload_fifo.__PVT__CLK;
     vlSelfRef.__Vtrigprevexpr___TOP__top__u_payload_fifo____PVT__nRST__0 
         = vlSymsp->TOP__top__u_payload_fifo.__PVT__nRST;
+    vlSelfRef.__Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__CLK__0 
+        = vlSymsp->TOP__top__u_fifo_tx.__PVT__CLK;
+    vlSelfRef.__Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__nRST__0 
+        = vlSymsp->TOP__top__u_fifo_tx.__PVT__nRST;
     vlSelfRef.__Vtrigprevexpr___TOP__top__u_tcp__ISN_gen____PVT__CLK__0 
         = vlSymsp->TOP__top__u_tcp__ISN_gen.__PVT__CLK;
     vlSelfRef.__Vtrigprevexpr___TOP__top__u_tcp__ISN_gen____PVT__nRST__0 
@@ -41,7 +41,7 @@ VL_ATTR_COLD void Vtop___024root___eval_static(Vtop___024root* vlSelf) {
         = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__nRST;
 }
 
-VL_ATTR_COLD void Vtop_TCP___eval_initial__TOP__top__u_tcp(Vtop_TCP* vlSelf);
+VL_ATTR_COLD void Vtop_TCP__F10___eval_initial__TOP__top__u_tcp(Vtop_TCP__F10* vlSelf);
 VL_ATTR_COLD void Vtop___024root____Vm_traceActivitySetAll(Vtop___024root* vlSelf);
 VL_ATTR_COLD void Vtop_TCP_tx___eval_initial__TOP__top__u_tcp__TCP_tx(Vtop_TCP_tx* vlSelf);
 
@@ -50,7 +50,7 @@ VL_ATTR_COLD void Vtop___024root___eval_initial(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
-    Vtop_TCP___eval_initial__TOP__top__u_tcp((&vlSymsp->TOP__top__u_tcp));
+    Vtop_TCP__F10___eval_initial__TOP__top__u_tcp((&vlSymsp->TOP__top__u_tcp));
     Vtop___024root____Vm_traceActivitySetAll(vlSelf);
     Vtop_TCP_tx___eval_initial__TOP__top__u_tcp__TCP_tx((&vlSymsp->TOP__top__u_tcp__TCP_tx));
 }
@@ -74,14 +74,14 @@ VL_ATTR_COLD void Vtop___024root___eval_triggers__stl(Vtop___024root* vlSelf) {
 
 VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf);
 VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__0(Vtop_top* vlSelf);
+VL_ATTR_COLD void Vtop_TCP__F10___stl_sequent__TOP__top__u_tcp__0(Vtop_TCP__F10* vlSelf);
 VL_ATTR_COLD void Vtop_payload_FIFO___stl_sequent__TOP__top__u_payload_fifo__0(Vtop_payload_FIFO* vlSelf);
-VL_ATTR_COLD void Vtop_TCP___stl_sequent__TOP__top__u_tcp__0(Vtop_TCP* vlSelf);
-VL_ATTR_COLD void Vtop_FIFO_TX___stl_sequent__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX* vlSelf);
+VL_ATTR_COLD void Vtop_FIFO_TX__F10___stl_sequent__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX__F10* vlSelf);
 VL_ATTR_COLD void Vtop_TCP_flow_ctrl___stl_sequent__TOP__top__u_tcp__tcp_flow__0(Vtop_TCP_flow_ctrl* vlSelf);
 VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__1(Vtop___024root* vlSelf);
 VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__1(Vtop_top* vlSelf);
 VL_ATTR_COLD void Vtop_TCP_receiver___stl_sequent__TOP__top__u_tcp__tcp_rcv__0(Vtop_TCP_receiver* vlSelf);
-VL_ATTR_COLD void Vtop_TCP___stl_sequent__TOP__top__u_tcp__1(Vtop_TCP* vlSelf);
+VL_ATTR_COLD void Vtop_TCP__F10___stl_sequent__TOP__top__u_tcp__1(Vtop_TCP__F10* vlSelf);
 VL_ATTR_COLD void Vtop_priority_encoder__Wa___stl_sequent__TOP__top__u_tcp__tcp_flow__me__0(Vtop_priority_encoder__Wa* vlSelf);
 VL_ATTR_COLD void Vtop_priority_encoder__Wa___stl_sequent__TOP__top__u_tcp__tcp_flow__pe__0(Vtop_priority_encoder__Wa* vlSelf);
 VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__2(Vtop___024root* vlSelf);
@@ -89,14 +89,14 @@ VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__2(Vtop_top* vlSelf);
 VL_ATTR_COLD void Vtop_TCP_flow_ctrl___stl_sequent__TOP__top__u_tcp__tcp_flow__1(Vtop_TCP_flow_ctrl* vlSelf);
 VL_ATTR_COLD void Vtop_checksum_TCP___stl_sequent__TOP__top__u_tcp__inst__0(Vtop_checksum_TCP* vlSelf);
 VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__3(Vtop___024root* vlSelf);
-VL_ATTR_COLD void Vtop_TCP___stl_sequent__TOP__top__u_tcp__2(Vtop_TCP* vlSelf);
+VL_ATTR_COLD void Vtop_TCP__F10___stl_sequent__TOP__top__u_tcp__2(Vtop_TCP__F10* vlSelf);
 VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__3(Vtop_top* vlSelf);
 VL_ATTR_COLD void Vtop_TCP_tx___stl_sequent__TOP__top__u_tcp__TCP_tx__0(Vtop_TCP_tx* vlSelf);
 VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__4(Vtop___024root* vlSelf);
 VL_ATTR_COLD void Vtop_payload_FIFO___stl_sequent__TOP__top__u_payload_fifo__1(Vtop_payload_FIFO* vlSelf);
-VL_ATTR_COLD void Vtop_TCP___stl_sequent__TOP__top__u_tcp__3(Vtop_TCP* vlSelf);
+VL_ATTR_COLD void Vtop_TCP__F10___stl_sequent__TOP__top__u_tcp__3(Vtop_TCP__F10* vlSelf);
 VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__4(Vtop_top* vlSelf);
-VL_ATTR_COLD void Vtop_FIFO_TX___stl_sequent__TOP__top__u_fifo_tx__1(Vtop_FIFO_TX* vlSelf);
+VL_ATTR_COLD void Vtop_FIFO_TX__F10___stl_sequent__TOP__top__u_fifo_tx__1(Vtop_FIFO_TX__F10* vlSelf);
 
 VL_ATTR_COLD void Vtop___024root___eval_stl(Vtop___024root* vlSelf) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___eval_stl\n"); );
@@ -107,14 +107,14 @@ VL_ATTR_COLD void Vtop___024root___eval_stl(Vtop___024root* vlSelf) {
         Vtop___024root___stl_sequent__TOP__0(vlSelf);
         Vtop___024root____Vm_traceActivitySetAll(vlSelf);
         Vtop_top___stl_sequent__TOP__top__0((&vlSymsp->TOP__top));
+        Vtop_TCP__F10___stl_sequent__TOP__top__u_tcp__0((&vlSymsp->TOP__top__u_tcp));
         Vtop_payload_FIFO___stl_sequent__TOP__top__u_payload_fifo__0((&vlSymsp->TOP__top__u_payload_fifo));
-        Vtop_TCP___stl_sequent__TOP__top__u_tcp__0((&vlSymsp->TOP__top__u_tcp));
-        Vtop_FIFO_TX___stl_sequent__TOP__top__u_fifo_tx__0((&vlSymsp->TOP__top__u_fifo_tx));
+        Vtop_FIFO_TX__F10___stl_sequent__TOP__top__u_fifo_tx__0((&vlSymsp->TOP__top__u_fifo_tx));
         Vtop_TCP_flow_ctrl___stl_sequent__TOP__top__u_tcp__tcp_flow__0((&vlSymsp->TOP__top__u_tcp__tcp_flow));
         Vtop___024root___stl_sequent__TOP__1(vlSelf);
         Vtop_top___stl_sequent__TOP__top__1((&vlSymsp->TOP__top));
         Vtop_TCP_receiver___stl_sequent__TOP__top__u_tcp__tcp_rcv__0((&vlSymsp->TOP__top__u_tcp__tcp_rcv));
-        Vtop_TCP___stl_sequent__TOP__top__u_tcp__1((&vlSymsp->TOP__top__u_tcp));
+        Vtop_TCP__F10___stl_sequent__TOP__top__u_tcp__1((&vlSymsp->TOP__top__u_tcp));
         Vtop_priority_encoder__Wa___stl_sequent__TOP__top__u_tcp__tcp_flow__me__0((&vlSymsp->TOP__top__u_tcp__tcp_flow__me));
         Vtop_priority_encoder__Wa___stl_sequent__TOP__top__u_tcp__tcp_flow__pe__0((&vlSymsp->TOP__top__u_tcp__tcp_flow__pe));
         Vtop___024root___stl_sequent__TOP__2(vlSelf);
@@ -122,14 +122,14 @@ VL_ATTR_COLD void Vtop___024root___eval_stl(Vtop___024root* vlSelf) {
         Vtop_TCP_flow_ctrl___stl_sequent__TOP__top__u_tcp__tcp_flow__1((&vlSymsp->TOP__top__u_tcp__tcp_flow));
         Vtop_checksum_TCP___stl_sequent__TOP__top__u_tcp__inst__0((&vlSymsp->TOP__top__u_tcp__inst));
         Vtop___024root___stl_sequent__TOP__3(vlSelf);
-        Vtop_TCP___stl_sequent__TOP__top__u_tcp__2((&vlSymsp->TOP__top__u_tcp));
+        Vtop_TCP__F10___stl_sequent__TOP__top__u_tcp__2((&vlSymsp->TOP__top__u_tcp));
         Vtop_top___stl_sequent__TOP__top__3((&vlSymsp->TOP__top));
         Vtop_TCP_tx___stl_sequent__TOP__top__u_tcp__TCP_tx__0((&vlSymsp->TOP__top__u_tcp__TCP_tx));
         Vtop___024root___stl_sequent__TOP__4(vlSelf);
         Vtop_payload_FIFO___stl_sequent__TOP__top__u_payload_fifo__1((&vlSymsp->TOP__top__u_payload_fifo));
-        Vtop_TCP___stl_sequent__TOP__top__u_tcp__3((&vlSymsp->TOP__top__u_tcp));
+        Vtop_TCP__F10___stl_sequent__TOP__top__u_tcp__3((&vlSymsp->TOP__top__u_tcp));
         Vtop_top___stl_sequent__TOP__top__4((&vlSymsp->TOP__top));
-        Vtop_FIFO_TX___stl_sequent__TOP__top__u_fifo_tx__1((&vlSymsp->TOP__top__u_fifo_tx));
+        Vtop_FIFO_TX__F10___stl_sequent__TOP__top__u_fifo_tx__1((&vlSymsp->TOP__top__u_fifo_tx));
     }
 }
 
@@ -139,7 +139,8 @@ VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf) {
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
     vlSelfRef.wr_FIFO_full = vlSymsp->TOP__top.wr_FIFO_full;
-    vlSymsp->TOP__top.TCP_len = vlSelfRef.TCP_len;
+    vlSymsp->TOP__top.tb_count = vlSelfRef.tb_count;
+    vlSymsp->TOP__top.IP_bytes_rcv = vlSelfRef.IP_bytes_rcv;
     vlSymsp->TOP__top.IP_flush = vlSelfRef.IP_flush;
     vlSymsp->TOP__top.nRST = vlSelfRef.nRST;
     vlSymsp->TOP__top.CLK = vlSelfRef.CLK;
@@ -150,10 +151,10 @@ VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf) {
     vlSymsp->TOP__top.axis_last = vlSelfRef.axis_last;
     vlSymsp->TOP__top.TX_en = vlSelfRef.TX_en;
     vlSymsp->TOP__top.TCP_send = vlSelfRef.TCP_send;
+    vlSymsp->TOP__top.TCP_len = vlSelfRef.TCP_len;
     vlSymsp->TOP__top.IP_payload = vlSelfRef.IP_payload;
     vlSymsp->TOP__top.IP_pseuder = vlSelfRef.IP_pseuder;
     vlSymsp->TOP__top.IP_valid = vlSelfRef.IP_valid;
-    vlSymsp->TOP__top.IP_bytes_rcv = vlSelfRef.IP_bytes_rcv;
 }
 
 VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__1(Vtop___024root* vlSelf) {

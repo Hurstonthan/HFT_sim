@@ -99,16 +99,16 @@ VL_ATTR_COLD void Vtop___024root___dump_triggers__act(Vtop___024root* vlSelf) {
         VL_DBG_MSGF("         No triggers active\n");
     }
     if ((1ULL & vlSelfRef.__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 0 is active: @(posedge top.u_fifo_tx.CLK)\n");
+        VL_DBG_MSGF("         'act' region trigger index 0 is active: @(posedge top.u_payload_fifo.CLK)\n");
     }
     if ((2ULL & vlSelfRef.__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 1 is active: @(negedge top.u_fifo_tx.nRST)\n");
+        VL_DBG_MSGF("         'act' region trigger index 1 is active: @(negedge top.u_payload_fifo.nRST)\n");
     }
     if ((4ULL & vlSelfRef.__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 2 is active: @(posedge top.u_payload_fifo.CLK)\n");
+        VL_DBG_MSGF("         'act' region trigger index 2 is active: @(posedge top.u_fifo_tx.CLK)\n");
     }
     if ((8ULL & vlSelfRef.__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 3 is active: @(negedge top.u_payload_fifo.nRST)\n");
+        VL_DBG_MSGF("         'act' region trigger index 3 is active: @(negedge top.u_fifo_tx.nRST)\n");
     }
     if ((0x10ULL & vlSelfRef.__VactTriggered.word(0U))) {
         VL_DBG_MSGF("         'act' region trigger index 4 is active: @(posedge top.u_tcp.ISN_gen.CLK)\n");
@@ -153,16 +153,16 @@ VL_ATTR_COLD void Vtop___024root___dump_triggers__nba(Vtop___024root* vlSelf) {
         VL_DBG_MSGF("         No triggers active\n");
     }
     if ((1ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 0 is active: @(posedge top.u_fifo_tx.CLK)\n");
+        VL_DBG_MSGF("         'nba' region trigger index 0 is active: @(posedge top.u_payload_fifo.CLK)\n");
     }
     if ((2ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 1 is active: @(negedge top.u_fifo_tx.nRST)\n");
+        VL_DBG_MSGF("         'nba' region trigger index 1 is active: @(negedge top.u_payload_fifo.nRST)\n");
     }
     if ((4ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 2 is active: @(posedge top.u_payload_fifo.CLK)\n");
+        VL_DBG_MSGF("         'nba' region trigger index 2 is active: @(posedge top.u_fifo_tx.CLK)\n");
     }
     if ((8ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 3 is active: @(negedge top.u_payload_fifo.nRST)\n");
+        VL_DBG_MSGF("         'nba' region trigger index 3 is active: @(negedge top.u_fifo_tx.nRST)\n");
     }
     if ((0x10ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
         VL_DBG_MSGF("         'nba' region trigger index 4 is active: @(posedge top.u_tcp.ISN_gen.CLK)\n");
@@ -225,6 +225,7 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     const uint64_t __VscopeHash = VL_MURMUR64_HASH(vlSelf->name());
     vlSelf->CLK = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 6192783415628501865ull);
     vlSelf->nRST = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 9596079045119723318ull);
+    vlSelf->tb_count = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 7146430036020323982ull);
     vlSelf->IP_valid = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 10454921636400644467ull);
     vlSelf->IP_flush = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 7370612069209852218ull);
     vlSelf->IP_pseuder = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 2907016794571974014ull);
@@ -246,10 +247,10 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->rcv_next = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 2660982951778821078ull);
     vlSelf->seq_num = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 14348413887918754256ull);
     vlSelf->wr_FIFO_full = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 8793387143990763765ull);
-    vlSelf->__Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__CLK__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 18310885730242049520ull);
-    vlSelf->__Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__nRST__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 15364841867724633747ull);
     vlSelf->__Vtrigprevexpr___TOP__top__u_payload_fifo____PVT__CLK__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 18050482027217391673ull);
     vlSelf->__Vtrigprevexpr___TOP__top__u_payload_fifo____PVT__nRST__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 594765058125291353ull);
+    vlSelf->__Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__CLK__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 18310885730242049520ull);
+    vlSelf->__Vtrigprevexpr___TOP__top__u_fifo_tx____PVT__nRST__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 15364841867724633747ull);
     vlSelf->__Vtrigprevexpr___TOP__top__u_tcp__ISN_gen____PVT__CLK__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 12421716494514774711ull);
     vlSelf->__Vtrigprevexpr___TOP__top__u_tcp__ISN_gen____PVT__nRST__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 18153056319669855442ull);
     vlSelf->__Vtrigprevexpr___TOP__top__u_tcp__inst____PVT__CLK__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 8198558842412147504ull);

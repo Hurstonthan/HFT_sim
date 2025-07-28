@@ -54,10 +54,15 @@ module checksum_TCP #(
         if (clear) begin
             nTCP_checksum = 0;
         end else if (wr_FIFO_en) begin
+            //Calculate checksum
             temp = {3'b0, TCP_checksum[15:0]} + TCP_payload_tx[15:0] + TCP_payload_tx[31:16] + TCP_payload_tx[47:32] + TCP_payload_tx[63:48];
             temp = temp[15:0] + temp[19:16];
             temp = temp[15:0] + temp[16];
+
+            //Store the processing message TCP checksum
             nTCP_checksum = temp[16:0];    
+
+            //Add it with the current processed TCP message
             if (axis_last) begin
                 temp1 = {3'b0, TCP_checksum_send[15:0]} + nTCP_checksum[15:0];
                 temp1 = temp1[15:0] + temp1[19:16];

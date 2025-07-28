@@ -10,133 +10,6 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
-    VL_ASSIGNBIT_II(0U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [0U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [0U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [0U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(1U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [1U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [1U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [1U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(2U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [2U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [2U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [2U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(3U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [3U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [3U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [3U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(4U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [4U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [4U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [4U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(5U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [5U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [5U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [5U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(6U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [6U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [6U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [6U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(7U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [7U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [7U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [7U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(8U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [8U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [8U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [8U], 0x30U, 0x20U)))));
-    VL_ASSIGNBIT_II(9U, vlSelfRef.__PVT__overlap_mask, 
-                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                    [9U], 0x50U) & 
-                     (((vlSelfRef.__PVT__seq_rx_trk 
-                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
-                       < VL_EXTEND_II(32,16, (0xffffU 
-                                              & VL_SEL_IWII(81, 
-                                                            vlSelfRef.__PVT__TCP_order
-                                                            [9U], 0x20U, 0x10U)))) 
-                      & (vlSelfRef.__PVT__seq_rx_trk 
-                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [9U], 0x30U, 0x20U)))));
-}
-
-VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__1(Vtop_TCP_flow_ctrl* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+          Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__1\n"); );
-    Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    auto& vlSelfRef = std::ref(*vlSelf).get();
-    // Body
     vlSelfRef.__PVT__nstate = vlSelfRef.__PVT__state;
     vlSelfRef.__PVT__nack_num = vlSelfRef.__PVT__ack_num;
     vlSelfRef.__PVT__nseq_num = vlSelfRef.__PVT__seq_num;
@@ -296,7 +169,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -323,7 +196,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -493,7 +367,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -520,7 +394,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -690,7 +565,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -717,7 +592,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -887,7 +763,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -914,7 +790,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -1084,7 +961,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -1111,7 +988,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -1281,7 +1159,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -1308,7 +1186,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -1478,7 +1357,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -1505,7 +1384,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -1675,7 +1555,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -1702,7 +1582,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -1872,7 +1753,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -1899,7 +1780,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -2069,7 +1951,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -2096,7 +1978,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -2267,22 +2150,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__
     }
 }
 
-VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__0(Vtop_TCP_flow_ctrl* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+          Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__0\n"); );
-    Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    auto& vlSelfRef = std::ref(*vlSelf).get();
-    // Body
-    VL_WRITEF_NX("[%0t] nRST=%0b  nTCP_order[0].v=%0b  TCP_order[0].v=%0b  debug=%0b\n",0,
-                 64,VL_TIME_UNITED_Q(1000),-9,1,(IData)(vlSelfRef.__PVT__nRST),
-                 1,(1U & VL_BITSEL_IWII(81, vlSelfRef.__PVT__nTCP_order
-                                        [0U], 0x50U)),
-                 1,(1U & VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
-                                        [0U], 0x50U)),
-                 1,(IData)(vlSelfRef.__PVT__debug));
-}
-
-VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__3(Vtop_TCP_flow_ctrl* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+          Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__3\n"); );
+VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__2(Vtop_TCP_flow_ctrl* vlSelf) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+          Vtop_TCP_flow_ctrl___nba_sequent__TOP__top__u_tcp__tcp_flow__2\n"); );
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
@@ -2318,6 +2187,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__0(V
                 vlSelfRef.__PVT__nhand_shake_done = 1U;
             }
         } else if ((3U == (IData)(vlSelfRef.__PVT__state))) {
+            vlSelfRef.__PVT__nhand_shake_done = 0U;
             vlSelfRef.__PVT__seq_num_tx = VL_SEL_IQII(33, vlSelfRef.__PVT__seq_num, 0U, 0x20U);
             VL_ASSIGNBIT_IO(4U, vlSelfRef.__PVT__tx_pkg_type);
             vlSelfRef.__PVT__ACK_tx = vlSelfRef.__PVT__rcv_next;
@@ -2347,6 +2217,126 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__1(V
                                                                 (1U 
                                                                  & VL_BITSEL_IQII(33, vlSelfRef.__PVT__seq_num, 0x20U)))
                                                     : 1U), 0U));
+    VL_ASSIGNBIT_II(0U, vlSelfRef.__PVT__overlap_mask, 
+                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                    [0U], 0x50U) & 
+                     (((vlSelfRef.__PVT__seq_rx_trk 
+                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
+                       < VL_EXTEND_II(32,16, (0xffffU 
+                                              & VL_SEL_IWII(81, 
+                                                            vlSelfRef.__PVT__TCP_order
+                                                            [0U], 0x20U, 0x10U)))) 
+                      & (vlSelfRef.__PVT__seq_rx_trk 
+                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                        [0U], 0x30U, 0x20U)))));
+    VL_ASSIGNBIT_II(1U, vlSelfRef.__PVT__overlap_mask, 
+                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                    [1U], 0x50U) & 
+                     (((vlSelfRef.__PVT__seq_rx_trk 
+                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
+                       < VL_EXTEND_II(32,16, (0xffffU 
+                                              & VL_SEL_IWII(81, 
+                                                            vlSelfRef.__PVT__TCP_order
+                                                            [1U], 0x20U, 0x10U)))) 
+                      & (vlSelfRef.__PVT__seq_rx_trk 
+                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                        [1U], 0x30U, 0x20U)))));
+    VL_ASSIGNBIT_II(2U, vlSelfRef.__PVT__overlap_mask, 
+                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                    [2U], 0x50U) & 
+                     (((vlSelfRef.__PVT__seq_rx_trk 
+                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
+                       < VL_EXTEND_II(32,16, (0xffffU 
+                                              & VL_SEL_IWII(81, 
+                                                            vlSelfRef.__PVT__TCP_order
+                                                            [2U], 0x20U, 0x10U)))) 
+                      & (vlSelfRef.__PVT__seq_rx_trk 
+                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                        [2U], 0x30U, 0x20U)))));
+    VL_ASSIGNBIT_II(3U, vlSelfRef.__PVT__overlap_mask, 
+                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                    [3U], 0x50U) & 
+                     (((vlSelfRef.__PVT__seq_rx_trk 
+                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
+                       < VL_EXTEND_II(32,16, (0xffffU 
+                                              & VL_SEL_IWII(81, 
+                                                            vlSelfRef.__PVT__TCP_order
+                                                            [3U], 0x20U, 0x10U)))) 
+                      & (vlSelfRef.__PVT__seq_rx_trk 
+                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                        [3U], 0x30U, 0x20U)))));
+    VL_ASSIGNBIT_II(4U, vlSelfRef.__PVT__overlap_mask, 
+                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                    [4U], 0x50U) & 
+                     (((vlSelfRef.__PVT__seq_rx_trk 
+                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
+                       < VL_EXTEND_II(32,16, (0xffffU 
+                                              & VL_SEL_IWII(81, 
+                                                            vlSelfRef.__PVT__TCP_order
+                                                            [4U], 0x20U, 0x10U)))) 
+                      & (vlSelfRef.__PVT__seq_rx_trk 
+                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                        [4U], 0x30U, 0x20U)))));
+    VL_ASSIGNBIT_II(5U, vlSelfRef.__PVT__overlap_mask, 
+                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                    [5U], 0x50U) & 
+                     (((vlSelfRef.__PVT__seq_rx_trk 
+                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
+                       < VL_EXTEND_II(32,16, (0xffffU 
+                                              & VL_SEL_IWII(81, 
+                                                            vlSelfRef.__PVT__TCP_order
+                                                            [5U], 0x20U, 0x10U)))) 
+                      & (vlSelfRef.__PVT__seq_rx_trk 
+                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                        [5U], 0x30U, 0x20U)))));
+    VL_ASSIGNBIT_II(6U, vlSelfRef.__PVT__overlap_mask, 
+                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                    [6U], 0x50U) & 
+                     (((vlSelfRef.__PVT__seq_rx_trk 
+                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
+                       < VL_EXTEND_II(32,16, (0xffffU 
+                                              & VL_SEL_IWII(81, 
+                                                            vlSelfRef.__PVT__TCP_order
+                                                            [6U], 0x20U, 0x10U)))) 
+                      & (vlSelfRef.__PVT__seq_rx_trk 
+                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                        [6U], 0x30U, 0x20U)))));
+    VL_ASSIGNBIT_II(7U, vlSelfRef.__PVT__overlap_mask, 
+                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                    [7U], 0x50U) & 
+                     (((vlSelfRef.__PVT__seq_rx_trk 
+                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
+                       < VL_EXTEND_II(32,16, (0xffffU 
+                                              & VL_SEL_IWII(81, 
+                                                            vlSelfRef.__PVT__TCP_order
+                                                            [7U], 0x20U, 0x10U)))) 
+                      & (vlSelfRef.__PVT__seq_rx_trk 
+                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                        [7U], 0x30U, 0x20U)))));
+    VL_ASSIGNBIT_II(8U, vlSelfRef.__PVT__overlap_mask, 
+                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                    [8U], 0x50U) & 
+                     (((vlSelfRef.__PVT__seq_rx_trk 
+                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
+                       < VL_EXTEND_II(32,16, (0xffffU 
+                                              & VL_SEL_IWII(81, 
+                                                            vlSelfRef.__PVT__TCP_order
+                                                            [8U], 0x20U, 0x10U)))) 
+                      & (vlSelfRef.__PVT__seq_rx_trk 
+                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                        [8U], 0x30U, 0x20U)))));
+    VL_ASSIGNBIT_II(9U, vlSelfRef.__PVT__overlap_mask, 
+                    (VL_BITSEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                    [9U], 0x50U) & 
+                     (((vlSelfRef.__PVT__seq_rx_trk 
+                        + VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__TCP_bytes_trk))) 
+                       < VL_EXTEND_II(32,16, (0xffffU 
+                                              & VL_SEL_IWII(81, 
+                                                            vlSelfRef.__PVT__TCP_order
+                                                            [9U], 0x20U, 0x10U)))) 
+                      & (vlSelfRef.__PVT__seq_rx_trk 
+                         >= VL_SEL_IWII(81, vlSelfRef.__PVT__TCP_order
+                                        [9U], 0x30U, 0x20U)))));
 }
 
 VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__2(Vtop_TCP_flow_ctrl* vlSelf) {
@@ -2526,7 +2516,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -2553,7 +2543,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -2723,7 +2714,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -2750,7 +2741,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -2920,7 +2912,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -2947,7 +2939,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -3117,7 +3110,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -3144,7 +3137,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -3314,7 +3308,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -3341,7 +3335,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -3511,7 +3506,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -3538,7 +3533,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -3708,7 +3704,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -3735,7 +3731,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -3905,7 +3902,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -3932,7 +3929,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -4102,7 +4100,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -4129,7 +4127,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);
@@ -4299,7 +4298,7 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,8, 0xffU, (IData)(vlSelfRef.__PVT__bytes_drop)));
         } else if ((1U & (~ VL_REDOR_I((IData)(vlSelfRef.__PVT__overlap_mask))))) {
-            vlSelfRef.__PVT__case_bug = 0U;
+            vlSelfRef.__PVT__case_bug = 2U;
             vlSelfRef.__PVT__wr_FIFO_offset = (0xffU 
                                                & VL_SHIFTR_III(8,8,32, 0xffU, 
                                                                ((IData)(8U) 
@@ -4326,7 +4325,8 @@ VL_INLINE_OPT void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(V
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e26581__1);
                 }
                 vlSelfRef.__Vlvbound_hd6e8a1ae__1 = 
-                    VL_EXTEND_II(16,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len));
+                    (0xffffU & ((IData)(1U) + VL_SEL_IIII(32, 
+                                                          VL_EXTEND_II(32,8, (IData)(vlSelfRef.__PVT__wr_FIFO_len)), 0U, 0x10U)));
                 if (VL_LIKELY(((9U >= (IData)(vlSelfRef.__PVT__free_idx))))) {
                     VL_ASSIGNSEL_WI(81,16,0U, vlSelfRef.__PVT__nTCP_order
                                     [vlSelfRef.__PVT__free_idx], vlSelfRef.__Vlvbound_hd6e8a1ae__1);

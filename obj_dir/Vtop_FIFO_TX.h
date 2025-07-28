@@ -28,8 +28,8 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop_FIFO_TX final : public VerilatedModule {
         VL_IN8(__PVT__out_order_req,0,0);
         VL_OUT8(__PVT__TCP_stop_flag,0,0);
         VL_OUT8(__PVT__end_ss,0,0);
-        VL_IN8(__PVT__axis_last,0,0);
         VL_IN8(__PVT__wr_FIFO_en,0,0);
+        VL_IN8(__PVT__axis_last,0,0);
         VL_OUT8(__PVT__wr_FIFO_valid,0,0);
         VL_OUT8(__PVT__re_trans,0,0);
         CData/*3:0*/ __PVT__ptr_str;
@@ -126,6 +126,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop_FIFO_TX final : public VerilatedModule {
         QData/*63:0*/ __Vdly__rd_FIFO_payload;
         VlWide<20>/*639:0*/ __Vdly__TCP_tx_order;
     };
+    std::string __PVT__test_case;
 
     // INTERNAL VARIABLES
     Vtop__Syms* const vlSymsp;

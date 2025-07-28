@@ -25,6 +25,7 @@ VL_ATTR_COLD void Vtop_TCP_receiver___stl_sequent__TOP__top__u_tcp__tcp_rcv__0(V
     vlSelfRef.__PVT__nTCP_last = vlSelfRef.__PVT__TCP_last;
     vlSelfRef.__PVT__nstate = vlSelfRef.__PVT__state;
     vlSelfRef.__PVT__nbytes_trk = 0U;
+    vlSelfRef.__PVT__nbytes_rcv = vlSelfRef.__PVT__bytes_rcv;
     vlSelfRef.__PVT__nTCP_checksum = vlSelfRef.__PVT__TCP_checksum;
     vlSelfRef.__PVT__nTCP_len_data = vlSelfRef.__PVT__TCP_len_data;
     vlSelfRef.__PVT__nTCP_payload_rx = vlSelfRef.__PVT__TCP_payload_rx;
@@ -156,16 +157,23 @@ VL_ATTR_COLD void Vtop_TCP_receiver___stl_sequent__TOP__top__u_tcp__tcp_rcv__0(V
         vlSelfRef.__PVT__temp = __Vtemp_6;
         vlSelfRef.__PVT__nTCP_checksum = (0x1ffffU 
                                           & VL_SEL_IIII(20, vlSelfRef.__PVT__temp, 0U, 0x11U));
-        vlSelfRef.__PVT__nbytes_trk = (0xffffU & ((IData)(2U) 
-                                                  + (IData)(vlSelfRef.__PVT__bytes_trk)));
-        vlSelfRef.__PVT__nstate = 3U;
-        vlSelfRef.__PVT__nTCP_valid = 1U;
-        vlSelfRef.__PVT__n_nw_segment = 1U;
-        vlSelfRef.__PVT__nTCP_payload_rx = VL_EXTEND_QI(64,16, 
-                                                        (0xffffU 
-                                                         & VL_SEL_IQII(64, vlSelfRef.__PVT__IP_payload_rx, 0U, 0x10U)));
+        if (VL_REDOR_I((IData)(vlSelfRef.__PVT__TCP_len))) {
+            vlSelfRef.__PVT__nbytes_trk = (0xffffU 
+                                           & ((IData)(2U) 
+                                              + (IData)(vlSelfRef.__PVT__bytes_trk)));
+            vlSelfRef.__PVT__nTCP_valid = 1U;
+            vlSelfRef.__PVT__n_nw_segment = 1U;
+            vlSelfRef.__PVT__nbytes_rcv = 2U;
+            vlSelfRef.__PVT__nTCP_payload_rx = VL_EXTEND_QI(64,16, 
+                                                            (0xffffU 
+                                                             & VL_SEL_IQII(64, vlSelfRef.__PVT__IP_payload_rx, 0U, 0x10U)));
+            vlSelfRef.__PVT__nstate = 3U;
+        } else {
+            vlSelfRef.__PVT__nstate = 4U;
+        }
     } else if ((3U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__n_nw_segment = 1U;
+        vlSelfRef.__PVT__nbytes_rcv = 8U;
         vlSelfRef.__PVT__nbytes_trk = (0xffffU & ((IData)(8U) 
                                                   + (IData)(vlSelfRef.__PVT__bytes_trk)));
         vlSelfRef.__PVT__temp = (0xfffffU & ((((VL_EXTEND_II(20,16, 
@@ -213,11 +221,12 @@ VL_ATTR_COLD void Vtop_TCP_receiver___stl_sequent__TOP__top__u_tcp__tcp_rcv__0(V
                                                  - (IData)(vlSelfRef.__PVT__TCP_len_data))));
             vlSelfRef.__PVT__nTCP_valid = 0U;
             vlSelfRef.__PVT__nTCP_last = 1U;
-            vlSelfRef.__PVT__nTCP_checksum = vlSelfRef.__PVT__TCP_checksum;
+            vlSelfRef.__PVT__n_nw_segment = 1U;
             vlSelfRef.__PVT__nstate = 4U;
         }
     } else if ((4U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__n_nw_segment = 0U;
+        vlSelfRef.__PVT__nTCP_last = 0U;
         vlSelfRef.__PVT__TCP_checksum_comp = (0xffffU 
                                               & (~ 
                                                  VL_SEL_IIII(17, vlSelfRef.__PVT__TCP_checksum, 0U, 0x10U)));
@@ -225,6 +234,7 @@ VL_ATTR_COLD void Vtop_TCP_receiver___stl_sequent__TOP__top__u_tcp__tcp_rcv__0(V
              == (IData)(vlSelfRef.__PVT__checksum_rx))) {
             vlSelfRef.__PVT__nrcv_data = 1U;
             vlSelfRef.__PVT__nstate = 0U;
+            vlSelfRef.__PVT__nTCP_checksum = 0U;
         } else {
             vlSelfRef.__PVT__nstate = 5U;
         }
@@ -257,6 +267,7 @@ VL_ATTR_COLD void Vtop_TCP_receiver___ctor_var_reset(Vtop_TCP_receiver* vlSelf) 
     vlSelf->__PVT__window_size_rx = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 14451436454142830211ull);
     vlSelf->__PVT__checksum_rx = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 14844497424139250528ull);
     vlSelf->__PVT__urgent_pointer_rx = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 6361226637399478120ull);
+    vlSelf->__PVT__bytes_rcv = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 2549967790072508984ull);
     vlSelf->__PVT__TCP_len_data = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 11129810575715508051ull);
     vlSelf->__PVT__TCP_payload_rx = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 13228787321670785686ull);
     vlSelf->__PVT__TCP_valid = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 336136379442184794ull);
@@ -287,6 +298,7 @@ VL_ATTR_COLD void Vtop_TCP_receiver___ctor_var_reset(Vtop_TCP_receiver* vlSelf) 
     vlSelf->__PVT__nchecksum_en = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 4078147439893029705ull);
     vlSelf->__PVT__n_nw_segment = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 17666894321009562079ull);
     vlSelf->__PVT__nTCP_last = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 14837080824837578812ull);
+    vlSelf->__PVT__nbytes_rcv = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 17573847664257856799ull);
     vlSelf->__PVT__state = VL_SCOPED_RAND_RESET_I(3, __VscopeHash, 9404372463396948974ull);
     vlSelf->__PVT__nstate = VL_SCOPED_RAND_RESET_I(3, __VscopeHash, 14473519320944010295ull);
     vlSelf->__Vdly__state = VL_SCOPED_RAND_RESET_I(3, __VscopeHash, 15137669457351727936ull);
@@ -305,4 +317,5 @@ VL_ATTR_COLD void Vtop_TCP_receiver___ctor_var_reset(Vtop_TCP_receiver* vlSelf) 
     vlSelf->__Vdly__bytes_trk = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 272412948362273383ull);
     vlSelf->__Vdly__nw_segment = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 14693189014841899836ull);
     vlSelf->__Vdly__TCP_last = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 876204848910885051ull);
+    vlSelf->__Vdly__bytes_rcv = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 10579155383431852311ull);
 }

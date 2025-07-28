@@ -9,6 +9,9 @@ VL_INLINE_OPT void Vtop_TCP_tx___ico_sequent__TOP__top__u_tcp__TCP_tx__0(Vtop_TC
     VL_DEBUG_IF(VL_DBG_MSGF("+          Vtop_TCP_tx___ico_sequent__TOP__top__u_tcp__TCP_tx__0\n"); );
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
+    // Init
+    IData/*31:0*/ __Vtemp_1;
+    IData/*31:0*/ __Vtemp_2;
     // Body
     vlSelfRef.__PVT__nstate = vlSelfRef.__PVT__state;
     vlSelfRef.__PVT__nTCP_transmit = vlSelfRef.__PVT__TCP_transmit;
@@ -80,35 +83,50 @@ VL_INLINE_OPT void Vtop_TCP_tx___ico_sequent__TOP__top__u_tcp__TCP_tx__0(Vtop_TC
     }
     vlSelfRef.__PVT__nTCP_checksum = vlSelfRef.__PVT__TCP_checksum;
     if (vlSelfRef.__PVT__valid_checksum) {
-        vlSelfRef.__PVT__nTCP_checksum = (0x1ffffU 
-                                          & ((IData)(0xec42U) 
+        vlSelfRef.__PVT__temp = (0xfffffU & ((IData)(0xec42U) 
                                              + ((((
-                                                   (((VL_EXTEND_II(17,16, 
+                                                   (((VL_EXTEND_II(20,16, 
                                                                    (0xffffU 
                                                                     & VL_SEL_IIII(32, vlSelfRef.__PVT__bytes_abt_sent, 0U, 0x10U))) 
                                                       + 
-                                                      VL_EXTEND_II(17,16, 
+                                                      VL_EXTEND_II(20,16, 
                                                                    (0xffffU 
                                                                     & VL_SEL_IIII(32, vlSelfRef.__PVT__seq_num_tx, 0x10U, 0x10U)))) 
                                                      + 
-                                                     VL_EXTEND_II(17,16, 
+                                                     VL_EXTEND_II(20,16, 
                                                                   (0xffffU 
                                                                    & VL_SEL_IIII(32, vlSelfRef.__PVT__seq_num_tx, 0U, 0x10U)))) 
                                                     + 
-                                                    VL_EXTEND_II(17,16, 
+                                                    VL_EXTEND_II(20,16, 
                                                                  (0xffffU 
                                                                   & VL_SEL_IIII(32, vlSelfRef.__PVT__ACK_tx, 0x10U, 0x10U)))) 
                                                    + 
-                                                   VL_EXTEND_II(17,16, 
+                                                   VL_EXTEND_II(20,16, 
                                                                 (0xffffU 
                                                                  & VL_SEL_IIII(32, vlSelfRef.__PVT__ACK_tx, 0U, 0x10U)))) 
                                                   + 
-                                                  VL_EXTEND_II(17,16, 
+                                                  VL_EXTEND_II(20,16, 
                                                                VL_CONCAT_III(16,4,12, (IData)(vlSelfRef.__PVT__offset_tx), 
                                                                              VL_EXTEND_II(12,8, (IData)(vlSelfRef.__PVT__TCP_control_tx))))) 
                                                  + 
-                                                 VL_EXTEND_II(17,16, (IData)(vlSelfRef.__PVT__urgent_pointer_tx))) 
-                                                + VL_EXTEND_II(17,16, (IData)(vlSelfRef.__PVT__TCP_basesum_payload)))));
+                                                 VL_EXTEND_II(20,16, (IData)(vlSelfRef.__PVT__urgent_pointer_tx))) 
+                                                + VL_EXTEND_II(20,16, (IData)(vlSelfRef.__PVT__TCP_basesum_payload)))));
+        __Vtemp_1 = (0xfffffU & (VL_EXTEND_II(20,16, 
+                                              (0xffffU 
+                                               & VL_SEL_IIII(20, vlSelfRef.__PVT__temp, 0U, 0x10U))) 
+                                 + VL_EXTEND_II(20,4, 
+                                                (0xfU 
+                                                 & VL_SEL_IIII(20, vlSelfRef.__PVT__temp, 0x10U, 4U)))));
+        vlSelfRef.__PVT__temp = __Vtemp_1;
+        __Vtemp_2 = (0xfffffU & (VL_EXTEND_II(20,16, 
+                                              (0xffffU 
+                                               & VL_SEL_IIII(20, vlSelfRef.__PVT__temp, 0U, 0x10U))) 
+                                 + VL_EXTEND_II(20,1, 
+                                                (1U 
+                                                 & VL_BITSEL_IIII(20, vlSelfRef.__PVT__temp, 0x10U)))));
+        vlSelfRef.__PVT__temp = __Vtemp_2;
+        vlSelfRef.__PVT__nTCP_checksum = (0x1ffffU 
+                                          & VL_SEL_IIII(20, vlSelfRef.__PVT__temp, 0U, 0x11U));
     }
 }
 
@@ -133,14 +151,7 @@ VL_INLINE_OPT void Vtop_TCP_tx___nba_sequent__TOP__top__u_tcp__TCP_tx__0(Vtop_TC
         vlSelfRef.__Vdly__seq_up = vlSelfRef.__PVT__nseq_up;
         vlSelfRef.__Vdly__TCP_checksum = (0x1ffffU 
                                           & ((IData)(vlSelfRef.__PVT__valid_checksum)
-                                              ? (~ 
-                                                 (VL_EXTEND_II(17,16, 
-                                                               (0xffffU 
-                                                                & VL_SEL_IIII(17, vlSelfRef.__PVT__nTCP_checksum, 0U, 0x10U))) 
-                                                  + 
-                                                  VL_EXTEND_II(17,1, 
-                                                               (1U 
-                                                                & VL_BITSEL_IIII(17, vlSelfRef.__PVT__nTCP_checksum, 0x10U)))))
+                                              ? (~ vlSelfRef.__PVT__nTCP_checksum)
                                               : vlSelfRef.__PVT__nTCP_checksum));
     } else {
         vlSelfRef.__Vdly__state = 0U;
@@ -239,37 +250,55 @@ VL_INLINE_OPT void Vtop_TCP_tx___nba_comb__TOP__top__u_tcp__TCP_tx__1(Vtop_TCP_t
     VL_DEBUG_IF(VL_DBG_MSGF("+          Vtop_TCP_tx___nba_comb__TOP__top__u_tcp__TCP_tx__1\n"); );
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
+    // Init
+    IData/*31:0*/ __Vtemp_1;
+    IData/*31:0*/ __Vtemp_2;
     // Body
     vlSelfRef.__PVT__nTCP_checksum = vlSelfRef.__PVT__TCP_checksum;
     if (vlSelfRef.__PVT__valid_checksum) {
-        vlSelfRef.__PVT__nTCP_checksum = (0x1ffffU 
-                                          & ((IData)(0xec42U) 
+        vlSelfRef.__PVT__temp = (0xfffffU & ((IData)(0xec42U) 
                                              + ((((
-                                                   (((VL_EXTEND_II(17,16, 
+                                                   (((VL_EXTEND_II(20,16, 
                                                                    (0xffffU 
                                                                     & VL_SEL_IIII(32, vlSelfRef.__PVT__bytes_abt_sent, 0U, 0x10U))) 
                                                       + 
-                                                      VL_EXTEND_II(17,16, 
+                                                      VL_EXTEND_II(20,16, 
                                                                    (0xffffU 
                                                                     & VL_SEL_IIII(32, vlSelfRef.__PVT__seq_num_tx, 0x10U, 0x10U)))) 
                                                      + 
-                                                     VL_EXTEND_II(17,16, 
+                                                     VL_EXTEND_II(20,16, 
                                                                   (0xffffU 
                                                                    & VL_SEL_IIII(32, vlSelfRef.__PVT__seq_num_tx, 0U, 0x10U)))) 
                                                     + 
-                                                    VL_EXTEND_II(17,16, 
+                                                    VL_EXTEND_II(20,16, 
                                                                  (0xffffU 
                                                                   & VL_SEL_IIII(32, vlSelfRef.__PVT__ACK_tx, 0x10U, 0x10U)))) 
                                                    + 
-                                                   VL_EXTEND_II(17,16, 
+                                                   VL_EXTEND_II(20,16, 
                                                                 (0xffffU 
                                                                  & VL_SEL_IIII(32, vlSelfRef.__PVT__ACK_tx, 0U, 0x10U)))) 
                                                   + 
-                                                  VL_EXTEND_II(17,16, 
+                                                  VL_EXTEND_II(20,16, 
                                                                VL_CONCAT_III(16,4,12, (IData)(vlSelfRef.__PVT__offset_tx), 
                                                                              VL_EXTEND_II(12,8, (IData)(vlSelfRef.__PVT__TCP_control_tx))))) 
                                                  + 
-                                                 VL_EXTEND_II(17,16, (IData)(vlSelfRef.__PVT__urgent_pointer_tx))) 
-                                                + VL_EXTEND_II(17,16, (IData)(vlSelfRef.__PVT__TCP_basesum_payload)))));
+                                                 VL_EXTEND_II(20,16, (IData)(vlSelfRef.__PVT__urgent_pointer_tx))) 
+                                                + VL_EXTEND_II(20,16, (IData)(vlSelfRef.__PVT__TCP_basesum_payload)))));
+        __Vtemp_1 = (0xfffffU & (VL_EXTEND_II(20,16, 
+                                              (0xffffU 
+                                               & VL_SEL_IIII(20, vlSelfRef.__PVT__temp, 0U, 0x10U))) 
+                                 + VL_EXTEND_II(20,4, 
+                                                (0xfU 
+                                                 & VL_SEL_IIII(20, vlSelfRef.__PVT__temp, 0x10U, 4U)))));
+        vlSelfRef.__PVT__temp = __Vtemp_1;
+        __Vtemp_2 = (0xfffffU & (VL_EXTEND_II(20,16, 
+                                              (0xffffU 
+                                               & VL_SEL_IIII(20, vlSelfRef.__PVT__temp, 0U, 0x10U))) 
+                                 + VL_EXTEND_II(20,1, 
+                                                (1U 
+                                                 & VL_BITSEL_IIII(20, vlSelfRef.__PVT__temp, 0x10U)))));
+        vlSelfRef.__PVT__temp = __Vtemp_2;
+        vlSelfRef.__PVT__nTCP_checksum = (0x1ffffU 
+                                          & VL_SEL_IIII(20, vlSelfRef.__PVT__temp, 0U, 0x11U));
     }
 }

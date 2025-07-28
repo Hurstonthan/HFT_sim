@@ -60,6 +60,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop_TCP final : public VerilatedModule {
         VL_IN8(__PVT__wr_axis_last,0,0);
         CData/*0:0*/ __PVT__rcv_data;
         CData/*7:0*/ __PVT__TCP_control_rx;
+        CData/*7:0*/ __PVT__bytes_rcv;
         CData/*3:0*/ __PVT__offset_rx;
         CData/*0:0*/ __PVT__seq_up;
         CData/*7:0*/ __PVT__TCP_control_tx;
@@ -67,8 +68,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop_TCP final : public VerilatedModule {
         CData/*7:0*/ __Vcellout__tcp_flow__rd_FIFO_len;
         CData/*7:0*/ __Vcellinp__tcp_flow__wr_FIFO_len;
         CData/*0:0*/ __PVT__timeout_flag;
-        CData/*0:0*/ __PVT__seq_rcv_str;
-        CData/*0:0*/ __PVT__wr_FIFO_ptr_out;
         CData/*0:0*/ __PVT__rd_FIFO_valid;
         VL_IN16(__PVT__IP_pseuder,15,0);
         VL_IN16(__PVT__TCP_len,15,0);
@@ -87,6 +86,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop_TCP final : public VerilatedModule {
         VL_OUT(__PVT__seq_rcv_start,31,0);
         VL_IN(__PVT__seq_rx_FIFO_rd,31,0);
         VL_OUT(__PVT__ACK_num,31,0);
+        VL_OUT(__PVT__seq_num_tx_out,31,0);
         VL_OUT(__PVT__rcv_next,31,0);
         VL_OUT(__PVT__seq_num,31,0);
         IData/*31:0*/ __PVT__seq_num_rx;
@@ -99,7 +99,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop_TCP final : public VerilatedModule {
         IData/*31:0*/ __PVT__bytes_sent;
         IData/*31:0*/ __Vcellinp__tcp_flow__payload_len_rx;
         IData/*31:0*/ __Vcellinp__tcp_flow__bytes_abt_sent;
-        IData/*31:0*/ __Vcellout__tcp_flow__seq_rcv_str;
         IData/*31:0*/ __Vcellinp__TCP_tx__bytes_abt_sent;
         VL_IN64(__PVT__IP_payload,63,0);
         VL_OUT64(__PVT__axis_data_rx,63,0);

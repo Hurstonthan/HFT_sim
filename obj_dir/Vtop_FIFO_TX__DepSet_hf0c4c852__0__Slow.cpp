@@ -65,10 +65,15 @@ VL_ATTR_COLD void Vtop_FIFO_TX___stl_sequent__TOP__top__u_fifo_tx__1(Vtop_FIFO_T
         vlSelfRef.__PVT__nrd_FIFO_last = 1U;
         if (vlSelfRef.__PVT__hand_shake_done) {
             vlSelfRef.__PVT__nrd_state = 1U;
+            vlSelfRef.__PVT__nrd_FIFO_last = 1U;
         }
     } else if ((1U == (IData)(vlSelfRef.__PVT__rd_state))) {
-        vlSelfRef.__PVT__nbytes_abt_sent = 0U;
+        vlSelfRef.__PVT__nbytes_abt_sent = vlSelfRef.__PVT__bytes_abt_sent;
         vlSelfRef.__PVT__nchecksum_l = 0U;
+        vlSelfRef.__PVT__nrd_FIFO_valid = 0U;
+        vlSelfRef.__PVT__nrd_FIFO_last = 0U;
+        vlSelfRef.__PVT__nrd_upd = 0U;
+        vlSelfRef.__PVT__test_case = std::string{"Handshake done"};
         if (vlSelfRef.__PVT__TX_en) {
             if (vlSelfRef.__PVT__out_order_req_l) {
                 vlSelfRef.__PVT__nrd_state = 3U;
@@ -164,9 +169,8 @@ VL_ATTR_COLD void Vtop_FIFO_TX___stl_sequent__TOP__top__u_fifo_tx__1(Vtop_FIFO_T
         if ((((IData)(vlSelfRef.__PVT__rd_FIFO_en) 
               & (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr)) 
                  != (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr)) 
-                     - (IData)(1U)))) & (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)) 
-                                         != (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__msg_end_ptr)) 
-                                             - (IData)(1U))))) {
+                     - (IData)(1U)))) & ((IData)(vlSelfRef.__PVT__rd_ptr) 
+                                         != (IData)(vlSelfRef.__PVT__msg_end_ptr)))) {
             vlSelfRef.__PVT__nrd_FIFO_valid = 1U;
             vlSelfRef.__PVT__nrd_ptr = (0xfU & ((IData)(1U) 
                                                 + (IData)(vlSelfRef.__PVT__rd_ptr)));
@@ -183,7 +187,9 @@ VL_ATTR_COLD void Vtop_FIFO_TX___stl_sequent__TOP__top__u_fifo_tx__1(Vtop_FIFO_T
                                                                             VL_SHIFTL_III(32,32,32, 
                                                                                 VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)), 6U), 0U, 0xaU)), 0x40U)
                                                   : 0ULL);
-            if (((IData)(vlSelfRef.__PVT__rd_ptr) == (IData)(vlSelfRef.__PVT__ptr_end))) {
+            if ((VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)) 
+                 == (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_end)) 
+                     - (IData)(1U)))) {
                 vlSelfRef.__Vlvbound_hb8fa291e__0 = 1U;
                 if (VL_LIKELY(((0x58fU >= ((IData)(0x58U) 
                                            + VL_EXTEND_II(32,11, 
@@ -449,8 +455,8 @@ VL_ATTR_COLD void Vtop_FIFO_TX___ctor_var_reset(Vtop_FIFO_TX* vlSelf) {
     vlSelf->__PVT__out_order_req = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 9025304112997670359ull);
     vlSelf->__PVT__TCP_stop_flag = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 10812039392004460878ull);
     vlSelf->__PVT__end_ss = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 9419734627887829661ull);
-    vlSelf->__PVT__axis_last = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 10901583754854957544ull);
     vlSelf->__PVT__wr_FIFO_en = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 11327851442339175407ull);
+    vlSelf->__PVT__axis_last = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 10901583754854957544ull);
     vlSelf->__PVT__len_seq = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 9067084145827924886ull);
     vlSelf->__PVT__soupbin_TCP_payload = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 18175650338536413172ull);
     vlSelf->__PVT__wr_FIFO_valid = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 6692967410572391745ull);

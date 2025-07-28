@@ -2,7 +2,7 @@
 `include "ether_pkg.vh"
 
 module payload_FIFO #(
-    parameter int FIFO_DEPTH  = 10,               // words  (must be power‑of‑2)
+    parameter int FIFO_DEPTH  = 16,               // words  (must be power‑of‑2)
     parameter int DATA_WIDTH  = 64,
     parameter int CTRL_WIDTH = 8,
     localparam int WORD_BYTES = DATA_WIDTH / 8,
@@ -57,7 +57,7 @@ module payload_FIFO #(
 
     logic [FIFO_WIDTH - 1:0] flush_ptr, nflush_ptr;
     logic [FIFO_WIDTH - 1:0] len_TCP_flush, nlen_TCP_flush;
-    logic [FIFO_WIDTH - 1: 0] rd_len_ptr;
+    logic [FIFO_WIDTH - 1: 0] rd_len_ptr, nrd_len_ptr;
     logic [31:0] seq_trk_rd, nseq_trk_rd;
     logic [3:0] bytes_len;
     logic rd_FIFO_valid_l, nrd_FIFO_valid_l;
@@ -65,20 +65,18 @@ module payload_FIFO #(
     logic TCP_flush_l, nTCP_flush_l;
 
     //debugging the FIFO
-    logic [DATA_WIDTH - 1: 0]payload1, payload2, payload3, payload4, payload5;
-    logic [CTRL_WIDTH - 1: 0] bytes_offset1, bytes_offset2, bytes_offset3, bytes_offset4, bytes_offset5;
+    logic [DATA_WIDTH-1:0] payload      [FIFO_DEPTH];   // payload[0]..payload[4]
+    logic [CTRL_WIDTH-1:0] bytes_offset [FIFO_DEPTH];   // bytes_offset[0]..bytes_offset[4]
 
-    assign payload1 = TCP_FIFO[0].payload;
-    assign payload2 = TCP_FIFO[1].payload;
-    assign payload3 = TCP_FIFO[2].payload;
-    assign payload4 = TCP_FIFO[3].payload;
-    assign payload5 = TCP_FIFO[4].payload;
-    assign bytes_offset1 = TCP_FIFO[0].bytes_offset;
-    assign bytes_offset2 = TCP_FIFO[1].bytes_offset;
-    assign bytes_offset3 = TCP_FIFO[2].bytes_offset;
-    assign bytes_offset4 = TCP_FIFO[3].bytes_offset;
-    assign bytes_offset5 = TCP_FIFO[4].bytes_offset;
-    assign bytes_len = wr_FIFO_offset[7] + wr_FIFO_offset[6] + wr_FIFO_offset[5] + wr_FIFO_offset[4] + wr_FIFO_offset[3] + wr_FIFO_offset[2] + wr_FIFO_offset[1] + wr_FIFO_offset[0]; 
+
+    for (genvar i = 0; i < FIFO_DEPTH; i++) begin
+        assign payload[i] = TCP_FIFO[i].payload;
+        assign bytes_offset[i] = TCP_FIFO[i].bytes_offset;
+    end
+
+    
+    // assign bytes_len = wr_FIFO_offset[7] + wr_FIFO_offset[6] + wr_FIFO_offset[5] + wr_FIFO_offset[4] + wr_FIFO_offset[3] + wr_FIFO_offset[2] + wr_FIFO_offset[1] + wr_FIFO_offset[0]; 
+    assign bytes_len = TCP_FIFO[rd_ptr].bytes_offset[0] + TCP_FIFO[rd_ptr].bytes_offset[1] + TCP_FIFO[rd_ptr].bytes_offset[2] +TCP_FIFO[rd_ptr].bytes_offset[3] +TCP_FIFO[rd_ptr].bytes_offset[4] +TCP_FIFO[rd_ptr].bytes_offset[5] +TCP_FIFO[rd_ptr].bytes_offset[6] +TCP_FIFO[rd_ptr].bytes_offset[7]; 
 
     assign full = ((rd_ptr - 1) == wr_ptr_out);
 
@@ -98,6 +96,7 @@ module payload_FIFO #(
             rd_ptr <= 0;
             flush_ptr <= 0;
             rd_FIFO_en <= 0;
+            rd_FIFO_valid_l <= 0;
             seq_trk_rd <= 0;
             rd_len_ptr <= 0;
             len_TCP_flush <= 0;
@@ -114,6 +113,8 @@ module payload_FIFO #(
             wr_ptr <= nwr_ptr;
             rd_ptr <= nrd_ptr;
             rd_FIFO_en <= axis_r_en;
+            rd_FIFO_valid_l <= nrd_FIFO_valid_l;
+            rd_len_ptr <= nrd_len_ptr;
             seq_rx_FIFO_rd <= seq_trk_rd;
             flush_ptr <= nflush_ptr;
             len_TCP_flush <= nlen_TCP_flush;
@@ -156,6 +157,7 @@ module payload_FIFO #(
         nTCP_flush_l = TCP_flush_l;
         nseq_trk_rd = seq_trk_rd;
         nrd_FIFO_valid_l = rd_FIFO_valid_l;
+        nrd_len_ptr = rd_len_ptr;
         naxis_r_valid = axis_r_valid;
         
         
@@ -181,7 +183,8 @@ module payload_FIFO #(
 
         if (rd_FIFO_valid) begin
             nrd_FIFO_valid_l = 1'b1;
-        end else if (rd_ptr == rd_FIFO_len) begin
+            nrd_len_ptr = rd_FIFO_len;
+        end else if (rd_ptr == rd_len_ptr) begin
             nrd_FIFO_valid_l = 1'b0;
         end
 

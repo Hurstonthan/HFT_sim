@@ -271,10 +271,10 @@ module TCP_flow_ctrl #(
     end 
     
 
-    always_ff @(posedge CLK) begin
-        $display("[%0t] nRST=%0b  nTCP_order[0].v=%0b  TCP_order[0].v=%0b  debug=%0b",
-             $time, nRST, nTCP_order[0].v, TCP_order[0].v, debug);
-    end
+    // always_ff @(posedge CLK) begin
+    //     $display("[%0t] nRST=%0b  nTCP_order[0].v=%0b  TCP_order[0].v=%0b  debug=%0b",
+    //          $time, nRST, nTCP_order[0].v, TCP_order[0].v, debug);
+    // end
 
     always_comb begin //NEXT_STAGE logic
         nstate = state;
@@ -358,15 +358,15 @@ module TCP_flow_ctrl #(
 
                 //Case 4: Non overlap
                 else if (!(|overlap_mask)) begin
-                    case_bug = non_overlap;
+                    case_bug = right_trim;
                     // wr_FIFO_en = 1'b1;
                     wr_FIFO_offset = 8'hFF >> (8 - TCP_bytes_trk);
-                    if (free_mask && TCP_last) begin
-                        
+                    if (free_mask && TCP_last) begin 
+                        // case_bug = right_trim;
                         nTCP_order[free_idx].seq_num = seq_num_rx;
                         nTCP_order[free_idx].seq_length = seq_rx_trk + TCP_bytes_trk;
                         nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
-                        nTCP_order[free_idx].length_ptr = wr_FIFO_len;//length_ptr will be 
+                        nTCP_order[free_idx].length_ptr = wr_FIFO_len + 1;//length_ptr will be 
                         nTCP_order[free_idx].v = 1'b1;
 
                         nflush_list[len_flush_ptr] = free_idx;
@@ -557,6 +557,7 @@ module TCP_flow_ctrl #(
 
             DATA_CONNECTED: begin
                 //Do nothing
+                nhand_shake_done = 1'b0;
                 seq_num_tx = seq_num.seq_num;
                 tx_pkg_type.ACK = 1'b1;
                 //ACK_tx = ack_num.ACK_num;

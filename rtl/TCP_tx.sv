@@ -59,6 +59,7 @@ typedef enum logic [6:0] {
 
 TCP_state_t state, nstate;
 logic [DATA_WIDTH - 1: 0] nTCP_transmit;
+logic [19:0] temp;
 logic nTCP_tx_valid, nTCP_tx_last;
 logic nseq_up;
 
@@ -79,7 +80,7 @@ always_ff @(posedge CLK, negedge nRST) begin
         bytes_sent <= nbytes_sent;
         seq_up <= nseq_up;
         if (valid_checksum) begin
-            TCP_checksum <= ~(nTCP_checksum[15:0] + nTCP_checksum[16]);
+            TCP_checksum <= ~(nTCP_checksum);
         end else begin
             TCP_checksum <= nTCP_checksum; // Keep the previous checksum if not valid
         end
@@ -91,7 +92,7 @@ always_comb begin
     nTCP_checksum = TCP_checksum;
     if (valid_checksum) begin
         //EC42 include Pseudo header, src port, dest_port, window size
-        nTCP_checksum = 16'hEC42 
+        temp =  16'hEC42 
                         + bytes_abt_sent[15:0] 
                         + seq_num_tx[31:16] 
                         + seq_num_tx[15:0] 
@@ -100,6 +101,9 @@ always_comb begin
                         + {offset_tx, 4'b0000, TCP_control_tx} 
                         + urgent_pointer_tx 
                         + TCP_basesum_payload;
+        temp = temp[15:0] + temp[19:16];
+        temp = temp[15:0] + temp[16];
+        nTCP_checksum = temp[16:0];
     end
 end
 always_comb begin

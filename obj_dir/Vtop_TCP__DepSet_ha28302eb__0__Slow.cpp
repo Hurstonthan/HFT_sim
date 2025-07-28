@@ -46,6 +46,7 @@ VL_ATTR_COLD void Vtop_TCP___ctor_var_reset(Vtop_TCP* vlSelf) {
     vlSelf->__PVT__rd_FIFO_last = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 10855001204654443987ull);
     vlSelf->__PVT__bytes_abt_sent = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 14892826253315460437ull);
     vlSelf->__PVT__rd_FIFO_en_tx = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 11440818572813960739ull);
+    vlSelf->__PVT__seq_num_tx_out = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 233599338741528213ull);
     vlSelf->__PVT__TCP_send = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 881177396726162158ull);
     vlSelf->__PVT__TCP_last = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 1680497067136754032ull);
     vlSelf->__PVT__TCP_transmit = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 6789772790240887932ull);
@@ -58,6 +59,7 @@ VL_ATTR_COLD void Vtop_TCP___ctor_var_reset(Vtop_TCP* vlSelf) {
     vlSelf->__PVT__seq_num = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 14348413887918754256ull);
     vlSelf->__PVT__rcv_data = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 1176143556994983169ull);
     vlSelf->__PVT__TCP_control_rx = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 17334492037900634746ull);
+    vlSelf->__PVT__bytes_rcv = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 2549967790072508984ull);
     vlSelf->__PVT__seq_num_rx = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 364544424723261665ull);
     vlSelf->__PVT__ACK_rx = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 14319586186662147529ull);
     vlSelf->__PVT__offset_rx = VL_SCOPED_RAND_RESET_I(4, __VscopeHash, 3236647185777849343ull);
@@ -82,10 +84,7 @@ VL_ATTR_COLD void Vtop_TCP___ctor_var_reset(Vtop_TCP* vlSelf) {
     vlSelf->__Vcellinp__tcp_flow__wr_FIFO_len = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 11120806595561894532ull);
     vlSelf->__Vcellinp__tcp_flow__payload_len_rx = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 6762142419833372905ull);
     vlSelf->__Vcellinp__tcp_flow__bytes_abt_sent = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 149022355329726859ull);
-    vlSelf->__Vcellout__tcp_flow__seq_rcv_str = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 2682585232802356076ull);
     vlSelf->__Vcellinp__TCP_tx__bytes_abt_sent = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 14964916544456375842ull);
     vlSelf->__PVT__timeout_flag = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 17326411071393352280ull);
-    vlSelf->__PVT__seq_rcv_str = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 13180610485709587326ull);
-    vlSelf->__PVT__wr_FIFO_ptr_out = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 18246524260469503257ull);
     vlSelf->__PVT__rd_FIFO_valid = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 615369904805283052ull);
 }

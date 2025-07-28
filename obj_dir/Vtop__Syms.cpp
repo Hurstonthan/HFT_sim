@@ -5,9 +5,9 @@
 #include "Vtop.h"
 #include "Vtop___024root.h"
 #include "Vtop_top.h"
-#include "Vtop_FIFO_TX.h"
 #include "Vtop_payload_FIFO.h"
-#include "Vtop_TCP.h"
+#include "Vtop_TCP__F10.h"
+#include "Vtop_FIFO_TX__F10.h"
 #include "Vtop_TCP_ISN.h"
 #include "Vtop_checksum_TCP.h"
 #include "Vtop_TCP_tx.h"
@@ -40,7 +40,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
     , TOP__top__u_tcp__tcp_rcv{this, Verilated::catName(namep, "top.u_tcp.tcp_rcv")}
 {
         // Check resources
-        Verilated::stackCheck(304);
+        Verilated::stackCheck(760);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-9);
     _vm_contextp__->timeprecision(-12);

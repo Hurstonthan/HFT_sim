@@ -47,6 +47,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop_TCP_tx final : public VerilatedModule {
     IData/*31:0*/ __PVT__nbytes_sent;
     IData/*16:0*/ __PVT__TCP_checksum;
     IData/*16:0*/ __PVT__nTCP_checksum;
+    IData/*19:0*/ __PVT__temp;
     IData/*31:0*/ __Vdly__bytes_sent;
     IData/*16:0*/ __Vdly__TCP_checksum;
     VL_IN64(__PVT__rd_FIFO_payload,63,0);

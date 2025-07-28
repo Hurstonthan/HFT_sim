@@ -29,8 +29,8 @@ module FIFO_TX #(
     output logic end_ss,
 
     //Soupbin TCP interface
-    input logic axis_last,
     input logic wr_FIFO_en,
+    input logic axis_last,
     input logic [31:0] len_seq,
     input logic [DATA_WIDTH - 1:0] soupbin_TCP_payload,
     output logic wr_FIFO_valid, //FULL case
@@ -49,8 +49,8 @@ module FIFO_TX #(
     logic [FIFO_WIDTH - 1:0] ptr_str, nptr_str, ptr_end, nptr_end;
     logic [FIFO_WIDTH - 1:0] flush_ptr, nflush_ptr;
     logic [15:0] bytes_abt_sent_msg, nbytes_abt_sent_msg;
-    
     logic [FIFO_WIDTH - 1:0] msg_end_ptr, nmsg_end_ptr;
+    string test_case;
 
     // logic [FIFO_WIDTH - 1:0]   
     typedef struct packed {
@@ -232,14 +232,20 @@ module FIFO_TX #(
                 nrd_FIFO_last = 1'b1;
                 if (hand_shake_done) begin
                     nrd_state = HAND_SHAKE_DONE;
+                    nrd_FIFO_last = 1'b1;
                     
                 end
 
             end
 
             HAND_SHAKE_DONE: begin
-                nbytes_abt_sent = 0;
+                nbytes_abt_sent = bytes_abt_sent;
                 nchecksum_l = 0;
+                nrd_FIFO_valid = 1'b0;
+                nrd_FIFO_last = 1'b0;
+                nrd_upd = 1'b0;
+                test_case = "Handshake done";
+
                 if (TX_en) begin
                     if (out_order_req_l) begin
                         nrd_state = OUT_ORDER_DATA;
@@ -264,12 +270,12 @@ module FIFO_TX #(
                 //This is the state checking the dictionary full or not and whether rd ptr
                 //ptr_end is the next ptr of the end of ptr that store the msg 
                 //rd_ptr != (msg_end_ptr - 1) check do we have any empty msg or not
-                if ((rd_FIFO_en && (dict_wrt_ptr != (dict_rd_ptr - 1)) && (rd_ptr != (msg_end_ptr - 1)))) begin
+                if ((rd_FIFO_en && (dict_wrt_ptr != (dict_rd_ptr - 1)) && (rd_ptr != (msg_end_ptr)))) begin
                     nrd_FIFO_valid = 1'b1;
                     nrd_ptr = rd_ptr + 1;
                     nrd_FIFO_payload = TCP_tx_order[rd_ptr];
                     //msg_end_ptr is in writing side
-                    if ((rd_ptr) == ptr_end) begin
+                    if ((rd_ptr) == (ptr_end - 1)) begin
                         ndict_tx[dict_wrt_ptr].valid = 1'b1;
                         ndict_tx[dict_wrt_ptr].seq_num = seq_num_tx;
                         ndict_tx[dict_wrt_ptr].len_seq = bytes_abt_sent;
@@ -310,7 +316,6 @@ module FIFO_TX #(
                 if (dict_tx[dict_rd_ptr].seq_num < ACK_num_l && (dict_rd_ptr != dict_wrt_ptr)) begin
                     nwr_state = FLUSHING;
                     nflush_ptr = dict_tx[dict_rd_ptr].ptr_str;
-                    ndict_rd_ptr = dict_rd_ptr + 1;
                 end else if (wr_FIFO_en && !full) begin
                     nwr_FIFO_valid = 1'b1;
                     nwrt_ptr = wrt_ptr + 1;
@@ -326,6 +331,7 @@ module FIFO_TX #(
                 nTCP_tx_order[flush_ptr] = 0;
                 if (flush_ptr == dict_tx[dict_rd_ptr].ptr_end) begin
                     nACK_rcv_flag_l = 1'b0;
+                    ndict_rd_ptr = dict_rd_ptr + 1;
                     nwr_state = IDLE_WR;
                 end
             end
