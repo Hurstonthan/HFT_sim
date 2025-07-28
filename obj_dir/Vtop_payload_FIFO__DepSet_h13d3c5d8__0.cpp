@@ -11,7 +11,7 @@ VL_INLINE_OPT void Vtop_payload_FIFO___ico_sequent__TOP__top__u_payload_fifo__0(
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
     vlSelfRef.__PVT__nwr_ptr = vlSelfRef.__PVT__wr_ptr;
-    vlSelfRef.__PVT__nrd_ptr = vlSelfRef.__PVT__rd_FIFO_ptr;
+    vlSelfRef.__PVT__nrd_ptr = vlSelfRef.__PVT__rd_ptr;
     vlSelfRef.__PVT__nflush_ptr = vlSelfRef.__PVT__wr_ptr;
     vlSelfRef.__PVT__nTCP_flush_l = vlSelfRef.__PVT__TCP_flush_l;
     vlSelfRef.__PVT__nseq_trk_rd = vlSelfRef.__PVT__seq_trk_rd;
@@ -44,6 +44,7 @@ VL_INLINE_OPT void Vtop_payload_FIFO___ico_sequent__TOP__top__u_payload_fifo__0(
     if (vlSelfRef.__PVT__rd_FIFO_valid) {
         vlSelfRef.__PVT__nrd_FIFO_valid_l = 1U;
         vlSelfRef.__PVT__nrd_len_ptr = vlSelfRef.__PVT__rd_FIFO_len;
+        vlSelfRef.__PVT__nrd_ptr = vlSelfRef.__PVT__rd_FIFO_ptr;
     } else if (((IData)(vlSelfRef.__PVT__rd_ptr) == (IData)(vlSelfRef.__PVT__rd_len_ptr))) {
         vlSelfRef.__PVT__nrd_FIFO_valid_l = 0U;
     }
@@ -57,7 +58,6 @@ VL_INLINE_OPT void Vtop_payload_FIFO___ico_sequent__TOP__top__u_payload_fifo__0(
             vlSelfRef.__PVT__naxis_r_valid = 1U;
         } else {
             vlSelfRef.__PVT__nseq_trk_rd = vlSelfRef.__PVT__seq_trk_rd;
-            vlSelfRef.__PVT__nrd_ptr = vlSelfRef.__PVT__rd_ptr;
             vlSelfRef.__PVT__naxis_r_valid = 0U;
         }
     }
@@ -548,7 +548,7 @@ VL_INLINE_OPT void Vtop_payload_FIFO___nba_comb__TOP__top__u_payload_fifo__0(Vto
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
     vlSelfRef.__PVT__nwr_ptr = vlSelfRef.__PVT__wr_ptr;
-    vlSelfRef.__PVT__nrd_ptr = vlSelfRef.__PVT__rd_FIFO_ptr;
+    vlSelfRef.__PVT__nrd_ptr = vlSelfRef.__PVT__rd_ptr;
     vlSelfRef.__PVT__nflush_ptr = vlSelfRef.__PVT__wr_ptr;
     vlSelfRef.__PVT__nTCP_flush_l = vlSelfRef.__PVT__TCP_flush_l;
     vlSelfRef.__PVT__nseq_trk_rd = vlSelfRef.__PVT__seq_trk_rd;
@@ -581,6 +581,7 @@ VL_INLINE_OPT void Vtop_payload_FIFO___nba_comb__TOP__top__u_payload_fifo__0(Vto
     if (vlSelfRef.__PVT__rd_FIFO_valid) {
         vlSelfRef.__PVT__nrd_FIFO_valid_l = 1U;
         vlSelfRef.__PVT__nrd_len_ptr = vlSelfRef.__PVT__rd_FIFO_len;
+        vlSelfRef.__PVT__nrd_ptr = vlSelfRef.__PVT__rd_FIFO_ptr;
     } else if (((IData)(vlSelfRef.__PVT__rd_ptr) == (IData)(vlSelfRef.__PVT__rd_len_ptr))) {
         vlSelfRef.__PVT__nrd_FIFO_valid_l = 0U;
     }
@@ -594,7 +595,6 @@ VL_INLINE_OPT void Vtop_payload_FIFO___nba_comb__TOP__top__u_payload_fifo__0(Vto
             vlSelfRef.__PVT__naxis_r_valid = 1U;
         } else {
             vlSelfRef.__PVT__nseq_trk_rd = vlSelfRef.__PVT__seq_trk_rd;
-            vlSelfRef.__PVT__nrd_ptr = vlSelfRef.__PVT__rd_ptr;
             vlSelfRef.__PVT__naxis_r_valid = 0U;
         }
     }

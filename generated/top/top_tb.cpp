@@ -432,7 +432,7 @@ void rcv_out_of_order_data() {
     std::vector<IP_rx_in> TCP_header;
     
     // First segment
-    seq_num_rx       = top -> rcv_next + 24 + 2; //The gap is 4 bytes
+    seq_num_rx       = top -> rcv_next + 16 + 2; //The gap is 4 bytes
     ACK_num_rx       = ACK_curr;
     seq_num_MSB      = (seq_num_rx >> 16) & 0xFFFF;
     seq_num_LSB      =  seq_num_rx        & 0xFFFF;
@@ -534,15 +534,21 @@ int main(int argc, char **argv) {
     top -> tb_count +=1;
     sending_TCP();
 
-
-
     //Receive ACKs to update which is work!!!
     top -> tb_count +=1;
     rcv_update_ACKS_order_data();
+    top -> tb_count +=1;
+    rd_FIFO_rcv();
 
+
+    //Need to test out of order logics more
     top -> tb_count +=1;
     rcv_out_of_order_data();
+    top -> tb_count +=1;
+    rd_FIFO_rcv();
 
+    //Fast transmission
+    
 
 
 

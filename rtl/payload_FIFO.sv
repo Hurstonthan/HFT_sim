@@ -152,7 +152,7 @@ module payload_FIFO #(
 
     always_comb begin
         nwr_ptr = wr_ptr;
-        nrd_ptr = rd_FIFO_ptr;
+        nrd_ptr = rd_ptr;
         nflush_ptr = wr_ptr;
         nTCP_flush_l = TCP_flush_l;
         nseq_trk_rd = seq_trk_rd;
@@ -184,6 +184,7 @@ module payload_FIFO #(
         if (rd_FIFO_valid) begin
             nrd_FIFO_valid_l = 1'b1;
             nrd_len_ptr = rd_FIFO_len;
+            nrd_ptr = rd_FIFO_ptr;
         end else if (rd_ptr == rd_len_ptr) begin
             nrd_FIFO_valid_l = 1'b0;
         end
@@ -195,7 +196,6 @@ module payload_FIFO #(
                 naxis_r_valid = 1'b1;
             end else begin
                 nseq_trk_rd = seq_trk_rd;
-                nrd_ptr = rd_ptr;
                 naxis_r_valid = 1'b0;
             end
         end
