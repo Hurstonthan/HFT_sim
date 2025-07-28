@@ -1,15 +1,93 @@
+`begin_keywords "1800-2017"
+`line 1 "rtl/IP_rx.sv" 1
 `timescale 1ns/10ps
-// `include "chksum_tcp_pl.sv"
-// `include "rx_pkg.vh"
-`include "rx_pkg.sv"
+ 
+ 
+ 
+`line 4 "rtl/IP_rx.sv" 0
+`line 1 "include/rx_pkg.sv" 1
+`timescale 1ns/10ps
+`line 2 "include/rx_pkg.sv" 0
+ 
+ 
+
+`line 5 "include/rx_pkg.sv" 0
+ 
+    
+    
+    
+    
+    
+
+`line 12 "include/rx_pkg.sv" 0
+    
+    
+    
+
+`line 16 "include/rx_pkg.sv" 0
+    
+        
+        
+        
+
+`line 21 "include/rx_pkg.sv" 0
+    
+        
+        
+        
+        
+       
+        
+        
+        
+
+`line 31 "include/rx_pkg.sv" 0
+    
+        
+        
+       
+        
+    
+         
+        
+         
+         
+         
+         
+        
+        
+        
+        
+     
+
+`line 49 "include/rx_pkg.sv" 0
+         
+        
+         
+         
+        
+        
+        
+        
+     
+     
+
+
+
+`line 62 "include/rx_pkg.sv" 0
+ 
+`line 63 "include/rx_pkg.sv" 0
+`line 4 "rtl/IP_rx.sv" 2
+
+`line 5 "rtl/IP_rx.sv" 0
 module IP_rx #(
-    // parameter VERSION = 4'd4,
-    // parameter HDR = 4'd5,
-    // parameter DSCP = 6'd0,
-    // parameter ECN = 2'd0,
-    // parameter PROTOCOL = 8'h06, //TCP is 06, UDP is 0x11
-    // parameter SRC_ADDR = 32'hFFFF_FFFF_FFFF_FFFFF,
-    // parameter DEST_ADDR = 32'hFFFF_FFFF_FFFF_FFFFF
+     
+     
+     
+     
+     
+     
+     
 ) (
     input logic CLK,
     input logic nRST,
@@ -18,6 +96,7 @@ module IP_rx #(
     input logic MAC_flush,
     input logic [7:0] bytes_rcv_len,
 
+`line 21 "rtl/IP_rx.sv" 0
     output logic IP_valid,
     output logic IP_flush,
     output logic [63:0] IP_payload,
@@ -30,18 +109,20 @@ module IP_rx #(
     logic [63:0] nIP_payload;
     logic [15:0] bytes_rcv, nbytes_rcv;
 
+`line 33 "rtl/IP_rx.sv" 0
     logic chksum_en, chksum_clear;
     logic [63:0] chksum_in;
     logic [15:0] chksum_pl;
     logic [16:0] chksum_final;
     logic [15:0] dst_addr, ndst_addr;
     logic [15:0] IP_len, nIP_len;
-    // logic nIP_flush;
-    // logic [63:0] crc_in, crc_in_big;
+     
+     
 
+`line 42 "rtl/IP_rx.sv" 0
     logic nIP_valid;
     logic next_is_udp, next_is_tcp;
-    //todo fix the checksum logic
+     
     chksum_tcp_pl chksum_inst(
        .CLK(CLK),
        .nRST(nRST),
@@ -51,6 +132,7 @@ module IP_rx #(
        .TCP_checksum_pl(chksum_pl)
     );
 
+`line 54 "rtl/IP_rx.sv" 0
     always_ff @(posedge CLK, negedge nRST) begin
         if (!nRST) begin
             state <= IDLE;
@@ -63,7 +145,7 @@ module IP_rx #(
             is_tcp <= 0;
             is_udp <= 0;
         end else begin
-            // flush is only trigger by one clock cycle
+             
             if (MAC_flush || IP_flush) begin 
                 state <= IDLE;
                 IP_checksum <= 0;
@@ -74,7 +156,7 @@ module IP_rx #(
                 IP_len <= 0;
                 is_tcp <= 0;
                 is_udp <= 0;
-                // IP_flush <= 1'b0;
+                 
             end
             else begin
                 state <= nstate;
@@ -86,12 +168,13 @@ module IP_rx #(
                 IP_len <= nIP_len;
                 is_tcp <= next_is_tcp;
                 is_udp <= next_is_udp;
-                // IP_flush <= nIP_flush;
+                 
             end
         end
     end
 
-// debugging 
+`line 94 "rtl/IP_rx.sv" 0
+ 
 logic [15:0] total_len;
 logic [15:0] frags_flag;
 logic [7:0] ttl;
@@ -102,21 +185,34 @@ logic [3:0] ip_version;
 logic is_src_addr;
 logic is_ip_version_valid;
 
+`line 105 "rtl/IP_rx.sv" 0
 always_comb begin
-    /* 0      7 8     15 16    23 24    31 32    39 40    47 48    55 56     63 
-    * +--------+--------+--------+--------+--------+--------+--------+--------+
-    * |          MAC Source addr          |  IP Type(MAC)   |Ver |IHL|DSCP|ENC|
-    * +--------+--------+--------+--------+--------+--------+--------+--------+
-    * |      Total      |  Identification |Flags|Fragoff    |   TTL  |Protocol|               
-    * |     Length      |    data octets  |                 |        |        |
-    * +--------+--------+--------+--------+--------+--------+--------+--------+
-    * |      Header     |              Source               |       Dest      |
-    * |   Checksum      |              Address              |       Address   |
-    * +--------+--------+--------+--------+--------+--------+--------+--------+
-    * |     Destr       | Data ...
-    * |     Address     |
-    * +--------+--------+--------+--------+--------+--------+--------+--------+
-    */
+    
+
+`line 119 "rtl/IP_rx.sv" 0
+
+`line 119 "rtl/IP_rx.sv" 0
+
+`line 119 "rtl/IP_rx.sv" 0
+
+`line 119 "rtl/IP_rx.sv" 0
+
+`line 119 "rtl/IP_rx.sv" 0
+
+`line 119 "rtl/IP_rx.sv" 0
+
+`line 119 "rtl/IP_rx.sv" 0
+
+`line 119 "rtl/IP_rx.sv" 0
+
+`line 119 "rtl/IP_rx.sv" 0
+
+`line 119 "rtl/IP_rx.sv" 0
+
+`line 119 "rtl/IP_rx.sv" 0
+
+`line 119 "rtl/IP_rx.sv" 0
+ 
     nstate = state;
     nIP_payload = IP_payload;
     chksum_en = 1'b0;
@@ -130,16 +226,17 @@ always_comb begin
     next_is_tcp = is_tcp;
     next_is_udp = is_udp;
 
-    // debugging
+`line 133 "rtl/IP_rx.sv" 0
+     
     total_len = MAC_payload_rcv[63:48];
     frags_flag = MAC_payload_rcv[31:16];
     ttl = MAC_payload_rcv[15:8];
     flags = MAC_payload_rcv[31:29];
     fragoff = MAC_payload_rcv[28:16];
-    test_valid[3] = (MAC_payload_rcv[63:48] <= 16'd1480);  // Total length check
-    test_valid[2] = (MAC_payload_rcv[28:16] == 0);         // Frag offset == 0
-    test_valid[1] = (MAC_payload_rcv[15:8] != 0);          // TTL != 0
-    test_valid[0] = (!MAC_payload_rcv[31]);                // MF == 0
+    test_valid[3] = (MAC_payload_rcv[63:48] <= 16'd1480);   
+    test_valid[2] = (MAC_payload_rcv[28:16] == 0);          
+    test_valid[1] = (MAC_payload_rcv[15:8] != 0);           
+    test_valid[0] = (!MAC_payload_rcv[31]);                 
     ip_version = MAC_payload_rcv[15:12];
     IP_flush = 1'b0;
     is_src_addr = (MAC_payload_rcv[47:16] == IP_SRC_ADDR);
@@ -149,6 +246,7 @@ always_comb begin
         nbytes_rcv = bytes_rcv + bytes_rcv_len;
     end
 
+`line 152 "rtl/IP_rx.sv" 0
     case (state)
         IDLE: begin
             chksum_clear = 1'b1;
@@ -157,6 +255,7 @@ always_comb begin
             end
         end
 
+`line 160 "rtl/IP_rx.sv" 0
         RCV_VER_IHL_DSCP_ECN: begin
             if (MAC_valid) begin
                 chksum_en = 1'b1;
@@ -164,44 +263,49 @@ always_comb begin
                     nstate = RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL;
                 end else begin
                     nstate = ERROR;
-                    //IP_flush = 1'b1;
+                     
                 end
             end
         end
 
+`line 172 "rtl/IP_rx.sv" 0
         RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL: begin
             if (MAC_valid) begin
-                // total length 
+                 
                 chksum_en = 1'b1;
-                // todo set chksum_in = 
+                 
                 nIP_len = MAC_payload_rcv[63:56];
 
-                // Check the protocol type
+`line 179 "rtl/IP_rx.sv" 0
+                 
                 next_is_tcp = (MAC_payload_rcv[7:0] == TCP_PROTOCOL);
                 next_is_udp = (MAC_payload_rcv[7:0] == UDP_PROTOCOL);
 
-                // todo check the timing
-                if (MAC_payload_rcv[63:48] <= 16'd1480 && //Total Length
-                    // MAC_payload_rcv[28:16] == 0 && //Fragoff
-                    MAC_payload_rcv[15:8] !=0 && //Time to live
-                    !MAC_payload_rcv[31] && //MF != 1
+`line 183 "rtl/IP_rx.sv" 0
+                 
+                if (MAC_payload_rcv[63:48] <= 16'd1480 &&  
+                     
+                    MAC_payload_rcv[15:8] !=0 &&  
+                    !MAC_payload_rcv[31] &&  
                     (next_is_tcp || next_is_udp)) begin
                         nstate = RCV_SUM_SRC_ADDR_DEST_ADDR;
                     end else begin
-                        // IP_flush = 1'b1;
+                         
                         nstate = ERROR;
                     end
             end 
         end
 
+`line 197 "rtl/IP_rx.sv" 0
         RCV_SUM_SRC_ADDR_DEST_ADDR: begin
             if (MAC_valid) begin
                 chksum_en = 1'b1;
                 chksum_in = {16'h0, MAC_payload_rcv[47:0]};
 
-                // Store header checksum and destination address
+`line 202 "rtl/IP_rx.sv" 0
+                 
                 nIP_checksum = MAC_payload_rcv[63:48];
-                ndst_addr = MAC_payload_rcv[15:0]; // store the destonation address as part of the element
+                ndst_addr = MAC_payload_rcv[15:0];  
                 
                 if (is_src_addr) begin
                     nstate = RCV_PAYLOAD_DEST;
@@ -213,6 +317,7 @@ always_comb begin
             end
         end
 
+`line 216 "rtl/IP_rx.sv" 0
         RCV_PAYLOAD_DEST: begin
             if (MAC_valid) begin
                 chksum_in = {48'h0, MAC_payload_rcv[63:48]};
@@ -224,45 +329,50 @@ always_comb begin
                     nstate = CHK_SUM;
                 end else begin
                     nstate = ERROR;
-                    // IP_flush = 1'b1;
+                     
                 end
             end
         end
 
+`line 232 "rtl/IP_rx.sv" 0
         CHK_SUM: begin
             if (MAC_valid) begin
                 nIP_payload = MAC_payload_rcv;
             end
-            // sum everything of 16 bits, if oversize, take the most significant bit to.
-            // take the complement of the sum
-            //todo finish the checksum
-            // msb (most significant bit) order 
+             
+             
+             
+             
             if (chksum_pl == IP_checksum) begin
                 nstate = RCV_PAYLOAD;
                 nIP_valid = 1'b1;
             end else begin
                 nstate = ERROR;
-                // IP_flush = 1'b1;
+                 
             end
 
+`line 248 "rtl/IP_rx.sv" 0
         end
 
+`line 250 "rtl/IP_rx.sv" 0
         RCV_PAYLOAD: begin
             if (MAC_valid) begin
                 nIP_payload = MAC_payload_rcv;
                 nIP_valid = 1'b1;
-                if (bytes_rcv >= IP_len) begin //checking the rectver length
+                if (bytes_rcv >= IP_len) begin  
                     nIP_valid = 1'b0;
                     nstate = DONE;
                 end 
             end
         end
 
+`line 261 "rtl/IP_rx.sv" 0
         DONE: begin
             nIP_valid = 1'b0;
             nstate = IDLE;
         end
 
+`line 266 "rtl/IP_rx.sv" 0
         ERROR: begin
             IP_flush = 1'b1;
             if (!MAC_valid) begin
@@ -273,3 +383,5 @@ always_comb begin
     endcase
 end
 endmodule
+
+`line 277 "rtl/IP_rx.sv" 0

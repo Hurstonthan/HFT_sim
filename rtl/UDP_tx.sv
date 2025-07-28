@@ -4,11 +4,12 @@ module UDP_tx
     parameter UDP_DEST_ADDR = 16'h1234, 
     parameter UDP_SRC_ADDR = 16'h4321, 
     parameter UDP_HEADER_LENGTH = 16'h08, 
-    parameter UDP_CHECKSUM = 16'h0000 
+    parameter UDP_CHECKSUM = 16'h0000,
+    parameter IP_DEST_ADDR = 32'hAAAAAAAA // destination IP address
 )
 (
     input logic CLK, nRST,
-    input logic UDP_valid, // sended from 
+    input logic valid, // sended from Ip layer
     input logic [63:0] UDP_payload, // payload to send
     input logic [15:0] UDP_len, // length of the UDP packet
     // input logic [15:0] UDP_src_port, 
@@ -16,7 +17,7 @@ module UDP_tx
     input logic UDP_last, // end of the payload latched already
 
     output logic [63:0] IP_payload, // including the UDP header and payload
-    output logic IP_valid, // signal to indicate that the IP packet is ready to be sent
+    // output logic IP_valid, // signal to indicate that the IP packet is ready to be sent
     output logic IP_last,
     output logic [15:0] IP_len 
 );
@@ -40,7 +41,7 @@ module UDP_tx
         end else begin
             current_state <= nstate;
             // may need to change the header_reg
-            header_reg <= {UDP_SRC_ADDR, UDP_DEST_ADDR, IP_len, UDP_CHECKSUM};
+            header_reg <= {IP_DEST_ADDR[15:0], UDP_SRC_ADDR, UDP_DEST_ADDR, IP_len};
             // may need to change the chksum
 
         end
@@ -48,6 +49,8 @@ module UDP_tx
 
     assign IP_len = UDP_len + UDP_HEADER_LENGTH; 
 
+    //todo fix IP_len calcaulation - check with Tri
+    //
     always_comb begin
         /* 0      7 8     15 16    23 24    31 32    39 40    47 48    55 56     63 
         * +--------+--------+--------+--------+--------+--------+--------+--------+
@@ -60,14 +63,13 @@ module UDP_tx
         */
         // It will send IP_Dest_addr back first
         nstate = current_state;
-        IP_valid = 1'b0;
+        // IP_valid = 1'b0;
         IP_payload = '0; 
         IP_last = 1'b0;
         casez(current_state)
             IDLE: begin
-                if (UDP_valid) begin
-                    IP_valid = 1'b1; 
-
+                if (valid) begin
+                    //IP_valid = 1'b1; 
                     nstate = SEND_HEADER;
                 end
             end
@@ -75,16 +77,16 @@ module UDP_tx
             SEND_HEADER: begin
                 //source and destination addresses are flipped
                 nstate = SEND_PAYLOAD;
-                IP_valid = 1'b1;
+                // IP_valid = 1'b1;
                 IP_payload = header_reg;
             end
 
             SEND_PAYLOAD: begin
-                IP_valid = 1'b1;
+                // IP_valid = 1'b1;
                 IP_payload = UDP_payload;
                 if (UDP_last) begin
                     nstate = DONE;
-                end else if (~UDP_valid) begin
+                end else if (~valid) begin
                     nstate = IDLE;
                 end
             end

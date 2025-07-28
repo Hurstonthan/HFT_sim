@@ -44,11 +44,11 @@ void send_udp_packet(VUDP_rx *top, VerilatedFstC *tfp,
 
     top->IP_payload = header0;
     tick(top, tfp);
-    tick(top, tfp);
+    // tick(top, tfp);
     // send the checksum and part of the payload
     top->IP_payload = header1;
     tick(top, tfp);
-    tick(top, tfp);
+    // tick(top, tfp);
     for (size_t i = 0; i < payload.size(); i++) {
         tick(top, tfp);
         top->CLK = 0;
