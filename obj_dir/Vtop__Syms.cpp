@@ -35,8 +35,11 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
     , TOP__top__u_tcp__TCP_tx{this, Verilated::catName(namep, "top.u_tcp.TCP_tx")}
     , TOP__top__u_tcp__inst{this, Verilated::catName(namep, "top.u_tcp.inst")}
     , TOP__top__u_tcp__tcp_flow{this, Verilated::catName(namep, "top.u_tcp.tcp_flow")}
+    , TOP__top__u_tcp__tcp_flow__lt{this, Verilated::catName(namep, "top.u_tcp.tcp_flow.lt")}
     , TOP__top__u_tcp__tcp_flow__me{this, Verilated::catName(namep, "top.u_tcp.tcp_flow.me")}
+    , TOP__top__u_tcp__tcp_flow__ov{this, Verilated::catName(namep, "top.u_tcp.tcp_flow.ov")}
     , TOP__top__u_tcp__tcp_flow__pe{this, Verilated::catName(namep, "top.u_tcp.tcp_flow.pe")}
+    , TOP__top__u_tcp__tcp_flow__rt{this, Verilated::catName(namep, "top.u_tcp.tcp_flow.rt")}
     , TOP__top__u_tcp__tcp_rcv{this, Verilated::catName(namep, "top.u_tcp.tcp_rcv")}
 {
         // Check resources
@@ -53,8 +56,11 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
     TOP__top__u_tcp.__PVT__TCP_tx = &TOP__top__u_tcp__TCP_tx;
     TOP__top__u_tcp.__PVT__inst = &TOP__top__u_tcp__inst;
     TOP__top__u_tcp.__PVT__tcp_flow = &TOP__top__u_tcp__tcp_flow;
+    TOP__top__u_tcp__tcp_flow.__PVT__lt = &TOP__top__u_tcp__tcp_flow__lt;
     TOP__top__u_tcp__tcp_flow.__PVT__me = &TOP__top__u_tcp__tcp_flow__me;
+    TOP__top__u_tcp__tcp_flow.__PVT__ov = &TOP__top__u_tcp__tcp_flow__ov;
     TOP__top__u_tcp__tcp_flow.__PVT__pe = &TOP__top__u_tcp__tcp_flow__pe;
+    TOP__top__u_tcp__tcp_flow.__PVT__rt = &TOP__top__u_tcp__tcp_flow__rt;
     TOP__top__u_tcp.__PVT__tcp_rcv = &TOP__top__u_tcp__tcp_rcv;
     // Setup each module's pointer back to symbol table (for public functions)
     TOP.__Vconfigure(true);
@@ -66,7 +72,10 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
     TOP__top__u_tcp__TCP_tx.__Vconfigure(true);
     TOP__top__u_tcp__inst.__Vconfigure(true);
     TOP__top__u_tcp__tcp_flow.__Vconfigure(true);
-    TOP__top__u_tcp__tcp_flow__me.__Vconfigure(true);
+    TOP__top__u_tcp__tcp_flow__lt.__Vconfigure(true);
+    TOP__top__u_tcp__tcp_flow__me.__Vconfigure(false);
+    TOP__top__u_tcp__tcp_flow__ov.__Vconfigure(false);
     TOP__top__u_tcp__tcp_flow__pe.__Vconfigure(false);
+    TOP__top__u_tcp__tcp_flow__rt.__Vconfigure(false);
     TOP__top__u_tcp__tcp_rcv.__Vconfigure(true);
 }

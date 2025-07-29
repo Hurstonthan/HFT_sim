@@ -32,10 +32,10 @@ void Vtop_TCP_receiver___ico_sequent__TOP__top__u_tcp__tcp_rcv__0(Vtop_TCP_recei
 void Vtop_TCP__F10___ico_sequent__TOP__top__u_tcp__1(Vtop_TCP__F10* vlSelf);
 void Vtop_top___ico_sequent__TOP__top__1(Vtop_top* vlSelf);
 void Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__0(Vtop_TCP_flow_ctrl* vlSelf);
+void Vtop_FIFO_TX__F10___ico_sequent__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX__F10* vlSelf);
 void Vtop_TCP__F10___ico_sequent__TOP__top__u_tcp__2(Vtop_TCP__F10* vlSelf);
 void Vtop_top___ico_sequent__TOP__top__2(Vtop_top* vlSelf);
 void Vtop___024root___ico_sequent__TOP__1(Vtop___024root* vlSelf);
-void Vtop_FIFO_TX__F10___ico_sequent__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX__F10* vlSelf);
 void Vtop_payload_FIFO___ico_sequent__TOP__top__u_payload_fifo__0(Vtop_payload_FIFO* vlSelf);
 
 void Vtop___024root___eval_ico(Vtop___024root* vlSelf) {
@@ -54,10 +54,10 @@ void Vtop___024root___eval_ico(Vtop___024root* vlSelf) {
         Vtop_TCP__F10___ico_sequent__TOP__top__u_tcp__1((&vlSymsp->TOP__top__u_tcp));
         Vtop_top___ico_sequent__TOP__top__1((&vlSymsp->TOP__top));
         Vtop_TCP_flow_ctrl___ico_sequent__TOP__top__u_tcp__tcp_flow__0((&vlSymsp->TOP__top__u_tcp__tcp_flow));
+        Vtop_FIFO_TX__F10___ico_sequent__TOP__top__u_fifo_tx__0((&vlSymsp->TOP__top__u_fifo_tx));
         Vtop_TCP__F10___ico_sequent__TOP__top__u_tcp__2((&vlSymsp->TOP__top__u_tcp));
         Vtop_top___ico_sequent__TOP__top__2((&vlSymsp->TOP__top));
         Vtop___024root___ico_sequent__TOP__1(vlSelf);
-        Vtop_FIFO_TX__F10___ico_sequent__TOP__top__u_fifo_tx__0((&vlSymsp->TOP__top__u_fifo_tx));
         Vtop_payload_FIFO___ico_sequent__TOP__top__u_payload_fifo__0((&vlSymsp->TOP__top__u_payload_fifo));
     }
 }
@@ -197,21 +197,26 @@ void Vtop_top___nba_sequent__TOP__top__5(Vtop_top* vlSelf);
 void Vtop_TCP__F10___nba_sequent__TOP__top__u_tcp__8(Vtop_TCP__F10* vlSelf);
 void Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__0(Vtop_TCP__F10* vlSelf);
 void Vtop_checksum_TCP___nba_comb__TOP__top__u_tcp__inst__0(Vtop_checksum_TCP* vlSelf);
+void Vtop_top___nba_comb__TOP__top__0(Vtop_top* vlSelf);
 void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__0(Vtop_TCP_flow_ctrl* vlSelf);
 void Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__1(Vtop_TCP__F10* vlSelf);
-void Vtop_top___nba_comb__TOP__top__0(Vtop_top* vlSelf);
+void Vtop_top___nba_comb__TOP__top__1(Vtop_top* vlSelf);
 void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__1(Vtop_TCP_flow_ctrl* vlSelf);
+void Vtop_priority_encoder__Wa___nba_comb__TOP__top__u_tcp__tcp_flow__lt__0(Vtop_priority_encoder__Wa* vlSelf);
+void Vtop_priority_encoder__Wa___nba_comb__TOP__top__u_tcp__tcp_flow__ov__0(Vtop_priority_encoder__Wa* vlSelf);
+void Vtop_priority_encoder__Wa___nba_comb__TOP__top__u_tcp__tcp_flow__rt__0(Vtop_priority_encoder__Wa* vlSelf);
 void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__2(Vtop_TCP_flow_ctrl* vlSelf);
+void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(Vtop_TCP_flow_ctrl* vlSelf);
 void Vtop_TCP_tx___nba_comb__TOP__top__u_tcp__TCP_tx__0(Vtop_TCP_tx* vlSelf);
 void Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__2(Vtop_TCP__F10* vlSelf);
-void Vtop_top___nba_comb__TOP__top__1(Vtop_top* vlSelf);
-void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3(Vtop_TCP_flow_ctrl* vlSelf);
-void Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__3(Vtop_TCP__F10* vlSelf);
 void Vtop_top___nba_comb__TOP__top__2(Vtop_top* vlSelf);
+void Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__4(Vtop_TCP_flow_ctrl* vlSelf);
+void Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__3(Vtop_TCP__F10* vlSelf);
+void Vtop_top___nba_comb__TOP__top__3(Vtop_top* vlSelf);
 void Vtop___024root___nba_comb__TOP__0(Vtop___024root* vlSelf);
-void Vtop_FIFO_TX__F10___nba_comb__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX__F10* vlSelf);
 void Vtop_payload_FIFO___nba_comb__TOP__top__u_payload_fifo__0(Vtop_payload_FIFO* vlSelf);
 void Vtop_TCP_tx___nba_comb__TOP__top__u_tcp__TCP_tx__1(Vtop_TCP_tx* vlSelf);
+void Vtop_FIFO_TX__F10___nba_comb__TOP__top__u_fifo_tx__0(Vtop_FIFO_TX__F10* vlSelf);
 
 void Vtop___024root___eval_nba(Vtop___024root* vlSelf) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___eval_nba\n"); );
@@ -275,36 +280,45 @@ void Vtop___024root___eval_nba(Vtop___024root* vlSelf) {
         Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__0((&vlSymsp->TOP__top__u_tcp));
         vlSelfRef.__Vm_traceActivity[9U] = 1U;
         Vtop_checksum_TCP___nba_comb__TOP__top__u_tcp__inst__0((&vlSymsp->TOP__top__u_tcp__inst));
+        Vtop_top___nba_comb__TOP__top__0((&vlSymsp->TOP__top));
     }
     if ((0x3303ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
         Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__0((&vlSymsp->TOP__top__u_tcp__tcp_flow));
         vlSelfRef.__Vm_traceActivity[0xaU] = 1U;
         Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__1((&vlSymsp->TOP__top__u_tcp));
-        Vtop_top___nba_comb__TOP__top__0((&vlSymsp->TOP__top));
+        Vtop_top___nba_comb__TOP__top__1((&vlSymsp->TOP__top));
     }
     if ((0x3c00ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
         Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__1((&vlSymsp->TOP__top__u_tcp__tcp_flow));
+        vlSelfRef.__Vm_traceActivity[0xbU] = 1U;
+        Vtop_priority_encoder__Wa___nba_comb__TOP__top__u_tcp__tcp_flow__lt__0((&vlSymsp->TOP__top__u_tcp__tcp_flow__lt));
+        Vtop_priority_encoder__Wa___nba_comb__TOP__top__u_tcp__tcp_flow__ov__0((&vlSymsp->TOP__top__u_tcp__tcp_flow__ov));
+        Vtop_priority_encoder__Wa___nba_comb__TOP__top__u_tcp__tcp_flow__rt__0((&vlSymsp->TOP__top__u_tcp__tcp_flow__rt));
+        Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__2((&vlSymsp->TOP__top__u_tcp__tcp_flow));
     }
     if ((0x303cULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__2((&vlSymsp->TOP__top__u_tcp__tcp_flow));
+        Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3((&vlSymsp->TOP__top__u_tcp__tcp_flow));
     }
     if ((0x330fULL & vlSelfRef.__VnbaTriggered.word(0U))) {
         Vtop_TCP_tx___nba_comb__TOP__top__u_tcp__TCP_tx__0((&vlSymsp->TOP__top__u_tcp__TCP_tx));
-        vlSelfRef.__Vm_traceActivity[0xbU] = 1U;
+        vlSelfRef.__Vm_traceActivity[0xcU] = 1U;
         Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__2((&vlSymsp->TOP__top__u_tcp));
-        Vtop_top___nba_comb__TOP__top__1((&vlSymsp->TOP__top));
+        Vtop_top___nba_comb__TOP__top__2((&vlSymsp->TOP__top));
     }
     if ((0x3f3fULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__3((&vlSymsp->TOP__top__u_tcp__tcp_flow));
-        vlSelfRef.__Vm_traceActivity[0xcU] = 1U;
+        Vtop_TCP_flow_ctrl___nba_comb__TOP__top__u_tcp__tcp_flow__4((&vlSymsp->TOP__top__u_tcp__tcp_flow));
+        vlSelfRef.__Vm_traceActivity[0xdU] = 1U;
         Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__3((&vlSymsp->TOP__top__u_tcp));
-        Vtop_top___nba_comb__TOP__top__2((&vlSymsp->TOP__top));
+        Vtop_top___nba_comb__TOP__top__3((&vlSymsp->TOP__top));
         Vtop___024root___nba_comb__TOP__0(vlSelf);
-        Vtop_FIFO_TX__F10___nba_comb__TOP__top__u_fifo_tx__0((&vlSymsp->TOP__top__u_fifo_tx));
         Vtop_payload_FIFO___nba_comb__TOP__top__u_payload_fifo__0((&vlSymsp->TOP__top__u_payload_fifo));
     }
     if ((0x33cfULL & vlSelfRef.__VnbaTriggered.word(0U))) {
         Vtop_TCP_tx___nba_comb__TOP__top__u_tcp__TCP_tx__1((&vlSymsp->TOP__top__u_tcp__TCP_tx));
+    }
+    if ((0x3fcfULL & vlSelfRef.__VnbaTriggered.word(0U))) {
+        Vtop_FIFO_TX__F10___nba_comb__TOP__top__u_fifo_tx__0((&vlSymsp->TOP__top__u_fifo_tx));
+        vlSelfRef.__Vm_traceActivity[0xeU] = 1U;
     }
 }
 

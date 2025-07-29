@@ -247,7 +247,7 @@ module FIFO_TX #(
                 test_case = "Handshake done";
 
                 if (TX_en) begin
-                    if (out_order_req_l) begin
+                    if (out_order_req) begin
                         nrd_state = OUT_ORDER_DATA;
                         nptr_str = dict_tx[dict_rd_ptr].ptr_str;
                         nptr_end = dict_tx[dict_rd_ptr].ptr_end;
@@ -258,7 +258,7 @@ module FIFO_TX #(
                         nptr_str = rd_ptr;
                         nptr_end = msg_end_ptr;
                         nbytes_abt_sent = bytes_abt_sent_msg;
-                        nchecksum_l = checksum_TX;
+                        
                     end
                 end
             end
@@ -266,6 +266,7 @@ module FIFO_TX #(
             IN_ORDER_DATA: begin
                 rd_debug_1 = (dict_wrt_ptr != (dict_rd_ptr - 1));
                 rd_debug_2 = (rd_ptr - 1) != (msg_end_ptr);
+                nchecksum_l = checksum_TX;
 
                 //This is the state checking the dictionary full or not and whether rd ptr
                 //ptr_end is the next ptr of the end of ptr that store the msg 
@@ -296,7 +297,7 @@ module FIFO_TX #(
                     nrd_FIFO_valid = 1'b1;
                     nrd_FIFO_payload = TCP_tx_order[ptr_str];
                     nptr_str = ptr_str + 1;
-                    if (ptr_str == (ptr_end - 1)) begin
+                    if (ptr_str == (ptr_end)) begin
                         nrd_FIFO_last = 1'b1;
                         nrd_state = HAND_SHAKE_DONE;
                         nout_order_req_l = 1'b0;
@@ -344,7 +345,7 @@ module FIFO_TX #(
                 
                 if (axis_last) begin
                     nwr_FIFO_valid = 1'b0;
-                    nmsg_end_ptr = msg_end_ptr + wrt_ptr + 1;
+                    nmsg_end_ptr = wrt_ptr + 1;
                     nbytes_abt_sent_msg = bytes_abt_sent_msg + len_seq;
                     nwr_state = IDLE_WR;
                 end

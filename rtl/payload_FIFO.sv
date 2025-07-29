@@ -129,7 +129,6 @@ module payload_FIFO #(
 
             //Ouput
             wr_FIFO_len <= wr_ptr;
-
             if (!wr_FIFO_en) begin
                 wr_ptr_out<= wr_ptr;
             end
@@ -160,18 +159,16 @@ module payload_FIFO #(
         nrd_len_ptr = rd_len_ptr;
         naxis_r_valid = axis_r_valid;
         
-        
-
+    
         if (TCP_flush || TCP_flush_l) begin
-            nflush_ptr = flush_ptr + 1;
-        end else if(flush_ptr == len_TCP_flush) begin
-            nTCP_flush_l = 1'b0;
+            nwr_ptr = flush_ptr;           
         end else if (nw_segment || wr_FIFO_en) begin
            nflush_ptr = flush_ptr;
         end else if (TCP_flush) begin
-            nTCP_flush_l = 1'b1;
-            nlen_TCP_flush = wr_ptr;;
-            nflush_ptr = flush_ptr + 1;           
+            // nTCP_flush_l = 1'b1;
+            // nlen_TCP_flush = wr_ptr;;
+            // nflush_ptr = flush_ptr + 1;
+            
         end
 
         if (wr_FIFO_en) begin

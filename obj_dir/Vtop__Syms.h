@@ -47,8 +47,11 @@ class alignas(VL_CACHE_LINE_BYTES)Vtop__Syms final : public VerilatedSyms {
     Vtop_TCP_tx                    TOP__top__u_tcp__TCP_tx;
     Vtop_checksum_TCP              TOP__top__u_tcp__inst;
     Vtop_TCP_flow_ctrl             TOP__top__u_tcp__tcp_flow;
+    Vtop_priority_encoder__Wa      TOP__top__u_tcp__tcp_flow__lt;
     Vtop_priority_encoder__Wa      TOP__top__u_tcp__tcp_flow__me;
+    Vtop_priority_encoder__Wa      TOP__top__u_tcp__tcp_flow__ov;
     Vtop_priority_encoder__Wa      TOP__top__u_tcp__tcp_flow__pe;
+    Vtop_priority_encoder__Wa      TOP__top__u_tcp__tcp_flow__rt;
     Vtop_TCP_receiver              TOP__top__u_tcp__tcp_rcv;
 
     // CONSTRUCTORS

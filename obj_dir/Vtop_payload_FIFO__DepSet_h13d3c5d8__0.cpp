@@ -19,19 +19,10 @@ VL_INLINE_OPT void Vtop_payload_FIFO___ico_sequent__TOP__top__u_payload_fifo__0(
     vlSelfRef.__PVT__nrd_len_ptr = vlSelfRef.__PVT__rd_len_ptr;
     vlSelfRef.__PVT__naxis_r_valid = vlSelfRef.__PVT__axis_r_valid;
     if (((IData)(vlSelfRef.__PVT__TCP_flush) | (IData)(vlSelfRef.__PVT__TCP_flush_l))) {
-        vlSelfRef.__PVT__nflush_ptr = (0xfU & ((IData)(1U) 
-                                               + (IData)(vlSelfRef.__PVT__flush_ptr)));
-    } else if (((IData)(vlSelfRef.__PVT__flush_ptr) 
-                == (IData)(vlSelfRef.__PVT__len_TCP_flush))) {
-        vlSelfRef.__PVT__nTCP_flush_l = 0U;
+        vlSelfRef.__PVT__nwr_ptr = vlSelfRef.__PVT__flush_ptr;
     } else if (((IData)(vlSelfRef.__PVT__nw_segment) 
                 | (IData)(vlSelfRef.__PVT__wr_FIFO_en))) {
         vlSelfRef.__PVT__nflush_ptr = vlSelfRef.__PVT__flush_ptr;
-    } else if (vlSelfRef.__PVT__TCP_flush) {
-        vlSelfRef.__PVT__nTCP_flush_l = 1U;
-        vlSelfRef.__PVT__nlen_TCP_flush = vlSelfRef.__PVT__wr_ptr;
-        vlSelfRef.__PVT__nflush_ptr = (0xfU & ((IData)(1U) 
-                                               + (IData)(vlSelfRef.__PVT__flush_ptr)));
     }
     if (vlSelfRef.__PVT__wr_FIFO_en) {
         vlSelfRef.__PVT__nwr_ptr = (0xfU & ((IData)(1U) 
@@ -109,9 +100,9 @@ VL_INLINE_OPT void Vtop_payload_FIFO___nba_sequent__TOP__top__u_payload_fifo__0(
     vlSelfRef.__VdlySet__TCP_FIFO__v30 = 0U;
     vlSelfRef.__VdlySet__TCP_FIFO__v31 = 0U;
     vlSelfRef.__VdlySet__TCP_FIFO__v32 = 0U;
+    vlSelfRef.__Vdly__len_TCP_flush = vlSelfRef.__PVT__len_TCP_flush;
     vlSelfRef.__Vdly__axis_rd_data = vlSelfRef.__PVT__axis_rd_data;
     vlSelfRef.__Vdly__rd_len_ptr = vlSelfRef.__PVT__rd_len_ptr;
-    vlSelfRef.__Vdly__len_TCP_flush = vlSelfRef.__PVT__len_TCP_flush;
     vlSelfRef.__Vdly__axis_r_valid = vlSelfRef.__PVT__axis_r_valid;
     vlSelfRef.__Vdly__rd_FIFO_en = vlSelfRef.__PVT__rd_FIFO_en;
     vlSelfRef.__Vdly__seq_rx_FIFO_rd = vlSelfRef.__PVT__seq_rx_FIFO_rd;
@@ -294,12 +285,12 @@ VL_INLINE_OPT void Vtop_payload_FIFO___nba_sequent__TOP__top__u_payload_fifo__0(
         vlSelfRef.__VdlySet__TCP_FIFO__v32 = 1U;
         vlSelfRef.__PVT__unnamedblk1__DOT__i = 0x10U;
     }
+    vlSelfRef.__PVT__len_TCP_flush = vlSelfRef.__Vdly__len_TCP_flush;
     vlSelfRef.__PVT__axis_rd_data = vlSelfRef.__Vdly__axis_rd_data;
     vlSelfRef.__PVT__wr_ptr = vlSelfRef.__Vdly__wr_ptr;
     vlSelfRef.__PVT__rd_FIFO_valid_l = vlSelfRef.__Vdly__rd_FIFO_valid_l;
     vlSelfRef.__PVT__rd_len_ptr = vlSelfRef.__Vdly__rd_len_ptr;
     vlSelfRef.__PVT__flush_ptr = vlSelfRef.__Vdly__flush_ptr;
-    vlSelfRef.__PVT__len_TCP_flush = vlSelfRef.__Vdly__len_TCP_flush;
     vlSelfRef.__PVT__TCP_flush_l = vlSelfRef.__Vdly__TCP_flush_l;
     vlSelfRef.__PVT__seq_trk_rd = vlSelfRef.__Vdly__seq_trk_rd;
     vlSelfRef.__PVT__axis_r_valid = vlSelfRef.__Vdly__axis_r_valid;
@@ -556,19 +547,10 @@ VL_INLINE_OPT void Vtop_payload_FIFO___nba_comb__TOP__top__u_payload_fifo__0(Vto
     vlSelfRef.__PVT__nrd_len_ptr = vlSelfRef.__PVT__rd_len_ptr;
     vlSelfRef.__PVT__naxis_r_valid = vlSelfRef.__PVT__axis_r_valid;
     if (((IData)(vlSelfRef.__PVT__TCP_flush) | (IData)(vlSelfRef.__PVT__TCP_flush_l))) {
-        vlSelfRef.__PVT__nflush_ptr = (0xfU & ((IData)(1U) 
-                                               + (IData)(vlSelfRef.__PVT__flush_ptr)));
-    } else if (((IData)(vlSelfRef.__PVT__flush_ptr) 
-                == (IData)(vlSelfRef.__PVT__len_TCP_flush))) {
-        vlSelfRef.__PVT__nTCP_flush_l = 0U;
+        vlSelfRef.__PVT__nwr_ptr = vlSelfRef.__PVT__flush_ptr;
     } else if (((IData)(vlSelfRef.__PVT__nw_segment) 
                 | (IData)(vlSelfRef.__PVT__wr_FIFO_en))) {
         vlSelfRef.__PVT__nflush_ptr = vlSelfRef.__PVT__flush_ptr;
-    } else if (vlSelfRef.__PVT__TCP_flush) {
-        vlSelfRef.__PVT__nTCP_flush_l = 1U;
-        vlSelfRef.__PVT__nlen_TCP_flush = vlSelfRef.__PVT__wr_ptr;
-        vlSelfRef.__PVT__nflush_ptr = (0xfU & ((IData)(1U) 
-                                               + (IData)(vlSelfRef.__PVT__flush_ptr)));
     }
     if (vlSelfRef.__PVT__wr_FIFO_en) {
         vlSelfRef.__PVT__nwr_ptr = (0xfU & ((IData)(1U) 

@@ -215,6 +215,8 @@ VL_ATTR_COLD void Vtop___024root____Vm_traceActivitySetAll(Vtop___024root* vlSel
     vlSelfRef.__Vm_traceActivity[0xaU] = 1U;
     vlSelfRef.__Vm_traceActivity[0xbU] = 1U;
     vlSelfRef.__Vm_traceActivity[0xcU] = 1U;
+    vlSelfRef.__Vm_traceActivity[0xdU] = 1U;
+    vlSelfRef.__Vm_traceActivity[0xeU] = 1U;
 }
 
 VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
@@ -261,7 +263,7 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->__Vtrigprevexpr___TOP__top__u_tcp__tcp_rcv____PVT__nRST__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 8387579131622094602ull);
     vlSelf->__Vtrigprevexpr___TOP__top__u_tcp__tcp_flow____PVT__CLK__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 4934611632636348413ull);
     vlSelf->__Vtrigprevexpr___TOP__top__u_tcp__tcp_flow____PVT__nRST__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 14694248462678608355ull);
-    for (int __Vi0 = 0; __Vi0 < 13; ++__Vi0) {
+    for (int __Vi0 = 0; __Vi0 < 15; ++__Vi0) {
         vlSelf->__Vm_traceActivity[__Vi0] = 0;
     }
 }

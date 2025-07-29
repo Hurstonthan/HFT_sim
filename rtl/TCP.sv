@@ -14,7 +14,7 @@ module TCP #(
 
     //global transmit TX_en
     input logic TX_en,
-    
+    output logic [15:0] checksum_TX, //variable to store transmitted TX
     //Interface between TCP_rcv and IP_rcv
     input  logic IP_valid,     // Indicates if the IP packet is valid
     input  logic IP_flush,     // Flush signal for IP packet
@@ -113,6 +113,7 @@ module TCP #(
     logic [15:0] TCP_basesum_payload;
     logic [15:0] TCP_checksum_out;
 
+    assign checksum_TX = TCP_basesum_payload;
     always_comb begin
         if (re_trans) begin
             TCP_basesum_payload = checksum_re_trans;

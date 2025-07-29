@@ -97,8 +97,8 @@ module TCP_receiver #(
             TCP_last <= 0;
             
         end else begin
-            if (IP_flush) begin
-                state <= IDLE;
+            if (IP_flush || TCP_flush) begin
+                state <= nstate;
                 TCP_control_rx <= '0;
                 seq_num_rx <= '0;
                 ACK_rx <= '0;
@@ -110,7 +110,6 @@ module TCP_receiver #(
                 TCP_payload_rx <= 0;
                 TCP_valid <= 0;
                 rcv_data <= 0;
-
                 TCP_checksum <= 0;
                 bytes_trk <= '0;
                 nw_segment <= 0;
@@ -134,7 +133,6 @@ module TCP_receiver #(
                 bytes_rcv <= nbytes_rcv;
                 nw_segment <= n_nw_segment;
                 TCP_last <= nTCP_last;
-
             end
 
         end
@@ -254,12 +252,10 @@ module TCP_receiver #(
             ERR_CASE: begin
                 TCP_flush = 1'b1;
                 if (!valid_IP_header_rx) begin
-                    nstate = ERR_CASE;
+                    nstate = IDLE;
                 end
             end
         endcase
-        
-
     end
 
 

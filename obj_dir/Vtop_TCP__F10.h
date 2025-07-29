@@ -69,6 +69,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop_TCP__F10 final : public VerilatedModule 
         CData/*7:0*/ __Vcellinp__tcp_flow__wr_FIFO_len;
         CData/*0:0*/ __PVT__timeout_flag;
         CData/*0:0*/ __PVT__rd_FIFO_valid;
+        VL_OUT16(__PVT__checksum_TX,15,0);
         VL_IN16(__PVT__IP_pseuder,15,0);
         VL_IN16(__PVT__TCP_len,15,0);
         VL_IN16(__PVT__bytes_abt_sent,15,0);
@@ -90,9 +91,9 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop_TCP__F10 final : public VerilatedModule 
         VL_OUT(__PVT__rcv_next,31,0);
         VL_OUT(__PVT__seq_num,31,0);
         IData/*31:0*/ __PVT__seq_num_rx;
-        IData/*31:0*/ __PVT__ACK_rx;
     };
     struct {
+        IData/*31:0*/ __PVT__ACK_rx;
         IData/*31:0*/ __PVT__seq_num_tx;
         IData/*31:0*/ __PVT__ACK_tx;
         IData/*31:0*/ __PVT__ISN_num;

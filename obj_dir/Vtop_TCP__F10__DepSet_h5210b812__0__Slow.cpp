@@ -14,6 +14,7 @@ VL_ATTR_COLD void Vtop_TCP__F10___ctor_var_reset(Vtop_TCP__F10* vlSelf) {
     vlSelf->__PVT__CLK = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 6192783415628501865ull);
     vlSelf->__PVT__nRST = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 9596079045119723318ull);
     vlSelf->__PVT__TX_en = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 3522186512893532196ull);
+    vlSelf->__PVT__checksum_TX = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 4316659010836385484ull);
     vlSelf->__PVT__IP_valid = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 10454921636400644467ull);
     vlSelf->__PVT__IP_flush = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 7370612069209852218ull);
     vlSelf->__PVT__IP_pseuder = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 2907016794571974014ull);

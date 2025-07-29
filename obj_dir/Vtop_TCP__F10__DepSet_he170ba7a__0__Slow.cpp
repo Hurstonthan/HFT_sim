@@ -28,9 +28,10 @@ VL_ATTR_COLD void Vtop_TCP__F10___stl_sequent__TOP__top__u_tcp__0(Vtop_TCP__F10*
     vlSelfRef.__PVT__seq_rcv_start = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__seq_rcv_str;
     vlSelfRef.__PVT__TCP_last = vlSymsp->TOP__top__u_tcp__TCP_tx.__PVT__TCP_tx_last;
     vlSelfRef.__PVT__TCP_transmit = vlSymsp->TOP__top__u_tcp__TCP_tx.__PVT__TCP_transmit;
-    vlSelfRef.__PVT__TCP_checksum_out = vlSymsp->TOP__top__u_tcp__inst.__PVT__TCP_checksum_out;
     vlSelfRef.__PVT__axis_data_rx = vlSymsp->TOP__top__u_tcp__tcp_rcv.__PVT__TCP_payload_rx;
+    vlSelfRef.__PVT__out_order_req = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__out_order_req;
     vlSelfRef.__PVT__handshake_done = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__hand_shake_done;
+    vlSelfRef.__PVT__TCP_checksum_out = vlSymsp->TOP__top__u_tcp__inst.__PVT__TCP_checksum_out;
     vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__timeout_flag 
         = vlSelfRef.__PVT__timeout_flag;
     vlSelfRef.__PVT__window_size_rx = vlSymsp->TOP__top__u_tcp__tcp_rcv.__PVT__window_size_rx;
@@ -145,14 +146,15 @@ VL_ATTR_COLD void Vtop_TCP__F10___stl_sequent__TOP__top__u_tcp__1(Vtop_TCP__F10*
     vlSelfRef.__PVT__ACK_rcv_flag = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__ACK_rcv_flag;
     vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__full 
         = vlSelfRef.__PVT__full;
+    vlSymsp->TOP__top__u_tcp__inst.__PVT__re_trans 
+        = vlSelfRef.__PVT__re_trans;
     vlSelfRef.__PVT__TCP_basesum_payload = ((IData)(vlSelfRef.__PVT__re_trans)
                                              ? (IData)(vlSelfRef.__PVT__checksum_re_trans)
                                              : (IData)(vlSelfRef.__PVT__TCP_checksum_out));
-    vlSymsp->TOP__top__u_tcp__inst.__PVT__re_trans 
-        = vlSelfRef.__PVT__re_trans;
     vlSelfRef.__PVT__TCP_flush = vlSymsp->TOP__top__u_tcp__tcp_rcv.__PVT__TCP_flush;
     vlSymsp->TOP__top__u_tcp__TCP_tx.__PVT__TCP_basesum_payload 
         = vlSelfRef.__PVT__TCP_basesum_payload;
+    vlSelfRef.__PVT__checksum_TX = vlSelfRef.__PVT__TCP_basesum_payload;
     vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__TCP_flush 
         = vlSelfRef.__PVT__TCP_flush;
 }
@@ -174,7 +176,6 @@ VL_ATTR_COLD void Vtop_TCP__F10___stl_sequent__TOP__top__u_tcp__2(Vtop_TCP__F10*
     vlSelfRef.__PVT__rd_FIFO_valid_rcv = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__rd_FIFO_valid;
     vlSelfRef.__Vcellout__tcp_flow__rd_FIFO_ptr = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__rd_FIFO_ptr;
     vlSelfRef.__Vcellout__tcp_flow__rd_FIFO_len = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__rd_FIFO_len;
-    vlSelfRef.__PVT__out_order_req = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__out_order_req;
     vlSymsp->TOP__top__u_tcp__TCP_tx.__PVT__window_size_tx 
         = vlSelfRef.__PVT__window_size_tx;
     vlSymsp->TOP__top__u_tcp__TCP_tx.__PVT__offset_tx 

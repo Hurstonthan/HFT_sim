@@ -12,9 +12,9 @@ VL_ATTR_COLD void Vtop_FIFO_TX__F10___stl_sequent__TOP__top__u_fifo_tx__0(Vtop_F
     // Body
     vlSelfRef.__PVT__empty = ((IData)(vlSelfRef.__PVT__wrt_ptr) 
                               == (IData)(vlSelfRef.__PVT__rd_ptr));
-    vlSelfRef.__PVT__re_trans = vlSelfRef.__PVT__out_order_req_l;
     vlSelfRef.__PVT__full = ((VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)) 
                               - (IData)(1U)) == VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__wrt_ptr)));
+    vlSelfRef.__PVT__re_trans = vlSelfRef.__PVT__out_order_req_l;
 }
 
 VL_ATTR_COLD void Vtop_FIFO_TX__F10___stl_sequent__TOP__top__u_fifo_tx__1(Vtop_FIFO_TX__F10* vlSelf) {
@@ -75,7 +75,7 @@ VL_ATTR_COLD void Vtop_FIFO_TX__F10___stl_sequent__TOP__top__u_fifo_tx__1(Vtop_F
         vlSelfRef.__PVT__nrd_upd = 0U;
         vlSelfRef.__PVT__test_case = std::string{"Handshake done"};
         if (vlSelfRef.__PVT__TX_en) {
-            if (vlSelfRef.__PVT__out_order_req_l) {
+            if (vlSelfRef.__PVT__out_order_req) {
                 vlSelfRef.__PVT__nrd_state = 3U;
                 vlSelfRef.__PVT__nptr_str = (0xfU & 
                                              ((0x58fU 
@@ -156,7 +156,6 @@ VL_ATTR_COLD void Vtop_FIFO_TX__F10___stl_sequent__TOP__top__u_fifo_tx__1(Vtop_F
                 vlSelfRef.__PVT__nptr_str = vlSelfRef.__PVT__rd_ptr;
                 vlSelfRef.__PVT__nptr_end = vlSelfRef.__PVT__msg_end_ptr;
                 vlSelfRef.__PVT__nbytes_abt_sent = vlSelfRef.__PVT__bytes_abt_sent_msg;
-                vlSelfRef.__PVT__nchecksum_l = vlSelfRef.__PVT__checksum_TX;
             }
         }
     } else if ((2U == (IData)(vlSelfRef.__PVT__rd_state))) {
@@ -166,6 +165,7 @@ VL_ATTR_COLD void Vtop_FIFO_TX__F10___stl_sequent__TOP__top__u_fifo_tx__1(Vtop_F
         vlSelfRef.__PVT__rd_debug_2 = ((VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__rd_ptr)) 
                                         - (IData)(1U)) 
                                        != VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__msg_end_ptr)));
+        vlSelfRef.__PVT__nchecksum_l = vlSelfRef.__PVT__checksum_TX;
         if ((((IData)(vlSelfRef.__PVT__rd_FIFO_en) 
               & (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_wrt_ptr)) 
                  != (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__dict_rd_ptr)) 
@@ -296,9 +296,8 @@ VL_ATTR_COLD void Vtop_FIFO_TX__F10___stl_sequent__TOP__top__u_fifo_tx__1(Vtop_F
                                                                                 VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_str)), 6U), 0U, 0xaU)), 0x40U);
             vlSelfRef.__PVT__nptr_str = (0xfU & ((IData)(1U) 
                                                  + (IData)(vlSelfRef.__PVT__ptr_str)));
-            if ((VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_str)) 
-                 == (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__ptr_end)) 
-                     - (IData)(1U)))) {
+            if (((IData)(vlSelfRef.__PVT__ptr_str) 
+                 == (IData)(vlSelfRef.__PVT__ptr_end))) {
                 vlSelfRef.__PVT__nrd_FIFO_last = 1U;
                 vlSelfRef.__PVT__nrd_state = 1U;
                 vlSelfRef.__PVT__nout_order_req_l = 0U;
@@ -391,8 +390,7 @@ VL_ATTR_COLD void Vtop_FIFO_TX__F10___stl_sequent__TOP__top__u_fifo_tx__1(Vtop_F
             vlSelfRef.__PVT__nwr_FIFO_valid = 0U;
             vlSelfRef.__PVT__nmsg_end_ptr = (0xfU & 
                                              ((IData)(1U) 
-                                              + ((IData)(vlSelfRef.__PVT__msg_end_ptr) 
-                                                 + (IData)(vlSelfRef.__PVT__wrt_ptr))));
+                                              + (IData)(vlSelfRef.__PVT__wrt_ptr)));
             vlSelfRef.__PVT__nbytes_abt_sent_msg = 
                 (0xffffU & ((IData)(vlSelfRef.__PVT__bytes_abt_sent_msg) 
                             + VL_SEL_IIII(32, vlSelfRef.__PVT__len_seq, 0U, 0x10U)));

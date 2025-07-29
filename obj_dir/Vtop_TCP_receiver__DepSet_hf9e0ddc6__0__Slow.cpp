@@ -241,7 +241,7 @@ VL_ATTR_COLD void Vtop_TCP_receiver___stl_sequent__TOP__top__u_tcp__tcp_rcv__0(V
     } else if ((5U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__TCP_flush = 1U;
         if ((1U & (~ (IData)(vlSelfRef.__PVT__valid_IP_header_rx)))) {
-            vlSelfRef.__PVT__nstate = 5U;
+            vlSelfRef.__PVT__nstate = 0U;
         }
     }
 }

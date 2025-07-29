@@ -110,6 +110,7 @@ module top #(
 
         // Global TX enable
         .TX_en              (TX_en),
+        .checksum_TX         (checksum_TX),
 
         // IP receive interface
         .IP_valid           (IP_valid),

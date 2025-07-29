@@ -65,7 +65,6 @@ VL_INLINE_OPT void Vtop_TCP__F10___ico_sequent__TOP__top__u_tcp__2(Vtop_TCP__F10
     vlSelfRef.__PVT__rd_FIFO_valid_rcv = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__rd_FIFO_valid;
     vlSelfRef.__Vcellout__tcp_flow__rd_FIFO_ptr = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__rd_FIFO_ptr;
     vlSelfRef.__Vcellout__tcp_flow__rd_FIFO_len = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__rd_FIFO_len;
-    vlSelfRef.__PVT__out_order_req = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__out_order_req;
     vlSelfRef.__PVT__rd_FIFO_ptr = (0xfU & VL_SEL_IIII(11, (IData)(vlSelfRef.__Vcellout__tcp_flow__rd_FIFO_ptr), 0U, 4U));
     vlSelfRef.__PVT__rd_FIFO_len = (0xfU & VL_SEL_IIII(8, (IData)(vlSelfRef.__Vcellout__tcp_flow__rd_FIFO_len), 0U, 4U));
 }
@@ -104,6 +103,7 @@ VL_INLINE_OPT void Vtop_TCP__F10___nba_sequent__TOP__top__u_tcp__2(Vtop_TCP__F10
     // Body
     vlSelfRef.__PVT__seq_rcv_start = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__seq_rcv_str;
     vlSelfRef.__PVT__handshake_done = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__hand_shake_done;
+    vlSelfRef.__PVT__out_order_req = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__out_order_req;
     vlSelfRef.__PVT__rcv_next = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__rcv_next_out;
     vlSelfRef.__PVT__seq_num = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__seq_num_out;
 }
@@ -232,6 +232,7 @@ VL_INLINE_OPT void Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__0(Vtop_TCP__F10* v
                                              : (IData)(vlSelfRef.__PVT__TCP_checksum_out));
     vlSymsp->TOP__top__u_tcp__TCP_tx.__PVT__TCP_basesum_payload 
         = vlSelfRef.__PVT__TCP_basesum_payload;
+    vlSelfRef.__PVT__checksum_TX = vlSelfRef.__PVT__TCP_basesum_payload;
 }
 
 VL_INLINE_OPT void Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__1(Vtop_TCP__F10* vlSelf) {
@@ -279,7 +280,6 @@ VL_INLINE_OPT void Vtop_TCP__F10___nba_comb__TOP__top__u_tcp__3(Vtop_TCP__F10* v
     vlSelfRef.__PVT__rd_FIFO_valid_rcv = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__rd_FIFO_valid;
     vlSelfRef.__Vcellout__tcp_flow__rd_FIFO_ptr = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__rd_FIFO_ptr;
     vlSelfRef.__Vcellout__tcp_flow__rd_FIFO_len = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__rd_FIFO_len;
-    vlSelfRef.__PVT__out_order_req = vlSymsp->TOP__top__u_tcp__tcp_flow.__PVT__out_order_req;
     vlSelfRef.__PVT__rd_FIFO_ptr = (0xfU & VL_SEL_IIII(11, (IData)(vlSelfRef.__Vcellout__tcp_flow__rd_FIFO_ptr), 0U, 4U));
     vlSelfRef.__PVT__rd_FIFO_len = (0xfU & VL_SEL_IIII(8, (IData)(vlSelfRef.__Vcellout__tcp_flow__rd_FIFO_len), 0U, 4U));
 }

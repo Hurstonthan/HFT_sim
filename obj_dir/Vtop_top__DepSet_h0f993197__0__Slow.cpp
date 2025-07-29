@@ -19,8 +19,6 @@ VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__0(Vtop_top* vlSelf) {
     vlSelfRef.__PVT__TCP_stop_flg_int = vlSymsp->TOP__top__u_fifo_tx.__PVT__TCP_stop_flag;
     vlSelfRef.__PVT__rd_ftx_valid_int = vlSymsp->TOP__top__u_fifo_tx.__PVT__rd_FIFO_valid;
     vlSelfRef.__PVT__checksum_re_trans_int = vlSymsp->TOP__top__u_fifo_tx.__PVT__checksum_re_trans;
-    vlSymsp->TOP__top__u_fifo_tx.__PVT__checksum_TX 
-        = vlSelfRef.__PVT__checksum_TX;
     vlSelfRef.__PVT__rd_ftx_payload_int = vlSymsp->TOP__top__u_fifo_tx.__PVT__rd_FIFO_payload;
     vlSelfRef.__PVT__rd_ftx_last_int = vlSymsp->TOP__top__u_fifo_tx.__PVT__rd_FIFO_last;
     vlSelfRef.__PVT__seq_rx_FIFO_rd_int = vlSymsp->TOP__top__u_payload_fifo.__PVT__seq_rx_FIFO_rd;
@@ -86,6 +84,7 @@ VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__1(Vtop_top* vlSelf) {
     vlSelfRef.TCP_last = vlSymsp->TOP__top__u_tcp.__PVT__TCP_last;
     vlSelfRef.TCP_transmit = vlSymsp->TOP__top__u_tcp.__PVT__TCP_transmit;
     vlSelfRef.__PVT__axis_data_rx_int = vlSymsp->TOP__top__u_tcp.__PVT__axis_data_rx;
+    vlSelfRef.__PVT__out_order_req_int = vlSymsp->TOP__top__u_tcp.__PVT__out_order_req;
     vlSelfRef.__PVT__handshake_done_int = vlSymsp->TOP__top__u_tcp.__PVT__handshake_done;
     vlSelfRef.__PVT__axis_t_last_int = vlSymsp->TOP__top__u_tcp.__PVT__axis_t_last;
     vlSelfRef.__PVT__nw_segment = vlSymsp->TOP__top__u_tcp.__PVT__nw_segment;
@@ -95,6 +94,8 @@ VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__1(Vtop_top* vlSelf) {
         = vlSelfRef.__PVT__seq_rcv_start_int;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__axis_data_rx 
         = vlSelfRef.__PVT__axis_data_rx_int;
+    vlSymsp->TOP__top__u_fifo_tx.__PVT__out_order_req 
+        = vlSelfRef.__PVT__out_order_req_int;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__handshake_done 
         = vlSelfRef.__PVT__handshake_done_int;
     vlSymsp->TOP__top__u_fifo_tx.__PVT__hand_shake_done 
@@ -117,11 +118,14 @@ VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__2(Vtop_top* vlSelf) {
     vlSelfRef.__PVT__ACK_num_int = vlSymsp->TOP__top__u_tcp.__PVT__ACK_num;
     vlSelfRef.__PVT__ACK_rcv_flag_int = vlSymsp->TOP__top__u_tcp.__PVT__ACK_rcv_flag;
     vlSelfRef.__PVT__TCP_flush_int = vlSymsp->TOP__top__u_tcp.__PVT__TCP_flush;
+    vlSelfRef.__PVT__checksum_TX = vlSymsp->TOP__top__u_tcp.__PVT__checksum_TX;
     vlSymsp->TOP__top__u_fifo_tx.__PVT__ACK_num = vlSelfRef.__PVT__ACK_num_int;
     vlSymsp->TOP__top__u_fifo_tx.__PVT__ACK_rcv_flag 
         = vlSelfRef.__PVT__ACK_rcv_flag_int;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__TCP_flush 
         = vlSelfRef.__PVT__TCP_flush_int;
+    vlSymsp->TOP__top__u_fifo_tx.__PVT__checksum_TX 
+        = vlSelfRef.__PVT__checksum_TX;
 }
 
 VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__3(Vtop_top* vlSelf) {
@@ -133,7 +137,6 @@ VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__3(Vtop_top* vlSelf) {
     vlSelfRef.__PVT__wr_pfifo_en_int = vlSymsp->TOP__top__u_tcp.__PVT__wr_FIFO_en;
     vlSelfRef.__PVT__wr_pfifo_offset_int = vlSymsp->TOP__top__u_tcp.__PVT__wr_FIFO_offset;
     vlSelfRef.__PVT__rd_pfifo_valid_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_valid_rcv;
-    vlSelfRef.__PVT__out_order_req_int = vlSymsp->TOP__top__u_tcp.__PVT__out_order_req;
     vlSelfRef.__PVT__seq_num_tx = vlSymsp->TOP__top__u_tcp.__PVT__seq_num_tx_out;
     vlSelfRef.__PVT__rd_pfifo_ptr_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_ptr;
     vlSelfRef.__PVT__rd_pfifo_len_int = vlSymsp->TOP__top__u_tcp.__PVT__rd_FIFO_len;
@@ -144,8 +147,6 @@ VL_ATTR_COLD void Vtop_top___stl_sequent__TOP__top__3(Vtop_top* vlSelf) {
         = vlSelfRef.__PVT__wr_pfifo_offset_int;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__rd_FIFO_valid 
         = vlSelfRef.__PVT__rd_pfifo_valid_int;
-    vlSymsp->TOP__top__u_fifo_tx.__PVT__out_order_req 
-        = vlSelfRef.__PVT__out_order_req_int;
     vlSymsp->TOP__top__u_fifo_tx.__PVT__seq_num_tx 
         = vlSelfRef.__PVT__seq_num_tx;
     vlSymsp->TOP__top__u_payload_fifo.__PVT__rd_FIFO_ptr 

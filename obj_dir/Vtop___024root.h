@@ -73,7 +73,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
     VL_OUT64(TCP_transmit,63,0);
     VL_IN64(soupbin_TCP_payload,63,0);
     VL_OUT64(axis_rd_data,63,0);
-    VlUnpacked<CData/*0:0*/, 13> __Vm_traceActivity;
+    VlUnpacked<CData/*0:0*/, 15> __Vm_traceActivity;
     VlTriggerVec<1> __VstlTriggered;
     VlTriggerVec<1> __VicoTriggered;
     VlTriggerVec<14> __VactTriggered;

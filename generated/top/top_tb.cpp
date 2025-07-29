@@ -43,10 +43,24 @@ std::vector<IP_payload_t> testcase1 {
     {8, 0xA5A5A5A5A55AA55A},
     
 };
-
 std::vector<IP_payload_t> testcase2 {
     {8, 0x4444333322221111},
     {8, 0xCAFECAFECAFECAFE}
+};
+
+std::vector<IP_payload_t> testcase3 {
+    {8, 0xADADADADADADADAD},
+    {8, 0xADADADADADADADAD}
+};
+
+std::vector<IP_payload_t> testcase1_long {
+    {8, 0xBABEBABEBABEBABE},
+    {8, 0xBABEBABEBABEBABE},
+    {8, 0xBABEBABEBABEBABE},
+    {8, 0xBABEBABEBABEBABE},
+    {8, 0xBABEBABEBABEBABE},
+    
+
 };
 
 std::vector<IP_payload_t> zero_case{
@@ -392,6 +406,31 @@ void rcv_inorder_data() {
     tick(top, tfp);
 }
 
+void error_rcv_case() {
+    uint32_t seq_num_rx, ACK_num_rx;
+    uint16_t seq_num_MSB, seq_num_LSB;
+    uint16_t window_size_rx, checksum_rx, urgent_pointer_rx, TCP_len;
+    uint8_t TCP_control_rx;
+    std::vector<IP_rx_in> TCP_header;
+    
+    // First segment
+    seq_num_rx       = top -> rcv_next;
+    ACK_num_rx       = ACK_curr;
+    seq_num_MSB      = (seq_num_rx >> 16) & 0xFFFF;
+    seq_num_LSB      =  seq_num_rx        & 0xFFFF;
+    window_size_rx   = 0x1111;
+    checksum_rx      = 0x0000;
+    urgent_pointer_rx= 0x0000;
+    TCP_len = getting_tcp_len(testcase2) + 2;
+    TCP_control_rx   = 0x10;
+    
+
+    TCP_header = prepare_header (seq_num_rx, ACK_num_rx, TCP_control_rx, testcase2,TCP_len);
+    rcv_IP (TCP_header, testcase3, TCP_len);
+    tick(top, tfp);
+    tick(top, tfp);
+}
+
 void rcv_update_ACKS_order_data() {
     uint32_t seq_num_rx, ACK_num_rx;
     uint16_t seq_num_MSB, seq_num_LSB;
@@ -432,7 +471,7 @@ void rcv_out_of_order_data() {
     std::vector<IP_rx_in> TCP_header;
     
     // First segment
-    seq_num_rx       = top -> rcv_next + 16 + 2; //The gap is 4 bytes
+    seq_num_rx       = top -> rcv_next + 24 + 2; //The gap is 4 bytes
     ACK_num_rx       = ACK_curr;
     seq_num_MSB      = (seq_num_rx >> 16) & 0xFFFF;
     seq_num_LSB      =  seq_num_rx        & 0xFFFF;
@@ -466,7 +505,111 @@ void rcv_out_of_order_data() {
     tick(top, tfp);
     tick(top, tfp);
     tick(top, tfp);
+}
+
+void left_trim () {
+    uint32_t seq_num_rx, ACK_num_rx;
+    uint16_t seq_num_MSB, seq_num_LSB;
+    uint16_t window_size_rx, checksum_rx, urgent_pointer_rx, TCP_len;
+    uint8_t TCP_control_rx;
+    std::vector<IP_rx_in> TCP_header;
     
+    // First segment
+    seq_num_rx       = top -> rcv_next + 16 + 2; //The gap is 4 bytes
+    ACK_num_rx       = ACK_curr;
+    seq_num_MSB      = (seq_num_rx >> 16) & 0xFFFF;
+    seq_num_LSB      =  seq_num_rx        & 0xFFFF;
+    window_size_rx   = 0x1111;
+    checksum_rx      = 0x0000;
+    urgent_pointer_rx= 0x0000;
+    TCP_len = getting_tcp_len(testcase2) + 2;
+    TCP_control_rx   = 0x10;
+    
+
+    TCP_header = prepare_header (seq_num_rx, ACK_num_rx, TCP_control_rx, testcase2,TCP_len);
+    rcv_IP (TCP_header, testcase2, TCP_len);
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+
+    //Second segment in order
+    seq_num_rx       = top -> rcv_next + 16 + 2 + 10; //The gap is 4 bytes
+    ACK_num_rx       = ACK_curr;
+    seq_num_MSB      = (seq_num_rx >> 16) & 0xFFFF;
+    seq_num_LSB      =  seq_num_rx        & 0xFFFF;
+    window_size_rx   = 0x1111;
+    checksum_rx      = 0x0000;
+    urgent_pointer_rx= 0x0000;
+    TCP_len = getting_tcp_len(testcase1_long) + 2;
+    TCP_control_rx   = 0x10;
+    
+
+    TCP_header = prepare_header (seq_num_rx, ACK_num_rx, TCP_control_rx, testcase1_long,TCP_len);
+    rcv_IP (TCP_header, testcase1_long, TCP_len);
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+}
+
+void fast_transmit () {
+    uint32_t seq_num_rx, ACK_num_rx;
+    uint16_t seq_num_MSB, seq_num_LSB;
+    uint16_t window_size_rx, checksum_rx, urgent_pointer_rx, TCP_len;
+    uint8_t TCP_control_rx;
+    std::vector<IP_rx_in> TCP_header;
+    
+    // First segment in order
+    seq_num_rx       = top -> rcv_next; //The gap is 4 bytes
+    ACK_num_rx       = ACK_curr;
+    seq_num_MSB      = (seq_num_rx >> 16) & 0xFFFF;
+    seq_num_LSB      =  seq_num_rx        & 0xFFFF;
+    window_size_rx   = 0x1111;
+    checksum_rx      = 0x0000;
+    urgent_pointer_rx= 0x0000;
+    TCP_len = getting_tcp_len(testcase3) + 2;
+    TCP_control_rx   = 0x10;
+    
+
+    TCP_header = prepare_header (seq_num_rx, ACK_num_rx, TCP_control_rx, testcase3,TCP_len);
+    rcv_IP (TCP_header, testcase3, TCP_len);
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+
+    //Second segment in order
+    seq_num_rx       = top -> rcv_next; //The gap is 4 bytes
+    ACK_num_rx       = ACK_curr;
+    seq_num_MSB      = (seq_num_rx >> 16) & 0xFFFF;
+    seq_num_LSB      =  seq_num_rx        & 0xFFFF;
+    window_size_rx   = 0x1111;
+    checksum_rx      = 0x0000;
+    urgent_pointer_rx= 0x0000;
+    TCP_len = getting_tcp_len(testcase3) + 2;
+    TCP_control_rx   = 0x10;
+    TCP_header = prepare_header (seq_num_rx, ACK_num_rx, TCP_control_rx, testcase3,TCP_len);
+    rcv_IP (TCP_header, testcase3, TCP_len);
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+
+    // //Third segment in order
+    // seq_num_rx       = top -> rcv_next; //The gap is 4 bytes
+    // ACK_num_rx       = ACK_curr;
+    // seq_num_MSB      = (seq_num_rx >> 16) & 0xFFFF;
+    // seq_num_LSB      =  seq_num_rx        & 0xFFFF;
+    // window_size_rx   = 0x1111;
+    // checksum_rx      = 0x0000;
+    // urgent_pointer_rx= 0x0000;
+    // TCP_len = getting_tcp_len(testcase1) + 2;
+    // TCP_control_rx   = 0x10;
+    // TCP_header = prepare_header (seq_num_rx, ACK_num_rx, TCP_control_rx, testcase1,TCP_len);
+    // rcv_IP (TCP_header, testcase1, TCP_len);
+    // tick(top, tfp);
+    // tick(top, tfp);
+    // tick(top, tfp);
+
+    sending_TCP();
+
 }
 
 
@@ -512,6 +655,9 @@ int main(int argc, char **argv) {
     //Setting up handshake done
     setup_handshake();
 
+    // top -> tb_count +=1;
+    // left_trim();
+
     //Testing APP write into FIFO (Also testing the basesum of TCP) 
     top -> tb_count +=1;
     wr_FIFO_TX();
@@ -547,8 +693,16 @@ int main(int argc, char **argv) {
     top -> tb_count +=1;
     rd_FIFO_rcv();
 
-    //Fast transmission
-    
+    // //Fast transmission
+    // top -> tb_count += 1;
+    // fast_transmit();
+
+    // top -> tb_count += 1;
+    // error_rcv_case();
+
+    //right trim
+    // top -> tb_count += 1;
+    // rcv_out_of_order_data();
 
 
 

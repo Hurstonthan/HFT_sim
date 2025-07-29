@@ -241,7 +241,7 @@ VL_INLINE_OPT void Vtop_TCP_receiver___ico_sequent__TOP__top__u_tcp__tcp_rcv__0(
     } else if ((5U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__TCP_flush = 1U;
         if ((1U & (~ (IData)(vlSelfRef.__PVT__valid_IP_header_rx)))) {
-            vlSelfRef.__PVT__nstate = 5U;
+            vlSelfRef.__PVT__nstate = 0U;
         }
     }
 }
@@ -278,8 +278,8 @@ VL_INLINE_OPT void Vtop_TCP_receiver___nba_sequent__TOP__top__u_tcp__tcp_rcv__0(
     vlSelfRef.__Vdly__TCP_control_rx = vlSelfRef.__PVT__TCP_control_rx;
     vlSelfRef.__Vdly__bytes_rcv = vlSelfRef.__PVT__bytes_rcv;
     if (vlSelfRef.__PVT__nRST) {
-        if (vlSelfRef.__PVT__IP_flush) {
-            vlSelfRef.__Vdly__state = 0U;
+        if (((IData)(vlSelfRef.__PVT__IP_flush) | (IData)(vlSelfRef.__PVT__TCP_flush))) {
+            vlSelfRef.__Vdly__state = vlSelfRef.__PVT__nstate;
             vlSelfRef.__Vdly__TCP_control_rx = 0U;
             vlSelfRef.__Vdly__seq_num_rx = 0U;
             vlSelfRef.__Vdly__ACK_rx = 0U;
@@ -573,7 +573,7 @@ VL_INLINE_OPT void Vtop_TCP_receiver___nba_sequent__TOP__top__u_tcp__tcp_rcv__0(
     } else if ((5U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__TCP_flush = 1U;
         if ((1U & (~ (IData)(vlSelfRef.__PVT__valid_IP_header_rx)))) {
-            vlSelfRef.__PVT__nstate = 5U;
+            vlSelfRef.__PVT__nstate = 0U;
         }
     }
 }

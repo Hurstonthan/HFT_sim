@@ -85,7 +85,7 @@ module TCP_flow_ctrl #(
     typedef struct packed {
         logic v;
         logic [31:0] seq_num;
-        logic [15:0] seq_length;
+        logic [31:0] seq_length;
         logic [15:0] rd_ptr;
         logic [15:0] length_ptr;
         
@@ -113,24 +113,31 @@ module TCP_flow_ctrl #(
     
     
     logic [31:0] rcv_next, nrcv_next;
+    logic [31:0] rcv_next_prev;
     logic out_of_order_flg; //This flag is for handling the out of order packets
+
+    logic nout_order_req;
+    logic [31:0] seq_tx_retrans, nseq_tx_retrans;
 
     logic [$clog2(N)-1:0] free_idx, match_idx;;
     logic [N - 1:0] v_vec, free_vec; //Vector of valid bits for the out of order packets
     logic [31:0] [N - 1 : 0] seq_vec;
     logic free_mask, match_found;
-    logic [N - 1:0] match_mask;
-    logic [N -1 : 0] overlap_mask;
     logic [3:0] flush_ptr, nflush_ptr, len_flush_ptr;
     logic [7:0] nlen_flush_ptr;
     logic debug;
     // logic overlap_condition;
-    
     genvar  k;
+
+    //Masking conditions for handle triming cases
+    logic [N - 1:0] match_mask;
+    logic [N -1 : 0] overlap_mask, left_trim_mask, right_trim_mask;
+    logic [$clog2(N) - 1:0] lt_idx, rt_idx, ov_idx;
+
 
 
     //New out of order handle in Tripping and slice case
-    logic [31:0] seq_rx_trk, nseq_rx_trk;
+    logic [31:0] seq_rx_trk, nseq_rx_trk, seq_rx_str, nseq_rx_str;
     logic [7:0] bytes_drop, bytes_left;
     logic [N-1:0][3:0] flush_list, nflush_list;
 
@@ -155,16 +162,18 @@ module TCP_flow_ctrl #(
             assign v_vec[k] = TCP_order[k].v;
         end
     endgenerate
+
     generate
         for (k = 0; k< N; k++) begin
-            assign overlap_mask[k] = (TCP_order[k].v && ((seq_rx_trk + TCP_bytes_trk < TCP_order[k].seq_length) && (seq_rx_trk >= TCP_order[k].seq_num)));
+            assign overlap_mask[k]    = (TCP_order[k].v && ((seq_rx_trk + TCP_bytes_trk < TCP_order[k].seq_length) && (seq_rx_trk >= TCP_order[k].seq_num)));
+            assign left_trim_mask[k]  = (TCP_order[k].v && (seq_rx_trk < TCP_order[k].seq_length) && (seq_rx_trk + TCP_bytes_trk >= TCP_order[k].seq_length));
+            assign right_trim_mask[k] = TCP_order[k].v && (seq_rx_trk < TCP_order[k].seq_num) && (seq_rx_trk + TCP_bytes_trk > TCP_order[k].seq_num);
         end
-
     endgenerate
     assign free_vec = ~v_vec; //Mask of free bits for the out of order packets
 
     for (genvar i = 0; i < N; i++) begin
-        assign match_mask[i] = ((rcv_next == TCP_order[i].seq_num) && TCP_order[i].v); //Mask of matched bits for the out of order packets
+        assign match_mask[i] = ((rcv_next >= TCP_order[i].seq_num) && TCP_order[i].v); //Mask of matched bits for the out of order packets
     end
 
     priority_encoder #(
@@ -181,6 +190,30 @@ module TCP_flow_ctrl #(
         .din(free_vec),
         .valid(free_mask),
         .idx(free_idx)
+    );
+
+    
+    //Convert idx for getting right trim left trim overlap case
+    priority_encoder #(
+        .WIDTH(N)
+    ) lt (
+        .din(left_trim_mask),
+        .valid(),
+        .idx(lt_idx)
+    );
+    priority_encoder #(
+        .WIDTH(N)
+    ) rt (
+        .din(right_trim_mask),
+        .valid(),
+        .idx(rt_idx)
+    );
+    priority_encoder #(
+        .WIDTH(N)
+    ) ov (
+        .din(overlap_mask),
+        .valid(),
+        .idx(rt_idx)
     );
     
 
@@ -205,11 +238,18 @@ module TCP_flow_ctrl #(
             len_flush_ptr <= 0;
             hand_shake_done <= 0;
             seq_rcv_str <= 0;
+            out_order_req <= 0;
+            seq_tx_retrans <=0;
+            seq_rx_str <= 0;
+            rcv_next_prev <= 0;
         end else if (TCP_flush) begin
             seq_rx_trk <= 0;
-            flush_ptr <= 0;
-            flush_list <= 0;
-            len_flush_ptr <= 0;
+            flush_ptr <= nflush_ptr;
+            flush_list <= nflush_list;
+            len_flush_ptr <= nlen_flush_ptr;
+            out_order_req <= 0;
+            seq_tx_retrans <=0;
+            seq_rx_str <= 0;
         end
         else begin
             seq_rx_trk <= nseq_rx_trk;
@@ -218,6 +258,12 @@ module TCP_flow_ctrl #(
             flush_list <= nflush_list;
             hand_shake_done <= nhand_shake_done;
             seq_rcv_str <= nseq_rcv_str;
+            out_order_req <= nout_order_req;
+            seq_tx_retrans <= nseq_tx_retrans;
+            seq_rx_str <= nseq_rx_str;
+            if (!nw_segment) begin
+                rcv_next_prev <= rcv_next;
+            end
 
         end
     end
@@ -247,11 +293,12 @@ module TCP_flow_ctrl #(
             
             state <= nstate;
             if (match_found) begin
-                if (TCP_order[match_idx].seq_num == rcv_next) begin
-                    // rcv_next <= rcv_next + TCP_order[match_idx].seq_length; //Update the next sequence number to receive
-                    rcv_next <= TCP_order[match_idx].seq_length; //Update the next sequence number to receive
-                    //TCP_order[match_idx].v <= 1'b0; //Set the valid bit to 0
-                end 
+                rcv_next <= TCP_order[match_idx].seq_length; //Update the next sequence number to receive
+                // if (TCP_order[match_idx].seq_num == rcv_next) begin
+                //     // rcv_next <= rcv_next + TCP_order[match_idx].seq_length; //Update the next sequence number to receive
+                //     rcv_next <= TCP_order[match_idx].seq_length; //Update the next sequence number to receive
+                //     //TCP_order[match_idx].v <= 1'b0; //Set the valid bit to 0
+                // end 
                 //else if (rcv_next > TCP_order[match_idx].seq_num) begin
                 //     //Need to check this logic
                 //     if (rcv_next >= TCP_order[match_idx].seq_num + TCP_order[match_idx].length) begin
@@ -287,6 +334,7 @@ module TCP_flow_ctrl #(
         out_of_order_flg = 1'b0; //Reset the out of order flag
 
         nseq_rx_trk = seq_num_rx;
+        nseq_rx_str = seq_num_rx;
         bytes_left = 0;
         bytes_drop = 0;
 
@@ -295,6 +343,7 @@ module TCP_flow_ctrl #(
         rd_FIFO_ptr = 0;
         rd_FIFO_len = 0;
         rd_FIFO_valid = 1'b0;
+
         nflush_list =flush_list;
         nflush_ptr = flush_ptr;
         nlen_flush_ptr = len_flush_ptr;
@@ -304,84 +353,166 @@ module TCP_flow_ctrl #(
 
         //Case for handshake
         nseq_rcv_str = seq_rcv_str;
-        out_order_req = 1'b0;
+        nout_order_req = out_order_req;
+        nseq_tx_retrans = seq_tx_retrans;
 
         
+        ///////////////////////TRIMMING CASE ////////////////////////
+        if (nw_segment) begin
+            //Case 1: Full overlap
+            nseq_rx_trk = seq_rx_trk + TCP_bytes_trk;
+            nseq_rx_str = seq_rx_str;
+            if (seq_rx_trk == rcv_next) begin
+                nrcv_next = rcv_next + TCP_bytes_trk;
+            end
+
+            if (|overlap_mask) begin
+                case_bug = overlap;
+                nseq_rx_str = TCP_order[ov_idx].seq_length;
+                wr_FIFO_en = 1'b0;
+            end
+            //Case 2: right trim
+            //seq_rx_trk < TCP_order[i].seq_num && seq_rx_trk + TCP_bytes_trk > TCP_order[i].seq_num
+            else if (|right_trim_mask) begin
+                case_bug = right_trim;
+                //case_bug_0 = 1'b1;
+                //I'm about to enter the overlap segment
+                //I'm still write the data
+                bytes_drop = seq_rx_trk + TCP_bytes_trk - TCP_order[rt_idx].seq_num;
+                bytes_left = TCP_bytes_trk - bytes_drop;
+                // nseq_rx_trk = seq_rx_trk + bytes_left;
+                wr_FIFO_offset = (8'hFF << bytes_drop);
+                // if (rcv_next == seq_rx_trk) begin
+                //     nrcv_next = TCP_order[rt_idx].seq_length;
+                // end
+
+                ///This is where we meet overlap and finish a segment
+                if (free_mask) begin
+                    nTCP_order[free_idx].seq_num = seq_rx_str;
+                    nTCP_order[free_idx].seq_length = seq_rx_trk + bytes_left;
+                    nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
+                    nTCP_order[free_idx].length_ptr = wr_FIFO_len;//length_ptr will be 
+                    nTCP_order[free_idx].v = 1'b1;//length_ptr will be 
+                    nflush_list[len_flush_ptr] = free_idx;
+                    nlen_flush_ptr = len_flush_ptr + 1;
+                end
+                // if (seq_num_rx == rcv_next) begin
+                //     nrcv_next = seq_rx_trk + bytes_left;
+                // end
+            end
+
+            //Case 3: left trim
+            else if (|left_trim_mask) begin
+                case_bug = left_trim;
+                case_bug_0 = 1'b1;
+                bytes_drop = (TCP_order[lt_idx].seq_length) - seq_rx_trk;
+                bytes_left = TCP_bytes_trk - bytes_drop;
+                // nseq_rx_trk = seq_rx_trk + bytes_left;
+                nseq_rx_trk = seq_rx_trk + TCP_bytes_trk;
+                nseq_rx_str = seq_rx_trk + bytes_left;
+                wr_FIFO_offset = (8'hFF >> bytes_drop);
+                if ((seq_rx_trk + TCP_bytes_trk) > rcv_next) begin
+                    nrcv_next = seq_rx_trk + TCP_bytes_trk;
+                end
+            end
+
+            //Case 4: Non overlap
+            else begin
+                case_bug = non_overlap;
+                // wr_FIFO_en = 1'b1;
+                wr_FIFO_offset = 8'hFF >> (8 - TCP_bytes_trk);
+                if (free_mask && TCP_last) begin 
+                    // case_bug = right_trim;
+                    nTCP_order[free_idx].seq_num = seq_rx_str;
+                    nTCP_order[free_idx].seq_length = seq_rx_trk + TCP_bytes_trk;
+                    nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
+                    nTCP_order[free_idx].length_ptr = wr_FIFO_len + 1;//length_ptr will be 
+                    nTCP_order[free_idx].v = 1'b1;
+                    nflush_list[len_flush_ptr] = free_idx;
+                    nlen_flush_ptr = len_flush_ptr + 1;
+
+                    // if (seq_num_rx == rcv_next) begin
+                    //     nrcv_next = seq_rx_trk + TCP_bytes_trk;
+                    // end
+                end
+            end
+        end
+        ////////////////////////////////////////////////////////////
 
         //Receiving // Writing logic
         //seq_rx_trk is the start of the sequence number rx       
         for (int i = 0; i < N; i = i + 1) begin
-            if (nw_segment) begin
-                //Case 1: Full overlap
-                nseq_rx_trk = seq_rx_trk + TCP_bytes_trk;
-                if (TCP_order[i].v && (seq_rx_trk >= TCP_order[i].seq_num) && (seq_rx_trk + TCP_bytes_trk < (TCP_order[i].seq_length))) begin
-                    case_bug = overlap;
-                    wr_FIFO_en = 1'b0;
-                end
+            // if (nw_segment) begin
+            //     //Case 1: Full overlap
+            //     nseq_rx_trk = seq_rx_trk + TCP_bytes_trk;
+            //     if (TCP_order[i].v && (seq_rx_trk >= TCP_order[i].seq_num) && (seq_rx_trk + TCP_bytes_trk < (TCP_order[i].seq_length))) begin
+            //         case_bug = overlap;
+            //         wr_FIFO_en = 1'b0;
+            //     end
 
-                //Case 2: right trim
-                //seq_rx_trk < TCP_order[i].seq_num && seq_rx_trk + TCP_bytes_trk > TCP_order[i].seq_num
-                else if (TCP_order[i].v && (seq_rx_trk < TCP_order[i].seq_num) && (seq_rx_trk + TCP_bytes_trk > TCP_order[i].seq_num)) begin
-                    case_bug = right_trim;
-                    case_bug_0 = 1'b1;
-                    //I'm about to enter the overlap segment
-                    //I'm still write the data
-                    bytes_drop = seq_rx_trk + TCP_bytes_trk - TCP_order[i].seq_num;
-                    bytes_left = TCP_bytes_trk - bytes_drop;
-                    // nseq_rx_trk = seq_rx_trk + bytes_left;
-                    wr_FIFO_offset = (8'hFF << bytes_drop);
+            //     //Case 2: right trim
+            //     //seq_rx_trk < TCP_order[i].seq_num && seq_rx_trk + TCP_bytes_trk > TCP_order[i].seq_num
+            //     else if (TCP_order[i].v && (seq_rx_trk < TCP_order[i].seq_num) && (seq_rx_trk + TCP_bytes_trk > TCP_order[i].seq_num)) begin
+            //         case_bug = right_trim;
+            //         //case_bug_0 = 1'b1;
+            //         //I'm about to enter the overlap segment
+            //         //I'm still write the data
+            //         bytes_drop = seq_rx_trk + TCP_bytes_trk - TCP_order[i].seq_num;
+            //         bytes_left = TCP_bytes_trk - bytes_drop;
+            //         // nseq_rx_trk = seq_rx_trk + bytes_left;
+            //         wr_FIFO_offset = (8'hFF << bytes_drop);
 
-                    ///This is where we meet overlap and finish a segment
-                    if (free_mask) begin
-                        
-                        nTCP_order[free_idx].seq_num = seq_num_rx;
-                        nTCP_order[free_idx].seq_length = seq_rx_trk + bytes_left;
-                        nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
-                        nTCP_order[free_idx].length_ptr = wr_FIFO_len;//length_ptr will be 
-                        nTCP_order[free_idx].v = 1'b1;//length_ptr will be 
-                        nflush_list[len_flush_ptr] = free_idx;
-                        nlen_flush_ptr = len_flush_ptr + 1;
-                    end
-                    if (seq_num_rx == rcv_next) begin
-                        nrcv_next = seq_rx_trk + bytes_left;
-                    end
-                end
+            //         ///This is where we meet overlap and finish a segment
+            //         if (free_mask) begin
+            //             nTCP_order[free_idx].seq_num = seq_num_rx;
+            //             nTCP_order[free_idx].seq_length = seq_rx_trk + bytes_left;
+            //             nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
+            //             nTCP_order[free_idx].length_ptr = wr_FIFO_len;//length_ptr will be 
+            //             nTCP_order[free_idx].v = 1'b1;//length_ptr will be 
+            //             nflush_list[len_flush_ptr] = free_idx;
+            //             nlen_flush_ptr = len_flush_ptr + 1;
+            //         end
+            //         if (seq_num_rx == rcv_next) begin
+            //             nrcv_next = seq_rx_trk + bytes_left;
+            //         end
+            //     end
 
-                //Case 3: left trim
-                else if (TCP_order[i].v && (seq_rx_trk < TCP_order[i].seq_length) && (seq_rx_trk + TCP_bytes_trk >= TCP_order[i].seq_length)) begin
-                    case_bug = left_trim;
-                    bytes_drop = (TCP_order[i].seq_num + TCP_order[i].seq_length) - seq_rx_trk;
-                    bytes_left = TCP_bytes_trk - bytes_drop;
-                    nseq_rx_trk = seq_rx_trk + bytes_left;
-                    wr_FIFO_offset = (8'hFF >> bytes_drop);
-                end
+            //     //Case 3: left trim
+            //     else if (TCP_order[i].v && (seq_rx_trk < TCP_order[i].seq_length) && (seq_rx_trk + TCP_bytes_trk >= TCP_order[i].seq_length)) begin
+            //         case_bug = left_trim;
+            //         case_bug_0 = 1'b1;
+            //         bytes_drop = (TCP_order[i].seq_length) - seq_rx_trk;
+            //         bytes_left = TCP_bytes_trk - bytes_drop;
+            //         nseq_rx_trk = seq_rx_trk + bytes_left;
+            //         //wr_FIFO_offset = (8'hFF >> bytes_drop);
+            //         wr_FIFO_offset = 0;
+            //     end
 
-                //Case 4: Non overlap
-                else if (!(|overlap_mask)) begin
-                    case_bug = right_trim;
-                    // wr_FIFO_en = 1'b1;
-                    wr_FIFO_offset = 8'hFF >> (8 - TCP_bytes_trk);
-                    if (free_mask && TCP_last) begin 
-                        // case_bug = right_trim;
-                        nTCP_order[free_idx].seq_num = seq_num_rx;
-                        nTCP_order[free_idx].seq_length = seq_rx_trk + TCP_bytes_trk;
-                        nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
-                        nTCP_order[free_idx].length_ptr = wr_FIFO_len + 1;//length_ptr will be 
-                        nTCP_order[free_idx].v = 1'b1;
+            //     //Case 4: Non overlap
+            //     else if (!(|overlap_mask)) begin
+            //         case_bug = non_overlap;
+            //         // wr_FIFO_en = 1'b1;
+            //         wr_FIFO_offset = 8'hFF >> (8 - TCP_bytes_trk);
+            //         if (free_mask && TCP_last) begin 
+            //             // case_bug = right_trim;
+            //             nTCP_order[free_idx].seq_num = seq_num_rx;
+            //             nTCP_order[free_idx].seq_length = seq_rx_trk + TCP_bytes_trk;
+            //             nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
+            //             nTCP_order[free_idx].length_ptr = wr_FIFO_len + 1;//length_ptr will be 
+            //             nTCP_order[free_idx].v = 1'b1;
+            //             nflush_list[len_flush_ptr] = free_idx;
+            //             nlen_flush_ptr = len_flush_ptr + 1;
 
-                        nflush_list[len_flush_ptr] = free_idx;
-                        nlen_flush_ptr = len_flush_ptr + 1;
-
-                        if (seq_num_rx == rcv_next) begin
-                            nrcv_next = seq_rx_trk + TCP_bytes_trk;
-                        end
-                    end
-                end
-            end
+            //             if (seq_num_rx == rcv_next) begin
+            //                 nrcv_next = seq_rx_trk + TCP_bytes_trk;
+            //             end
+            //         end
+            //     end
+            // end
 
             //Reading FIFO logic
             if (rd_FIFO_en) begin
-                case_bug_0 = 1'b1;
+                //case_bug_0 = 1'b1;
                 if ((seq_rx_FIFO_rd == TCP_order[i].seq_num) && TCP_order[i].v) begin
                     rd_FIFO_ptr = TCP_order[i].rd_ptr;
                     rd_FIFO_len = TCP_order[i].length_ptr;
@@ -441,9 +572,11 @@ module TCP_flow_ctrl #(
                 //seq_up tell us that we done with
                 if (|wnd_allow) begin
                     TCP_stop_flg = 1'b0; //We can send the data
-                    if (seq_up) begin
+                    if (seq_up && !out_order_req) begin
                         nseq_num.seq_num = seq_num.seq_num + bytes_abt_sent;
-                    end 
+                    end else if (seq_up) begin
+                        nout_order_req = 1'b0;
+                    end
                 end else begin
                     TCP_stop_flg = 1'b1; //We need to stop sending the data
                 end
@@ -458,8 +591,9 @@ module TCP_flow_ctrl #(
                             //Logic of 3 duplicated ACK and transmit the data again
                             //Need a flag to indicate that the data is sent again
                             nack_num.dup_chk = 0;
-                            out_order_req = 1'b1;
-                            nseq_num.seq_num = ACK_rx; //Right??? this is how we update the sequence number if a packege is lost?
+                            nout_order_req = 1'b1;
+                            // nseq_num.seq_num = ACK_rx; //Right??? this is how we update the sequence number if a packege is lost?
+                            nseq_tx_retrans = ACK_rx;
                         end else begin
                             nack_num.dup_chk = ack_num.dup_chk + 1;
                         end
@@ -467,6 +601,11 @@ module TCP_flow_ctrl #(
                     end else if (rcv_pkg_type.ACK && ACK_rx > ack_num.ACK_num) begin
                         nack_num.dup_chk = 0;
                         nack_num.ACK_num = ACK_rx;    
+                    end
+                    nflush_ptr = 0;
+                    nlen_flush_ptr = 0;
+                    for (int i = 0; i < N; i++) begin
+                            nflush_list[i] = 0;       
                     end
 
                     
@@ -489,9 +628,12 @@ module TCP_flow_ctrl #(
             FLUSH_DATA: begin
                 nTCP_order[flush_list[flush_ptr]].v = 0;
                 nflush_ptr = flush_ptr + 1;
-                if ((flush_ptr) >= len_flush_ptr) begin
+                if ((nflush_ptr) >= len_flush_ptr) begin
                     nstate = DATA_CONNECTED;
-                    nflush_ptr = 1; 
+                    nflush_ptr = 0;
+                    nlen_flush_ptr = 0;
+                    nflush_list = 0;
+                    nrcv_next  = rcv_next_prev;
                 end
             end
             SEND_FIN: begin
@@ -525,16 +667,18 @@ module TCP_flow_ctrl #(
         // TCP_control_tx.FIN = 1'b0;
 
         tx_pkg_type = '0;
+        tx_pkg_type.ACK = 1'b1;
         offset_tx = 4'd5;
         urgent_pointer_tx = 0;
-        seq_num_tx = '0;
-        ACK_tx = '0;
+        seq_num_tx = (out_order_req) ? seq_tx_retrans : seq_num.seq_num;
+        ACK_tx = rcv_next;
         window_size_tx = (full) ? 16'd0 : 16'hFFFF;
         nhand_shake_done = hand_shake_done; //Reset the handshake done flag
 
         case (state)
             IDLE: begin
                 // TCP_control_tx.SYN = 1'b1;
+                tx_pkg_type = '0;
                 tx_pkg_type.SYN = 1'b1;
                 seq_num_tx = seq_num.seq_num;
                 ACK_tx = 0;
@@ -558,18 +702,15 @@ module TCP_flow_ctrl #(
             DATA_CONNECTED: begin
                 //Do nothing
                 nhand_shake_done = 1'b0;
-                seq_num_tx = seq_num.seq_num;
+                seq_num_tx = (out_order_req) ? seq_tx_retrans : seq_num.seq_num;
                 tx_pkg_type.ACK = 1'b1;
                 //ACK_tx = ack_num.ACK_num;
                 ACK_tx = rcv_next;
-        
             end
 
             SEND_FIN: begin
-                
                 tx_pkg_type.FIN = 1'b1;
-                ACK_tx = rcv_next;
-                
+                ACK_tx = rcv_next;    
             end
 
             WAIT_FIN_SERVER: begin
