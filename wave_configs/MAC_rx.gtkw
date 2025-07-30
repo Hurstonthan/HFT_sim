@@ -1,0 +1,197 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Wed Jul 30 16:43:08 2025
+[*]
+[dumpfile] "/home/than0/HFT_sim/MAC_rx.vcd"
+[dumpfile_mtime] "Wed Jul 30 16:42:21 2025"
+[dumpfile_size] 3297
+[savefile] "/home/than0/HFT_sim/MAC_rx.gtkw"
+[timestart] 0
+[size] 1634 1001
+[pos] -1 -1
+*-3.652901 29 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.MAC_rx.
+[sst_width] 264
+[signals_width] 461
+[sst_expanded] 1
+[sst_vpaned_height] 284
+@28
+TOP.CLK
+TOP.nRST
+@22
+TOP.xgmii_rxd[63:0]
+@23
+TOP.MAC_rx.xgmii_rxd_f[63:0]
+@22
+TOP.xgmii_rxc[7:0]
+@200
+-
+-DUT INTERFACE
+@100000028
+TOP.MAC_rx.state[5:0]
+@22
+TOP.MAC_rx.mac_dest_addr[47:0]
+TOP.MAC_rx.mac_src_addr[47:0]
+@200
+-CHECK_CRC
+@28
+TOP.MAC_rx.FCS_rxc[15:0]
+@24
+TOP.MAC_rx.FCS_offset[3:0]
+@c00022
+TOP.MAC_rx.FCS_grap[127:0]
+@28
+(0)TOP.MAC_rx.FCS_grap[127:0]
+(1)TOP.MAC_rx.FCS_grap[127:0]
+(2)TOP.MAC_rx.FCS_grap[127:0]
+(3)TOP.MAC_rx.FCS_grap[127:0]
+(4)TOP.MAC_rx.FCS_grap[127:0]
+(5)TOP.MAC_rx.FCS_grap[127:0]
+(6)TOP.MAC_rx.FCS_grap[127:0]
+(7)TOP.MAC_rx.FCS_grap[127:0]
+(8)TOP.MAC_rx.FCS_grap[127:0]
+(9)TOP.MAC_rx.FCS_grap[127:0]
+(10)TOP.MAC_rx.FCS_grap[127:0]
+(11)TOP.MAC_rx.FCS_grap[127:0]
+(12)TOP.MAC_rx.FCS_grap[127:0]
+(13)TOP.MAC_rx.FCS_grap[127:0]
+(14)TOP.MAC_rx.FCS_grap[127:0]
+(15)TOP.MAC_rx.FCS_grap[127:0]
+(16)TOP.MAC_rx.FCS_grap[127:0]
+(17)TOP.MAC_rx.FCS_grap[127:0]
+(18)TOP.MAC_rx.FCS_grap[127:0]
+(19)TOP.MAC_rx.FCS_grap[127:0]
+(20)TOP.MAC_rx.FCS_grap[127:0]
+(21)TOP.MAC_rx.FCS_grap[127:0]
+(22)TOP.MAC_rx.FCS_grap[127:0]
+(23)TOP.MAC_rx.FCS_grap[127:0]
+(24)TOP.MAC_rx.FCS_grap[127:0]
+(25)TOP.MAC_rx.FCS_grap[127:0]
+(26)TOP.MAC_rx.FCS_grap[127:0]
+(27)TOP.MAC_rx.FCS_grap[127:0]
+(28)TOP.MAC_rx.FCS_grap[127:0]
+(29)TOP.MAC_rx.FCS_grap[127:0]
+(30)TOP.MAC_rx.FCS_grap[127:0]
+(31)TOP.MAC_rx.FCS_grap[127:0]
+(32)TOP.MAC_rx.FCS_grap[127:0]
+(33)TOP.MAC_rx.FCS_grap[127:0]
+(34)TOP.MAC_rx.FCS_grap[127:0]
+(35)TOP.MAC_rx.FCS_grap[127:0]
+(36)TOP.MAC_rx.FCS_grap[127:0]
+(37)TOP.MAC_rx.FCS_grap[127:0]
+(38)TOP.MAC_rx.FCS_grap[127:0]
+(39)TOP.MAC_rx.FCS_grap[127:0]
+(40)TOP.MAC_rx.FCS_grap[127:0]
+(41)TOP.MAC_rx.FCS_grap[127:0]
+(42)TOP.MAC_rx.FCS_grap[127:0]
+(43)TOP.MAC_rx.FCS_grap[127:0]
+(44)TOP.MAC_rx.FCS_grap[127:0]
+(45)TOP.MAC_rx.FCS_grap[127:0]
+(46)TOP.MAC_rx.FCS_grap[127:0]
+(47)TOP.MAC_rx.FCS_grap[127:0]
+(48)TOP.MAC_rx.FCS_grap[127:0]
+(49)TOP.MAC_rx.FCS_grap[127:0]
+(50)TOP.MAC_rx.FCS_grap[127:0]
+(51)TOP.MAC_rx.FCS_grap[127:0]
+(52)TOP.MAC_rx.FCS_grap[127:0]
+(53)TOP.MAC_rx.FCS_grap[127:0]
+(54)TOP.MAC_rx.FCS_grap[127:0]
+(55)TOP.MAC_rx.FCS_grap[127:0]
+(56)TOP.MAC_rx.FCS_grap[127:0]
+(57)TOP.MAC_rx.FCS_grap[127:0]
+(58)TOP.MAC_rx.FCS_grap[127:0]
+(59)TOP.MAC_rx.FCS_grap[127:0]
+(60)TOP.MAC_rx.FCS_grap[127:0]
+(61)TOP.MAC_rx.FCS_grap[127:0]
+(62)TOP.MAC_rx.FCS_grap[127:0]
+(63)TOP.MAC_rx.FCS_grap[127:0]
+(64)TOP.MAC_rx.FCS_grap[127:0]
+(65)TOP.MAC_rx.FCS_grap[127:0]
+(66)TOP.MAC_rx.FCS_grap[127:0]
+(67)TOP.MAC_rx.FCS_grap[127:0]
+(68)TOP.MAC_rx.FCS_grap[127:0]
+(69)TOP.MAC_rx.FCS_grap[127:0]
+(70)TOP.MAC_rx.FCS_grap[127:0]
+(71)TOP.MAC_rx.FCS_grap[127:0]
+(72)TOP.MAC_rx.FCS_grap[127:0]
+(73)TOP.MAC_rx.FCS_grap[127:0]
+(74)TOP.MAC_rx.FCS_grap[127:0]
+(75)TOP.MAC_rx.FCS_grap[127:0]
+(76)TOP.MAC_rx.FCS_grap[127:0]
+(77)TOP.MAC_rx.FCS_grap[127:0]
+(78)TOP.MAC_rx.FCS_grap[127:0]
+(79)TOP.MAC_rx.FCS_grap[127:0]
+(80)TOP.MAC_rx.FCS_grap[127:0]
+(81)TOP.MAC_rx.FCS_grap[127:0]
+(82)TOP.MAC_rx.FCS_grap[127:0]
+(83)TOP.MAC_rx.FCS_grap[127:0]
+(84)TOP.MAC_rx.FCS_grap[127:0]
+(85)TOP.MAC_rx.FCS_grap[127:0]
+(86)TOP.MAC_rx.FCS_grap[127:0]
+(87)TOP.MAC_rx.FCS_grap[127:0]
+(88)TOP.MAC_rx.FCS_grap[127:0]
+(89)TOP.MAC_rx.FCS_grap[127:0]
+(90)TOP.MAC_rx.FCS_grap[127:0]
+(91)TOP.MAC_rx.FCS_grap[127:0]
+(92)TOP.MAC_rx.FCS_grap[127:0]
+(93)TOP.MAC_rx.FCS_grap[127:0]
+(94)TOP.MAC_rx.FCS_grap[127:0]
+(95)TOP.MAC_rx.FCS_grap[127:0]
+(96)TOP.MAC_rx.FCS_grap[127:0]
+(97)TOP.MAC_rx.FCS_grap[127:0]
+(98)TOP.MAC_rx.FCS_grap[127:0]
+(99)TOP.MAC_rx.FCS_grap[127:0]
+(100)TOP.MAC_rx.FCS_grap[127:0]
+(101)TOP.MAC_rx.FCS_grap[127:0]
+(102)TOP.MAC_rx.FCS_grap[127:0]
+(103)TOP.MAC_rx.FCS_grap[127:0]
+(104)TOP.MAC_rx.FCS_grap[127:0]
+(105)TOP.MAC_rx.FCS_grap[127:0]
+(106)TOP.MAC_rx.FCS_grap[127:0]
+(107)TOP.MAC_rx.FCS_grap[127:0]
+(108)TOP.MAC_rx.FCS_grap[127:0]
+(109)TOP.MAC_rx.FCS_grap[127:0]
+(110)TOP.MAC_rx.FCS_grap[127:0]
+(111)TOP.MAC_rx.FCS_grap[127:0]
+(112)TOP.MAC_rx.FCS_grap[127:0]
+(113)TOP.MAC_rx.FCS_grap[127:0]
+(114)TOP.MAC_rx.FCS_grap[127:0]
+(115)TOP.MAC_rx.FCS_grap[127:0]
+(116)TOP.MAC_rx.FCS_grap[127:0]
+(117)TOP.MAC_rx.FCS_grap[127:0]
+(118)TOP.MAC_rx.FCS_grap[127:0]
+(119)TOP.MAC_rx.FCS_grap[127:0]
+(120)TOP.MAC_rx.FCS_grap[127:0]
+(121)TOP.MAC_rx.FCS_grap[127:0]
+(122)TOP.MAC_rx.FCS_grap[127:0]
+(123)TOP.MAC_rx.FCS_grap[127:0]
+(124)TOP.MAC_rx.FCS_grap[127:0]
+(125)TOP.MAC_rx.FCS_grap[127:0]
+(126)TOP.MAC_rx.FCS_grap[127:0]
+(127)TOP.MAC_rx.FCS_grap[127:0]
+@1401200
+-group_end
+@22
+TOP.MAC_rx.temp[127:0]
+TOP.MAC_rx.FCS_frame[31:0]
+TOP.MAC_rx.nFCS_frame[31:0]
+@24
+TOP.MAC_rx.bytes_offset[2:0]
+@22
+TOP.MAC_rx.nrg[31:0]
+TOP.MAC_rx.rg[31:0]
+@28
+TOP.MAC_rx.end_valid
+@22
+TOP.MAC_rx.FCS_frame_cvt[63:0]
+@200
+-CRC module
+@28
+TOP.MAC_rx.CRC.crc_init
+TOP.MAC_rx.CRC.valid
+@22
+TOP.MAC_rx.CRC.data_in[63:0]
+TOP.MAC_rx.CRC.crc_out[31:0]
+[pattern_trace] 1
+[pattern_trace] 0
