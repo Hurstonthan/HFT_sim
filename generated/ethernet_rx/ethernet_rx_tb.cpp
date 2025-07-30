@@ -45,13 +45,19 @@ std::vector<std::pair<uint64_t, uint8_t>> generate_payload() {
 
     // MAC Header - Word 1
     uint64_t mac_data = 0;
-    // MAC_DEST_ADDR = 48'hFFFF_FFFF_FFFF
+    // 
+    // CCAA_AABB CCFF FFFF - how the testbench originally
+    // AACC FFFF FFFF FFFF - how the testbench right now - working 
+    // FFFF FFFF FFFF AACC - this should be the expected
+
+    // AACC FFFF ... 
+    // MAC_DEST_ADDR = 48'hFFFF_FFCC_BBAA
     mac_data |= uint64_t(0xFF) << 0;
     mac_data |= uint64_t(0xFF) << 8;
     mac_data |= uint64_t(0xFF) << 16;
-    mac_data |= uint64_t(0xFF) << 24;
-    mac_data |= uint64_t(0xFF) << 32;
-    mac_data |= uint64_t(0xFF) << 40;
+    mac_data |= uint64_t(0xCC) << 24;
+    mac_data |= uint64_t(0xBB) << 32;
+    mac_data |= uint64_t(0xAA) << 40;
     // MAC_SRC_ADDR = 48'hAACC_BBFF_FFFF,
     //something is wrong check with Tri
 
@@ -99,6 +105,8 @@ std::vector<std::pair<uint64_t, uint8_t>> generate_payload() {
     ip_data |= uint64_t(0x40) << 8;   // Time
     ip_data |= uint64_t(0x17) << 0; // Protocol (UDP)    
     stimuli.push_back({ip_data, 0x00});
+
+    //missing other part for IP header
     // Payload - Words 3 to 7
     for (int word = 4; word <= 7; word++) {
         uint64_t payload_data = 0;

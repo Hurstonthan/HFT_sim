@@ -3,7 +3,7 @@
 module MAC_rx #(
     parameter DATA_WIDTH = 64,
     parameter CTRL_WIDTH = 8,
-    parameter MAC_DEST_ADDR = 48'hFFFF_FFFF_FFFF,
+    parameter MAC_DEST_ADDR = 48'hFFFF_FFCC_BBAA, 
     parameter MAC_SRC_ADDR = 48'hAACC_BBFF_FFFF,
     parameter CRC_MAGIC = 32'hC704_DD7B
 ) (
@@ -342,7 +342,7 @@ module MAC_rx #(
             CHECK_CRC: begin
                 crc_valid = 1'b0;
                 nMAC_valid = 1'b0;
-               
+                // todo giving wrong crc 
                 if (crc_out == FCS_frame_cvt[31:0]) begin
                     frame_ok = 1'b1;
                     next_state = IDLE;
