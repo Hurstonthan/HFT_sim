@@ -37,8 +37,10 @@ VL_ATTR_COLD void VMAC_rx_MAC_rx___ctor_var_reset(VMAC_rx_MAC_rx* vlSelf) {
     vlSelf->__PVT__nsof_lane = VL_SCOPED_RAND_RESET_I(3, __VscopeHash, 12888690470868048842ull);
     vlSelf->__PVT__xgmii_rxd_f = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 11244782306600639439ull);
     vlSelf->__PVT__nxgmii_rxd_f = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 376932725855852622ull);
+    vlSelf->__PVT__xgmii_rxd_MSB = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 13947669933378652963ull);
     vlSelf->__PVT__xgmii_rxc_f = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 15843434436151972690ull);
     vlSelf->__PVT__nxgmii_rxc_f = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 9556564978523257058ull);
+    vlSelf->__PVT__xgmii_rxc_MSB = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 15650026489414068191ull);
     vlSelf->__PVT__FCS_rxc = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 10464079062751904220ull);
     vlSelf->__PVT__nFCS_rxc = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 18287840624963742449ull);
     vlSelf->__PVT__FCS_offset = VL_SCOPED_RAND_RESET_I(4, __VscopeHash, 8482341860179865956ull);
@@ -60,7 +62,8 @@ VL_ATTR_COLD void VMAC_rx_MAC_rx___ctor_var_reset(VMAC_rx_MAC_rx* vlSelf) {
     vlSelf->__PVT__i = 0;
     vlSelf->__PVT__soft_dl = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 8968774620453428783ull);
     vlSelf->__PVT__nsoft_dl = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 9160597459876293464ull);
-    vlSelf->__PVT__nMAC_payload_rcv = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 5872168058256976007ull);
+    vlSelf->__PVT__MAC_payload_rcv_cvrt = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 1485399560965132782ull);
+    vlSelf->__PVT__nMAC_payload_rcv_cvrt = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 1981054871737973314ull);
     vlSelf->__PVT__bytes_rcv = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 2549967790072508984ull);
     vlSelf->__PVT__nbytes_rcv = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 17573847664257856799ull);
     vlSelf->__PVT__bytes_rcv_dl = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 2492766819790171542ull);
@@ -71,6 +74,7 @@ VL_ATTR_COLD void VMAC_rx_MAC_rx___ctor_var_reset(VMAC_rx_MAC_rx* vlSelf) {
     vlSelf->__PVT__next_state = VL_SCOPED_RAND_RESET_I(6, __VscopeHash, 10383377256973303270ull);
     vlSelf->__PVT__mac_dest_addr = VL_SCOPED_RAND_RESET_Q(48, __VscopeHash, 2298845720583880866ull);
     vlSelf->__PVT__mac_src_addr = VL_SCOPED_RAND_RESET_Q(48, __VscopeHash, 10259348937054852327ull);
+    VL_SCOPED_RAND_RESET_W(128, vlSelf->__PVT__temp, __VscopeHash, 7233838040978344170ull);
     vlSelf->__PVT__mac_dest_addr_valid = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 6375811014845466327ull);
     vlSelf->__PVT__mac_src_addr_first_valid = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 354876500476174177ull);
     vlSelf->__PVT__mac_src_addr_second_valid = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 1688965875965462932ull);
@@ -84,7 +88,7 @@ VL_ATTR_COLD void VMAC_rx_MAC_rx___ctor_var_reset(VMAC_rx_MAC_rx* vlSelf) {
     vlSelf->__Vdly__xgmii_rxc_frame = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 16618981106761526267ull);
     vlSelf->__Vdly__soft_dl = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 7714107382174671966ull);
     vlSelf->__Vdly__MAC_valid = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 5775285337768583202ull);
-    vlSelf->__Vdly__MAC_payload_rcv = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 14497503477234679265ull);
+    vlSelf->__Vdly__MAC_payload_rcv_cvrt = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 12450893245573341151ull);
     vlSelf->__Vdly__bytes_rcv = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 10579155383431852311ull);
     vlSelf->__Vdly__bytes_rcv_dl = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 16827195039149851673ull);
     vlSelf->__Vdly__FCS_rxc = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 316673685554898760ull);

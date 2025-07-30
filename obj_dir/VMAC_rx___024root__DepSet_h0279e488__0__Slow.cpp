@@ -31,7 +31,7 @@ VL_ATTR_COLD void VMAC_rx___024root___eval_settle(VMAC_rx___024root* vlSelf) {
 #ifdef VL_DEBUG
             VMAC_rx___024root___dump_triggers__stl(vlSelf);
 #endif
-            VL_FATAL_MT("rtl/MAC_rx.sv", 364, "", "Settle region did not converge.");
+            VL_FATAL_MT("rtl/MAC_rx.sv", 3, "", "Settle region did not converge.");
         }
         __Vtemp_1 = ((IData)(1U) + vlSelfRef.__VstlIterCount);
         vlSelfRef.__VstlIterCount = __Vtemp_1;
@@ -54,6 +54,9 @@ VL_ATTR_COLD void VMAC_rx___024root___dump_triggers__stl(VMAC_rx___024root* vlSe
     }
     if ((1ULL & vlSelfRef.__VstlTriggered.word(0U))) {
         VL_DBG_MSGF("         'stl' region trigger index 0 is active: Internal 'stl' trigger - first iteration\n");
+    }
+    if ((2ULL & vlSelfRef.__VstlTriggered.word(0U))) {
+        VL_DBG_MSGF("         'stl' region trigger index 1 is active: @([hybrid] MAC_rx.mac_dest_addr)\n");
     }
 }
 #endif  // VL_DEBUG
@@ -86,6 +89,9 @@ VL_ATTR_COLD void VMAC_rx___024root___dump_triggers__ico(VMAC_rx___024root* vlSe
     if ((1ULL & vlSelfRef.__VicoTriggered.word(0U))) {
         VL_DBG_MSGF("         'ico' region trigger index 0 is active: Internal 'ico' trigger - first iteration\n");
     }
+    if ((2ULL & vlSelfRef.__VicoTriggered.word(0U))) {
+        VL_DBG_MSGF("         'ico' region trigger index 1 is active: @([hybrid] MAC_rx.mac_dest_addr)\n");
+    }
 }
 #endif  // VL_DEBUG
 
@@ -99,16 +105,19 @@ VL_ATTR_COLD void VMAC_rx___024root___dump_triggers__act(VMAC_rx___024root* vlSe
         VL_DBG_MSGF("         No triggers active\n");
     }
     if ((1ULL & vlSelfRef.__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 0 is active: @(posedge MAC_rx.CLK)\n");
+        VL_DBG_MSGF("         'act' region trigger index 0 is active: @([hybrid] MAC_rx.mac_dest_addr)\n");
     }
     if ((2ULL & vlSelfRef.__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 1 is active: @(negedge MAC_rx.nRST)\n");
+        VL_DBG_MSGF("         'act' region trigger index 1 is active: @(posedge MAC_rx.CLK)\n");
     }
     if ((4ULL & vlSelfRef.__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 2 is active: @(posedge MAC_rx.CRC.CLK)\n");
+        VL_DBG_MSGF("         'act' region trigger index 2 is active: @(negedge MAC_rx.nRST)\n");
     }
     if ((8ULL & vlSelfRef.__VactTriggered.word(0U))) {
-        VL_DBG_MSGF("         'act' region trigger index 3 is active: @(negedge MAC_rx.CRC.nRST)\n");
+        VL_DBG_MSGF("         'act' region trigger index 3 is active: @(posedge MAC_rx.CRC.CLK)\n");
+    }
+    if ((0x10ULL & vlSelfRef.__VactTriggered.word(0U))) {
+        VL_DBG_MSGF("         'act' region trigger index 4 is active: @(negedge MAC_rx.CRC.nRST)\n");
     }
 }
 #endif  // VL_DEBUG
@@ -123,16 +132,19 @@ VL_ATTR_COLD void VMAC_rx___024root___dump_triggers__nba(VMAC_rx___024root* vlSe
         VL_DBG_MSGF("         No triggers active\n");
     }
     if ((1ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 0 is active: @(posedge MAC_rx.CLK)\n");
+        VL_DBG_MSGF("         'nba' region trigger index 0 is active: @([hybrid] MAC_rx.mac_dest_addr)\n");
     }
     if ((2ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 1 is active: @(negedge MAC_rx.nRST)\n");
+        VL_DBG_MSGF("         'nba' region trigger index 1 is active: @(posedge MAC_rx.CLK)\n");
     }
     if ((4ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 2 is active: @(posedge MAC_rx.CRC.CLK)\n");
+        VL_DBG_MSGF("         'nba' region trigger index 2 is active: @(negedge MAC_rx.nRST)\n");
     }
     if ((8ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
-        VL_DBG_MSGF("         'nba' region trigger index 3 is active: @(negedge MAC_rx.CRC.nRST)\n");
+        VL_DBG_MSGF("         'nba' region trigger index 3 is active: @(posedge MAC_rx.CRC.CLK)\n");
+    }
+    if ((0x10ULL & vlSelfRef.__VnbaTriggered.word(0U))) {
+        VL_DBG_MSGF("         'nba' region trigger index 4 is active: @(negedge MAC_rx.CRC.nRST)\n");
     }
 }
 #endif  // VL_DEBUG
@@ -147,6 +159,8 @@ VL_ATTR_COLD void VMAC_rx___024root____Vm_traceActivitySetAll(VMAC_rx___024root*
     vlSelfRef.__Vm_traceActivity[2U] = 1U;
     vlSelfRef.__Vm_traceActivity[3U] = 1U;
     vlSelfRef.__Vm_traceActivity[4U] = 1U;
+    vlSelfRef.__Vm_traceActivity[5U] = 1U;
+    vlSelfRef.__Vm_traceActivity[6U] = 1U;
 }
 
 VL_ATTR_COLD void VMAC_rx___024root___ctor_var_reset(VMAC_rx___024root* vlSelf) {
@@ -164,11 +178,17 @@ VL_ATTR_COLD void VMAC_rx___024root___ctor_var_reset(VMAC_rx___024root* vlSelf) 
     vlSelf->CRC_flush = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 16946334118890181985ull);
     vlSelf->frame_ok = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 2537328812920291937ull);
     vlSelf->bytes_rcv_len = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 8940703865407227134ull);
+    vlSelf->__Vtrigprevexpr___TOP__MAC_rx____PVT__mac_dest_addr__0 = VL_SCOPED_RAND_RESET_Q(48, __VscopeHash, 8113393944444750768ull);
+    vlSelf->__VstlDidInit = 0;
+    vlSelf->__Vtrigprevexpr___TOP__MAC_rx____PVT__mac_dest_addr__1 = VL_SCOPED_RAND_RESET_Q(48, __VscopeHash, 12331260640232690401ull);
+    vlSelf->__VicoDidInit = 0;
+    vlSelf->__Vtrigprevexpr___TOP__MAC_rx____PVT__mac_dest_addr__2 = VL_SCOPED_RAND_RESET_Q(48, __VscopeHash, 395071132953846498ull);
     vlSelf->__Vtrigprevexpr___TOP__MAC_rx__CLK__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 13637225778923588577ull);
     vlSelf->__Vtrigprevexpr___TOP__MAC_rx__nRST__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 3382065738739528873ull);
     vlSelf->__Vtrigprevexpr___TOP__MAC_rx__CRC____PVT__CLK__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 13206790338423490063ull);
     vlSelf->__Vtrigprevexpr___TOP__MAC_rx__CRC____PVT__nRST__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 7950241536072366815ull);
-    for (int __Vi0 = 0; __Vi0 < 5; ++__Vi0) {
+    vlSelf->__VactDidInit = 0;
+    for (int __Vi0 = 0; __Vi0 < 7; ++__Vi0) {
         vlSelf->__Vm_traceActivity[__Vi0] = 0;
     }
 }

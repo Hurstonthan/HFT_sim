@@ -21,13 +21,8 @@ bool VMAC_rx___024root___eval_phase__ico(VMAC_rx___024root* vlSelf) {
     return (vlSelfRef.__VicoExecute);
 }
 
-void VMAC_rx___024root___eval_act(VMAC_rx___024root* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VMAC_rx___024root___eval_act\n"); );
-    VMAC_rx__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    auto& vlSelfRef = std::ref(*vlSelf).get();
-}
-
 void VMAC_rx___024root___eval_triggers__act(VMAC_rx___024root* vlSelf);
+void VMAC_rx___024root___eval_act(VMAC_rx___024root* vlSelf);
 
 bool VMAC_rx___024root___eval_phase__act(VMAC_rx___024root* vlSelf) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    VMAC_rx___024root___eval_phase__act\n"); );
@@ -86,7 +81,7 @@ void VMAC_rx___024root___eval(VMAC_rx___024root* vlSelf) {
 #ifdef VL_DEBUG
             VMAC_rx___024root___dump_triggers__ico(vlSelf);
 #endif
-            VL_FATAL_MT("rtl/MAC_rx.sv", 364, "", "Input combinational region did not converge.");
+            VL_FATAL_MT("rtl/MAC_rx.sv", 3, "", "Input combinational region did not converge.");
         }
         __Vtemp_1 = ((IData)(1U) + vlSelfRef.__VicoIterCount);
         vlSelfRef.__VicoIterCount = __Vtemp_1;
@@ -104,7 +99,7 @@ void VMAC_rx___024root___eval(VMAC_rx___024root* vlSelf) {
 #ifdef VL_DEBUG
             VMAC_rx___024root___dump_triggers__nba(vlSelf);
 #endif
-            VL_FATAL_MT("rtl/MAC_rx.sv", 364, "", "NBA region did not converge.");
+            VL_FATAL_MT("rtl/MAC_rx.sv", 3, "", "NBA region did not converge.");
         }
         __Vtemp_2 = ((IData)(1U) + vlSelfRef.__VnbaIterCount);
         vlSelfRef.__VnbaIterCount = __Vtemp_2;
@@ -117,7 +112,7 @@ void VMAC_rx___024root___eval(VMAC_rx___024root* vlSelf) {
 #ifdef VL_DEBUG
                 VMAC_rx___024root___dump_triggers__act(vlSelf);
 #endif
-                VL_FATAL_MT("rtl/MAC_rx.sv", 364, "", "Active region did not converge.");
+                VL_FATAL_MT("rtl/MAC_rx.sv", 3, "", "Active region did not converge.");
             }
             __Vtemp_3 = ((IData)(1U) + vlSelfRef.__VactIterCount);
             vlSelfRef.__VactIterCount = __Vtemp_3;

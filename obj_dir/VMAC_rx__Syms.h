@@ -39,6 +39,7 @@ class alignas(VL_CACHE_LINE_BYTES)VMAC_rx__Syms final : public VerilatedSyms {
     VMAC_rx_priority_encoder__W8_Mz1 TOP__MAC_rx__crc_check_encoder;
     VMAC_rx_xgmii_little_to_big    TOP__MAC_rx__crc_convert;
     VMAC_rx_xgmii_little_to_big    TOP__MAC_rx__crc_frame_convert;
+    VMAC_rx_xgmii_little_to_big    TOP__MAC_rx__payload_cvrt;
     VMAC_rx_priority_encoder__W10_Mz1 TOP__MAC_rx__xgmii_fcs;
 
     // CONSTRUCTORS

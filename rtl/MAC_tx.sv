@@ -3,8 +3,8 @@
 module MAC_tx #(
     parameter WORD_WIDTH = 64,
     parameter CTRL_WIDTH = 8,
-    parameter MAC_SRC_ADDR = 48'h FF_FF_FF_FF_FF,
-    parameter MAC_DEST_ADDR = 48'h AA_BB_FF_FF_FF,
+    parameter MAC_SRC_ADDR  = 48'h FFFF_FFCC_BBAA,
+    parameter MAC_DEST_ADDR = 48'h AACC_BBFF_FFFF,
     parameter ETHER_TYPE         = 16'h0800,   // IPv4 EtherType
 ) (
     input wire CLK,

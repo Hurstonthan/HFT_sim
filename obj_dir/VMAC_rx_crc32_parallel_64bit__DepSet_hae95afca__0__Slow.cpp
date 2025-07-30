@@ -15,8 +15,8 @@ VL_ATTR_COLD void VMAC_rx_crc32_parallel_64bit___stl_sequent__TOP__MAC_rx__CRC__
                                  : (~ vlSelfRef.__PVT__crc_reg));
 }
 
-VL_ATTR_COLD void VMAC_rx_crc32_parallel_64bit___stl_sequent__TOP__MAC_rx__CRC__1(VMAC_rx_crc32_parallel_64bit* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+        VMAC_rx_crc32_parallel_64bit___stl_sequent__TOP__MAC_rx__CRC__1\n"); );
+VL_ATTR_COLD void VMAC_rx_crc32_parallel_64bit___stl_comb__TOP__MAC_rx__CRC__0(VMAC_rx_crc32_parallel_64bit* vlSelf) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+        VMAC_rx_crc32_parallel_64bit___stl_comb__TOP__MAC_rx__CRC__0\n"); );
     VMAC_rx__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body

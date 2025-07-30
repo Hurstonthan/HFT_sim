@@ -26,9 +26,11 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC_rx___024root final : public VerilatedMod
     VL_OUT8(CRC_flush,0,0);
     VL_OUT8(frame_ok,0,0);
     VL_OUT8(bytes_rcv_len,7,0);
+    CData/*0:0*/ __VstlDidInit;
     CData/*0:0*/ __VstlExecute;
     CData/*0:0*/ __VstlFirstIteration;
     CData/*0:0*/ __VstlContinue;
+    CData/*0:0*/ __VicoDidInit;
     CData/*0:0*/ __VicoExecute;
     CData/*0:0*/ __VicoFirstIteration;
     CData/*0:0*/ __VicoContinue;
@@ -36,6 +38,7 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC_rx___024root final : public VerilatedMod
     CData/*0:0*/ __Vtrigprevexpr___TOP__MAC_rx__nRST__0;
     CData/*0:0*/ __Vtrigprevexpr___TOP__MAC_rx__CRC____PVT__CLK__0;
     CData/*0:0*/ __Vtrigprevexpr___TOP__MAC_rx__CRC____PVT__nRST__0;
+    CData/*0:0*/ __VactDidInit;
     CData/*0:0*/ __VactExecute;
     CData/*0:0*/ __VactFirstIteration;
     CData/*0:0*/ __VactContinue;
@@ -48,12 +51,15 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC_rx___024root final : public VerilatedMod
     IData/*31:0*/ __VnbaIterCount;
     VL_IN64(xgmii_rxd,63,0);
     VL_OUT64(MAC_payload_rcv,63,0);
-    VlUnpacked<CData/*0:0*/, 5> __Vm_traceActivity;
-    VlTriggerVec<1> __VstlTriggered;
-    VlTriggerVec<1> __VicoTriggered;
-    VlTriggerVec<4> __VactTriggered;
-    VlTriggerVec<4> __VpreTriggered;
-    VlTriggerVec<4> __VnbaTriggered;
+    QData/*47:0*/ __Vtrigprevexpr___TOP__MAC_rx____PVT__mac_dest_addr__0;
+    QData/*47:0*/ __Vtrigprevexpr___TOP__MAC_rx____PVT__mac_dest_addr__1;
+    QData/*47:0*/ __Vtrigprevexpr___TOP__MAC_rx____PVT__mac_dest_addr__2;
+    VlUnpacked<CData/*0:0*/, 7> __Vm_traceActivity;
+    VlTriggerVec<2> __VstlTriggered;
+    VlTriggerVec<2> __VicoTriggered;
+    VlTriggerVec<5> __VactTriggered;
+    VlTriggerVec<5> __VpreTriggered;
+    VlTriggerVec<5> __VnbaTriggered;
 
     // INTERNAL VARIABLES
     VMAC_rx__Syms* const vlSymsp;

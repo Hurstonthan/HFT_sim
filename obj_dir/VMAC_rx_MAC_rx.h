@@ -20,6 +20,7 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC_rx_MAC_rx final : public VerilatedModule
     VMAC_rx_crc32_parallel_64bit* __PVT__CRC;
     VMAC_rx_xgmii_little_to_big* __PVT__crc_convert;
     VMAC_rx_xgmii_little_to_big* __PVT__crc_frame_convert;
+    VMAC_rx_xgmii_little_to_big* __PVT__payload_cvrt;
     VMAC_rx_priority_encoder__W8_Mz1* __PVT__crc_check_encoder;
     VMAC_rx_priority_encoder__W10_Mz1* __PVT__xgmii_fcs;
 
@@ -45,6 +46,7 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC_rx_MAC_rx final : public VerilatedModule
         CData/*2:0*/ __PVT__nsof_lane;
         CData/*7:0*/ __PVT__xgmii_rxc_f;
         CData/*7:0*/ __PVT__nxgmii_rxc_f;
+        CData/*7:0*/ __PVT__xgmii_rxc_MSB;
         CData/*3:0*/ __PVT__FCS_offset;
         CData/*5:0*/ __PVT__shift_bits;
         CData/*7:0*/ __PVT__byte_END;
@@ -88,10 +90,11 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC_rx_MAC_rx final : public VerilatedModule
         IData/*31:0*/ __PVT__FCS_frame;
         IData/*31:0*/ __PVT__nFCS_frame;
         IData/*31:0*/ __PVT__i;
-        IData/*31:0*/ __Vdly__crc_check;
-        VlWide<4>/*127:0*/ __Vdly__frame_store;
+        VlWide<4>/*127:0*/ __PVT__temp;
     };
     struct {
+        IData/*31:0*/ __Vdly__crc_check;
+        VlWide<4>/*127:0*/ __Vdly__frame_store;
         IData/*31:0*/ __Vdly__FCS_frame;
         VL_IN64(xgmii_rxd,63,0);
         VL_OUT64(MAC_payload_rcv,63,0);
@@ -99,12 +102,14 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC_rx_MAC_rx final : public VerilatedModule
         QData/*63:0*/ __PVT__crc_in_big;
         QData/*63:0*/ __PVT__xgmii_rxd_f;
         QData/*63:0*/ __PVT__nxgmii_rxd_f;
+        QData/*63:0*/ __PVT__xgmii_rxd_MSB;
         QData/*63:0*/ __PVT__FCS_frame_cvt;
-        QData/*63:0*/ __PVT__nMAC_payload_rcv;
+        QData/*63:0*/ __PVT__MAC_payload_rcv_cvrt;
+        QData/*63:0*/ __PVT__nMAC_payload_rcv_cvrt;
         QData/*63:0*/ __Vcellinp__crc_frame_convert__xgmii_rxd;
         QData/*47:0*/ __PVT__mac_dest_addr;
         QData/*47:0*/ __PVT__mac_src_addr;
-        QData/*63:0*/ __Vdly__MAC_payload_rcv;
+        QData/*63:0*/ __Vdly__MAC_payload_rcv_cvrt;
     };
 
     // INTERNAL VARIABLES
