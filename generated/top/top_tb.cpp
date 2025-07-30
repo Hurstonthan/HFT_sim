@@ -551,6 +551,50 @@ void left_trim () {
     tick(top, tfp);
 }
 
+void right_trim () {
+    uint32_t seq_num_rx, ACK_num_rx;
+    uint16_t seq_num_MSB, seq_num_LSB;
+    uint16_t window_size_rx, checksum_rx, urgent_pointer_rx, TCP_len;
+    uint8_t TCP_control_rx;
+    std::vector<IP_rx_in> TCP_header;
+    
+    // First segment
+    seq_num_rx       = top -> rcv_next + 16 + 2 + 8; //The gap is 4 bytes
+    ACK_num_rx       = ACK_curr;
+    seq_num_MSB      = (seq_num_rx >> 16) & 0xFFFF;
+    seq_num_LSB      =  seq_num_rx        & 0xFFFF;
+    window_size_rx   = 0x1111;
+    checksum_rx      = 0x0000;
+    urgent_pointer_rx= 0x0000;
+    TCP_len = getting_tcp_len(testcase2) + 2;
+    TCP_control_rx   = 0x10;
+    
+
+    TCP_header = prepare_header (seq_num_rx, ACK_num_rx, TCP_control_rx, testcase2,TCP_len);
+    rcv_IP (TCP_header, testcase2, TCP_len);
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+
+    //Second segment in order
+    seq_num_rx       = top -> rcv_next + 16 + 2 + 8 - 7; //The gap is 4 bytes
+    ACK_num_rx       = ACK_curr;
+    seq_num_MSB      = (seq_num_rx >> 16) & 0xFFFF;
+    seq_num_LSB      =  seq_num_rx        & 0xFFFF;
+    window_size_rx   = 0x1111;
+    checksum_rx      = 0x0000;
+    urgent_pointer_rx= 0x0000;
+    TCP_len = getting_tcp_len(testcase1) + 2;
+    TCP_control_rx   = 0x10;
+    
+
+    TCP_header = prepare_header (seq_num_rx, ACK_num_rx, TCP_control_rx, testcase1,TCP_len);
+    rcv_IP (TCP_header, testcase1, TCP_len);
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+}
+
 void fast_transmit () {
     uint32_t seq_num_rx, ACK_num_rx;
     uint16_t seq_num_MSB, seq_num_LSB;
@@ -658,40 +702,43 @@ int main(int argc, char **argv) {
     // top -> tb_count +=1;
     // left_trim();
 
-    //Testing APP write into FIFO (Also testing the basesum of TCP) 
     top -> tb_count +=1;
-    wr_FIFO_TX();
-    top -> tb_count +=1;
-    sending_TCP();
-    tick(top, tfp);
-    tick(top, tfp);
-    tick(top, tfp);
-    tick(top, tfp);
+    right_trim();
 
-    //Testing in order rcv
-    top -> tb_count += 1;
-    rcv_inorder_data();
-    top -> tb_count +=1;
-    rd_FIFO_rcv();
+    // //Testing APP write into FIFO (Also testing the basesum of TCP) 
+    // top -> tb_count +=1;
+    // wr_FIFO_TX();
+    // top -> tb_count +=1;
+    // sending_TCP();
+    // tick(top, tfp);
+    // tick(top, tfp);
+    // tick(top, tfp);
+    // tick(top, tfp);
 
-    //Writing data
-    top -> tb_count +=1;
-    wr_FIFO_TX();
-    top -> tb_count +=1;
-    sending_TCP();
+    // //Testing in order rcv
+    // top -> tb_count += 1;
+    // rcv_inorder_data();
+    // top -> tb_count +=1;
+    // rd_FIFO_rcv();
 
-    //Receive ACKs to update which is work!!!
-    top -> tb_count +=1;
-    rcv_update_ACKS_order_data();
-    top -> tb_count +=1;
-    rd_FIFO_rcv();
+    // //Writing data
+    // top -> tb_count +=1;
+    // wr_FIFO_TX();
+    // top -> tb_count +=1;
+    // sending_TCP();
+
+    // //Receive ACKs to update which is work!!!
+    // top -> tb_count +=1;
+    // rcv_update_ACKS_order_data();
+    // top -> tb_count +=1;
+    // rd_FIFO_rcv();
 
 
-    //Need to test out of order logics more
-    top -> tb_count +=1;
-    rcv_out_of_order_data();
-    top -> tb_count +=1;
-    rd_FIFO_rcv();
+    // //Need to test out of order logics more
+    // top -> tb_count +=1;
+    // rcv_out_of_order_data();
+    // top -> tb_count +=1;
+    // rd_FIFO_rcv();
 
     // //Fast transmission
     // top -> tb_count += 1;

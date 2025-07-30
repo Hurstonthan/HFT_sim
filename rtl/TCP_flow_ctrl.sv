@@ -58,8 +58,11 @@ module TCP_flow_ctrl #(
 
     output logic [31:0] ACK_num,
     output logic ACK_rcv_flag,
-    output logic out_order_req
+    output logic out_order_req,
 
+    //Timeout
+    output logic count_en_timeout,
+    output logic clear_timeout
 
 );
 
@@ -105,6 +108,7 @@ module TCP_flow_ctrl #(
     logic [31:0] wnd_allow;
     logic nhand_shake_done;
     logic [31:0] nseq_rcv_str;
+    logic ncount_en_timeout, nclear_timeout;
 
 
     
@@ -165,7 +169,7 @@ module TCP_flow_ctrl #(
 
     generate
         for (k = 0; k< N; k++) begin
-            assign overlap_mask[k]    = (TCP_order[k].v && ((seq_rx_trk + TCP_bytes_trk < TCP_order[k].seq_length) && (seq_rx_trk >= TCP_order[k].seq_num)));
+            assign overlap_mask[k]    = ((TCP_order[k].v && ((seq_rx_trk + TCP_bytes_trk < TCP_order[k].seq_length) && (seq_rx_trk >= TCP_order[k].seq_num))) || (seq_rx_trk + TCP_bytes_trk < rcv_next));
             assign left_trim_mask[k]  = (TCP_order[k].v && (seq_rx_trk < TCP_order[k].seq_length) && (seq_rx_trk + TCP_bytes_trk >= TCP_order[k].seq_length));
             assign right_trim_mask[k] = TCP_order[k].v && (seq_rx_trk < TCP_order[k].seq_num) && (seq_rx_trk + TCP_bytes_trk > TCP_order[k].seq_num);
         end
@@ -173,7 +177,7 @@ module TCP_flow_ctrl #(
     assign free_vec = ~v_vec; //Mask of free bits for the out of order packets
 
     for (genvar i = 0; i < N; i++) begin
-        assign match_mask[i] = ((rcv_next >= TCP_order[i].seq_num) && TCP_order[i].v); //Mask of matched bits for the out of order packets
+        assign match_mask[i] = ((rcv_next == TCP_order[i].seq_num) && TCP_order[i].v); //Mask of matched bits for the out of order packets
     end
 
     priority_encoder #(
@@ -242,6 +246,8 @@ module TCP_flow_ctrl #(
             seq_tx_retrans <=0;
             seq_rx_str <= 0;
             rcv_next_prev <= 0;
+            count_en_timeout <= 0;
+            clear_timeout <= 0;
         end else if (TCP_flush) begin
             seq_rx_trk <= 0;
             flush_ptr <= nflush_ptr;
@@ -261,6 +267,8 @@ module TCP_flow_ctrl #(
             out_order_req <= nout_order_req;
             seq_tx_retrans <= nseq_tx_retrans;
             seq_rx_str <= nseq_rx_str;
+            count_en_timeout <= ncount_en_timeout;
+            clear_timeout <= nclear_timeout;
             if (!nw_segment) begin
                 rcv_next_prev <= rcv_next;
             end
@@ -356,6 +364,10 @@ module TCP_flow_ctrl #(
         nout_order_req = out_order_req;
         nseq_tx_retrans = seq_tx_retrans;
 
+        //TIMEOUT FLAG LOGIC
+        ncount_en_timeout = count_en_timeout;
+        nclear_timeout = 1'b0;
+
         
         ///////////////////////TRIMMING CASE ////////////////////////
         if (nw_segment) begin
@@ -370,6 +382,9 @@ module TCP_flow_ctrl #(
                 case_bug = overlap;
                 nseq_rx_str = TCP_order[ov_idx].seq_length;
                 wr_FIFO_en = 1'b0;
+                if (seq_rx_trk == rcv_next) begin
+                    nrcv_next = TCP_order[ov_idx].seq_length;
+                end
             end
             //Case 2: right trim
             //seq_rx_trk < TCP_order[i].seq_num && seq_rx_trk + TCP_bytes_trk > TCP_order[i].seq_num
@@ -391,7 +406,7 @@ module TCP_flow_ctrl #(
                     nTCP_order[free_idx].seq_num = seq_rx_str;
                     nTCP_order[free_idx].seq_length = seq_rx_trk + bytes_left;
                     nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
-                    nTCP_order[free_idx].length_ptr = wr_FIFO_len;//length_ptr will be 
+                    nTCP_order[free_idx].length_ptr = wr_FIFO_len + 1;//length_ptr will be 
                     nTCP_order[free_idx].v = 1'b1;//length_ptr will be 
                     nflush_list[len_flush_ptr] = free_idx;
                     nlen_flush_ptr = len_flush_ptr + 1;
@@ -409,10 +424,20 @@ module TCP_flow_ctrl #(
                 bytes_left = TCP_bytes_trk - bytes_drop;
                 // nseq_rx_trk = seq_rx_trk + bytes_left;
                 nseq_rx_trk = seq_rx_trk + TCP_bytes_trk;
-                nseq_rx_str = seq_rx_trk + bytes_left;
+                nseq_rx_str = TCP_order[lt_idx].seq_length;
                 wr_FIFO_offset = (8'hFF >> bytes_drop);
-                if ((seq_rx_trk + TCP_bytes_trk) > rcv_next) begin
-                    nrcv_next = seq_rx_trk + TCP_bytes_trk;
+                // if ((seq_rx_trk + TCP_bytes_trk) > rcv_next) begin
+                //     nrcv_next = seq_rx_trk + TCP_bytes_trk;
+                // end
+                if (free_mask && TCP_last) begin 
+                    // case_bug = right_trim;
+                    nTCP_order[free_idx].seq_num = TCP_order[lt_idx].seq_length;
+                    nTCP_order[free_idx].seq_length = seq_rx_trk + TCP_bytes_trk;
+                    nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
+                    nTCP_order[free_idx].length_ptr = wr_FIFO_len;//length_ptr will be 
+                    nTCP_order[free_idx].v = 1'b1;
+                    nflush_list[len_flush_ptr] = free_idx;
+                    nlen_flush_ptr = len_flush_ptr + 1;
                 end
             end
 
@@ -430,10 +455,6 @@ module TCP_flow_ctrl #(
                     nTCP_order[free_idx].v = 1'b1;
                     nflush_list[len_flush_ptr] = free_idx;
                     nlen_flush_ptr = len_flush_ptr + 1;
-
-                    // if (seq_num_rx == rcv_next) begin
-                    //     nrcv_next = seq_rx_trk + TCP_bytes_trk;
-                    // end
                 end
             end
         end
@@ -543,9 +564,12 @@ module TCP_flow_ctrl #(
                 // if (TCP_flush) begin
                 //     nstate = IDLE;
                 // end
+                ncount_en_timeout = 1'b1;
                 
                 if (rcv_data && rcv_pkg_type.SYN && rcv_pkg_type.ACK) begin                    
                     nstate = SEND_ACK;
+                    ncount_en_timeout = 1'b0;
+                    nclear_timeout = 1'b1;
                     // nseq_num.seq_num = seq_num.seq_num + 1;
                     nack_num.ACK_num = ACK_rx; //This should be this
                     nrcv_next = seq_num_rx + 1;
@@ -574,8 +598,10 @@ module TCP_flow_ctrl #(
                     TCP_stop_flg = 1'b0; //We can send the data
                     if (seq_up && !out_order_req) begin
                         nseq_num.seq_num = seq_num.seq_num + bytes_abt_sent;
+                        ncount_en_timeout = 1'b1;
                     end else if (seq_up) begin
                         nout_order_req = 1'b0;
+                        ncount_en_timeout = 1'b1;
                     end
                 end else begin
                     TCP_stop_flg = 1'b1; //We need to stop sending the data
@@ -594,6 +620,7 @@ module TCP_flow_ctrl #(
                             nout_order_req = 1'b1;
                             // nseq_num.seq_num = ACK_rx; //Right??? this is how we update the sequence number if a packege is lost?
                             nseq_tx_retrans = ACK_rx;
+                            nclear_timeout = 1'b1;
                         end else begin
                             nack_num.dup_chk = ack_num.dup_chk + 1;
                         end
@@ -601,6 +628,7 @@ module TCP_flow_ctrl #(
                     end else if (rcv_pkg_type.ACK && ACK_rx > ack_num.ACK_num) begin
                         nack_num.dup_chk = 0;
                         nack_num.ACK_num = ACK_rx;    
+                        nclear_timeout = 1'b1;
                     end
                     nflush_ptr = 0;
                     nlen_flush_ptr = 0;
@@ -613,7 +641,8 @@ module TCP_flow_ctrl #(
                 end 
                 else if (timeout_flag) begin
                     //Logic of timeout issue resend the packets
-                    
+                    nout_order_req = 1'b1;
+                    nseq_tx_retrans = ACK_rx;   
                 end
 
                  

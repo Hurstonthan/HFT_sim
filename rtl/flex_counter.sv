@@ -31,13 +31,11 @@ module flex_counter #(parameter SIZE = 4) (
             nxt_count_out = count_out + 1;
             nxt_rollover_flag = 1'b0;
             
-            if (count_out + 1 == rollover_val) begin    // if counter at rollover_val, reset counter and rollover_flag to 1s
+            
+            if (count_out >= rollover_val) begin
+                nxt_count_out = 1;
                 nxt_rollover_flag = 1'b1;
             end
-            // else if (count_out >= rollover_val) begin
-            //     nxt_count_out = 1;
-            //     nxt_rollover_flag = 1'b0;
-            // end
             else begin  // if counter not at rollover_val, increment counter and set rollover_flag to 0
                 nxt_rollover_flag = 1'b0;
             end

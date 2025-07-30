@@ -113,6 +113,9 @@ module TCP #(
     logic [15:0] TCP_basesum_payload;
     logic [15:0] TCP_checksum_out;
 
+    logic timeout_flag;
+    logic clear_timeout, count_en_timeout;
+
     assign checksum_TX = TCP_basesum_payload;
     always_comb begin
         if (re_trans) begin
@@ -171,7 +174,9 @@ module TCP #(
         .rd_FIFO_valid(rd_FIFO_valid_rcv),
         .ACK_num(ACK_num),
         .ACK_rcv_flag(ACK_rcv_flag),
-        .out_order_req(out_order_req)
+        .out_order_req(out_order_req),
+        .clear_timeout(clear_timeout),
+        .count_en_timeout(count_en_timeout)
     );
 
     TCP_receiver tcp_rcv (
@@ -227,7 +232,19 @@ module TCP #(
         .nRST(nRST),
         .gen_en(1'b0),
         .ISN_num(ISN_num)
-    );    
+    );
+
+    flex_counter #(
+        .SIZE(32)
+    )timeout_fl (
+        .CLK(CLK),
+        .nRST(nRST),
+        .count_enable(count_en_timeout),
+        .clear(clear_timeout),
+        .rollover_val(32'd4500),
+        .initial_val(32'd0),
+        .rollover_flag(timeout_flag)
+    ); 
     
     checksum_TCP #(
         .DATA_WIDTH(DATA_WIDTH)
@@ -242,6 +259,8 @@ module TCP #(
         .re_trans(re_trans),
         .TCP_checksum_out(TCP_checksum_out)
     );
+
+
 
 
 endmodule
