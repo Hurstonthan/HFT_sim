@@ -8,12 +8,12 @@ module MAC_rx #(
     parameter ETHER_TYPE_MSB = 16'h0008,
     parameter CRC_MAGIC = 32'hC704_DD7B
 ) (
-    input wire CLK,
-    input wire nRST,
+    input logic CLK,
+    input logic nRST,
 
     // Interface connecting the Payload logic
-    input wire [DATA_WIDTH - 1:0] xgmii_rxd,
-    input wire [CTRL_WIDTH - 1:0] xgmii_rxc,
+    input logic [DATA_WIDTH - 1:0] xgmii_rxd,
+    input logic [CTRL_WIDTH - 1:0] xgmii_rxc,
 
     output logic [DATA_WIDTH - 1:0] MAC_payload_rcv,
     output logic MAC_valid,
@@ -43,6 +43,7 @@ module MAC_rx #(
     logic [5:0] shift_bits;
     logic [7:0] byte_END;
     logic [31:0] FCS_frame, nFCS_frame; 
+    logic [31:0] rg, nrg; 
     logic [63:0]FCS_frame_cvt;
     //logic [63:0] MAC_;
     logic crc_delay, ncrc_delay;
@@ -135,13 +136,18 @@ module MAC_rx #(
             bytes_rcv <= 0;
             bytes_rcv_dl <= 0;
             FCS_rxc <= 0;
+            rg <= 0;
             
         end else begin
             state <= next_state;
             crc_check <= ncrc_check;
             frame_store <= nframe_store;
             // xgmii_rxd_f <= nxgmii_rxd_f;
-            FCS_frame <= nFCS_frame;
+            rg <= nrg;
+            if (end_valid) begin
+                FCS_frame <= nFCS_frame;
+            end
+
             crc_delay <= ncrc_delay;
             sof_found <= nsof_found;
             sof_lane <=  nsof_lane;
@@ -167,6 +173,7 @@ module MAC_rx #(
     assign mac_src_addr_second_valid = (mac_src_addr[31:0] == MAC_SRC_ADDR[31:0]);
 
     always_comb begin
+        nrg = rg;
         next_state = state;
         crc_init = 1'b0;
         crc_valid = 1'b1;
@@ -176,8 +183,9 @@ module MAC_rx #(
         ncrc_delay = 1'b0;
         nMAC_valid = 1'b0;
         nsoft_dl = soft_dl;
-        nFCS_frame = FCS_frame;
-        //nFCS_frame = FCS_grap >> ((FCS_offset - 4) << 3);
+        //nFCS_frame = FCS_frame;
+        temp = FCS_grap >> ((FCS_offset - 4) << 3);
+        nFCS_frame = FCS_grap >> ((FCS_offset - 4) << 3);
         xgmii_rxd_f = '0;
         nxgmii_rxc_frame = {xgmii_rxc, xgmii_rxc_frame[15:8]};
         nframe_store = {xgmii_rxd,frame_store[127:64]};
@@ -240,14 +248,14 @@ module MAC_rx #(
             RCV_MAC_PAYLOAD: begin
                 nMAC_valid = 1'b1;
                 nMAC_payload_rcv_cvrt = xgmii_rxd_f;
-                temp = FCS_grap >> ((FCS_offset - 4) << 3);
-                nFCS_frame = temp[31:0];
+                
                 nbytes_rcv = 7'd8;
                 
                 if (end_valid && (byte_END == 8'hFD)) begin
                     // nFCS_frame = FCS_grap >> ((FCS_offset - 4) << 3);
-                    // temp = FCS_grap >> ((FCS_offset - 4) << 3);
-                    // nFCS_frame = temp[31:0];
+                    temp = FCS_grap >> ((FCS_offset - 4) << 3);
+                    nFCS_frame = temp[31:0];
+                    nrg = temp[31:0];
                     // nFCS_frame = '1;
                     if (sof_lane == 0) begin
                         if (bytes_offset < 5) begin
@@ -364,7 +372,6 @@ module MAC_rx #(
             CHECK_CRC: begin
                 crc_valid = 1'b0;
                 nMAC_valid = 1'b0;
-                
                 // todo giving wrong crc 
                 if (crc_out == FCS_frame_cvt[31:0]) begin
                     frame_ok = 1'b1;

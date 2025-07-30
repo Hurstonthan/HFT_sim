@@ -56,6 +56,8 @@ VL_ATTR_COLD void VMAC_rx_MAC_rx___ctor_var_reset(VMAC_rx_MAC_rx* vlSelf) {
     vlSelf->__PVT__byte_END = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 16376312156161212628ull);
     vlSelf->__PVT__FCS_frame = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 11473110822599412120ull);
     vlSelf->__PVT__nFCS_frame = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 15095012849411410071ull);
+    vlSelf->__PVT__rg = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 7949930029546432755ull);
+    vlSelf->__PVT__nrg = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 11927490343095378668ull);
     vlSelf->__PVT__FCS_frame_cvt = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 11016584808402171135ull);
     vlSelf->__PVT__crc_delay = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 4813008388058198035ull);
     vlSelf->__PVT__ncrc_delay = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 14128846217241602304ull);
@@ -81,6 +83,7 @@ VL_ATTR_COLD void VMAC_rx_MAC_rx___ctor_var_reset(VMAC_rx_MAC_rx* vlSelf) {
     vlSelf->__Vdly__state = VL_SCOPED_RAND_RESET_I(6, __VscopeHash, 15137669457351727936ull);
     vlSelf->__Vdly__crc_check = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 16097479611084379645ull);
     VL_SCOPED_RAND_RESET_W(128, vlSelf->__Vdly__frame_store, __VscopeHash, 2870292541581303272ull);
+    vlSelf->__Vdly__rg = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 6324504929429351645ull);
     vlSelf->__Vdly__FCS_frame = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 1821840388967903550ull);
     vlSelf->__Vdly__crc_delay = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 6160477841137183465ull);
     vlSelf->__Vdly__sof_found = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 4315844490141895796ull);

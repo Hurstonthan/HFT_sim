@@ -31,7 +31,7 @@ VMAC_rx__Syms::VMAC_rx__Syms(VerilatedContext* contextp, const char* namep, VMAC
     , TOP__MAC_rx__xgmii_fcs{this, Verilated::catName(namep, "MAC_rx.xgmii_fcs")}
 {
         // Check resources
-        Verilated::stackCheck(208);
+        Verilated::stackCheck(336);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-9);
     _vm_contextp__->timeprecision(-12);

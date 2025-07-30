@@ -89,12 +89,15 @@ class alignas(VL_CACHE_LINE_BYTES) VMAC_rx_MAC_rx final : public VerilatedModule
         VlWide<4>/*127:0*/ __PVT__FCS_shifted;
         IData/*31:0*/ __PVT__FCS_frame;
         IData/*31:0*/ __PVT__nFCS_frame;
-        IData/*31:0*/ __PVT__i;
-        VlWide<4>/*127:0*/ __PVT__temp;
+        IData/*31:0*/ __PVT__rg;
+        IData/*31:0*/ __PVT__nrg;
     };
     struct {
+        IData/*31:0*/ __PVT__i;
+        VlWide<4>/*127:0*/ __PVT__temp;
         IData/*31:0*/ __Vdly__crc_check;
         VlWide<4>/*127:0*/ __Vdly__frame_store;
+        IData/*31:0*/ __Vdly__rg;
         IData/*31:0*/ __Vdly__FCS_frame;
         VL_IN64(xgmii_rxd,63,0);
         VL_OUT64(MAC_payload_rcv,63,0);

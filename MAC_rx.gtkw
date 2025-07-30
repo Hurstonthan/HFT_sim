@@ -1,10 +1,10 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Wed Jul 30 09:03:54 2025
+[*] Wed Jul 30 16:43:08 2025
 [*]
 [dumpfile] "/home/than0/HFT_sim/MAC_rx.vcd"
-[dumpfile_mtime] "Wed Jul 30 09:03:24 2025"
-[dumpfile_size] 3155
+[dumpfile_mtime] "Wed Jul 30 16:42:21 2025"
+[dumpfile_size] 3297
 [savefile] "/home/than0/HFT_sim/MAC_rx.gtkw"
 [timestart] 0
 [size] 1634 1001
@@ -21,6 +21,9 @@ TOP.CLK
 TOP.nRST
 @22
 TOP.xgmii_rxd[63:0]
+@23
+TOP.MAC_rx.xgmii_rxd_f[63:0]
+@22
 TOP.xgmii_rxc[7:0]
 @200
 -
@@ -173,8 +176,11 @@ TOP.MAC_rx.FCS_grap[127:0]
 TOP.MAC_rx.temp[127:0]
 TOP.MAC_rx.FCS_frame[31:0]
 TOP.MAC_rx.nFCS_frame[31:0]
-@25
+@24
 TOP.MAC_rx.bytes_offset[2:0]
+@22
+TOP.MAC_rx.nrg[31:0]
+TOP.MAC_rx.rg[31:0]
 @28
 TOP.MAC_rx.end_valid
 @22

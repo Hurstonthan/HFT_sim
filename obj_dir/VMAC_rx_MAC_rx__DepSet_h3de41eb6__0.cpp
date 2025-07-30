@@ -96,9 +96,11 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___ico_comb__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlS
     VMAC_rx__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Init
-    VlWide<3>/*95:0*/ __Vtemp_1;
+    VlWide<4>/*127:0*/ __Vtemp_1;
     VlWide<3>/*95:0*/ __Vtemp_2;
+    VlWide<3>/*95:0*/ __Vtemp_3;
     // Body
+    vlSelfRef.__PVT__nrg = vlSelfRef.__PVT__rg;
     vlSelfRef.__PVT__next_state = vlSelfRef.__PVT__state;
     vlSelfRef.__PVT__crc_init = 0U;
     vlSelfRef.__PVT__crc_valid = 1U;
@@ -108,7 +110,13 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___ico_comb__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlS
     vlSelfRef.__PVT__ncrc_delay = 0U;
     vlSelfRef.__PVT__nMAC_valid = 0U;
     vlSelfRef.__PVT__nsoft_dl = vlSelfRef.__PVT__soft_dl;
-    vlSelfRef.__PVT__nFCS_frame = vlSelfRef.__PVT__FCS_frame;
+    VL_SHIFTR_WWI(128,128,32, vlSelfRef.__PVT__temp, vlSelfRef.__PVT__FCS_grap, 
+                  VL_SHIFTL_III(32,32,32, (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
+                                           - (IData)(4U)), 3U));
+    VL_SHIFTR_WWI(128,128,32, __Vtemp_1, vlSelfRef.__PVT__FCS_grap, 
+                  VL_SHIFTL_III(32,32,32, (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
+                                           - (IData)(4U)), 3U));
+    vlSelfRef.__PVT__nFCS_frame = VL_SEL_IWII(128, __Vtemp_1, 0U, 0x20U);
     vlSelfRef.__PVT__xgmii_rxd_f = 0ULL;
     vlSelfRef.__PVT__nxgmii_rxc_frame = VL_CONCAT_III(16,8,8, (IData)(vlSelfRef.xgmii_rxc), 
                                                       (0xffU 
@@ -181,13 +189,15 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___ico_comb__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlS
     } else if ((3U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__nMAC_valid = 1U;
         vlSelfRef.__PVT__nMAC_payload_rcv_cvrt = vlSelfRef.__PVT__xgmii_rxd_f;
-        VL_SHIFTR_WWI(128,128,32, vlSelfRef.__PVT__temp, vlSelfRef.__PVT__FCS_grap, 
-                      VL_SHIFTL_III(32,32,32, (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
-                                               - (IData)(4U)), 3U));
-        vlSelfRef.__PVT__nFCS_frame = VL_SEL_IWII(128, vlSelfRef.__PVT__temp, 0U, 0x20U);
         vlSelfRef.__PVT__nbytes_rcv = 8U;
         if (((IData)(vlSelfRef.__PVT__end_valid) & 
              (0xfdU == (IData)(vlSelfRef.__PVT__byte_END)))) {
+            VL_SHIFTR_WWI(128,128,32, vlSelfRef.__PVT__temp, vlSelfRef.__PVT__FCS_grap, 
+                          VL_SHIFTL_III(32,32,32, (
+                                                   VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
+                                                   - (IData)(4U)), 3U));
+            vlSelfRef.__PVT__nFCS_frame = VL_SEL_IWII(128, vlSelfRef.__PVT__temp, 0U, 0x20U);
+            vlSelfRef.__PVT__nrg = VL_SEL_IWII(128, vlSelfRef.__PVT__temp, 0U, 0x20U);
             if ((0U == (IData)(vlSelfRef.__PVT__sof_lane))) {
                 if ((5U > (IData)(vlSelfRef.__PVT__bytes_offset))) {
                     vlSelfRef.__PVT__nbytes_rcv = (0xffU 
@@ -225,17 +235,17 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___ico_comb__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlS
                     } else if ((6U == (IData)(vlSelfRef.__PVT__bytes_offset))) {
                         VL_ASSIGNSEL_WQ(128,64,0U, vlSelfRef.__PVT__nframe_store, 
                                         VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
-                        VL_EXTEND_WI(73,17, __Vtemp_1, 
+                        VL_EXTEND_WI(73,17, __Vtemp_2, 
                                      (0x1ffffU & VL_SEL_IQII(64, vlSelfRef.xgmii_rxd, 0U, 0x11U)));
                         VL_ASSIGNSEL_WQ(128,64,0x40U, vlSelfRef.__PVT__nframe_store, 
-                                        VL_SEL_QWII(73, __Vtemp_1, 0U, 0x40U));
+                                        VL_SEL_QWII(73, __Vtemp_2, 0U, 0x40U));
                     } else if ((7U == (IData)(vlSelfRef.__PVT__bytes_offset))) {
                         VL_ASSIGNSEL_WQ(128,64,0U, vlSelfRef.__PVT__nframe_store, 
                                         VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
-                        VL_EXTEND_WI(80,24, __Vtemp_2, 
+                        VL_EXTEND_WI(80,24, __Vtemp_3, 
                                      (0xffffffU & VL_SEL_IQII(64, vlSelfRef.xgmii_rxd, 0U, 0x18U)));
                         VL_ASSIGNSEL_WQ(128,64,0x40U, vlSelfRef.__PVT__nframe_store, 
-                                        VL_SEL_QWII(80, __Vtemp_2, 0U, 0x40U));
+                                        VL_SEL_QWII(80, __Vtemp_3, 0U, 0x40U));
                     }
                     vlSelfRef.__PVT__nMAC_payload_rcv_cvrt 
                         = VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U);
@@ -378,9 +388,11 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___act_sequent__TOP__MAC_rx__0(VMAC_rx_MAC_rx* 
     VMAC_rx__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Init
-    VlWide<3>/*95:0*/ __Vtemp_1;
+    VlWide<4>/*127:0*/ __Vtemp_1;
     VlWide<3>/*95:0*/ __Vtemp_2;
+    VlWide<3>/*95:0*/ __Vtemp_3;
     // Body
+    vlSelfRef.__PVT__nrg = vlSelfRef.__PVT__rg;
     vlSelfRef.__PVT__next_state = vlSelfRef.__PVT__state;
     vlSelfRef.__PVT__crc_init = 0U;
     vlSelfRef.__PVT__crc_valid = 1U;
@@ -390,7 +402,13 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___act_sequent__TOP__MAC_rx__0(VMAC_rx_MAC_rx* 
     vlSelfRef.__PVT__ncrc_delay = 0U;
     vlSelfRef.__PVT__nMAC_valid = 0U;
     vlSelfRef.__PVT__nsoft_dl = vlSelfRef.__PVT__soft_dl;
-    vlSelfRef.__PVT__nFCS_frame = vlSelfRef.__PVT__FCS_frame;
+    VL_SHIFTR_WWI(128,128,32, vlSelfRef.__PVT__temp, vlSelfRef.__PVT__FCS_grap, 
+                  VL_SHIFTL_III(32,32,32, (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
+                                           - (IData)(4U)), 3U));
+    VL_SHIFTR_WWI(128,128,32, __Vtemp_1, vlSelfRef.__PVT__FCS_grap, 
+                  VL_SHIFTL_III(32,32,32, (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
+                                           - (IData)(4U)), 3U));
+    vlSelfRef.__PVT__nFCS_frame = VL_SEL_IWII(128, __Vtemp_1, 0U, 0x20U);
     vlSelfRef.__PVT__xgmii_rxd_f = 0ULL;
     vlSelfRef.__PVT__nxgmii_rxc_frame = VL_CONCAT_III(16,8,8, (IData)(vlSelfRef.xgmii_rxc), 
                                                       (0xffU 
@@ -463,13 +481,15 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___act_sequent__TOP__MAC_rx__0(VMAC_rx_MAC_rx* 
     } else if ((3U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__nMAC_valid = 1U;
         vlSelfRef.__PVT__nMAC_payload_rcv_cvrt = vlSelfRef.__PVT__xgmii_rxd_f;
-        VL_SHIFTR_WWI(128,128,32, vlSelfRef.__PVT__temp, vlSelfRef.__PVT__FCS_grap, 
-                      VL_SHIFTL_III(32,32,32, (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
-                                               - (IData)(4U)), 3U));
-        vlSelfRef.__PVT__nFCS_frame = VL_SEL_IWII(128, vlSelfRef.__PVT__temp, 0U, 0x20U);
         vlSelfRef.__PVT__nbytes_rcv = 8U;
         if (((IData)(vlSelfRef.__PVT__end_valid) & 
              (0xfdU == (IData)(vlSelfRef.__PVT__byte_END)))) {
+            VL_SHIFTR_WWI(128,128,32, vlSelfRef.__PVT__temp, vlSelfRef.__PVT__FCS_grap, 
+                          VL_SHIFTL_III(32,32,32, (
+                                                   VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
+                                                   - (IData)(4U)), 3U));
+            vlSelfRef.__PVT__nFCS_frame = VL_SEL_IWII(128, vlSelfRef.__PVT__temp, 0U, 0x20U);
+            vlSelfRef.__PVT__nrg = VL_SEL_IWII(128, vlSelfRef.__PVT__temp, 0U, 0x20U);
             if ((0U == (IData)(vlSelfRef.__PVT__sof_lane))) {
                 if ((5U > (IData)(vlSelfRef.__PVT__bytes_offset))) {
                     vlSelfRef.__PVT__nbytes_rcv = (0xffU 
@@ -507,17 +527,17 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___act_sequent__TOP__MAC_rx__0(VMAC_rx_MAC_rx* 
                     } else if ((6U == (IData)(vlSelfRef.__PVT__bytes_offset))) {
                         VL_ASSIGNSEL_WQ(128,64,0U, vlSelfRef.__PVT__nframe_store, 
                                         VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
-                        VL_EXTEND_WI(73,17, __Vtemp_1, 
+                        VL_EXTEND_WI(73,17, __Vtemp_2, 
                                      (0x1ffffU & VL_SEL_IQII(64, vlSelfRef.xgmii_rxd, 0U, 0x11U)));
                         VL_ASSIGNSEL_WQ(128,64,0x40U, vlSelfRef.__PVT__nframe_store, 
-                                        VL_SEL_QWII(73, __Vtemp_1, 0U, 0x40U));
+                                        VL_SEL_QWII(73, __Vtemp_2, 0U, 0x40U));
                     } else if ((7U == (IData)(vlSelfRef.__PVT__bytes_offset))) {
                         VL_ASSIGNSEL_WQ(128,64,0U, vlSelfRef.__PVT__nframe_store, 
                                         VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
-                        VL_EXTEND_WI(80,24, __Vtemp_2, 
+                        VL_EXTEND_WI(80,24, __Vtemp_3, 
                                      (0xffffffU & VL_SEL_IQII(64, vlSelfRef.xgmii_rxd, 0U, 0x18U)));
                         VL_ASSIGNSEL_WQ(128,64,0x40U, vlSelfRef.__PVT__nframe_store, 
-                                        VL_SEL_QWII(80, __Vtemp_2, 0U, 0x40U));
+                                        VL_SEL_QWII(80, __Vtemp_3, 0U, 0x40U));
                     }
                     vlSelfRef.__PVT__nMAC_payload_rcv_cvrt 
                         = VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U);
@@ -669,6 +689,7 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___nba_sequent__TOP__MAC_rx__1(VMAC_rx_MAC_rx* 
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
     vlSelfRef.__Vdly__crc_check = vlSelfRef.__PVT__crc_check;
+    vlSelfRef.__Vdly__rg = vlSelfRef.__PVT__rg;
     vlSelfRef.__Vdly__crc_delay = vlSelfRef.__PVT__crc_delay;
     vlSelfRef.__Vdly__xgmii_rxc_frame = vlSelfRef.__PVT__xgmii_rxc_frame;
     vlSelfRef.__Vdly__soft_dl = vlSelfRef.__PVT__soft_dl;
@@ -678,15 +699,18 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___nba_sequent__TOP__MAC_rx__1(VMAC_rx_MAC_rx* 
     vlSelfRef.__Vdly__state = vlSelfRef.__PVT__state;
     vlSelfRef.__Vdly__sof_found = vlSelfRef.__PVT__sof_found;
     vlSelfRef.__Vdly__sof_lane = vlSelfRef.__PVT__sof_lane;
+    vlSelfRef.__Vdly__FCS_frame = vlSelfRef.__PVT__FCS_frame;
     vlSelfRef.__Vdly__MAC_payload_rcv_cvrt = vlSelfRef.__PVT__MAC_payload_rcv_cvrt;
     vlSelfRef.__Vdly__FCS_rxc = vlSelfRef.__PVT__FCS_rxc;
     VL_ASSIGN_W(128,vlSelfRef.__Vdly__frame_store, vlSelfRef.__PVT__frame_store);
-    vlSelfRef.__Vdly__FCS_frame = vlSelfRef.__PVT__FCS_frame;
     if (vlSelfRef.nRST) {
         vlSelfRef.__Vdly__state = vlSelfRef.__PVT__next_state;
         vlSelfRef.__Vdly__crc_check = vlSelfRef.__PVT__ncrc_check;
         VL_ASSIGN_W(128,vlSelfRef.__Vdly__frame_store, vlSelfRef.__PVT__nframe_store);
-        vlSelfRef.__Vdly__FCS_frame = vlSelfRef.__PVT__nFCS_frame;
+        vlSelfRef.__Vdly__rg = vlSelfRef.__PVT__nrg;
+        if (vlSelfRef.__PVT__end_valid) {
+            vlSelfRef.__Vdly__FCS_frame = vlSelfRef.__PVT__nFCS_frame;
+        }
         vlSelfRef.__Vdly__crc_delay = vlSelfRef.__PVT__ncrc_delay;
         vlSelfRef.__Vdly__sof_found = vlSelfRef.__PVT__nsof_found;
         vlSelfRef.__Vdly__sof_lane = vlSelfRef.__PVT__nsof_lane;
@@ -712,8 +736,10 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___nba_sequent__TOP__MAC_rx__1(VMAC_rx_MAC_rx* 
         vlSelfRef.__Vdly__bytes_rcv = 0U;
         vlSelfRef.__Vdly__bytes_rcv_dl = 0U;
         vlSelfRef.__Vdly__FCS_rxc = 0U;
+        vlSelfRef.__Vdly__rg = 0U;
     }
     vlSelfRef.__PVT__crc_check = vlSelfRef.__Vdly__crc_check;
+    vlSelfRef.__PVT__rg = vlSelfRef.__Vdly__rg;
     vlSelfRef.__PVT__crc_delay = vlSelfRef.__Vdly__crc_delay;
     vlSelfRef.__PVT__xgmii_rxc_frame = vlSelfRef.__Vdly__xgmii_rxc_frame;
     vlSelfRef.__PVT__soft_dl = vlSelfRef.__Vdly__soft_dl;
@@ -723,10 +749,10 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___nba_sequent__TOP__MAC_rx__1(VMAC_rx_MAC_rx* 
     vlSelfRef.__PVT__state = vlSelfRef.__Vdly__state;
     vlSelfRef.__PVT__sof_found = vlSelfRef.__Vdly__sof_found;
     vlSelfRef.__PVT__sof_lane = vlSelfRef.__Vdly__sof_lane;
+    vlSelfRef.__PVT__FCS_frame = vlSelfRef.__Vdly__FCS_frame;
     vlSelfRef.__PVT__MAC_payload_rcv_cvrt = vlSelfRef.__Vdly__MAC_payload_rcv_cvrt;
     vlSelfRef.__PVT__FCS_rxc = vlSelfRef.__Vdly__FCS_rxc;
     VL_ASSIGN_W(128,vlSelfRef.__PVT__frame_store, vlSelfRef.__Vdly__frame_store);
-    vlSelfRef.__PVT__FCS_frame = vlSelfRef.__Vdly__FCS_frame;
     vlSelfRef.bytes_rcv_len = vlSelfRef.__PVT__bytes_rcv;
     vlSelfRef.__PVT__nsof_found = vlSelfRef.__PVT__sof_found;
     vlSelfRef.__PVT__nsof_lane = vlSelfRef.__PVT__sof_lane;
@@ -786,13 +812,13 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___nba_sequent__TOP__MAC_rx__1(VMAC_rx_MAC_rx* 
         vlSelfRef.__PVT__nsof_lane = 7U;
     }
     vlSelfRef.__PVT__i = 8U;
+    vlSelfRef.__Vcellinp__crc_frame_convert__xgmii_rxd 
+        = VL_CONCAT_QII(64,32,32, vlSelfRef.__PVT__FCS_frame, 0U);
     vlSymsp->TOP__MAC_rx__payload_cvrt.__PVT__xgmii_rxd 
         = vlSelfRef.__PVT__MAC_payload_rcv_cvrt;
     vlSymsp->TOP__MAC_rx__xgmii_fcs.__PVT__din = vlSelfRef.__PVT__FCS_rxc;
     VL_CONCAT_WQQ(128,64,64, vlSelfRef.__PVT__FCS_grap, vlSelfRef.xgmii_rxd, 
                   VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
-    vlSelfRef.__Vcellinp__crc_frame_convert__xgmii_rxd 
-        = VL_CONCAT_QII(64,32,32, vlSelfRef.__PVT__FCS_frame, 0U);
     vlSymsp->TOP__MAC_rx__crc_frame_convert.__PVT__xgmii_rxd 
         = vlSelfRef.__Vcellinp__crc_frame_convert__xgmii_rxd;
 }
@@ -812,9 +838,11 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___nba_comb__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlS
     VMAC_rx__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Init
-    VlWide<3>/*95:0*/ __Vtemp_1;
+    VlWide<4>/*127:0*/ __Vtemp_1;
     VlWide<3>/*95:0*/ __Vtemp_2;
+    VlWide<3>/*95:0*/ __Vtemp_3;
     // Body
+    vlSelfRef.__PVT__nrg = vlSelfRef.__PVT__rg;
     vlSelfRef.__PVT__next_state = vlSelfRef.__PVT__state;
     vlSelfRef.__PVT__crc_init = 0U;
     vlSelfRef.__PVT__crc_valid = 1U;
@@ -824,7 +852,13 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___nba_comb__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlS
     vlSelfRef.__PVT__ncrc_delay = 0U;
     vlSelfRef.__PVT__nMAC_valid = 0U;
     vlSelfRef.__PVT__nsoft_dl = vlSelfRef.__PVT__soft_dl;
-    vlSelfRef.__PVT__nFCS_frame = vlSelfRef.__PVT__FCS_frame;
+    VL_SHIFTR_WWI(128,128,32, vlSelfRef.__PVT__temp, vlSelfRef.__PVT__FCS_grap, 
+                  VL_SHIFTL_III(32,32,32, (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
+                                           - (IData)(4U)), 3U));
+    VL_SHIFTR_WWI(128,128,32, __Vtemp_1, vlSelfRef.__PVT__FCS_grap, 
+                  VL_SHIFTL_III(32,32,32, (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
+                                           - (IData)(4U)), 3U));
+    vlSelfRef.__PVT__nFCS_frame = VL_SEL_IWII(128, __Vtemp_1, 0U, 0x20U);
     vlSelfRef.__PVT__xgmii_rxd_f = 0ULL;
     vlSelfRef.__PVT__nxgmii_rxc_frame = VL_CONCAT_III(16,8,8, (IData)(vlSelfRef.xgmii_rxc), 
                                                       (0xffU 
@@ -897,13 +931,15 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___nba_comb__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlS
     } else if ((3U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__nMAC_valid = 1U;
         vlSelfRef.__PVT__nMAC_payload_rcv_cvrt = vlSelfRef.__PVT__xgmii_rxd_f;
-        VL_SHIFTR_WWI(128,128,32, vlSelfRef.__PVT__temp, vlSelfRef.__PVT__FCS_grap, 
-                      VL_SHIFTL_III(32,32,32, (VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
-                                               - (IData)(4U)), 3U));
-        vlSelfRef.__PVT__nFCS_frame = VL_SEL_IWII(128, vlSelfRef.__PVT__temp, 0U, 0x20U);
         vlSelfRef.__PVT__nbytes_rcv = 8U;
         if (((IData)(vlSelfRef.__PVT__end_valid) & 
              (0xfdU == (IData)(vlSelfRef.__PVT__byte_END)))) {
+            VL_SHIFTR_WWI(128,128,32, vlSelfRef.__PVT__temp, vlSelfRef.__PVT__FCS_grap, 
+                          VL_SHIFTL_III(32,32,32, (
+                                                   VL_EXTEND_II(32,4, (IData)(vlSelfRef.__PVT__FCS_offset)) 
+                                                   - (IData)(4U)), 3U));
+            vlSelfRef.__PVT__nFCS_frame = VL_SEL_IWII(128, vlSelfRef.__PVT__temp, 0U, 0x20U);
+            vlSelfRef.__PVT__nrg = VL_SEL_IWII(128, vlSelfRef.__PVT__temp, 0U, 0x20U);
             if ((0U == (IData)(vlSelfRef.__PVT__sof_lane))) {
                 if ((5U > (IData)(vlSelfRef.__PVT__bytes_offset))) {
                     vlSelfRef.__PVT__nbytes_rcv = (0xffU 
@@ -941,17 +977,17 @@ VL_INLINE_OPT void VMAC_rx_MAC_rx___nba_comb__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlS
                     } else if ((6U == (IData)(vlSelfRef.__PVT__bytes_offset))) {
                         VL_ASSIGNSEL_WQ(128,64,0U, vlSelfRef.__PVT__nframe_store, 
                                         VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
-                        VL_EXTEND_WI(73,17, __Vtemp_1, 
+                        VL_EXTEND_WI(73,17, __Vtemp_2, 
                                      (0x1ffffU & VL_SEL_IQII(64, vlSelfRef.xgmii_rxd, 0U, 0x11U)));
                         VL_ASSIGNSEL_WQ(128,64,0x40U, vlSelfRef.__PVT__nframe_store, 
-                                        VL_SEL_QWII(73, __Vtemp_1, 0U, 0x40U));
+                                        VL_SEL_QWII(73, __Vtemp_2, 0U, 0x40U));
                     } else if ((7U == (IData)(vlSelfRef.__PVT__bytes_offset))) {
                         VL_ASSIGNSEL_WQ(128,64,0U, vlSelfRef.__PVT__nframe_store, 
                                         VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
-                        VL_EXTEND_WI(80,24, __Vtemp_2, 
+                        VL_EXTEND_WI(80,24, __Vtemp_3, 
                                      (0xffffffU & VL_SEL_IQII(64, vlSelfRef.xgmii_rxd, 0U, 0x18U)));
                         VL_ASSIGNSEL_WQ(128,64,0x40U, vlSelfRef.__PVT__nframe_store, 
-                                        VL_SEL_QWII(80, __Vtemp_2, 0U, 0x40U));
+                                        VL_SEL_QWII(80, __Vtemp_3, 0U, 0x40U));
                     }
                     vlSelfRef.__PVT__nMAC_payload_rcv_cvrt 
                         = VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U);

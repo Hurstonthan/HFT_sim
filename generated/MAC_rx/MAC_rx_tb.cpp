@@ -24,6 +24,8 @@ static constexpr int      PRE_IDLE = 4;        // idle cols after every frame
 // ---- GOOD frame, /S/ in lane-0 ------------------------------------------------
 static const std::vector<Column> GOOD_L0 = {
     {0xFF, 0x0707070707070707},          // idles
+    {0xFF, 0x0707070707070707},          // idles
+    {0xFF, 0x0707070707070707},          // idles
     {0x01, 0xD5555555555555FB},          // /S/ + 6×55 + D5
 
     // bytes 0-7  :  FF FF FC CC BB AA  AA CC
@@ -83,21 +85,26 @@ double sc_time_stamp() { return main_time; }
 
 static void tick(VMAC_rx *dut, VerilatedFstC *tfp)
 {
-    dut->CLK = 1;
+    dut->CLK = 0;
     dut->eval(); 
     tfp->dump(main_time++);          
        
-    dut->CLK = 0;          
+    dut->CLK = 1;          
     dut->eval();
     tfp->dump(main_time++);
 }
 
 static void drive_idle(VMAC_rx *dut, VerilatedFstC *tfp, int cycles = 1)
 {
+    dut->xgmii_rxc = 0xFF;
+    dut->xgmii_rxd = 0x0707'0707'0707'0707ULL;
+    tick(dut, tfp);
+    tick(dut, tfp);
     for (int i = 0; i < cycles; ++i) {
         dut->xgmii_rxc = 0xFF;
         dut->xgmii_rxd = 0x0707'0707'0707'0707ULL;
         tick(dut, tfp);
+        
     }
 }
 
