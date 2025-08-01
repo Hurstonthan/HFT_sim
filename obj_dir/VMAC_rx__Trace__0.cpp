@@ -48,62 +48,65 @@ void VMAC_rx___024root__trace_chg_0_sub_0(VMAC_rx___024root* vlSelf, VerilatedFs
     if (VL_UNLIKELY(((vlSelfRef.__Vm_traceActivity[1U] 
                       | vlSelfRef.__Vm_traceActivity
                       [5U])))) {
-        bufp->chgBit(oldp+19,(vlSymsp->TOP__MAC_rx.__PVT__nsof_found));
-        bufp->chgCData(oldp+20,(vlSymsp->TOP__MAC_rx.__PVT__nsof_lane),3);
-        bufp->chgWData(oldp+21,(vlSymsp->TOP__MAC_rx.__PVT__FCS_grap),128);
-        bufp->chgIData(oldp+25,(vlSymsp->TOP__MAC_rx.__PVT__i),32);
+        bufp->chgCData(oldp+19,(vlSymsp->TOP__MAC_rx.__PVT__FCS_offset),4);
+        bufp->chgWData(oldp+20,(vlSymsp->TOP__MAC_rx.__PVT__FCS_grap),128);
+        bufp->chgSData(oldp+24,(vlSymsp->TOP__MAC_rx__xgmii_fcs.__PVT__din),16);
+        bufp->chgBit(oldp+25,(vlSymsp->TOP__MAC_rx__xgmii_fcs.__PVT__valid));
+        bufp->chgCData(oldp+26,(vlSymsp->TOP__MAC_rx__xgmii_fcs.__PVT__idx),4);
+        bufp->chgIData(oldp+27,(vlSymsp->TOP__MAC_rx__xgmii_fcs.__PVT__unnamedblk2__DOT__i),32);
     }
     if (VL_UNLIKELY((((vlSelfRef.__Vm_traceActivity
                        [2U] | vlSelfRef.__Vm_traceActivity
                        [3U]) | vlSelfRef.__Vm_traceActivity
                       [6U])))) {
-        bufp->chgBit(oldp+26,(vlSymsp->TOP__MAC_rx.CRC_flush));
-        bufp->chgBit(oldp+27,(vlSymsp->TOP__MAC_rx.frame_ok));
-        bufp->chgBit(oldp+28,(vlSymsp->TOP__MAC_rx.__PVT__crc_init));
-        bufp->chgQData(oldp+29,(vlSymsp->TOP__MAC_rx.__PVT__crc_in),64);
-        bufp->chgQData(oldp+31,(vlSymsp->TOP__MAC_rx.__PVT__crc_in_big),64);
-        bufp->chgSData(oldp+33,(vlSymsp->TOP__MAC_rx.__PVT__nxgmii_rxc_frame),16);
-        bufp->chgBit(oldp+34,(vlSymsp->TOP__MAC_rx.__PVT__crc_valid));
-        bufp->chgQData(oldp+35,(vlSymsp->TOP__MAC_rx.__PVT__xgmii_rxd_f),64);
-        bufp->chgSData(oldp+37,(vlSymsp->TOP__MAC_rx.__PVT__nFCS_rxc),16);
-        bufp->chgIData(oldp+38,(vlSymsp->TOP__MAC_rx.__PVT__ncrc_check),32);
-        bufp->chgWData(oldp+39,(vlSymsp->TOP__MAC_rx.__PVT__nframe_store),128);
-        bufp->chgIData(oldp+43,(vlSymsp->TOP__MAC_rx.__PVT__nFCS_frame),32);
-        bufp->chgIData(oldp+44,(vlSymsp->TOP__MAC_rx.__PVT__nrg),32);
-        bufp->chgBit(oldp+45,(vlSymsp->TOP__MAC_rx.__PVT__ncrc_delay));
-        bufp->chgBit(oldp+46,(vlSymsp->TOP__MAC_rx.__PVT__nsoft_dl));
-        bufp->chgQData(oldp+47,(vlSymsp->TOP__MAC_rx.__PVT__nMAC_payload_rcv_cvrt),64);
-        bufp->chgCData(oldp+49,(vlSymsp->TOP__MAC_rx.__PVT__nbytes_rcv),8);
-        bufp->chgCData(oldp+50,(vlSymsp->TOP__MAC_rx.__PVT__nbytes_rcv_dl),8);
-        bufp->chgBit(oldp+51,(vlSymsp->TOP__MAC_rx.__PVT__nMAC_valid));
-        bufp->chgCData(oldp+52,(vlSymsp->TOP__MAC_rx.__PVT__next_state),6);
-        bufp->chgQData(oldp+53,(vlSymsp->TOP__MAC_rx.__PVT__mac_dest_addr),48);
-        bufp->chgQData(oldp+55,(vlSymsp->TOP__MAC_rx.__PVT__mac_src_addr),48);
-        bufp->chgWData(oldp+57,(vlSymsp->TOP__MAC_rx.__PVT__temp),128);
-        bufp->chgBit(oldp+61,(vlSymsp->TOP__MAC_rx.__PVT__mac_dest_addr_valid));
-        bufp->chgBit(oldp+62,(vlSymsp->TOP__MAC_rx.__PVT__mac_src_addr_first_valid));
-        bufp->chgBit(oldp+63,(vlSymsp->TOP__MAC_rx.__PVT__mac_src_addr_second_valid));
-        bufp->chgQData(oldp+64,(vlSymsp->TOP__MAC_rx__crc_convert.__PVT__xgmii_rxd),64);
-        bufp->chgQData(oldp+66,(vlSymsp->TOP__MAC_rx__crc_convert.__PVT__be_rxd),64);
-        bufp->chgBit(oldp+68,(vlSymsp->TOP__MAC_rx__CRC.__PVT__valid));
-        bufp->chgBit(oldp+69,(vlSymsp->TOP__MAC_rx__CRC.__PVT__crc_init));
-        bufp->chgQData(oldp+70,(vlSymsp->TOP__MAC_rx__CRC.__PVT__data_in),64);
-        bufp->chgIData(oldp+72,(vlSymsp->TOP__MAC_rx__CRC.__PVT__next_crc),32);
+        bufp->chgBit(oldp+28,(vlSymsp->TOP__MAC_rx.CRC_flush));
+        bufp->chgBit(oldp+29,(vlSymsp->TOP__MAC_rx.frame_ok));
+        bufp->chgBit(oldp+30,(vlSymsp->TOP__MAC_rx.__PVT__crc_init));
+        bufp->chgQData(oldp+31,(vlSymsp->TOP__MAC_rx.__PVT__crc_in),64);
+        bufp->chgQData(oldp+33,(vlSymsp->TOP__MAC_rx.__PVT__crc_in_big),64);
+        bufp->chgSData(oldp+35,(vlSymsp->TOP__MAC_rx.__PVT__nxgmii_rxc_frame),16);
+        bufp->chgBit(oldp+36,(vlSymsp->TOP__MAC_rx.__PVT__crc_valid));
+        bufp->chgBit(oldp+37,(vlSymsp->TOP__MAC_rx.__PVT__nsof_found));
+        bufp->chgCData(oldp+38,(vlSymsp->TOP__MAC_rx.__PVT__nsof_lane),3);
+        bufp->chgQData(oldp+39,(vlSymsp->TOP__MAC_rx.__PVT__xgmii_rxd_f),64);
+        bufp->chgSData(oldp+41,(vlSymsp->TOP__MAC_rx.__PVT__nFCS_rxc),16);
+        bufp->chgIData(oldp+42,(vlSymsp->TOP__MAC_rx.__PVT__ncrc_check),32);
+        bufp->chgWData(oldp+43,(vlSymsp->TOP__MAC_rx.__PVT__nframe_store),128);
+        bufp->chgIData(oldp+47,(vlSymsp->TOP__MAC_rx.__PVT__nFCS_frame),32);
+        bufp->chgIData(oldp+48,(vlSymsp->TOP__MAC_rx.__PVT__nrg),32);
+        bufp->chgBit(oldp+49,(vlSymsp->TOP__MAC_rx.__PVT__ncrc_delay));
+        bufp->chgIData(oldp+50,(vlSymsp->TOP__MAC_rx.__PVT__i),32);
+        bufp->chgBit(oldp+51,(vlSymsp->TOP__MAC_rx.__PVT__nsoft_dl));
+        bufp->chgQData(oldp+52,(vlSymsp->TOP__MAC_rx.__PVT__nMAC_payload_rcv_cvrt),64);
+        bufp->chgCData(oldp+54,(vlSymsp->TOP__MAC_rx.__PVT__nbytes_rcv),8);
+        bufp->chgCData(oldp+55,(vlSymsp->TOP__MAC_rx.__PVT__nbytes_rcv_dl),8);
+        bufp->chgBit(oldp+56,(vlSymsp->TOP__MAC_rx.__PVT__nMAC_valid));
+        bufp->chgCData(oldp+57,(vlSymsp->TOP__MAC_rx.__PVT__next_state),6);
+        bufp->chgQData(oldp+58,(vlSymsp->TOP__MAC_rx.__PVT__mac_dest_addr),48);
+        bufp->chgQData(oldp+60,(vlSymsp->TOP__MAC_rx.__PVT__mac_src_addr),48);
+        bufp->chgBit(oldp+62,(vlSymsp->TOP__MAC_rx.__PVT__mac_dest_addr_valid));
+        bufp->chgBit(oldp+63,(vlSymsp->TOP__MAC_rx.__PVT__mac_src_addr_first_valid));
+        bufp->chgBit(oldp+64,(vlSymsp->TOP__MAC_rx.__PVT__mac_src_addr_second_valid));
+        bufp->chgQData(oldp+65,(vlSymsp->TOP__MAC_rx__crc_convert.__PVT__xgmii_rxd),64);
+        bufp->chgQData(oldp+67,(vlSymsp->TOP__MAC_rx__crc_convert.__PVT__be_rxd),64);
+        bufp->chgBit(oldp+69,(vlSymsp->TOP__MAC_rx__CRC.__PVT__valid));
+        bufp->chgBit(oldp+70,(vlSymsp->TOP__MAC_rx__CRC.__PVT__crc_init));
+        bufp->chgQData(oldp+71,(vlSymsp->TOP__MAC_rx__CRC.__PVT__data_in),64);
+        bufp->chgIData(oldp+73,(vlSymsp->TOP__MAC_rx__CRC.__PVT__next_crc),32);
     }
     if (VL_UNLIKELY((vlSelfRef.__Vm_traceActivity[4U]))) {
-        bufp->chgIData(oldp+73,(vlSymsp->TOP__MAC_rx.__PVT__crc_out),32);
-        bufp->chgIData(oldp+74,(vlSymsp->TOP__MAC_rx__CRC.__PVT__crc_out),32);
-        bufp->chgIData(oldp+75,(vlSymsp->TOP__MAC_rx__CRC.__PVT__crc_reg),32);
+        bufp->chgIData(oldp+74,(vlSymsp->TOP__MAC_rx.__PVT__crc_out),32);
+        bufp->chgIData(oldp+75,(vlSymsp->TOP__MAC_rx__CRC.__PVT__crc_out),32);
+        bufp->chgIData(oldp+76,(vlSymsp->TOP__MAC_rx__CRC.__PVT__crc_reg),32);
     }
     if (VL_UNLIKELY((vlSelfRef.__Vm_traceActivity[5U]))) {
-        bufp->chgQData(oldp+76,(vlSymsp->TOP__MAC_rx.MAC_payload_rcv),64);
-        bufp->chgBit(oldp+78,(vlSymsp->TOP__MAC_rx.MAC_valid));
-        bufp->chgCData(oldp+79,(vlSymsp->TOP__MAC_rx.bytes_rcv_len),8);
-        bufp->chgSData(oldp+80,(vlSymsp->TOP__MAC_rx.__PVT__xgmii_rxc_frame),16);
-        bufp->chgBit(oldp+81,(vlSymsp->TOP__MAC_rx.__PVT__sof_found));
-        bufp->chgCData(oldp+82,(vlSymsp->TOP__MAC_rx.__PVT__sof_lane),3);
-        bufp->chgSData(oldp+83,(vlSymsp->TOP__MAC_rx.__PVT__FCS_rxc),16);
-        bufp->chgCData(oldp+84,(vlSymsp->TOP__MAC_rx.__PVT__FCS_offset),4);
+        bufp->chgQData(oldp+77,(vlSymsp->TOP__MAC_rx.MAC_payload_rcv),64);
+        bufp->chgBit(oldp+79,(vlSymsp->TOP__MAC_rx.MAC_valid));
+        bufp->chgCData(oldp+80,(vlSymsp->TOP__MAC_rx.bytes_rcv_len),8);
+        bufp->chgSData(oldp+81,(vlSymsp->TOP__MAC_rx.__PVT__xgmii_rxc_frame),16);
+        bufp->chgBit(oldp+82,(vlSymsp->TOP__MAC_rx.__PVT__sof_found));
+        bufp->chgCData(oldp+83,(vlSymsp->TOP__MAC_rx.__PVT__sof_lane),3);
+        bufp->chgSData(oldp+84,(vlSymsp->TOP__MAC_rx.__PVT__FCS_rxc),16);
         bufp->chgIData(oldp+85,(vlSymsp->TOP__MAC_rx.__PVT__crc_check),32);
         bufp->chgWData(oldp+86,(vlSymsp->TOP__MAC_rx.__PVT__frame_store),128);
         bufp->chgIData(oldp+90,(vlSymsp->TOP__MAC_rx.__PVT__FCS_frame),32);
@@ -119,20 +122,16 @@ void VMAC_rx___024root__trace_chg_0_sub_0(VMAC_rx___024root* vlSelf, VerilatedFs
         bufp->chgQData(oldp+103,(vlSymsp->TOP__MAC_rx__crc_frame_convert.__PVT__be_rxd),64);
         bufp->chgQData(oldp+105,(vlSymsp->TOP__MAC_rx__payload_cvrt.__PVT__xgmii_rxd),64);
         bufp->chgQData(oldp+107,(vlSymsp->TOP__MAC_rx__payload_cvrt.__PVT__be_rxd),64);
-        bufp->chgSData(oldp+109,(vlSymsp->TOP__MAC_rx__xgmii_fcs.__PVT__din),16);
-        bufp->chgBit(oldp+110,(vlSymsp->TOP__MAC_rx__xgmii_fcs.__PVT__valid));
-        bufp->chgCData(oldp+111,(vlSymsp->TOP__MAC_rx__xgmii_fcs.__PVT__idx),4);
-        bufp->chgIData(oldp+112,(vlSymsp->TOP__MAC_rx__xgmii_fcs.__PVT__unnamedblk2__DOT__i),32);
     }
-    bufp->chgBit(oldp+113,(vlSelfRef.CLK));
-    bufp->chgBit(oldp+114,(vlSelfRef.nRST));
-    bufp->chgQData(oldp+115,(vlSelfRef.xgmii_rxd),64);
-    bufp->chgCData(oldp+117,(vlSelfRef.xgmii_rxc),8);
-    bufp->chgQData(oldp+118,(vlSelfRef.MAC_payload_rcv),64);
-    bufp->chgBit(oldp+120,(vlSelfRef.MAC_valid));
-    bufp->chgBit(oldp+121,(vlSelfRef.CRC_flush));
-    bufp->chgBit(oldp+122,(vlSelfRef.frame_ok));
-    bufp->chgCData(oldp+123,(vlSelfRef.bytes_rcv_len),8);
+    bufp->chgBit(oldp+109,(vlSelfRef.CLK));
+    bufp->chgBit(oldp+110,(vlSelfRef.nRST));
+    bufp->chgQData(oldp+111,(vlSelfRef.xgmii_rxd),64);
+    bufp->chgCData(oldp+113,(vlSelfRef.xgmii_rxc),8);
+    bufp->chgQData(oldp+114,(vlSelfRef.MAC_payload_rcv),64);
+    bufp->chgBit(oldp+116,(vlSelfRef.MAC_valid));
+    bufp->chgBit(oldp+117,(vlSelfRef.CRC_flush));
+    bufp->chgBit(oldp+118,(vlSelfRef.frame_ok));
+    bufp->chgCData(oldp+119,(vlSelfRef.bytes_rcv_len),8);
 }
 
 void VMAC_rx___024root__trace_cleanup(void* voidSelf, VerilatedFst* /*unused*/) {

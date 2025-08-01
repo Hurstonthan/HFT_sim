@@ -72,9 +72,9 @@ VL_ATTR_COLD void VMAC_rx_MAC_rx___stl_sequent__TOP__MAC_rx__0(VMAC_rx_MAC_rx* v
 VL_ATTR_COLD void VMAC_rx_crc32_parallel_64bit___stl_sequent__TOP__MAC_rx__CRC__0(VMAC_rx_crc32_parallel_64bit* vlSelf);
 VL_ATTR_COLD void VMAC_rx___024root___stl_sequent__TOP__1(VMAC_rx___024root* vlSelf);
 VL_ATTR_COLD void VMAC_rx_xgmii_little_to_big___stl_sequent__TOP__MAC_rx__payload_cvrt__1(VMAC_rx_xgmii_little_to_big* vlSelf);
-VL_ATTR_COLD void VMAC_rx_priority_encoder__W10_Mz1___stl_sequent__TOP__MAC_rx__xgmii_fcs__0(VMAC_rx_priority_encoder__W10_Mz1* vlSelf);
 VL_ATTR_COLD void VMAC_rx_priority_encoder__W8_Mz1___stl_sequent__TOP__MAC_rx__crc_check_encoder__0(VMAC_rx_priority_encoder__W8_Mz1* vlSelf);
 VL_ATTR_COLD void VMAC_rx_xgmii_little_to_big___stl_sequent__TOP__MAC_rx__crc_frame_convert__1(VMAC_rx_xgmii_little_to_big* vlSelf);
+VL_ATTR_COLD void VMAC_rx_priority_encoder__W10_Mz1___stl_sequent__TOP__MAC_rx__xgmii_fcs__0(VMAC_rx_priority_encoder__W10_Mz1* vlSelf);
 VL_ATTR_COLD void VMAC_rx_MAC_rx___stl_sequent__TOP__MAC_rx__1(VMAC_rx_MAC_rx* vlSelf);
 VL_ATTR_COLD void VMAC_rx___024root___stl_sequent__TOP__2(VMAC_rx___024root* vlSelf);
 VL_ATTR_COLD void VMAC_rx_MAC_rx___stl_comb__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlSelf);
@@ -98,9 +98,9 @@ VL_ATTR_COLD void VMAC_rx___024root___eval_stl(VMAC_rx___024root* vlSelf) {
         VMAC_rx_crc32_parallel_64bit___stl_sequent__TOP__MAC_rx__CRC__0((&vlSymsp->TOP__MAC_rx__CRC));
         VMAC_rx___024root___stl_sequent__TOP__1(vlSelf);
         VMAC_rx_xgmii_little_to_big___stl_sequent__TOP__MAC_rx__payload_cvrt__1((&vlSymsp->TOP__MAC_rx__payload_cvrt));
-        VMAC_rx_priority_encoder__W10_Mz1___stl_sequent__TOP__MAC_rx__xgmii_fcs__0((&vlSymsp->TOP__MAC_rx__xgmii_fcs));
         VMAC_rx_priority_encoder__W8_Mz1___stl_sequent__TOP__MAC_rx__crc_check_encoder__0((&vlSymsp->TOP__MAC_rx__crc_check_encoder));
         VMAC_rx_xgmii_little_to_big___stl_sequent__TOP__MAC_rx__crc_frame_convert__1((&vlSymsp->TOP__MAC_rx__crc_frame_convert));
+        VMAC_rx_priority_encoder__W10_Mz1___stl_sequent__TOP__MAC_rx__xgmii_fcs__0((&vlSymsp->TOP__MAC_rx__xgmii_fcs));
         VMAC_rx_MAC_rx___stl_sequent__TOP__MAC_rx__1((&vlSymsp->TOP__MAC_rx));
         VMAC_rx___024root___stl_sequent__TOP__2(vlSelf);
     }

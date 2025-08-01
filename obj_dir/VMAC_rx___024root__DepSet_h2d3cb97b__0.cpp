@@ -34,6 +34,7 @@ void VMAC_rx___024root___eval_triggers__ico(VMAC_rx___024root* vlSelf) {
 void VMAC_rx___024root___ico_sequent__TOP__0(VMAC_rx___024root* vlSelf);
 void VMAC_rx_MAC_rx___ico_sequent__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlSelf);
 void VMAC_rx_priority_encoder__W8_Mz1___ico_sequent__TOP__MAC_rx__crc_check_encoder__0(VMAC_rx_priority_encoder__W8_Mz1* vlSelf);
+void VMAC_rx_priority_encoder__W10_Mz1___ico_sequent__TOP__MAC_rx__xgmii_fcs__0(VMAC_rx_priority_encoder__W10_Mz1* vlSelf);
 void VMAC_rx_MAC_rx___ico_sequent__TOP__MAC_rx__1(VMAC_rx_MAC_rx* vlSelf);
 void VMAC_rx_MAC_rx___ico_comb__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlSelf);
 void VMAC_rx___024root___ico_comb__TOP__0(VMAC_rx___024root* vlSelf);
@@ -51,6 +52,7 @@ void VMAC_rx___024root___eval_ico(VMAC_rx___024root* vlSelf) {
         vlSelfRef.__Vm_traceActivity[1U] = 1U;
         VMAC_rx_MAC_rx___ico_sequent__TOP__MAC_rx__0((&vlSymsp->TOP__MAC_rx));
         VMAC_rx_priority_encoder__W8_Mz1___ico_sequent__TOP__MAC_rx__crc_check_encoder__0((&vlSymsp->TOP__MAC_rx__crc_check_encoder));
+        VMAC_rx_priority_encoder__W10_Mz1___ico_sequent__TOP__MAC_rx__xgmii_fcs__0((&vlSymsp->TOP__MAC_rx__xgmii_fcs));
         VMAC_rx_MAC_rx___ico_sequent__TOP__MAC_rx__1((&vlSymsp->TOP__MAC_rx));
     }
     if ((3ULL & vlSelfRef.__VicoTriggered.word(0U))) {
@@ -158,8 +160,8 @@ void VMAC_rx_MAC_rx___nba_sequent__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlSelf);
 void VMAC_rx_MAC_rx___nba_sequent__TOP__MAC_rx__1(VMAC_rx_MAC_rx* vlSelf);
 void VMAC_rx___024root___nba_sequent__TOP__0(VMAC_rx___024root* vlSelf);
 void VMAC_rx_xgmii_little_to_big___nba_sequent__TOP__MAC_rx__payload_cvrt__0(VMAC_rx_xgmii_little_to_big* vlSelf);
-void VMAC_rx_priority_encoder__W10_Mz1___nba_sequent__TOP__MAC_rx__xgmii_fcs__0(VMAC_rx_priority_encoder__W10_Mz1* vlSelf);
 void VMAC_rx_xgmii_little_to_big___nba_sequent__TOP__MAC_rx__crc_frame_convert__0(VMAC_rx_xgmii_little_to_big* vlSelf);
+void VMAC_rx_priority_encoder__W10_Mz1___nba_sequent__TOP__MAC_rx__xgmii_fcs__0(VMAC_rx_priority_encoder__W10_Mz1* vlSelf);
 void VMAC_rx_MAC_rx___nba_sequent__TOP__MAC_rx__2(VMAC_rx_MAC_rx* vlSelf);
 void VMAC_rx___024root___nba_sequent__TOP__1(VMAC_rx___024root* vlSelf);
 void VMAC_rx_MAC_rx___nba_comb__TOP__MAC_rx__0(VMAC_rx_MAC_rx* vlSelf);
@@ -183,8 +185,8 @@ void VMAC_rx___024root___eval_nba(VMAC_rx___024root* vlSelf) {
         vlSelfRef.__Vm_traceActivity[5U] = 1U;
         VMAC_rx___024root___nba_sequent__TOP__0(vlSelf);
         VMAC_rx_xgmii_little_to_big___nba_sequent__TOP__MAC_rx__payload_cvrt__0((&vlSymsp->TOP__MAC_rx__payload_cvrt));
-        VMAC_rx_priority_encoder__W10_Mz1___nba_sequent__TOP__MAC_rx__xgmii_fcs__0((&vlSymsp->TOP__MAC_rx__xgmii_fcs));
         VMAC_rx_xgmii_little_to_big___nba_sequent__TOP__MAC_rx__crc_frame_convert__0((&vlSymsp->TOP__MAC_rx__crc_frame_convert));
+        VMAC_rx_priority_encoder__W10_Mz1___nba_sequent__TOP__MAC_rx__xgmii_fcs__0((&vlSymsp->TOP__MAC_rx__xgmii_fcs));
         VMAC_rx_MAC_rx___nba_sequent__TOP__MAC_rx__2((&vlSymsp->TOP__MAC_rx));
         VMAC_rx___024root___nba_sequent__TOP__1(vlSelf);
     }

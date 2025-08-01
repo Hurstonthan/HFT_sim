@@ -72,6 +72,7 @@ VL_ATTR_COLD void VMAC_rx_MAC_rx___ctor_var_reset(VMAC_rx_MAC_rx* vlSelf) {
     vlSelf->__PVT__nbytes_rcv_dl = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 13292331707982266750ull);
     vlSelf->__PVT__nMAC_valid = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 9938363080629532322ull);
     vlSelf->__Vcellinp__crc_frame_convert__xgmii_rxd = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 6096225534916767112ull);
+    vlSelf->__Vcellinp__xgmii_fcs__din = VL_SCOPED_RAND_RESET_I(16, __VscopeHash, 6627477552104625771ull);
     vlSelf->__PVT__state = VL_SCOPED_RAND_RESET_I(6, __VscopeHash, 9404372463396948974ull);
     vlSelf->__PVT__next_state = VL_SCOPED_RAND_RESET_I(6, __VscopeHash, 10383377256973303270ull);
     vlSelf->__PVT__mac_dest_addr = VL_SCOPED_RAND_RESET_Q(48, __VscopeHash, 2298845720583880866ull);

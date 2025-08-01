@@ -31,7 +31,7 @@ module MAC_rx #(
     logic [$clog2(CTRL_WIDTH) - 1 : 0]  end_FCS, str_FCS;
     logic sof_found, crc_valid, nsof_found;
     logic [2:0] sof_lane, nsof_lane;
-    logic [DATA_WIDTH - 1 : 0] xgmii_rxd_f, nxgmii_rxd_f, xgmii_rxd_MSB;
+    logic [DATA_WIDTH - 1 : 0] xgmii_rxd_f, nxgmii_rxd_f, xgmii_rxd_MSB, xgmii_rxd_f_cvt;
     logic [CTRL_WIDTH - 1 : 0] xgmii_rxc_f, nxgmii_rxc_f, xgmii_rxc_MSB; 
     logic [15:0] FCS_rxc, nFCS_rxc;
     logic [3:0] FCS_offset;
@@ -91,6 +91,12 @@ module MAC_rx #(
         .be_rxd(MAC_payload_rcv)
       );
 
+      //debug
+      xgmii_little_to_big xgmii_cvrt (
+        .xgmii_rxd(xgmii_rxd_f),
+        .be_rxd(xgmii_rxd_f_cvt)
+      );
+
     
     priority_encoder #(
         .WIDTH(CTRL_WIDTH),
@@ -105,7 +111,7 @@ module MAC_rx #(
         .WIDTH(CTRL_WIDTH + CTRL_WIDTH),
         .MSB(1'b0)
     ) xgmii_fcs (
-        .din(FCS_rxc),
+        .din((sof_lane == 0) ? {xgmii_rxc, xgmii_rxc_frame[15:8]} : {xgmii_rxc, xgmii_rxc_frame[11:4]}),
         .valid(),
         .idx(FCS_offset)
     );
@@ -144,9 +150,7 @@ module MAC_rx #(
             frame_store <= nframe_store;
             // xgmii_rxd_f <= nxgmii_rxd_f;
             rg <= nrg;
-            if (end_valid) begin
-                FCS_frame <= nFCS_frame;
-            end
+            FCS_frame <= nFCS_frame;
 
             crc_delay <= ncrc_delay;
             sof_found <= nsof_found;
@@ -183,9 +187,7 @@ module MAC_rx #(
         ncrc_delay = 1'b0;
         nMAC_valid = 1'b0;
         nsoft_dl = soft_dl;
-        //nFCS_frame = FCS_frame;
-        temp = FCS_grap >> ((FCS_offset - 4) << 3);
-        nFCS_frame = FCS_grap >> ((FCS_offset - 4) << 3);
+        nFCS_frame = FCS_frame;
         xgmii_rxd_f = '0;
         nxgmii_rxc_frame = {xgmii_rxc, xgmii_rxc_frame[15:8]};
         nframe_store = {xgmii_rxd,frame_store[127:64]};
@@ -193,9 +195,17 @@ module MAC_rx #(
         nMAC_valid = MAC_valid;
         nbytes_rcv = bytes_rcv;
         nbytes_rcv_dl = bytes_rcv_dl;
-        temp = 0;
-        // nFCS_rxc = (sof_lane == 0) {xgmii_rxc, xgmii_rxc_f};
         nFCS_rxc = (sof_lane == 0) ? {xgmii_rxc, xgmii_rxc_frame[15:8]} : {xgmii_rxc, xgmii_rxc_frame[11:4]};
+
+        nsof_found = sof_found;
+        nsof_lane = sof_lane;
+        for (i = 0; i < 8; i++) begin
+            if (state == IDLE && xgmii_rxc[i] && xgmii_rxd[i*8+: 8] == 8'hFB) begin
+                nsof_found = 1'b1;
+                nsof_lane = i[2:0];
+            end
+        end
+
         if (sof_lane == 0) begin
             xgmii_rxd_f = frame_store[127:64];
             // xgmii_rxc_f = xgmii_rxc_frame[15:8];
@@ -252,10 +262,10 @@ module MAC_rx #(
                 nbytes_rcv = 7'd8;
                 
                 if (end_valid && (byte_END == 8'hFD)) begin
-                    // nFCS_frame = FCS_grap >> ((FCS_offset - 4) << 3);
-                    temp = FCS_grap >> ((FCS_offset - 4) << 3);
-                    nFCS_frame = temp[31:0];
-                    nrg = temp[31:0];
+                    nFCS_frame = FCS_grap >> ((FCS_offset - 4) << 3);
+                    // temp = FCS_grap >> ((FCS_offset - 4) << 3);
+                    // nFCS_frame = temp[31:0];
+                    // nrg = temp[31:0];
                     // nFCS_frame = '1;
                     if (sof_lane == 0) begin
                         if (bytes_offset < 5) begin
@@ -329,28 +339,28 @@ module MAC_rx #(
                             //CRC is still in xgmii_rxd_curr
                             //Data is not still in xgmii_rxd_curr
                             3'd4: begin
-                                nbytes_rcv_dl = bytes_offset + 8'd4;
+                                //nbytes_rcv_dl = bytes_offset + 8'd4;
                                 nframe_store ={64'h0, frame_store[127:64]};
                             end
 
                             //CRC is in xgmii_previous but not progress
                             //Data is in xgmii_previous but not progress
                             3'd3: begin
-                                nbytes_rcv_dl = bytes_offset + 8'd4;
+                                //nbytes_rcv_dl = bytes_offset + 8'd4;
                                 nframe_store ={8'h0,{frame_store[119:64]}};
                             end
 
                             //CRC is in xgmii_previous but not progress
                             //Data is in xgmii_previous but not progress
                             3'd2: begin
-                                nbytes_rcv_dl = bytes_offset + 8'd4;
+                                //nbytes_rcv_dl = bytes_offset + 8'd4;
                                 nframe_store = {16'h0,frame_store[111:64]};
                             end
 
                             //CRC is in xgmii_previous but not progress
                             //Data is in xgmii_previous but not progress
                             3'd1: begin
-                                nbytes_rcv_dl = bytes_offset + 8'd4;
+                                //nbytes_rcv_dl = bytes_offset + 8'd4;
                                 nframe_store = {24'h0, frame_store[103:64]};
                             end
                             //CRC is in xgmii_previous but not progress
@@ -365,6 +375,7 @@ module MAC_rx #(
                 if (crc_delay) begin
                     next_state = CHECK_CRC;
                     nbytes_rcv = bytes_rcv_dl;
+                    nFCS_frame = FCS_frame;
                     nMAC_valid = 1'b0;
                 end
             end
@@ -372,6 +383,8 @@ module MAC_rx #(
             CHECK_CRC: begin
                 crc_valid = 1'b0;
                 nMAC_valid = 1'b0;
+                nsof_found = 1'b0;
+                nsoft_dl = 1'b0;
                 // todo giving wrong crc 
                 if (crc_out == FCS_frame_cvt[31:0]) begin
                     frame_ok = 1'b1;
@@ -385,17 +398,10 @@ module MAC_rx #(
         endcase
     end
 
-    always_comb begin
-        //todo change loop into fsm
-        nsof_found = sof_found;
-        nsof_lane = sof_lane;
-        for (i = 0; i < 8; i++) begin
-            if (state == IDLE && xgmii_rxc[i] && xgmii_rxd[i*8+: 8] == 8'hFB) begin
-                nsof_found = 1'b1;
-                nsof_lane = i[2:0];
-            end
-        end
-    end
+    // always_comb begin
+    //     //todo change loop into fsm
+        
+    // end
 
 endmodule
 
@@ -409,14 +415,14 @@ endmodule
 //     parameter MAC_SRC_ADDR = 48'hAACC_BBFF_FFFF,
 //     parameter CRC_MAGIC = 32'hC704_DD7B
 // ) (
-//     input logic CLK,
-//     input logic nRST,
+//     input wire CLK,
+//     input wire nRST,
 
 //     // Interface connecting the Payload logic
-//     input logic [DATA_WIDTH - 1:0] xgmii_rxd,
-//     input logic [CTRL_WIDTH - 1:0] xgmii_rxc,
+//     input wire [DATA_WIDTH - 1:0] xgmii_rxd,
+//     input wire [CTRL_WIDTH - 1:0] xgmii_rxc,
     
-//     output logic [DATA_WIDTH - 1:0] MAC_payload_rcv_cvrt,
+//     output logic [DATA_WIDTH - 1:0] MAC_payload_rcv,
 //     output logic MAC_valid,
 //     output logic CRC_flush,
 //     output logic frame_ok,
@@ -450,7 +456,7 @@ endmodule
 
 //     logic soft_dl, nsoft_dl;
 
-//     logic [63:0] nMAC_payload_rcv_cvrt;
+//     logic [63:0] nMAC_payload_rcv;
 //     logic [7:0] bytes_rcv, nbytes_rcv;
 //     logic [7:0] bytes_rcv_dl, nbytes_rcv_dl;
 //     logic nMAC_valid;
@@ -508,7 +514,7 @@ endmodule
 //     assign FCS_grap = {xgmii_rxd, frame_store[127:64]}; //prev xgmii_rxd, and xgmii_rxd
 //     assign shift_bits = bytes_offset << 3; //shift bits to get start of FCS
 //     assign byte_END = (xgmii_rxd >> shift_bits);
-//     assign FCS_rxc = {xgmii_rxc, xgmii_rxc_f};
+//     // assign FCS_rxc = {xgmii_rxc, xgmii_rxc_f};
 //     assign crc_in = xgmii_rxd_f;
 //     assign bytes_rcv_len = bytes_rcv;
 
@@ -525,9 +531,10 @@ endmodule
 //             xgmii_rxc_frame <= 0;
 //             soft_dl <= 0;
 //             MAC_valid <= 0;
-//             MAC_payload_rcv_cvrt <= 0;
+//             MAC_payload_rcv <= 0;
 //             bytes_rcv <= 0;
 //             bytes_rcv_dl <= 0;
+//             FCS_rxc <= 0;
             
 //         end else begin
 //             state <= next_state;
@@ -541,9 +548,10 @@ endmodule
 //             xgmii_rxc_frame <= nxgmii_rxc_frame;
 //             soft_dl <= nsoft_dl;
 //             MAC_valid <= nMAC_valid;
-//             MAC_payload_rcv_cvrt <= nMAC_payload_rcv_cvrt;
+//             MAC_payload_rcv <= nMAC_payload_rcv;
 //             bytes_rcv <= nbytes_rcv;
 //             bytes_rcv_dl <= nbytes_rcv_dl;
+//             FCS_rxc <= (sof_lane == 0) ? {xgmii_rxc, xgmii_rxc_frame[15:8]} : {xgmii_rxc, xgmii_rxc_frame[11:4]};
 //         end
 //     end
 
@@ -561,7 +569,7 @@ endmodule
 //         nFCS_frame = FCS_frame;
 //         nxgmii_rxc_frame = {xgmii_rxc, xgmii_rxc_frame[15:8]};
 //         nframe_store = {xgmii_rxd,frame_store[127:64]};
-//         nMAC_payload_rcv_cvrt = MAC_payload_rcv_cvrt;
+//         nMAC_payload_rcv = MAC_payload_rcv;
 //         nMAC_valid = MAC_valid;
 //         nbytes_rcv = bytes_rcv;
 //         nbytes_rcv_dl = bytes_rcv_dl;
@@ -604,7 +612,7 @@ endmodule
 //             RCV_ETHER_HEAD2: begin
 //                 if (xgmii_rxd_f[31:0] == MAC_SRC_ADDR[31:0] && xgmii_rxd_f[47:32] == 16'h0800) begin
 //                     next_state = RCV_MAC_PAYLOAD;
-//                     nMAC_payload_rcv_cvrt = {xgmii_rxd_f[63:48],48'h0};
+//                     nMAC_payload_rcv = {xgmii_rxd_f[63:48],48'h0};
 //                     nbytes_rcv = 7'd2;
 //                     nMAC_valid = 1'b1;
 
@@ -616,48 +624,49 @@ endmodule
 
 //             RCV_MAC_PAYLOAD: begin
 //                 nMAC_valid = 1'b1;
-//                 nMAC_payload_rcv_cvrt = xgmii_rxd_f;
+//                 nMAC_payload_rcv = xgmii_rxd_f;
 //                 nbytes_rcv = 7'd8;
 //                 if (end_valid && (byte_END == 8'hFD)) begin
 //                     nFCS_frame = FCS_grap >> ((FCS_offset - 4) << 3);
 //                     if (sof_lane == 0) begin
+//                         nbytes_rcv = 8'd4 + bytes_offset; 
 //                         if (bytes_offset < 5) begin
-//                             nbytes_rcv = 8'd4 + bytes_offset; 
 //                             case (bytes_offset)
 //                                 3'd0: begin
-//                                     nMAC_payload_rcv_cvrt = frame_store[95:64];
+//                                     nMAC_payload_rcv = frame_store[95:64];
                                     
 //                                 end
 //                                 3'd1: begin
-//                                     nMAC_payload_rcv_cvrt = frame_store[103:64];
+//                                     nMAC_payload_rcv = frame_store[103:64];
                                     
 //                                 end
 //                                 3'd2: begin
-//                                     nMAC_payload_rcv_cvrt = frame_store[111:64];
+//                                     nMAC_payload_rcv = frame_store[111:64];
                                     
 //                                 end
 //                                 3'd3: begin
-//                                     nMAC_payload_rcv_cvrt = frame_store[119:64];
+//                                     nMAC_payload_rcv = frame_store[119:64];
 //                                 end
 //                             endcase
-//                             xgmii_rxd_f = nMAC_payload_rcv_cvrt;
+//                             xgmii_rxd_f = nMAC_payload_rcv;
 //                             next_state = CHECK_CRC;
 //                             nMAC_valid = 1'b0;
 //                         end else begin
+//                             nbytes_rcv_dl = bytes_offset - 8'd4;
 //                             case (bytes_offset)
-//                                 nbytes_rcv_dl = bytes_offset - 8'd4;
+                                
 //                                 3'd5: begin
-//                                     nframe_store = {{0,xgmii_rxd[7:0]},frame_store[127:64]};
+//                                     nframe_store = {{56'b0,xgmii_rxd[7:0]},frame_store[127:64]};
 //                                 end
 //                                 3'd6: begin
-//                                     nframe_store = {{0,xgmii_rxd[16:0]}, frame_store[127:64]};
+//                                     nframe_store = {{56'b0,xgmii_rxd[16:0]}, frame_store[127:64]};
 //                                 end
 
 //                                 3'd7: begin
-//                                     nframe_store = {{0,xgmii_rxd[23:0]}, frame_store[127:64]};
+//                                     nframe_store = {{56'b0,xgmii_rxd[23:0]}, frame_store[127:64]};
 //                                 end
 //                             endcase
-//                             nMAC_payload_rcv_cvrt = frame_store[127:64];
+//                             nMAC_payload_rcv = frame_store[127:64];
 //                             nbytes_rcv = 8'd8;
 //                             xgmii_rxd_f = frame_store[127:64];
 //                             ncrc_delay = 1'b1; 
@@ -759,5 +768,4 @@ endmodule
 //     end
 
 // endmodule
-
 

@@ -10,10 +10,7 @@
 // ----------------------------------------------------------------------------
 // Basic XGMII column type (mirrors SV “column_t”)
 // ----------------------------------------------------------------------------
-struct Column {
-    uint8_t  ctl;      // xgmii_rxc
-    uint64_t dat;      // xgmii_rxd
-};
+
 
 // ----------------------------------------------------------------------------
 // Pre-computed stimulus vectors  (verbatim copy of the SV arrays)
@@ -21,7 +18,26 @@ struct Column {
 static constexpr uint32_t CRC_OUT = 0x7436'9723;
 static constexpr int      PRE_IDLE = 4;        // idle cols after every frame
 
+static inline uint64_t bswap64(uint64_t x)
+{
+    return ((x & 0x00000000000000FFULL) << 56) |
+           ((x & 0x000000000000FF00ULL) << 40) |
+           ((x & 0x0000000000FF0000ULL) << 24) |
+           ((x & 0x00000000FF000000ULL) <<  8) |
+           ((x & 0x000000FF00000000ULL) >>  8) |
+           ((x & 0x0000FF0000000000ULL) >> 24) |
+           ((x & 0x00FF000000000000ULL) >> 40) |
+           ((x & 0xFF00000000000000ULL) >> 56);
+}
+
+
+
 // ---- GOOD frame, /S/ in lane-0 ------------------------------------------------
+//CRC32 = 0x1C3BB795	
+struct Column {
+    uint8_t  ctl;      // xgmii_rxc
+    uint64_t dat;      // xgmii_rxd
+};
 static const std::vector<Column> GOOD_L0 = {
     {0xFF, 0x0707070707070707},          // idles
     {0xFF, 0x0707070707070707},          // idles
@@ -45,8 +61,9 @@ static const std::vector<Column> GOOD_L0 = {
     {0x00, 0x0000000000000000},
 
     // bytes 56-59: remaining padding
+    //CRC32 = 0x539B8212		
     {0x00, 0xFFFF0008FFFFFFBB},
-    {0xE0, 0x0707FD23973674AB},
+    {0xE0, 0x0707FD12829B53AB},
 
     // trailing idles
     {0xFF, 0x0707070707070707},
@@ -80,26 +97,35 @@ static std::vector<Column> BAD_CRC = [] {
 // ----------------------------------------------------------------------------
 // Clock / trace helpers  (one call = one full 10 ns cycle @100 MHz)
 // ----------------------------------------------------------------------------
+
+inline std::vector<uint64_t> reverse_xgmii_data(const std::vector<Column>& cols)
+{
+    std::vector<uint64_t> out;
+    out.reserve(cols.size());
+
+    for (const Column& c : cols) {
+        if (c.ctl == 0x00)                     // all 8 lanes carry data
+            out.push_back(bswap64(c.dat));     // little → big
+    }
+    return out;
+}
+
 static vluint64_t main_time = 0;
 double sc_time_stamp() { return main_time; }
 
 static void tick(VMAC_rx *dut, VerilatedFstC *tfp)
 {
-    dut->CLK = 0;
+    dut->CLK = 1;
     dut->eval(); 
     tfp->dump(main_time++);          
        
-    dut->CLK = 1;          
+    dut->CLK = 0;          
     dut->eval();
     tfp->dump(main_time++);
 }
 
 static void drive_idle(VMAC_rx *dut, VerilatedFstC *tfp, int cycles = 1)
 {
-    dut->xgmii_rxc = 0xFF;
-    dut->xgmii_rxd = 0x0707'0707'0707'0707ULL;
-    tick(dut, tfp);
-    tick(dut, tfp);
     for (int i = 0; i < cycles; ++i) {
         dut->xgmii_rxc = 0xFF;
         dut->xgmii_rxd = 0x0707'0707'0707'0707ULL;
@@ -174,7 +200,10 @@ int main(int argc, char **argv)
 
     // Global reset – two idle columns low-reset, then release
     dut->nRST = 0;  drive_idle(dut, tfp, 2);
-    dut->nRST = 1;  tick(dut, tfp);
+
+    dut->nRST = 1;  
+    tick(dut, tfp);
+    tick(dut, tfp);
 
     // ------------------------------------------------------ run the tests
     
@@ -184,6 +213,17 @@ int main(int argc, char **argv)
     //           << (all_pass ? "ALL TESTS PASSED" : "SOME TESTS FAILED")
     //           << "\n-----------------------------------------\n";
 
+    auto reversed = reverse_xgmii_data(GOOD_L0);
+    std::cout << std::uppercase << std::hex << std::setfill('0');
+    for (uint64_t w : reversed) {
+        std::cout << "0x" << std::setw(16) << w << '\n';
+    }
+
+    std::cout << "-------------------------" << std::endl;
+
+    for (Column w : GOOD_L0) {
+        std::cout << "0x" << std::setw(16) << w.dat << '\n';
+    }
     
     tfp->close();
     delete dut;

@@ -1,0 +1,64 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Thu Jul 31 23:51:40 2025
+[*]
+[dumpfile] "/home/than0/HFT_sim/ethernet_rx.vcd"
+[dumpfile_mtime] "Thu Jul 31 23:50:36 2025"
+[dumpfile_size] 4187
+[savefile] "/home/than0/HFT_sim/ethernet_rx.gtkw"
+[timestart] 0
+[size] 1634 1001
+[pos] 70 463
+*-4.237864 31 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.ethernet_rx.
+[treeopen] TOP.ethernet_rx.mac_inst.
+[sst_width] 233
+[signals_width] 437
+[sst_expanded] 1
+[sst_vpaned_height] 284
+@200
+-MAC module START
+@22
+TOP.ethernet_rx.xgmii_rxd[63:0]
+TOP.ethernet_rx.xgmii_rxc[7:0]
+@28
+TOP.ethernet_rx.is_tcp
+TOP.ethernet_rx.is_udp
+@22
+TOP.ethernet_rx.MAC_payload_rcv[63:0]
+@28
+TOP.ethernet_rx.MAC_valid
+@22
+TOP.ethernet_rx.bytes_rcv_len[7:0]
+@200
+-
+@100000028
+TOP.ethernet_rx.mac_inst.state[5:0]
+@28
+TOP.ethernet_rx.mac_inst.bytes_offset[2:0]
+TOP.ethernet_rx.mac_inst.sof_found
+TOP.ethernet_rx.mac_inst.crc_delay
+@22
+TOP.ethernet_rx.mac_inst.xgmii_rxd_f[63:0]
+TOP.ethernet_rx.mac_inst.xgmii_rxd_f_cvt[63:0]
+@200
+-
+-MAC check CRC transit
+@22
+TOP.ethernet_rx.mac_inst.FCS_frame[31:0]
+TOP.ethernet_rx.mac_inst.FCS_frame_cvt[63:0]
+@28
+TOP.ethernet_rx.mac_inst.end_valid
+@200
+-
+-CRC_value
+@28
+TOP.ethernet_rx.mac_inst.CRC.valid
+@29
+TOP.ethernet_rx.mac_inst.CRC.crc_init
+@22
+TOP.ethernet_rx.mac_inst.CRC.data_in[63:0]
+TOP.ethernet_rx.mac_inst.CRC.crc_out[31:0]
+[pattern_trace] 1
+[pattern_trace] 0
