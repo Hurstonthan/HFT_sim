@@ -90,9 +90,8 @@ VL_INLINE_OPT void Vethernet_rx_IP_rx___nba_comb__TOP__ethernet_rx__ip_inst__0(V
         } else if ((2U == (IData)(vlSelfRef.__PVT__state))) {
             if (vlSelfRef.__PVT__MAC_valid) {
                 vlSelfRef.__PVT__chksum_en = 1U;
-                vlSelfRef.__PVT__nIP_len = VL_EXTEND_II(16,8, 
-                                                        (0xffU 
-                                                         & VL_SEL_IQII(64, vlSelfRef.__PVT__MAC_payload_rcv, 0x38U, 8U)));
+                vlSelfRef.__PVT__nIP_len = (0xffffU 
+                                            & VL_SEL_IQII(64, vlSelfRef.__PVT__MAC_payload_rcv, 0x30U, 0x10U));
                 vlSelfRef.__PVT__next_is_tcp = (6U 
                                                 == 
                                                 (0xffU 
@@ -164,8 +163,9 @@ VL_INLINE_OPT void Vethernet_rx_IP_rx___nba_comb__TOP__ethernet_rx__ip_inst__0(V
             if (vlSelfRef.__PVT__MAC_valid) {
                 vlSelfRef.__PVT__nIP_payload = vlSelfRef.__PVT__MAC_payload_rcv;
                 vlSelfRef.__PVT__nIP_valid = 1U;
-                if (((IData)(vlSelfRef.__PVT__bytes_rcv) 
-                     >= (IData)(vlSelfRef.__PVT__IP_len))) {
+                if ((VL_EXTEND_II(32,16, (IData)(vlSelfRef.__PVT__bytes_rcv)) 
+                     >= (VL_EXTEND_II(32,16, (IData)(vlSelfRef.__PVT__IP_len)) 
+                         - (IData)(0x28U)))) {
                     vlSelfRef.__PVT__nIP_valid = 0U;
                     vlSelfRef.__PVT__nstate = 7U;
                 }

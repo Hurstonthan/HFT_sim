@@ -64,19 +64,19 @@ module IP_rx #(
             is_udp <= 0;
         end else begin
             // flush is only trigger by one clock cycle
-            if (MAC_flush || IP_flush) begin 
-                state <= IDLE;
-                IP_checksum <= 0;
-                IP_payload <= 0;
-                bytes_rcv <= 0;
-                dst_addr <= 0;
-                IP_valid <= 0;
-                IP_len <= 0;
-                is_tcp <= 0;
-                is_udp <= 0;
-                // IP_flush <= 1'b0;
-            end
-            else begin
+            // if (MAC_flush || IP_flush) begin 
+            //     state <= IDLE;
+            //     IP_checksum <= 0;
+            //     IP_payload <= 0;
+            //     bytes_rcv <= 0;
+            //     dst_addr <= 0;
+            //     IP_valid <= 0;
+            //     IP_len <= 0;
+            //     is_tcp <= 0;
+            //     is_udp <= 0;
+            //     // IP_flush <= 1'b0;
+            // end
+            //else begin
                 state <= nstate;
                 IP_checksum <= nIP_checksum;
                 IP_payload <= nIP_payload;
@@ -87,7 +87,7 @@ module IP_rx #(
                 is_tcp <= next_is_tcp;
                 is_udp <= next_is_udp;
                 // IP_flush <= nIP_flush;
-            end
+            //end
         end
     end
 
@@ -174,7 +174,8 @@ always_comb begin
                 // total length 
                 chksum_en = 1'b1;
                 // todo set chksum_in = 
-                nIP_len = MAC_payload_rcv[63:56];
+                // nIP_len = MAC_payload_rcv[63:56];
+                nIP_len = MAC_payload_rcv[63:48];
 
                 // Check the protocol type
                 next_is_tcp = (MAC_payload_rcv[7:0] == TCP_PROTOCOL);
@@ -251,7 +252,7 @@ always_comb begin
             if (MAC_valid) begin
                 nIP_payload = MAC_payload_rcv;
                 nIP_valid = 1'b1;
-                if (bytes_rcv >= IP_len) begin //checking the rectver length
+                if (bytes_rcv >= (IP_len - 40)) begin //checking the rectver length
                     nIP_valid = 1'b0;
                     nstate = DONE;
                 end 

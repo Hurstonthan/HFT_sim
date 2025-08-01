@@ -261,10 +261,10 @@ static std::vector<Column> generate_frame (bool lane4) {
         //     {0x00, 0xFFFF0008FFFFFFBB},
         //
         mac_data = 0;
-        //Version + IHL
-        mac_data |= uint64_t (0x45) << 56;
         //Type of service (TOS)
-        mac_data |= uint64_t (0x00) << 48;
+        mac_data |= uint64_t (0x00) << 56;
+        //Version + IHL
+        mac_data |= uint64_t (0x45) << 48;
         mac_data |= uint64_t (0x00) << 40;
         mac_data |= uint64_t (0x08) << 32;
         mac_data |= uint64_t (0xFF) << 24;
@@ -303,8 +303,9 @@ static std::vector<Column> generate_frame (bool lane4) {
         //Next segment
         IP_data = 0;
         //Checksum 2 B
-        IP_data |= uint64_t (00) << 0;
-        IP_data |= uint64_t (00) << 8;
+        //Checksum 0x1A88
+        IP_data |= uint64_t (0x1A) << 0;
+        IP_data |= uint64_t (0x88) << 8;
 
         //Source addr
         IP_data |= uint64_t (0xFF) << 16;
@@ -326,12 +327,13 @@ static std::vector<Column> generate_frame (bool lane4) {
         IP_data |= uint64_t (0xAA) << 0;
         IP_data |= uint64_t (0xAA) << 8;
 
-        //CRC value 6EF22875
+        //CRC value 0x1C5D62B7
+        //Type of service (TOS)
         //CRC holder
-        IP_data |= uint64_t (0x6E) << 16;
-        IP_data |= uint64_t (0xF2) << 24;
-        IP_data |= uint64_t (0x28) << 32;
-        IP_data |= uint64_t (0x75) << 40;
+        IP_data |= uint64_t (0x1C) << 16;
+        IP_data |= uint64_t (0x5D) << 24;
+        IP_data |= uint64_t (0x62) << 32;
+        IP_data |= uint64_t (0xB7) << 40;
         IP_data |= uint64_t (0xFD) << 48;
         IP_data |= uint64_t (0x07) << 56;
         segment = {0xC0, IP_data};
@@ -463,6 +465,10 @@ int main(int argc, char **argv) {
     //test_good_L4(top, tfp);
 
 
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
+    tick(top, tfp);
     tick(top, tfp);
     tick(top, tfp);
     tick(top, tfp);

@@ -39,7 +39,7 @@ Vethernet_rx__Syms::Vethernet_rx__Syms(VerilatedContext* contextp, const char* n
     , TOP__ethernet_rx__mac_inst__xgmii_fcs{this, Verilated::catName(namep, "ethernet_rx.mac_inst.xgmii_fcs")}
 {
         // Check resources
-        Verilated::stackCheck(368);
+        Verilated::stackCheck(176);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-9);
     _vm_contextp__->timeprecision(-12);

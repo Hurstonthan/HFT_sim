@@ -217,6 +217,7 @@ module MAC_rx #(
         case (state)
             IDLE: begin
                 crc_init = 1'b1;
+                nMAC_valid = 1'b0;
                 if (sof_found) begin
                     if (sof_lane == 4) begin
                         nsoft_dl = 1'b1;
@@ -291,17 +292,18 @@ module MAC_rx #(
                             xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                             next_state = CHECK_CRC;
                         end else begin
-                            nbytes_rcv_dl = bytes_offset - 8'd4;
+                            //nbytes_rcv_dl = bytes_offset - 8'd4;  //Old one
+                            nbytes_rcv_dl = bytes_offset - 8'd3;
                             casez (bytes_offset)
                                 3'd5: // begin
                                     nframe_store = {{56'b0,xgmii_rxd[7:0]},frame_store[127:64]};
                                 // end
                                 3'd6: // begin
-                                    nframe_store = {{56'b0,xgmii_rxd[16:0]}, frame_store[127:64]};
+                                    nframe_store = {{48'b0,xgmii_rxd[15:0]}, frame_store[127:64]};
                                 // end
 
                                 3'd7: // begin
-                                    nframe_store = {{56'b0,xgmii_rxd[23:0]}, frame_store[127:64]};
+                                    nframe_store = {{40'b0,xgmii_rxd[23:0]}, frame_store[127:64]};
                                 // end
                             endcase
                             nMAC_payload_rcv_cvrt = frame_store[127:64];
@@ -376,23 +378,32 @@ module MAC_rx #(
                     next_state = CHECK_CRC;
                     nbytes_rcv = bytes_rcv_dl;
                     nFCS_frame = FCS_frame;
-                    nMAC_valid = 1'b0;
+                    //nMAC_valid = 1'b0; Verilator turn off signal
                 end
             end
 
             CHECK_CRC: begin
                 crc_valid = 1'b0;
-                nMAC_valid = 1'b0;
+                //nMAC_valid = 1'b0; //This one is for Questasim
+                nMAC_valid = 1'b1;  //This one is for Verilator 
                 nsof_found = 1'b0;
                 nsoft_dl = 1'b0;
                 // todo giving wrong crc 
                 if (crc_out == FCS_frame_cvt[31:0]) begin
                     frame_ok = 1'b1;
+                    //nMAC_valid = 1'b0;
                     next_state = IDLE;
                 end else begin
                     CRC_flush = 1'b1;
+                    nMAC_valid = 1'b0;
                     next_state = ERROR;
+                    
                 end
+            end
+
+            ERROR: begin
+                next_state = IDLE;
+
             end
 
         endcase

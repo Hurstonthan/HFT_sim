@@ -76,8 +76,6 @@ VL_ATTR_COLD void Vethernet_rx_MAC_rx___stl_comb__TOP__ethernet_rx__mac_inst__0(
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Init
     VlWide<4>/*127:0*/ __Vtemp_1;
-    VlWide<3>/*95:0*/ __Vtemp_2;
-    VlWide<3>/*95:0*/ __Vtemp_3;
     // Body
     vlSelfRef.__PVT__nrg = vlSelfRef.__PVT__rg;
     vlSelfRef.__PVT__next_state = vlSelfRef.__PVT__state;
@@ -172,6 +170,7 @@ VL_ATTR_COLD void Vethernet_rx_MAC_rx___stl_comb__TOP__ethernet_rx__mac_inst__0(
     }
     if ((0U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__crc_init = 1U;
+        vlSelfRef.__PVT__nMAC_valid = 0U;
         if (vlSelfRef.__PVT__sof_found) {
             if ((4U == (IData)(vlSelfRef.__PVT__sof_lane))) {
                 vlSelfRef.__PVT__nsoft_dl = 1U;
@@ -254,7 +253,7 @@ VL_ATTR_COLD void Vethernet_rx_MAC_rx___stl_comb__TOP__ethernet_rx__mac_inst__0(
                 } else {
                     vlSelfRef.__PVT__nbytes_rcv_dl 
                         = (0xffU & (VL_EXTEND_II(8,3, (IData)(vlSelfRef.__PVT__bytes_offset)) 
-                                    - (IData)(4U)));
+                                    - (IData)(3U)));
                     if ((5U == (IData)(vlSelfRef.__PVT__bytes_offset))) {
                         VL_CONCAT_WQQ(128,64,64, vlSelfRef.__PVT__nframe_store, 
                                       VL_EXTEND_QI(64,8, 
@@ -262,19 +261,17 @@ VL_ATTR_COLD void Vethernet_rx_MAC_rx___stl_comb__TOP__ethernet_rx__mac_inst__0(
                                                     & VL_SEL_IQII(64, vlSelfRef.__PVT__xgmii_rxd, 0U, 8U))), 
                                       VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
                     } else if ((6U == (IData)(vlSelfRef.__PVT__bytes_offset))) {
-                        VL_ASSIGNSEL_WQ(128,64,0U, vlSelfRef.__PVT__nframe_store, 
-                                        VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
-                        VL_EXTEND_WI(73,17, __Vtemp_2, 
-                                     (0x1ffffU & VL_SEL_IQII(64, vlSelfRef.__PVT__xgmii_rxd, 0U, 0x11U)));
-                        VL_ASSIGNSEL_WQ(128,64,0x40U, vlSelfRef.__PVT__nframe_store, 
-                                        VL_SEL_QWII(73, __Vtemp_2, 0U, 0x40U));
+                        VL_CONCAT_WQQ(128,64,64, vlSelfRef.__PVT__nframe_store, 
+                                      VL_EXTEND_QI(64,16, 
+                                                   (0xffffU 
+                                                    & VL_SEL_IQII(64, vlSelfRef.__PVT__xgmii_rxd, 0U, 0x10U))), 
+                                      VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
                     } else if ((7U == (IData)(vlSelfRef.__PVT__bytes_offset))) {
-                        VL_ASSIGNSEL_WQ(128,64,0U, vlSelfRef.__PVT__nframe_store, 
-                                        VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
-                        VL_EXTEND_WI(80,24, __Vtemp_3, 
-                                     (0xffffffU & VL_SEL_IQII(64, vlSelfRef.__PVT__xgmii_rxd, 0U, 0x18U)));
-                        VL_ASSIGNSEL_WQ(128,64,0x40U, vlSelfRef.__PVT__nframe_store, 
-                                        VL_SEL_QWII(80, __Vtemp_3, 0U, 0x40U));
+                        VL_CONCAT_WQQ(128,64,64, vlSelfRef.__PVT__nframe_store, 
+                                      VL_EXTEND_QI(64,24, 
+                                                   (0xffffffU 
+                                                    & VL_SEL_IQII(64, vlSelfRef.__PVT__xgmii_rxd, 0U, 0x18U))), 
+                                      VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U));
                     }
                     vlSelfRef.__PVT__nMAC_payload_rcv_cvrt 
                         = VL_SEL_QWII(128, vlSelfRef.__PVT__frame_store, 0x40U, 0x40U);
@@ -342,11 +339,10 @@ VL_ATTR_COLD void Vethernet_rx_MAC_rx___stl_comb__TOP__ethernet_rx__mac_inst__0(
             vlSelfRef.__PVT__next_state = 4U;
             vlSelfRef.__PVT__nbytes_rcv = vlSelfRef.__PVT__bytes_rcv_dl;
             vlSelfRef.__PVT__nFCS_frame = vlSelfRef.__PVT__FCS_frame;
-            vlSelfRef.__PVT__nMAC_valid = 0U;
         }
     } else if ((4U == (IData)(vlSelfRef.__PVT__state))) {
         vlSelfRef.__PVT__crc_valid = 0U;
-        vlSelfRef.__PVT__nMAC_valid = 0U;
+        vlSelfRef.__PVT__nMAC_valid = 1U;
         vlSelfRef.__PVT__nsof_found = 0U;
         vlSelfRef.__PVT__nsoft_dl = 0U;
         if ((vlSelfRef.__PVT__crc_out == VL_SEL_IQII(64, vlSelfRef.__PVT__FCS_frame_cvt, 0U, 0x20U))) {
@@ -354,8 +350,11 @@ VL_ATTR_COLD void Vethernet_rx_MAC_rx___stl_comb__TOP__ethernet_rx__mac_inst__0(
             vlSelfRef.__PVT__next_state = 0U;
         } else {
             vlSelfRef.__PVT__CRC_flush = 1U;
+            vlSelfRef.__PVT__nMAC_valid = 0U;
             vlSelfRef.__PVT__next_state = 5U;
         }
+    } else if ((5U == (IData)(vlSelfRef.__PVT__state))) {
+        vlSelfRef.__PVT__next_state = 0U;
     }
     vlSymsp->TOP__ethernet_rx__mac_inst__CRC.__PVT__crc_init 
         = vlSelfRef.__PVT__crc_init;
