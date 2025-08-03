@@ -150,8 +150,8 @@ int main(int argc, char **argv) {
         //     calculate_expected_checksum({0x48656C6C6F20576F, 0x726C642100000000})},
 
         {"UDP checksum",
-            {0x4500, 0x003C123450004006, 0xFFFFFFFFAAAA, 0xAAAA}, 
-            calculate_expected_checksum({0x4500, 0x003C123450004006, 0xFFFFFFFFAAAA, 0xAAAA})},
+            {0x4500, 0x003C123450004006, 0xFFFFFFFFAAAA, 0xAAAA000000000000}, 
+            calculate_expected_checksum({0x4500, 0x003C123450004006, 0xFFFFFFFFAAAA, 0xAAAA000000000000})},
     };
     
     // Run all test cases
