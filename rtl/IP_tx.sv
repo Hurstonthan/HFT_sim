@@ -16,7 +16,7 @@ module IP_tx #(
     // parameter IP_DEST_ADDR  // 4 bytes
 
     parameter WORD_WIDTH         = 64,
-    
+    parameter TYPE_OF_SERVICE    = 0,
     parameter IPV4_VER           = 8'h45,      // IPv4 + header length = 5 words (20 bytes)
     parameter LENGTH             = 16'd5,     // Total IP length (20 bytes IP header + 20 bytes TCP header)
     parameter IP_IDENFICATION    = 16'h0001,   // Example identification
@@ -26,13 +26,13 @@ module IP_tx #(
     parameter IP_SRC_ADDR        = 32'hC0A80101, // 192.168.1.1
     parameter IP_DEST_ADDR       = 32'hC0A80102  // 192.168.1.2
 
-) (
+) 
     input wire CLK,
     input wire nRST,
 
     //Interface between Ethernet MAC and IP TX
     input logic IP_send,
-    input logic TCP_done,
+    input logic sig_last,
     input logic [15:0] TCP_len_data,
     input logic [WORD_WIDTH - 1 : 0] TCP_transmit,
     output logic [WORD_WIDTH - 1 : 0] IP_transmit,
@@ -62,6 +62,7 @@ module IP_tx #(
 
     //Adding the logic of IP checksum
     logic chk_sum_valid;
+    logic temp[19:0];
     logic [16:0] IPv4_chk_sum, nIPv4_chk_sum;
     // logic [16:0] sum_chk;
 
@@ -83,7 +84,7 @@ module IP_tx #(
         nIPv4_chk_sum = IPv4_chk_sum;
         if (chk_sum_valid) begin
             //0x4884 is including everything but TCP payload length, and the checksum
-           nIPv4_chk_sum = 16'h4884 + TCP_len_data + 2; // 2 is extra 2 bytes for TCP transmission
+           nIPv4_chk_sum = 16'h4884 + TCP_len_data; // 2 is extra 2 bytes for TCP transmission
         end
     end
 

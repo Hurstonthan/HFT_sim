@@ -702,8 +702,8 @@ int main(int argc, char **argv) {
     // top -> tb_count +=1;
     // left_trim();
 
-    top -> tb_count +=1;
-    right_trim();
+    // top -> tb_count +=1;
+    // right_trim();
 
     // //Testing APP write into FIFO (Also testing the basesum of TCP) 
     // top -> tb_count +=1;
@@ -721,11 +721,11 @@ int main(int argc, char **argv) {
     // top -> tb_count +=1;
     // rd_FIFO_rcv();
 
-    // //Writing data
-    // top -> tb_count +=1;
-    // wr_FIFO_TX();
-    // top -> tb_count +=1;
-    // sending_TCP();
+    //Writing data
+    top -> tb_count +=1;
+    wr_FIFO_TX();
+    top -> tb_count +=1;
+    sending_TCP();
 
     // //Receive ACKs to update which is work!!!
     // top -> tb_count +=1;

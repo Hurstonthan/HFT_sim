@@ -149,6 +149,7 @@ VL_INLINE_OPT void Vethernet_rx_IP_rx___nba_comb__TOP__ethernet_rx__ip_inst__0(V
                 }
             }
         } else if ((5U == (IData)(vlSelfRef.__PVT__state))) {
+            vlSelfRef.__PVT__chksum_en = 1U;
             if (vlSelfRef.__PVT__MAC_valid) {
                 vlSelfRef.__PVT__nIP_payload = vlSelfRef.__PVT__MAC_payload_rcv;
             }
@@ -156,6 +157,12 @@ VL_INLINE_OPT void Vethernet_rx_IP_rx___nba_comb__TOP__ethernet_rx__ip_inst__0(V
                  == (IData)(vlSelfRef.__PVT__IP_checksum))) {
                 vlSelfRef.__PVT__nstate = 6U;
                 vlSelfRef.__PVT__nIP_valid = 1U;
+                if ((VL_EXTEND_II(32,16, (IData)(vlSelfRef.__PVT__bytes_rcv)) 
+                     >= (VL_EXTEND_II(32,16, (IData)(vlSelfRef.__PVT__IP_len)) 
+                         - (IData)(0x28U)))) {
+                    vlSelfRef.__PVT__nIP_valid = 0U;
+                    vlSelfRef.__PVT__nstate = 7U;
+                }
             } else {
                 vlSelfRef.__PVT__nstate = 8U;
             }

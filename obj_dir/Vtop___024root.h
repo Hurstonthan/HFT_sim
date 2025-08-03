@@ -7,6 +7,7 @@
 
 #include "verilated.h"
 class Vtop_ether_pkg;
+class Vtop_rx_pkg;
 class Vtop_top;
 
 
@@ -16,6 +17,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
   public:
     // CELLS
     Vtop_top* __PVT__top;
+    Vtop_rx_pkg* __PVT__rx_pkg;
     Vtop_ether_pkg* __PVT__ether_pkg;
 
     // DESIGN SPECIFIC STATE

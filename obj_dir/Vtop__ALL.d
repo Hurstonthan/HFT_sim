@@ -6,8 +6,8 @@ Vtop__ALL.o: Vtop__ALL.cpp Vtop.cpp Vtop__pch.h \
  /usr/local/share/verilator/include/verilated_funcs.h Vtop__Syms.h Vtop.h \
  Vtop___024root.h Vtop_top.h Vtop_payload_FIFO.h Vtop_TCP__F10.h \
  Vtop_FIFO_TX__F10.h Vtop_TCP_ISN.h Vtop_checksum_TCP.h Vtop_TCP_tx.h \
- Vtop_TCP_receiver.h Vtop_TCP_flow_ctrl.h Vtop_flex_counter__S20.h \
- Vtop_ether_pkg.h Vtop_priority_encoder__Wa.h \
+ Vtop_TCP_receiver.h Vtop_TCP_flow_ctrl.h Vtop_rx_pkg.h \
+ Vtop_flex_counter__S20.h Vtop_ether_pkg.h Vtop_priority_encoder__Wa.h \
  /usr/local/share/verilator/include/verilated_fst_c.h \
  /usr/local/share/verilator/include/verilated.h \
  /usr/local/share/verilator/include/verilated_trace.h \
@@ -40,7 +40,8 @@ Vtop__ALL.o: Vtop__ALL.cpp Vtop.cpp Vtop__pch.h \
  Vtop_TCP_receiver__DepSet_hf9e0ddc6__0__Slow.cpp \
  Vtop_TCP_flow_ctrl__Slow.cpp \
  Vtop_TCP_flow_ctrl__DepSet_h0482535a__0__Slow.cpp \
- Vtop_TCP_flow_ctrl__DepSet_h38e16860__0__Slow.cpp \
+ Vtop_TCP_flow_ctrl__DepSet_h38e16860__0__Slow.cpp Vtop_rx_pkg__Slow.cpp \
+ Vtop_rx_pkg__DepSet_hc39409bc__0__Slow.cpp \
  Vtop_flex_counter__S20__Slow.cpp \
  Vtop_flex_counter__S20__DepSet_h87bf55f6__0__Slow.cpp \
  Vtop_ether_pkg__Slow.cpp Vtop_ether_pkg__DepSet_h3ac9415d__0__Slow.cpp \

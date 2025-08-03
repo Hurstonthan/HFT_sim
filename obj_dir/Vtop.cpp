@@ -35,6 +35,7 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , soupbin_TCP_payload{vlSymsp->TOP.soupbin_TCP_payload}
     , axis_rd_data{vlSymsp->TOP.axis_rd_data}
     , __PVT__top{vlSymsp->TOP.__PVT__top}
+    , __PVT__rx_pkg{vlSymsp->TOP.__PVT__rx_pkg}
     , __PVT__ether_pkg{vlSymsp->TOP.__PVT__ether_pkg}
     , rootp{&(vlSymsp->TOP)}
 {

@@ -1,20 +1,20 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Fri Aug  1 08:18:18 2025
+[*] Sun Aug  3 19:05:21 2025
 [*]
 [dumpfile] "/home/than0/HFT_sim/ethernet_rx.vcd"
-[dumpfile_mtime] "Fri Aug  1 08:17:02 2025"
-[dumpfile_size] 4397
+[dumpfile_mtime] "Sun Aug  3 19:03:52 2025"
+[dumpfile_size] 4335
 [savefile] "/home/than0/HFT_sim/ethernet_rx.gtkw"
 [timestart] 0
 [size] 1634 1001
 [pos] 70 463
-*-4.237864 40 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-4.237864 43 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.ethernet_rx.
 [treeopen] TOP.ethernet_rx.ip_inst.
 [treeopen] TOP.ethernet_rx.mac_inst.
-[sst_width] 233
+[sst_width] 311
 [signals_width] 437
 [sst_expanded] 1
 [sst_vpaned_height] 284
@@ -39,11 +39,13 @@ TOP.ethernet_rx.MAC_valid
 TOP.ethernet_rx.bytes_rcv_len[7:0]
 @24
 TOP.ethernet_rx.ip_inst.IP_len[15:0]
+@28
+TOP.ethernet_rx.ip_inst.chksum_inst.FIFO_rd_en
+@23
+TOP.ethernet_rx.ip_inst.chksum_inst.TCP_payload_tx[63:0]
 @22
 TOP.ethernet_rx.ip_inst.chksum_in[63:0]
-@23
 TOP.ethernet_rx.ip_inst.IP_checksum[15:0]
-@22
 TOP.ethernet_rx.ip_inst.chksum_pl[15:0]
 @200
 -
@@ -74,9 +76,16 @@ TOP.ethernet_rx.mac_inst.crc_delay
 @22
 TOP.ethernet_rx.mac_inst.xgmii_rxd_f[63:0]
 TOP.ethernet_rx.mac_inst.xgmii_rxd_f_cvt[63:0]
+TOP.ethernet_rx.mac_inst.nMAC_payload_rcv_cvrt[63:0]
 @200
 -
 -MAC check CRC transit
+@28
+TOP.ethernet_rx.mac_inst.sof_lane[2:0]
+@22
+TOP.ethernet_rx.mac_inst.byte_END[7:0]
+@28
+TOP.ethernet_rx.mac_inst.end_valid
 @100000028
 TOP.ethernet_rx.mac_inst.state[5:0]
 @22

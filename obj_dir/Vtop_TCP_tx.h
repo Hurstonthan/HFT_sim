@@ -53,7 +53,10 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop_TCP_tx final : public VerilatedModule {
     VL_IN64(__PVT__rd_FIFO_payload,63,0);
     VL_OUT64(__PVT__TCP_transmit,63,0);
     QData/*63:0*/ __PVT__nTCP_transmit;
+    QData/*47:0*/ __PVT__frame_hold;
+    QData/*47:0*/ __PVT__nframe_hold;
     QData/*63:0*/ __Vdly__TCP_transmit;
+    QData/*47:0*/ __Vdly__frame_hold;
 
     // INTERNAL VARIABLES
     Vtop__Syms* const vlSymsp;

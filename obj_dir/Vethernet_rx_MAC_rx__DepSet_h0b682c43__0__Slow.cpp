@@ -65,6 +65,7 @@ VL_ATTR_COLD void Vethernet_rx_MAC_rx___ctor_var_reset(Vethernet_rx_MAC_rx* vlSe
     vlSelf->__PVT__i = 0;
     vlSelf->__PVT__soft_dl = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 8968774620453428783ull);
     vlSelf->__PVT__nsoft_dl = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 9160597459876293464ull);
+    vlSelf->__PVT__case_debug = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 7228688212424364840ull);
     vlSelf->__PVT__MAC_payload_rcv_cvrt = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 1485399560965132782ull);
     vlSelf->__PVT__nMAC_payload_rcv_cvrt = VL_SCOPED_RAND_RESET_Q(64, __VscopeHash, 1981054871737973314ull);
     vlSelf->__PVT__bytes_rcv = VL_SCOPED_RAND_RESET_I(8, __VscopeHash, 2549967790072508984ull);

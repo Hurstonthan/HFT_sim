@@ -68,6 +68,8 @@ VM_CLASSES_SLOW += \
 	Vtop_TCP_flow_ctrl__Slow \
 	Vtop_TCP_flow_ctrl__DepSet_h0482535a__0__Slow \
 	Vtop_TCP_flow_ctrl__DepSet_h38e16860__0__Slow \
+	Vtop_rx_pkg__Slow \
+	Vtop_rx_pkg__DepSet_hc39409bc__0__Slow \
 	Vtop_flex_counter__S20__Slow \
 	Vtop_flex_counter__S20__DepSet_h87bf55f6__0__Slow \
 	Vtop_ether_pkg__Slow \

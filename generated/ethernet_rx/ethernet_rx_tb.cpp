@@ -45,6 +45,8 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+#include <random>
+#include <cstdint>
 
 static vluint64_t main_time = 0;
 double sc_time_stamp() { return main_time; }
@@ -222,6 +224,19 @@ static void drive_idle(Vethernet_rx *dut, VerilatedFstC *tfp, int cycles = 1)
     }
 }
 
+static void print_etherframe (std::vector<Column>& frame) {
+    for (auto ele : frame){
+        printf("%016lX\n",ele.dat);
+    }
+}
+
+uint64_t generate_rd () {
+    static std::random_device rd;
+    static std::mt19937_64 gen(rd());
+    static std::uniform_int_distribution<uint64_t> dis;
+    return dis(gen);
+}
+
 static std::vector<Column> generate_frame (bool lane4) {
     std::vector<Column> frame;
     Column segment;
@@ -323,76 +338,60 @@ static std::vector<Column> generate_frame (bool lane4) {
         frame.push_back(segment);
 
         //Next segment
+        
         IP_data = 0;
         IP_data |= uint64_t (0xAA) << 0;
         IP_data |= uint64_t (0xAA) << 8;
 
-        //CRC value 0x1C5D62B7
-        //Type of service (TOS)
-        //CRC holder
-        IP_data |= uint64_t (0x1C) << 16;
-        IP_data |= uint64_t (0x5D) << 24;
-        IP_data |= uint64_t (0x62) << 32;
-        IP_data |= uint64_t (0xB7) << 40;
-        IP_data |= uint64_t (0xFD) << 48;
-        IP_data |= uint64_t (0x07) << 56;
-        segment = {0xC0, IP_data};
+        //3 bytes of data
+        
+        IP_data |= uint64_t (0xCA) << 16;
+        IP_data |= uint64_t (0xDE) << 24;
+        IP_data |= uint64_t (0xAD) << 32; 
 
+        //Checksum
+        //0xCE59E4AC
+        IP_data |= uint64_t (0xCE) << 40;
+        IP_data |= uint64_t (0x59) << 48;
+        IP_data |= uint64_t (0xE4) << 56;
+        segment = {0x00, IP_data};
+        frame.push_back(segment);
+
+
+        IP_data = 0;
+        IP_data |= uint64_t (0xAC) << 0;
+        IP_data |= uint64_t (0xFD) << 8;
+
+        segment = {0xFE, IP_data};
         frame.push_back(segment);
 
 
 
 
 
+        // //CRC value 0x1C5D62B7
+        // //Type of service (TOS)
+        // //CRC holder
+        // IP_data |= uint64_t (0x1C) << 16;
+        // IP_data |= uint64_t (0x5D) << 24;
+        // IP_data |= uint64_t (0x62) << 32;
+        // IP_data |= uint64_t (0xB7) << 40;
+        // IP_data |= uint64_t (0xFD) << 48;
+        // IP_data |= uint64_t (0x07) << 56;
+        // segment = {0xC0, IP_data};
+        //frame.push_back(segment);
 
-
-    //     static const std::vector<Column> GOOD_L0 = {
-    //     {0xFF, 0x0707070707070707},          // idles
-    //     {0xFF, 0x0707070707070707},          // idles
-    //     {0xFF, 0x0707070707070707},          // idles
-    //     {0x01, 0xD5555555555555FB},          // /S/ + 6×55 + D5
-
-    //     // bytes 0-7  :  FF FF FF CC BB AA  AA CC
-    //     {0x00, 0xCCAAAABBCCFFFFFF},
-
-    //     // bytes 8-15 :  BB FF FF FF  08 00  00 00
-    //     {0x00, 0xFFFF0008FFFFFFBB},
-
-    //     // bytes 16-47: payload zeros (four full columns)
-    //     {0x00, 0x0000000000000000},
-    //     {0x00, 0x0000000000000000},
-    //     {0x00, 0x0000000000000000},
-    //     {0x00, 0x0000000000000000},
-
-    //     // bytes 48-55: FCS (little-endian) + padding
-    //     {0x00, 0x393176B800000000},
-    //     {0x00, 0x0000000000000000},
-
-    //     // bytes 56-59: remaining padding
-    //     //CRC32 = 0x539B8212		
-    //     {0x00, 0xFFFF0008FFFFFFBB},
-    //     {0xE0, 0x0707FD12829B53AB},
-
-    //     // trailing idles
-    //     {0xFF, 0x0707070707070707},
-    //     {0xFF, 0x0707070707070707}
-    // };
-
-        
-
-
-
-
-
+        // uint64_t rd_payload;
+        // rd_payload = generate_rd();
+        // frame.push_back({0x00, rd_payload});
+        // rd_payload = generate_rd();
+        // frame.push_back({0x00, rd_payload});
+        // rd_payload = generate_rd();
+        // frame.push_back({0x00, rd_payload});
+        print_etherframe(frame);
     } 
 
     return frame;
-    // else {
-
-    // }
-
-    
-
 }
 
 static void drive_col(Vethernet_rx *dut, VerilatedFstC *tfp, const Column &c)
@@ -474,20 +473,20 @@ int main(int argc, char **argv) {
     tick(top, tfp);
     tick(top, tfp);
 
-    auto reversed = reverse_xgmii_data(frame_generated);
-    std::cout << std::uppercase << std::hex << std::setfill('0');
-    for (uint64_t w : reversed) {
-        // std::cout << "0x" << std::setw(16) << w << '\n';
-        printf("0x%lX\n", w);
-    }
+    // auto reversed = reverse_xgmii_data(frame_generated);
+    // std::cout << std::uppercase << std::hex << std::setfill('0');
+    // for (uint64_t w : reversed) {
+    //     // std::cout << "0x" << std::setw(16) << w << '\n';
+    //     printf("0x%lX\n", w);
+    // }
 
-    std::cout << "-------------------------" << std::endl;
+    // std::cout << "-------------------------" << std::endl;
 
-    for (Column w : frame_generated) {
-        // std::cout << "0x" << std::setw(16) << w.dat << '\n';
-        printf("0x%lX\n", w.dat);
-        //printf("0x%X\n", w.ctl);
-    }
+    // for (Column w : frame_generated) {
+    //     // std::cout << "0x" << std::setw(16) << w.dat << '\n';
+    //     printf("0x%lX\n", w.dat);
+    //     //printf("0x%X\n", w.ctl);
+    // }
 
     
 

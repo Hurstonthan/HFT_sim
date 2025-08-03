@@ -55,6 +55,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vethernet_rx_MAC_rx final : public VerilatedM
         CData/*0:0*/ __PVT__ncrc_delay;
         CData/*0:0*/ __PVT__soft_dl;
         CData/*0:0*/ __PVT__nsoft_dl;
+        CData/*0:0*/ __PVT__case_debug;
         CData/*7:0*/ __PVT__bytes_rcv;
         CData/*7:0*/ __PVT__nbytes_rcv;
         CData/*7:0*/ __PVT__bytes_rcv_dl;
@@ -91,9 +92,9 @@ class alignas(VL_CACHE_LINE_BYTES) Vethernet_rx_MAC_rx final : public VerilatedM
         VlWide<4>/*127:0*/ __PVT__FCS_shifted;
         IData/*31:0*/ __PVT__FCS_frame;
         IData/*31:0*/ __PVT__nFCS_frame;
-        IData/*31:0*/ __PVT__rg;
     };
     struct {
+        IData/*31:0*/ __PVT__rg;
         IData/*31:0*/ __PVT__nrg;
         IData/*31:0*/ __PVT__i;
         VlWide<4>/*127:0*/ __PVT__temp;

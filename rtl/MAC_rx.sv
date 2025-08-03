@@ -50,6 +50,7 @@ module MAC_rx #(
     int i;
 
     logic soft_dl, nsoft_dl;
+    logic case_debug;
 
     logic [63:0] MAC_payload_rcv_cvrt,nMAC_payload_rcv_cvrt;
     logic [7:0] bytes_rcv, nbytes_rcv;
@@ -270,26 +271,26 @@ module MAC_rx #(
                     // nFCS_frame = '1;
                     if (sof_lane == 0) begin
                         if (bytes_offset < 5) begin
+                            case_debug = 1'b1;
                             nbytes_rcv = 8'd4 - bytes_offset; 
                             case (bytes_offset)
                                 3'd0: begin
                                     nMAC_payload_rcv_cvrt = frame_store[95:64];
-                                    
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
                                 3'd1: begin
-                                    nMAC_payload_rcv_cvrt = frame_store[87:64];
-                                    
+                                    nMAC_payload_rcv_cvrt = frame_store[103:64];
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
                                 3'd2: begin
-                                    nMAC_payload_rcv_cvrt = frame_store[79:64];
-                                    
+                                    nMAC_payload_rcv_cvrt = frame_store[111:64];
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
                                 3'd3: begin
-                                    nMAC_payload_rcv_cvrt = frame_store[71:64];
-                                    
+                                    nMAC_payload_rcv_cvrt = frame_store[119:64];
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
                             endcase
-                            xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                             next_state = CHECK_CRC;
                         end else begin
                             //nbytes_rcv_dl = bytes_offset - 8'd4;  //Old one
@@ -308,7 +309,7 @@ module MAC_rx #(
                             endcase
                             nMAC_payload_rcv_cvrt = frame_store[127:64];
                             nbytes_rcv = 8'd8;
-                            xgmii_rxd_f = frame_store[127:64];
+                            //xgmii_rxd_f = frame_store[127:64];
                             ncrc_delay = 1'b1; 
                         end
                     end

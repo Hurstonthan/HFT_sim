@@ -231,6 +231,7 @@ always_comb begin
         end
 
         CHK_SUM: begin
+            
             if (MAC_valid) begin
                 nIP_payload = MAC_payload_rcv;
             end
@@ -241,6 +242,10 @@ always_comb begin
             if (chksum_pl == IP_checksum) begin
                 nstate = RCV_PAYLOAD;
                 nIP_valid = 1'b1;
+                if (bytes_rcv >= (IP_len -40)) begin
+                    nIP_valid = 1'b0;
+                    nstate = DONE;
+                end
             end else begin
                 nstate = ERROR;
                 // IP_flush = 1'b1;

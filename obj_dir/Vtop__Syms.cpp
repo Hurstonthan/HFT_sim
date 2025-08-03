@@ -13,6 +13,7 @@
 #include "Vtop_TCP_tx.h"
 #include "Vtop_TCP_receiver.h"
 #include "Vtop_TCP_flow_ctrl.h"
+#include "Vtop_rx_pkg.h"
 #include "Vtop_flex_counter__S20.h"
 #include "Vtop_ether_pkg.h"
 #include "Vtop_priority_encoder__Wa.h"

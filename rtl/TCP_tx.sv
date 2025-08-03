@@ -63,6 +63,10 @@ logic [19:0] temp;
 logic nTCP_tx_valid, nTCP_tx_last;
 logic nseq_up;
 
+
+//TCP_tx implementation for avoiding 2 bytes
+logic [47:0] frame_hold, nframe_hold;
+
 always_ff @(posedge CLK, negedge nRST) begin
     if (!nRST) begin
         state <= IDLE;
@@ -72,6 +76,7 @@ always_ff @(posedge CLK, negedge nRST) begin
         seq_up <= 1'b0;
         TCP_tx_valid <= 0;
         TCP_tx_last <= 0;
+        frame_hold <= 0;
     end else begin
         state <= nstate;
         TCP_transmit <= nTCP_transmit;
@@ -79,6 +84,7 @@ always_ff @(posedge CLK, negedge nRST) begin
         TCP_tx_last <= nTCP_tx_last;
         bytes_sent <= nbytes_sent;
         seq_up <= nseq_up;
+        frame_hold <= nframe_hold;
         if (valid_checksum) begin
             TCP_checksum <= ~(nTCP_checksum);
         end else begin
@@ -115,6 +121,7 @@ always_comb begin
     valid_checksum = 1'b0;
     rd_FIFO_en = 1'b0; // Reset read enable flag
     nseq_up = 1'b0; // Reset sequence update flag for next state
+    nframe_hold = frame_hold;
 
 
 
@@ -129,6 +136,7 @@ always_comb begin
 
         SEND_SRC_DEST_SEQ: begin
             nstate = SEND_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE;
+            rd_FIFO_en = 1'b1;
             nTCP_transmit = {seq_num_tx[15:0], ACK_tx, {offset_tx, 4'b0}, TCP_control_tx}; // Send the last 8 bits of sequence number, ACK number, offset, control flags, and window size
             valid_checksum = 1'b1; // Enable checksum calculation
         end
@@ -136,13 +144,13 @@ always_comb begin
         SEND_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE: begin
             valid_checksum = 1'b0;
             rd_FIFO_en = 1'b1;
-            nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, 16'd0};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
-            // nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, TCP_transmit[63:48]};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
+            //nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, 16'd0};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
+            nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, rd_FIFO_payload[63:48]};// Send the last 8 bits of window size, checksum, urgent pointer, and 16 bits of data
+            nframe_hold = rd_FIFO_payload[47:0];
             nstate = SEND_WINDOWSIZE_CHECKSUM_URGENT_PAYLOAD; // Move to the next state
             
 
-            if (|bytes_abt_sent) begin
-                nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, 16'd0}; // Send the TCP payload
+            if (bytes_abt_sent > 2) begin
                 nstate = SEND_WINDOWSIZE_CHECKSUM_URGENT_PAYLOAD; // Move to the next state
             end else begin
                 nstate = IDLE;
@@ -154,10 +162,13 @@ always_comb begin
         SEND_WINDOWSIZE_CHECKSUM_URGENT_PAYLOAD: begin
             rd_FIFO_en = 1'b1; // Enable read from FIFO
             if (|bytes_abt_sent) begin
-                nTCP_transmit = rd_FIFO_payload; // Send the TCP payload
+                nTCP_transmit = {frame_hold, rd_FIFO_payload[63:48]}; // Send the TCP payload
+                nframe_hold = rd_FIFO_payload[47:0];
                 nstate = SEND_TCP_PAYLOAD; // Move to the next state
             end else begin
-                
+                nstate = IDLE;
+                nTCP_tx_last = 1'b1;
+                nseq_up = 1'b1;
             end
 
             // nbytes_sent = bytes_sent + 18'd3; // Update the number of bytes sent
@@ -165,7 +176,8 @@ always_comb begin
 
         SEND_TCP_PAYLOAD: begin
             rd_FIFO_en = 1'b1; // Enable read from FIFO
-            nTCP_transmit = rd_FIFO_payload; // Send the rest of the TCP payload
+            nTCP_transmit = {frame_hold, rd_FIFO_payload[63:48]}; // Send the TCP payload
+                nframe_hold = rd_FIFO_payload[47:0];
             
 
             // if (bytes_sent >= bytes_abt_sent - 1) begin

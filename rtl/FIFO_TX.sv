@@ -271,12 +271,12 @@ module FIFO_TX #(
                 //This is the state checking the dictionary full or not and whether rd ptr
                 //ptr_end is the next ptr of the end of ptr that store the msg 
                 //rd_ptr != (msg_end_ptr - 1) check do we have any empty msg or not
-                if ((rd_FIFO_en && (dict_wrt_ptr != (dict_rd_ptr - 1)) && (rd_ptr != (msg_end_ptr)))) begin
+                if ((rd_FIFO_en && (dict_wrt_ptr != (dict_rd_ptr - 1)) && (rd_ptr != (msg_end_ptr + 1)))) begin
                     nrd_FIFO_valid = 1'b1;
                     nrd_ptr = rd_ptr + 1;
                     nrd_FIFO_payload = TCP_tx_order[rd_ptr];
                     //msg_end_ptr is in writing side
-                    if ((rd_ptr) == (ptr_end - 1)) begin
+                    if ((rd_ptr) == (ptr_end)) begin
                         ndict_tx[dict_wrt_ptr].valid = 1'b1;
                         ndict_tx[dict_wrt_ptr].seq_num = seq_num_tx;
                         ndict_tx[dict_wrt_ptr].len_seq = bytes_abt_sent;
