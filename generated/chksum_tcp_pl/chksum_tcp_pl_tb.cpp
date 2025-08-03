@@ -12,10 +12,10 @@ static vluint64_t main_time = 0;
 double sc_time_stamp() { return main_time; }
 
 static void tick(Vchksum_tcp_pl *top, VerilatedFstC *tfp) {
-    top->CLK = 0;
+    top->CLK = 1;
     top->eval();
     if (tfp) tfp->dump(main_time++);
-    top->CLK = 1;
+    top->CLK = 0;
     top->eval();
     if (tfp) tfp->dump(main_time++);
     
