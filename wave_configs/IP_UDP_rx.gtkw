@@ -1,0 +1,55 @@
+[*]
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Sun Aug  3 19:31:40 2025
+[*]
+[dumpfile] "/home/polarbearbo/purdue/HFT_project/HFT_sim/IP_UDP_rx.fst"
+[dumpfile_mtime] "Sun Aug  3 19:21:37 2025"
+[dumpfile_size] 2513
+[savefile] "/home/polarbearbo/purdue/HFT_project/HFT_sim/wave_configs/IP_UDP_rx.gtkw"
+[timestart] 190
+[size] 1484 569
+[pos] -1 -1
+*-5.000000 290 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.IP_UDP_rx.
+[sst_width] 278
+[signals_width] 365
+[sst_expanded] 1
+[sst_vpaned_height] 148
+@100000028
+TOP.CLK
+@28
+TOP.nRST
+TOP.MAC_flush
+@22
+TOP.MAC_payload_rcv[63:0]
+TOP.bytes_rcv_len[7:0]
+@28
+TOP.MAC_valid
+TOP.UDP_flush
+@22
+TOP.UDP_payload[63:0]
+@28
+TOP.UDP_valid
+@200
+-IP
+@22
+TOP.IP_UDP_rx.ip_inst.chksum_in[63:0]
+@100000028
+TOP.IP_UDP_rx.ip_inst.state[3:0]
+TOP.IP_UDP_rx.ip_inst.nstate[3:0]
+@23
+TOP.IP_UDP_rx.ip_inst.chksum_in[63:0]
+@22
+TOP.IP_UDP_rx.ip_inst.chksum_pl[15:0]
+TOP.IP_UDP_rx.ip_inst.IP_checksum[15:0]
+@200
+-UDP
+@28
+TOP.IP_UDP_rx.udp_inst.IP_flush
+TOP.IP_UDP_rx.udp_inst.UDP_flush
+@100000028
+TOP.IP_UDP_rx.udp_inst.current_state[2:0]
+TOP.IP_UDP_rx.udp_inst.nstate[2:0]
+[pattern_trace] 1
+[pattern_trace] 0

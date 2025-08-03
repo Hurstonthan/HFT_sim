@@ -100,6 +100,7 @@ static void drive_idle(VMAC_rx *dut, VerilatedFstC *tfp, int cycles = 1)
     dut->xgmii_rxd = 0x0707'0707'0707'0707ULL;
     tick(dut, tfp);
     tick(dut, tfp);
+    tick(dut, tfp); 
     for (int i = 0; i < cycles; ++i) {
         dut->xgmii_rxc = 0xFF;
         dut->xgmii_rxd = 0x0707'0707'0707'0707ULL;

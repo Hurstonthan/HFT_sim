@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
 // `include "chksum_tcp_pl.sv"
-// `include "rx_pkg.vh"
+//`include "rx_pkg.vh"
 `include "rx_pkg.sv"
 module IP_rx #(
     // parameter VERSION = 4'd4,
@@ -64,19 +64,19 @@ module IP_rx #(
             is_udp <= 0;
         end else begin
             // flush is only trigger by one clock cycle
-            if (MAC_flush || IP_flush) begin 
-                state <= IDLE;
-                IP_checksum <= 0;
-                IP_payload <= 0;
-                bytes_rcv <= 0;
-                dst_addr <= 0;
-                IP_valid <= 0;
-                IP_len <= 0;
-                is_tcp <= 0;
-                is_udp <= 0;
-                // IP_flush <= 1'b0;
-            end
-            else begin
+            // if (MAC_flush || IP_flush) begin 
+            //     state <= IDLE;
+            //     IP_checksum <= 0;
+            //     IP_payload <= 0;
+            //     bytes_rcv <= 0;
+            //     dst_addr <= 0;
+            //     IP_valid <= 0;
+            //     IP_len <= 0;
+            //     is_tcp <= 0;
+            //     is_udp <= 0;
+            //     // IP_flush <= 1'b0;
+            // end
+            //else begin
                 state <= nstate;
                 IP_checksum <= nIP_checksum;
                 IP_payload <= nIP_payload;
@@ -87,7 +87,7 @@ module IP_rx #(
                 is_tcp <= next_is_tcp;
                 is_udp <= next_is_udp;
                 // IP_flush <= nIP_flush;
-            end
+            //end
         end
     end
 
@@ -160,6 +160,7 @@ always_comb begin
         RCV_VER_IHL_DSCP_ECN: begin
             if (MAC_valid) begin
                 chksum_en = 1'b1;
+                chksum_in = MAC_payload_rcv[15:0];
                 if (MAC_payload_rcv[15:12] == IP_VERSION) begin
                     nstate = RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL;
                 end else begin
@@ -174,7 +175,8 @@ always_comb begin
                 // total length 
                 chksum_en = 1'b1;
                 // todo set chksum_in = 
-                nIP_len = MAC_payload_rcv[63:56];
+                // nIP_len = MAC_payload_rcv[63:56];
+                nIP_len = MAC_payload_rcv[63:48];
 
                 // Check the protocol type
                 next_is_tcp = (MAC_payload_rcv[7:0] == TCP_PROTOCOL);
@@ -230,6 +232,7 @@ always_comb begin
         end
 
         CHK_SUM: begin
+            
             if (MAC_valid) begin
                 nIP_payload = MAC_payload_rcv;
             end
@@ -240,6 +243,10 @@ always_comb begin
             if (chksum_pl == IP_checksum) begin
                 nstate = RCV_PAYLOAD;
                 nIP_valid = 1'b1;
+                if (bytes_rcv >= (IP_len -40)) begin
+                    nIP_valid = 1'b0;
+                    nstate = DONE;
+                end
             end else begin
                 nstate = ERROR;
                 // IP_flush = 1'b1;
@@ -251,7 +258,7 @@ always_comb begin
             if (MAC_valid) begin
                 nIP_payload = MAC_payload_rcv;
                 nIP_valid = 1'b1;
-                if (bytes_rcv >= IP_len) begin //checking the rectver length
+                if (bytes_rcv >= (IP_len - 40)) begin //checking the rectver length
                     nIP_valid = 1'b0;
                     nstate = DONE;
                 end 

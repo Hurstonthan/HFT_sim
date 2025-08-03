@@ -127,10 +127,6 @@ std::vector<std::pair<uint64_t, uint8_t>> generate_payload() {
     return stimuli;
 }
 
-void send_module(Vethernet_rx *top, Vethernet_rx *tfp) {
-    
-}
-
 int main(int argc, char **argv) {
     Verilated::commandArgs(argc, argv);
     Vethernet_rx *top = new Vethernet_rx;

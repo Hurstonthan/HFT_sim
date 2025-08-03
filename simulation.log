@@ -1,1 +1,5 @@
-GOOD_L0      : FAIL   (frame_ok=0, CRC_flush=0)
+Starting Test Case 1: Valid TCP Packet
+checksum result is e776
+checksum result is 3921e
+checksum result is 3ccc
+Simulation completed successfully.

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/polarbearbo/purdue/HFT_project/HFT_sim/generated/IP_rx",
-      "program": "/home/polarbearbo/purdue/HFT_project/HFT_sim/generated/IP_rx/build/Debug/outDebug",
+      "cwd": "/home/polarbearbo/purdue/HFT_project/HFT_sim/generated/ethernet_rx",
+      "program": "/home/polarbearbo/purdue/HFT_project/HFT_sim/generated/ethernet_rx/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

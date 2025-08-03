@@ -1,0 +1,286 @@
+// Dump of all post-preprocessor input
+// Blank lines and `line directives have been removed
+//
+// Information:
+//   Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+//   Arguments: -Wno-lint --error-limit 0 --trace --trace-fst --debug -Iinclude -Irtl -CFLAGS -Irtl -Iinclude -O0 -g --cc rtl/IP_rx.sv --top-module IP_rx --exe generated/IP_rx/IP_rx_tb.cpp generated/IP_rx/IP_rx_input.cpp --build
+//   Build jobs: 1
+//   Verilate jobs: 1
+
+`begin_keywords "1800-2017"
+`timescale 1ns/10ps
+`timescale 1ns/10ps
+package rx_pkg;
+    parameter FPGA_MAC = 48'h123456;  
+    parameter NASDAQ_MAC = 48'h65431;  
+    parameter IP_TYPE = 16'h0800;  
+    parameter IP_VERSION = 4'h4;  
+    parameter IP_HDL = 4'h5;  
+    parameter UDP_PROTOCOL = 8'h11; 
+    parameter TCP_PROTOCOL = 8'h06; 
+    parameter ICMP_PROTOCOL = 8'h01;
+    parameter IP_TTL = 8'h40; 
+    parameter IP_SRC_ADDR = 32'hFFFFFFFF;  
+    parameter IP_DEST_ADDR = 32'hAAAAAAAA; 
+    parameter UDP_SRC_ADDR = 16'h1234; 
+    parameter UDP_DEST_ADDR = 16'h4321; 
+    parameter UDP_HEADER_LENGTH = 16'h08;
+    parameter UDP_CHECKSUM = 16'h0000;  
+    typedef enum logic [3:0] { 
+        IDLE,
+        RCV_VER_IHL_DSCP_ECN,  
+        RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL,  
+        RCV_SUM_SRC_ADDR_DEST_ADDR,  
+        RCV_PAYLOAD_DEST,  
+        CHK_SUM,
+        RCV_PAYLOAD,
+        DONE,
+        ERROR
+    } IP_t;
+    typedef enum logic [2:0] { 
+        UDP_IDLE,
+        UDP_HEADER,  
+        UDP_CHK_SUM_PAYLOAD,  
+        UDP_PAYLOAD,
+        UDP_DONE,
+        UDP_CHK_SUM,
+        UDP_ERROR
+    } UDP_t;
+endpackage
+module IP_rx #(
+) (
+    input logic CLK,
+    input logic nRST,
+    input logic MAC_valid,
+    input logic [63:0] MAC_payload_rcv,
+    input logic MAC_flush,
+    input logic [7:0] bytes_rcv_len,
+    output logic IP_valid,
+    output logic IP_flush,
+    output logic [63:0] IP_payload,
+    output logic is_udp,
+    output logic is_tcp
+);
+    import rx_pkg::*;
+    IP_t state, nstate;
+    logic [15:0] IP_checksum, nIP_checksum;
+    logic [63:0] nIP_payload;
+    logic [15:0] bytes_rcv, nbytes_rcv;
+    logic chksum_en, chksum_clear;
+    logic [63:0] chksum_in;
+    logic [15:0] chksum_pl;
+    logic [16:0] chksum_final;
+    logic [15:0] dst_addr, ndst_addr;
+    logic [15:0] IP_len, nIP_len;
+    logic nIP_valid;
+    logic next_is_udp, next_is_tcp;
+    chksum_tcp_pl chksum_inst(
+       .CLK(CLK),
+       .nRST(nRST),
+       .clear(chksum_clear),
+       .FIFO_rd_en(chksum_en),
+       .TCP_payload_tx(chksum_in),
+       .TCP_checksum_pl(chksum_pl)
+    );
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            state <= IDLE;
+            IP_checksum <= 0;
+            IP_payload <= 0;
+            bytes_rcv <= 0;
+            dst_addr <= 0;
+            IP_valid <= 0;
+            IP_len <= 0;
+            is_tcp <= 0;
+            is_udp <= 0;
+        end else begin
+            if (MAC_flush || IP_flush) begin 
+                state <= IDLE;
+                IP_checksum <= 0;
+                IP_payload <= 0;
+                bytes_rcv <= 0;
+                dst_addr <= 0;
+                IP_valid <= 0;
+                IP_len <= 0;
+                is_tcp <= 0;
+                is_udp <= 0;
+            end
+            else begin
+                state <= nstate;
+                IP_checksum <= nIP_checksum;
+                IP_payload <= nIP_payload;
+                bytes_rcv <= nbytes_rcv;
+                dst_addr <= ndst_addr;
+                IP_valid <= nIP_valid;
+                IP_len <= nIP_len;
+                is_tcp <= next_is_tcp;
+                is_udp <= next_is_udp;
+            end
+        end
+    end
+logic [15:0] total_len;
+logic [15:0] frags_flag;
+logic [7:0] ttl;
+logic [2:0] flags;
+logic [12:0] fragoff;
+logic [3:0] test_valid;
+logic [3:0] ip_version;
+logic is_src_addr;
+logic is_ip_version_valid;
+always_comb begin
+    nstate = state;
+    nIP_payload = IP_payload;
+    chksum_en = 1'b0;
+    chksum_in = MAC_payload_rcv;
+    nbytes_rcv = bytes_rcv;
+    ndst_addr = dst_addr;
+    nIP_valid = 0;
+    chksum_clear = 1'b0;
+    chksum_final = {1'b0, chksum_pl};
+    nIP_len = IP_len;
+    next_is_tcp = is_tcp;
+    next_is_udp = is_udp;
+    total_len = MAC_payload_rcv[63:48];
+    frags_flag = MAC_payload_rcv[31:16];
+    ttl = MAC_payload_rcv[15:8];
+    flags = MAC_payload_rcv[31:29];
+    fragoff = MAC_payload_rcv[28:16];
+    test_valid[3] = (MAC_payload_rcv[63:48] <= 16'd1480);   
+    test_valid[2] = (MAC_payload_rcv[28:16] == 0);          
+    test_valid[1] = (MAC_payload_rcv[15:8] != 0);           
+    test_valid[0] = (!MAC_payload_rcv[31]);                 
+    ip_version = MAC_payload_rcv[15:12];
+    IP_flush = 1'b0;
+    is_src_addr = (MAC_payload_rcv[47:16] == IP_SRC_ADDR);
+    is_ip_version_valid = (ip_version == IP_VERSION);
+    if (MAC_valid) begin
+        nbytes_rcv = bytes_rcv + bytes_rcv_len;
+    end
+    case (state)
+        IDLE: begin
+            chksum_clear = 1'b1;
+            if (MAC_valid) begin
+                nstate = RCV_VER_IHL_DSCP_ECN; 
+            end
+        end
+        RCV_VER_IHL_DSCP_ECN: begin
+            if (MAC_valid) begin
+                chksum_en = 1'b1;
+                if (MAC_payload_rcv[15:12] == IP_VERSION) begin
+                    nstate = RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL;
+                end else begin
+                    nstate = ERROR;
+                end
+            end
+        end
+        RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL: begin
+            if (MAC_valid) begin
+                chksum_en = 1'b1;
+                nIP_len = MAC_payload_rcv[63:56];
+                next_is_tcp = (MAC_payload_rcv[7:0] == TCP_PROTOCOL);
+                next_is_udp = (MAC_payload_rcv[7:0] == UDP_PROTOCOL);
+                if (MAC_payload_rcv[63:48] <= 16'd1480 &&  
+                    MAC_payload_rcv[15:8] !=0 &&  
+                    !MAC_payload_rcv[31] &&  
+                    (next_is_tcp || next_is_udp)) begin
+                        nstate = RCV_SUM_SRC_ADDR_DEST_ADDR;
+                    end else begin
+                        nstate = ERROR;
+                    end
+            end 
+        end
+        RCV_SUM_SRC_ADDR_DEST_ADDR: begin
+            if (MAC_valid) begin
+                chksum_en = 1'b1;
+                chksum_in = {16'h0, MAC_payload_rcv[47:0]};
+                nIP_checksum = MAC_payload_rcv[63:48];
+                ndst_addr = MAC_payload_rcv[15:0];  
+                if (is_src_addr) begin
+                    nstate = RCV_PAYLOAD_DEST;
+                    nIP_valid = 1'b1;
+                end else begin
+                    nstate = ERROR;
+                    chksum_en = 1'b0;
+                end
+            end
+        end
+        RCV_PAYLOAD_DEST: begin
+            if (MAC_valid) begin
+                chksum_in = {48'h0, MAC_payload_rcv[63:48]};
+                chksum_en = 1'b1;
+                if (({dst_addr, MAC_payload_rcv[63:48]} == IP_DEST_ADDR)) begin
+                    nIP_payload = {16'h0, MAC_payload_rcv[47:0]};
+                    nIP_valid = 1'b1;
+                    nstate = CHK_SUM;
+                end else begin
+                    nstate = ERROR;
+                end
+            end
+        end
+        CHK_SUM: begin
+            if (MAC_valid) begin
+                nIP_payload = MAC_payload_rcv;
+            end
+            if (chksum_pl == IP_checksum) begin
+                nstate = RCV_PAYLOAD;
+                nIP_valid = 1'b1;
+            end else begin
+                nstate = ERROR;
+            end
+        end
+        RCV_PAYLOAD: begin
+            if (MAC_valid) begin
+                nIP_payload = MAC_payload_rcv;
+                nIP_valid = 1'b1;
+                if (bytes_rcv >= IP_len) begin  
+                    nIP_valid = 1'b0;
+                    nstate = DONE;
+                end 
+            end
+        end
+        DONE: begin
+            nIP_valid = 1'b0;
+            nstate = IDLE;
+        end
+        ERROR: begin
+            IP_flush = 1'b1;
+            if (!MAC_valid) begin
+                nstate = IDLE;
+            end
+        end
+        default: nstate = IDLE; 
+    endcase
+end
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns/10ps
+module chksum_tcp_pl #(
+    parameter DATA_WIDTH = 64  
+)
+(
+    input logic CLK,
+    input logic nRST,
+    input logic FIFO_rd_en,
+    input logic clear,
+    input logic [DATA_WIDTH - 1:0] TCP_payload_tx,  
+    output logic [15:0] TCP_checksum_pl  
+);
+    logic [16:0] TCP_checksum, nTCP_checksum;
+    assign TCP_checksum_pl = TCP_checksum[15:0];
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            TCP_checksum <= 0;
+        end else begin
+            TCP_checksum <= (nTCP_checksum[15:0] + nTCP_checksum[16]);
+        end
+    end
+    always_comb begin
+        nTCP_checksum = 0;
+        if (clear) begin
+            nTCP_checksum = 0;
+        end else if (FIFO_rd_en) begin
+            nTCP_checksum = TCP_checksum + TCP_payload_tx[15:0] + TCP_payload_tx[31:16] + TCP_payload_tx[47:32] + TCP_payload_tx[63:48];
+        end
+    end
+endmodule

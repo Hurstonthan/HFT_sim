@@ -42,7 +42,6 @@ void reset_dut(VIP_rx *top, VerilatedFstC *tfp, vluint64_t &time) {
     }
 }
 
-//todo check the logic of checksum calculation
 uint16_t calculate_checksum(uint64_t header0, uint64_t header1, uint64_t header2, uint64_t header3) {
 
     uint16_t version_ihl = (header0 >> 48) & 0xFFFF;
