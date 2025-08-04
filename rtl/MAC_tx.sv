@@ -5,7 +5,7 @@ module MAC_tx #(
     parameter CTRL_WIDTH = 8,
     parameter MAC_SRC_ADDR  = 48'h FFFF_FFCC_BBAA,
     parameter MAC_DEST_ADDR = 48'h AACC_BBFF_FFFF,
-    parameter ETHER_TYPE         = 16'h0800,   // IPv4 EtherType
+    parameter ETHER_TYPE         = 16'h0800   // IPv4 EtherType
 ) (
     input wire CLK,
     input wire nRST,
@@ -17,8 +17,8 @@ module MAC_tx #(
 
     //Interface btw Ethernet MAC and IP
     input logic [WORD_WIDTH - 1:0] IP_transmit, 
-    input logic [15:0] TCP_len_data_mc,
-    input logic [15:0] bytes_sent_ip_mac,
+    input logic [15:0] tt_len_data,
+    input logic IP_last,
     output logic IP_send
 );
 
@@ -30,6 +30,7 @@ module MAC_tx #(
         SEND_ETHER_HEAD2,
         SEND_IP_HEADER_PAYLOAD,
         SEND_FCS_TERMINATE,
+        SEND_ZERO_PADDING,
         SEND_IDLE_END1    
     } ether_state_t;
 
@@ -40,6 +41,10 @@ module MAC_tx #(
 
     logic crc_init, valid;
     logic [31:0] crc_out;
+
+    //variables to assist zero paddins for >= 46 bytes 
+    logic [15:0] len_counter, nlen_counter;
+
 
     
 
@@ -61,10 +66,12 @@ module MAC_tx #(
             state <= IDLE;
             xgmii_txd_l <= 64'h07070707_07070707;
             xgmii_txc_l <= '1;
+            len_counter <= 0;
         end else begin
             state <= nstate;
             xgmii_txd_l <= nxgmii_txd_l;
             xgmii_txc_l <= nxgmii_txc_l;
+            len_counter <= nlen_counter;
             
         end
     end
@@ -89,11 +96,12 @@ module MAC_tx #(
                 valid = 1'b0;
                 if (TX_en) begin
                     nstate = SEND_PREAMBLE_SFD;
+                    IP_send_l = 1'b1;
                 end
             end
             SEND_PREAMBLE_SFD: begin
                 nstate = SEND_ETHER_HEAD1;
-                IP_send_l = 1'b1;
+                IP_send_l = 1'b1; //V changing need to change with questa
                 crc_init = 1'b1; //Initialize CRC
             end
             SEND_ETHER_HEAD1: begin
@@ -104,19 +112,33 @@ module MAC_tx #(
             SEND_ETHER_HEAD2: begin
                 nstate = SEND_IP_HEADER_PAYLOAD;
                 IP_send_l = 1'b1;
-                if (bytes_sent_ip_mac >= (TCP_len_data_mc - 15'd1)) begin
-                    nstate = SEND_FCS_TERMINATE; //Send FCS and terminate
-                    IP_send_l = 1'b0;
-                end
+                // if (bytes_sent_ip_mac >= (protocol_len_data_mac - 15'd1)) begin
+                //     nstate = SEND_FCS_TERMINATE; //Send FCS and terminate
+                //     IP_send_l = 1'b0;
+                // end
             end
 
             SEND_IP_HEADER_PAYLOAD: begin
                 IP_send_l = 1'b1;
-                if (bytes_sent_ip_mac >= (TCP_len_data_mc - 15'd1)) begin
+                //Case of tt_len_data < 46 (minimum payload len)
+                if (IP_last && (tt_len_data < 46)) begin
+                    IP_send_l = 1'b0;
+                    nstate = SEND_ZERO_PADDING;
+                    nlen_counter = tt_len_data;
+                end else if (IP_last) begin
                     nstate = SEND_FCS_TERMINATE; //Send FCS and terminate
                     IP_send_l = 1'b0;
                 end
             end            
+
+            SEND_ZERO_PADDING: begin
+                nlen_counter = len_counter + 8;
+                if (len_counter >=46) begin
+                    nstate = SEND_IDLE_END1;
+                    IP_send_l = 1'b0;
+                end
+                
+            end
 
             SEND_FCS_TERMINATE: begin
                 valid = 1'b0;
@@ -124,6 +146,7 @@ module MAC_tx #(
                 nstate = SEND_IDLE_END1; //Send IDLE end
             end
             SEND_IDLE_END1: begin
+                crc_init = 1'b1;
                 nstate = IDLE;
             end
             default: begin
@@ -142,7 +165,7 @@ module MAC_tx #(
                 nxgmii_txd_l = 64'h07070707_07070707;
                 nxgmii_txc_l = '1;
                 if (TX_en) begin
-                    nxgmii_txd_l = {8'hFB,48'h55555555555555, 8'hD5}; //Preamble and SFD 
+                    nxgmii_txd_l = {8'hFB,48'h555555555555, 8'hD5}; //Preamble and SFD 
                     nxgmii_txc_l = 8'b000_0001;
                 end
             end
@@ -169,6 +192,7 @@ module MAC_tx #(
                 // end
                 
                 nxgmii_txd_l = {MAC_SRC_ADDR[31:0], IP_transmit[31:0]};
+                
                 nxgmii_txc_l =  '0; 
                 //5 byte of MAC_SRC_ADDR
                 //2 byte of ETHER_TYPE
@@ -189,10 +213,10 @@ module MAC_tx #(
                 //IP transmitt will get the Ethertype, IPv4_ver, length_MSB
                 nxgmii_txd_l = IP_transmit;
                 nxgmii_txc_l =  '0;
-                if (bytes_sent_ip_mac >= (TCP_len_data_mc - 15'd1)) begin
-                    nxgmii_txd_l = {crc_out, 8'h FD}; // FCS and 0xFD
-                    nxgmii_txc_l = 8'b0000_0001; // all control
-                end
+                // if (bytes_sent_ip_mac >= (protocol_len_data_mac - 15'd1)) begin
+                //     nxgmii_txd_l = {crc_out, 8'h FD}; // FCS and 0xFD
+                //     nxgmii_txc_l = 8'b0000_0001; // all control
+                // end
 
             end
 
@@ -210,11 +234,19 @@ module MAC_tx #(
                 // nxgmii_txc_l =  '0;
                 nxgmii_txd_l = IP_transmit;
                 nxgmii_txc_l =  '0;
-                if (bytes_sent_ip_mac >= (TCP_len_data_mc - 15'd1)) begin
-                    nxgmii_txd_l = {crc_out, 8'hFD}; // FCS and 0xFD
-                    nxgmii_txc_l = 8'b0000_0001; // all control
-                end
+
                 
+                
+            end
+
+            SEND_ZERO_PADDING: begin
+                nxgmii_txd_l = 0;
+                nxgmii_txc_l = 0;
+                if (len_counter >= 46) begin
+                    nxgmii_txd_l = {crc_out, 32'hFD070707}; // FCS and 0xFD
+                    nxgmii_txc_l = 8'b0000_1111; // all control
+                end
+
             end
 
             // SEND_IP_TCP_HEADER: begin
@@ -279,18 +311,18 @@ module MAC_tx #(
 
             SEND_FCS_TERMINATE: begin
                 // Logic to send FCS and terminate
-                // nxgmii_txd_l = {crc_out, 32'h FD}; // FCS and 0xFD
+                nxgmii_txd_l = {crc_out, 32'hFD070707}; // FCS and 0xFD
                 // // nxgmii_txd_l = 64'h00_00_00_00_00_00_00_FD; // FCS and 0xFD
                 // nxgmii_txc_l = 8'b0000_0001; // all control
 
-                nxgmii_txd_l = 64'h07070707_07070707;
-                nxgmii_txc_l = 8'b0000_0001;
+                // nxgmii_txd_l = 64'h07070707_07070707;
+                nxgmii_txc_l = 8'b0000_1111;
 
             end
 
             SEND_IDLE_END1: begin
                 nxgmii_txd_l = 64'h07070707_07070707;
-                nxgmii_txc_l = 8'b0000_0001;
+                nxgmii_txc_l = 8'hFF;
             end
 
             //Continue work implementing IDLE codes 0x07 for at least 12 bytes -> 96 bits

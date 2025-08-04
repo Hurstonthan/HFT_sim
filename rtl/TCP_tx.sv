@@ -3,7 +3,9 @@ module TCP_tx #(
     parameter DATA_WIDTH = 64,
     parameter OFF_SET = 5,
     parameter SRC_PORT = 16'h1234, // Example source port
-    parameter DEST_PORT = 16'h5678  // Example destination port
+    parameter DEST_PORT = 16'h5678,  // Example destination port
+    parameter IP_SRC_ADDR        = 32'hC0A80101, // 192.168.1.1
+    parameter IP_DEST_ADDR       = 32'hC0A80102  // 192.168.1.2
 
 ) (
     input logic CLK,
@@ -97,15 +99,18 @@ end
 always_comb begin
     nTCP_checksum = TCP_checksum;
     if (valid_checksum) begin
-        //EC42 include Pseudo header, src port, dest_port, window size
-        temp =  16'hEC42 
-                        + bytes_abt_sent[15:0] 
+        temp =  IP_SRC_ADDR[31:16] + IP_DEST_ADDR[15:0]
+                        + IP_DEST_ADDR[31:16] + IP_DEST_ADDR[15:0]
+                        +{8'h0000, 8'h06}
+                        + bytes_abt_sent[15:0] + 20
                         + seq_num_tx[31:16] 
                         + seq_num_tx[15:0] 
                         + ACK_tx[31:16] 
                         + ACK_tx[15:0] 
                         + {offset_tx, 4'b0000, TCP_control_tx} 
                         + urgent_pointer_tx 
+                        + SRC_PORT
+                        + DEST_PORT
                         + TCP_basesum_payload;
         temp = temp[15:0] + temp[19:16];
         temp = temp[15:0] + temp[16];
