@@ -157,6 +157,15 @@ int main(int argc, char **argv) {
     header2 = (static_cast<uint64_t>(checksum) << 48) | (header2 & 0x0000FFFFFFFFFFFF);
     send_ip_packet(top, tfp, time, header0, header1, header2, udp_header, payload);
 
+    std::cout << "Starting Test Case 1: Valid UDP Packet" << std::endl;
+    header0 = ((uint64_t)SAMPLE_MAC_SRC_ADDR << 32) | IP_TYPE_IPV4 << 16 |0x4500; // Version 4, IHL 5, Type of Service 0
+    header1 = (0x003CULL << 48) | (0x1234ULL << 32) | (0x5000ULL << 16) | (0x40ULL << 8) | UDP_PROTOCOL;
+    header2 = (0x0000ULL << 48) | ((uint64_t)IP_SRC_ADDR << 16) | (IP_DEST_ADDR >> 16);
+    udp_header = static_cast<uint64_t>(IP_DEST_ADDR & 0xFFFF) << 48 | ((uint64_t)UDP_SRC_ADDR << 32) | ((uint64_t)UDP_DEST_ADDR << 16) | UDP_LEN;
+    checksum = calculate_checksum(header0, header1, header2, udp_header);
+    header2 = (static_cast<uint64_t>(checksum) << 48) | (header2 & 0x0000FFFFFFFFFFFF);
+    send_ip_packet(top, tfp, time, header0, header1, header2, udp_header, payload);
+
     for (int i = 0; i < 20; i++) {
         tick(top, tfp, time);
     }

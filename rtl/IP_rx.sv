@@ -182,7 +182,6 @@ always_comb begin
                 next_is_tcp = (MAC_payload_rcv[7:0] == TCP_PROTOCOL);
                 next_is_udp = (MAC_payload_rcv[7:0] == UDP_PROTOCOL);
 
-                // todo check the timing
                 if (MAC_payload_rcv[63:48] <= 16'd1480 && //Total Length
                     // MAC_payload_rcv[28:16] == 0 && //Fragoff
                     MAC_payload_rcv[15:8] !=0 && //Time to live
@@ -200,6 +199,7 @@ always_comb begin
             if (MAC_valid) begin
                 chksum_en = 1'b1;
                 chksum_in = {16'h0, MAC_payload_rcv[47:0]};
+                // chksum_in = {MAC_payload_rcv[63:16], 16'h0};
 
                 // Store header checksum and destination address
                 nIP_checksum = MAC_payload_rcv[63:48];

@@ -284,7 +284,6 @@ always_comb begin
                 next_is_udp = (MAC_payload_rcv[7:0] == UDP_PROTOCOL);
 
 `line 185 "rtl/IP_rx.sv" 0
-                 
                 if (MAC_payload_rcv[63:48] <= 16'd1480 &&  
                      
                     MAC_payload_rcv[15:8] !=0 &&  
@@ -298,11 +297,12 @@ always_comb begin
             end 
         end
 
-`line 199 "rtl/IP_rx.sv" 0
+`line 198 "rtl/IP_rx.sv" 0
         RCV_SUM_SRC_ADDR_DEST_ADDR: begin
             if (MAC_valid) begin
                 chksum_en = 1'b1;
                 chksum_in = {16'h0, MAC_payload_rcv[47:0]};
+                 
 
 `line 204 "rtl/IP_rx.sv" 0
                  

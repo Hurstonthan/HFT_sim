@@ -2,4 +2,8 @@ Starting Test Case 1: Valid TCP Packet
 checksum result is e776
 checksum result is 3921e
 checksum result is 3ccc
+Starting Test Case 1: Valid UDP Packet
+checksum result is e781
+checksum result is 39229
+checksum result is 3cd7
 Simulation completed successfully.

@@ -18,7 +18,8 @@ module UDP_tx
 
     output logic [63:0] IP_payload, // including the UDP header and payload
     // output logic IP_valid, // signal to indicate that the IP packet is ready to be sent
-    output logic IP_last,
+    output logic UDP_last,
+    output logic [15:0] protocol_Data_len,
     output logic [15:0] IP_len 
 );
     typedef enum logic [1:0] {
@@ -48,9 +49,8 @@ module UDP_tx
     end
 
     assign IP_len = UDP_len + UDP_HEADER_LENGTH; 
-
-    //todo fix IP_len calcaulation - check with Tri
-    //
+    assign protocol_Data_len = UDP_len; 
+    
     always_comb begin
         /* 0      7 8     15 16    23 24    31 32    39 40    47 48    55 56     63 
         * +--------+--------+--------+--------+--------+--------+--------+--------+
@@ -65,7 +65,7 @@ module UDP_tx
         nstate = current_state;
         // IP_valid = 1'b0;
         IP_payload = '0; 
-        IP_last = 1'b0;
+        UDP_last = 1'b0;
         casez(current_state)
             IDLE: begin
                 if (valid) begin
@@ -92,7 +92,7 @@ module UDP_tx
             end
 
             DONE: begin
-                IP_last = 1'b1; //payload is done 
+                UDP_last = 1'b1; //payload is done 
                 nstate = IDLE; // done with sending the packet
             end
 
