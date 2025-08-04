@@ -128,7 +128,8 @@ uint16_t calculate_checksum(uint64_t header0, uint64_t header1, uint64_t header2
         sum = (sum & 0xFFFF) + (sum >> 16);
     }
     std::cout << "checksum result is " << std::hex << sum << std::endl;
-    return ~static_cast<uint16_t>(sum);
+    // return ~static_cast<uint16_t>(sum);
+    return static_cast<uint16_t>(sum);
 }
 
 int main(int argc, char **argv) {

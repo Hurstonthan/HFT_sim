@@ -58,6 +58,9 @@ class alignas(VL_CACHE_LINE_BYTES) VIP_UDP_rx___024root final : public Verilated
     SData/*15:0*/ IP_UDP_rx__DOT__udp_inst__DOT__next_UDP_len;
     IData/*16:0*/ IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum;
     IData/*16:0*/ IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum;
+    IData/*19:0*/ IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp;
+    IData/*19:0*/ IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp1;
+    IData/*19:0*/ IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp2;
     IData/*31:0*/ __VactIterCount;
     VL_IN64(MAC_payload_rcv,63,0);
     VL_OUT64(UDP_payload,63,0);

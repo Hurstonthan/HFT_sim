@@ -150,7 +150,8 @@ VL_INLINE_OPT void VIP_UDP_rx___024root___ico_sequent__TOP__0(VIP_UDP_rx___024ro
                 }
             }
         } else if ((1U & (IData)(vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__state))) {
-            if (((0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum) 
+            if ((((0U == (0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum))
+                   ? 0xffffU : (0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum)) 
                  == (IData)(vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__IP_checksum))) {
                 vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nstate = 6U;
                 vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nIP_valid = 1U;
@@ -216,12 +217,16 @@ VL_INLINE_OPT void VIP_UDP_rx___024root___ico_sequent__TOP__0(VIP_UDP_rx___024ro
     } else if (vlSelf->MAC_valid) {
         vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nstate = 1U;
     }
-    vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum = 0U;
+    vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum 
+        = vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum;
+    vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp = 0U;
+    vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp1 = 0U;
+    vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp2 = 0U;
     if (vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_clear) {
         vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum = 0U;
     } else if (vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_en) {
-        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum 
-            = (0x1ffffU & ((((vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum 
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp 
+            = (0xfffffU & (((((0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum) 
                               + (0xffffU & (IData)(vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_in))) 
                              + (0xffffU & (IData)((vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_in 
                                                    >> 0x10U)))) 
@@ -229,6 +234,16 @@ VL_INLINE_OPT void VIP_UDP_rx___024root___ico_sequent__TOP__0(VIP_UDP_rx___024ro
                                                   >> 0x20U)))) 
                            + (0xffffU & (IData)((vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_in 
                                                  >> 0x30U)))));
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp1 
+            = (0xfffffU & ((0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp) 
+                           + (0xfU & (vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp 
+                                      >> 0x10U))));
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp2 
+            = (0xfffffU & ((0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp1) 
+                           + (1U & (vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp1 
+                                    >> 0x10U))));
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum 
+            = (0x1ffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp2);
     }
 }
 
@@ -290,28 +305,26 @@ VL_INLINE_OPT void VIP_UDP_rx___024root___nba_sequent__TOP__0(VIP_UDP_rx___024ro
             = vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nIP_checksum;
         vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__bytes_rcv 
             = vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nbytes_rcv;
-        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum 
-            = (0x1ffffU & ((0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum) 
-                           + (1U & (vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum 
-                                    >> 0x10U))));
+        vlSelf->IP_UDP_rx__DOT__IP_payload = vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nIP_payload;
         vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__IP_len 
             = vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nIP_len;
-        vlSelf->IP_UDP_rx__DOT__IP_payload = vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nIP_payload;
         vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__dst_addr 
             = vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__ndst_addr;
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum 
+            = vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum;
         vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__state 
             = vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nstate;
     } else {
         vlSelf->UDP_payload = 0ULL;
         vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__IP_checksum = 0U;
-        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__bytes_rcv = 0U;
         vlSelf->IP_UDP_rx__DOT__udp_inst__DOT__cnt = 0U;
         vlSelf->IP_UDP_rx__DOT__udp_inst__DOT__UDP_len = 0U;
-        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum = 0U;
-        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__IP_len = 0U;
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__bytes_rcv = 0U;
         vlSelf->IP_UDP_rx__DOT__IP_payload = 0ULL;
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__IP_len = 0U;
         vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__dst_addr = 0U;
         vlSelf->IP_UDP_rx__DOT__udp_inst__DOT__current_state = 0U;
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum = 0U;
         vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__state = 0U;
     }
     vlSelf->UDP_valid = ((IData)(vlSelf->nRST) && (
@@ -320,10 +333,10 @@ VL_INLINE_OPT void VIP_UDP_rx___024root___nba_sequent__TOP__0(VIP_UDP_rx___024ro
                                                        ((IData)(vlSelf->UDP_flush) 
                                                         | (IData)(vlSelf->IP_UDP_rx__DOT__IP_flush)))) 
                                                    && (IData)(vlSelf->IP_UDP_rx__DOT__udp_inst__DOT__next_UDP_valid)));
-    vlSelf->IP_UDP_rx__DOT__is_tcp = ((IData)(vlSelf->nRST) 
-                                      && (IData)(vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__next_is_tcp));
     vlSelf->IP_UDP_rx__DOT__IP_valid = ((IData)(vlSelf->nRST) 
                                         && (IData)(vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nIP_valid));
+    vlSelf->IP_UDP_rx__DOT__is_tcp = ((IData)(vlSelf->nRST) 
+                                      && (IData)(vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__next_is_tcp));
     vlSelf->IP_UDP_rx__DOT__is_udp = ((IData)(vlSelf->nRST) 
                                       && (IData)(vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__next_is_udp));
     vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nbytes_rcv 
@@ -561,7 +574,8 @@ VL_INLINE_OPT void VIP_UDP_rx___024root___nba_sequent__TOP__0(VIP_UDP_rx___024ro
                 }
             }
         } else if ((1U & (IData)(vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__state))) {
-            if (((0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum) 
+            if ((((0U == (0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum))
+                   ? 0xffffU : (0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum)) 
                  == (IData)(vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__IP_checksum))) {
                 vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nstate = 6U;
                 vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nIP_valid = 1U;
@@ -627,12 +641,16 @@ VL_INLINE_OPT void VIP_UDP_rx___024root___nba_sequent__TOP__0(VIP_UDP_rx___024ro
     } else if (vlSelf->MAC_valid) {
         vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__nstate = 1U;
     }
-    vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum = 0U;
+    vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum 
+        = vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum;
+    vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp = 0U;
+    vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp1 = 0U;
+    vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp2 = 0U;
     if (vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_clear) {
         vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum = 0U;
     } else if (vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_en) {
-        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum 
-            = (0x1ffffU & ((((vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum 
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp 
+            = (0xfffffU & (((((0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__TCP_checksum) 
                               + (0xffffU & (IData)(vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_in))) 
                              + (0xffffU & (IData)((vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_in 
                                                    >> 0x10U)))) 
@@ -640,6 +658,16 @@ VL_INLINE_OPT void VIP_UDP_rx___024root___nba_sequent__TOP__0(VIP_UDP_rx___024ro
                                                   >> 0x20U)))) 
                            + (0xffffU & (IData)((vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_in 
                                                  >> 0x30U)))));
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp1 
+            = (0xfffffU & ((0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp) 
+                           + (0xfU & (vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp 
+                                      >> 0x10U))));
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp2 
+            = (0xfffffU & ((0xffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp1) 
+                           + (1U & (vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp1 
+                                    >> 0x10U))));
+        vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__nTCP_checksum 
+            = (0x1ffffU & vlSelf->IP_UDP_rx__DOT__ip_inst__DOT__chksum_inst__DOT__temp2);
     }
 }
 
