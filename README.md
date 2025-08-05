@@ -7,6 +7,12 @@
 ![GitHub stars](https://img.shields.io/github/stars/USERNAME/REPO)
 ![GitHub forks](https://img.shields.io/github/forks/USERNAME/REPO) -->
 
+![Architecture Diagram](doc/HFT_sim.png)
+<p align="center">
+  <em>Figure 1: Architecture diagram</em>
+</p>
+
+
 ---
 
 ## 📖 Table of Contents
