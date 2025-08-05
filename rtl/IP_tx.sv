@@ -19,12 +19,12 @@ module IP_tx #(
     parameter WORD_WIDTH         = 64,
     parameter TYPE_OF_SERVICE    = 8'b0, //TOS
     parameter IPV4_VER           = 8'h45,      // IPv4 + header length = 5 words (20 bytes)
-    parameter LENGTH             = 16'd5,     // Total IP length (20 bytes IP header + 20 bytes TCP header)
+    parameter LENGTH             = 16'd20,     // Total IP length (20 bytes IP header + 20 bytes TCP header)
     parameter IP_IDENFICATION    = 16'h0001,   // Example identification
     parameter IP_FLAG_OFFSET     = 16'h4000,   // Don't Fragment flag (DF = 1, offset = 0)
     parameter IP_TLL             = 8'h40,      // Time to Live (64)
     parameter IP_PROTOCOL        = 8'h06,      // TCP protocol number = 6
-    parameter IP_PROTOCOL_LEN    = 16'h 5,
+    parameter IP_PROTOCOL_LEN    = 16'd20,
     parameter IP_SRC_ADDR        = 32'hC0A80101, // 192.168.1.1
     parameter IP_DEST_ADDR       = 32'hC0A80102  // 192.168.1.2
 
@@ -41,7 +41,6 @@ module IP_tx #(
     output logic [15:0] tt_len_data,
     output logic IP_last,
     output logic protocol_send
-    
 );
 
     
@@ -70,6 +69,7 @@ module IP_tx #(
     logic [19:0] temp;
     logic [16:0] IPv4_chk_sum, nIPv4_chk_sum;
     logic [15:0] ntt_len_data;
+    logic [15:0] chksum_rslt;
     // logic [16:0] sum_chk;
 
     
@@ -108,7 +108,7 @@ module IP_tx #(
             IP_last <= protcol_last;
             IP_transmit <= nxIP_transmit_l;
             tt_len_data <= ntt_len_data;
-            IPv4_chk_sum <= ~nIPv4_chk_sum;
+            IPv4_chk_sum <= nIPv4_chk_sum;
         end
     end
 
@@ -124,7 +124,7 @@ module IP_tx #(
                 + {IP_TLL, IP_PROTOCOL}
                 + IP_SRC_ADDR[31:16] + IP_SRC_ADDR[15:0]
                 + IP_DEST_ADDR[31:16] + IP_DEST_ADDR[15:0]
-                + len_data + 16'h5 + IP_PROTOCOL_LEN; //len data from protocol + 20bytes IP header, 20bytes TCP/UDP header
+                + len_data + 16'd20 + IP_PROTOCOL_LEN; //len data from protocol + 20bytes IP header, 20bytes TCP/UDP header
 
         temp = temp[15:0] + temp[19:16];
         temp = temp[15:0] + temp[16];
@@ -138,6 +138,7 @@ module IP_tx #(
         ntt_len_data = tt_len_data;
         chk_sum_valid = 1'b0;
         protocol_send = 1'b0;
+        chksum_rslt = 0;
 
 
         case (IP_state)
@@ -152,15 +153,17 @@ module IP_tx #(
             SEND_ETYPE_IPV4_MSB_LENGTH: begin
 
                 nxIP_state = SEND_IP_HEADER1;
-                nxIP_transmit_l = {LENGTH[15:0], IP_IDENFICATION, IP_FLAG_OFFSET, IP_TLL, IP_PROTOCOL}; //Send length LSB, IP_iden, IP_flag, IP offset,IP TLL, IP protocol, IP checksum MSB
+                ntt_len_data = len_data + 16'h5 + IP_PROTOCOL_LEN;
+                nxIP_transmit_l = {ntt_len_data, IP_IDENFICATION, IP_FLAG_OFFSET, IP_TLL, IP_PROTOCOL}; //Send length LSB, IP_iden, IP_flag, IP offset,IP TLL, IP protocol, IP checksum MSB
                 chk_sum_valid = 1'b1;
-                ntt_len_data = len_data + 20 + 20;
+                
         
             end
             SEND_IP_HEADER1: begin
                 protocol_send = 1'b1; //Indicate that TCP header is being sent
                 nxIP_state = SEND_IP_HEADER2;
-                nxIP_transmit_l = {IPv4_chk_sum[15:0], IP_SRC_ADDR, IP_DEST_ADDR[31:16]};
+                chksum_rslt = ~IPv4_chk_sum[15:0];
+                nxIP_transmit_l = {~IPv4_chk_sum[15:0], IP_SRC_ADDR, IP_DEST_ADDR[31:16]};
             end
             SEND_IP_HEADER2: begin
                 protocol_send = 1'b1; //Indicate that TCP header is being sent

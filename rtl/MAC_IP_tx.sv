@@ -19,13 +19,16 @@ module MAC_IP_tx #(
     input logic protocol_last,
     input logic [15:0] len_data,
     input logic [WORD_WIDTH - 1 : 0] protocol_transmit,
-    output logic protocol_send
+    output logic protocol_send,
+    output logic IP_send,
+    output logic IP_last,
+    output logic [WORD_WIDTH - 1:0] IP_transmit
 );
 
     //MAC_TX and IP_TX interface
-    logic IP_send;
-    logic [WORD_WIDTH - 1:0] IP_transmit;
-    logic [15:0] tt_len_data, IP_last;
+    
+    //logic [WORD_WIDTH - 1:0] IP_transmit;
+    logic [15:0] tt_len_data;
 
     MAC_tx mac_isnt (
         .CLK(CLK),
