@@ -9,16 +9,18 @@ module top #(
     input  logic                           CLK,
     input  logic                           nRST,
     input logic [7:0] tb_count,
+
+    //MAC
+    output wire [WORD_WIDTH - 1:0] xgmii_txd,
+    output wire [CTRL_WIDTH - 1:0] xgmii_txc,
+    
+    //RX
     input  logic                           IP_valid,
     input  logic                           IP_flush,
     input  logic [15:0]                    IP_pseuder,
     input  logic [63:0]                    IP_payload,
     input  logic [15:0]                    TCP_len,
     input  logic [7:0]                     IP_bytes_rcv,
-    input  logic                           TCP_send,
-    output logic [63:0]                    TCP_transmit,
-    output logic                           TCP_last,
-    input  logic                           TX_en,
 
     input  logic                           axis_last,
     input  logic                           wr_FIFO_en,
@@ -35,6 +37,16 @@ module top #(
     output logic wr_FIFO_full
 );
 
+    //The interface between IP_tx and MAC_tx
+    logic IP_send, IP_tx_last;
+    logic [DATA_WIDTH - 1:0] IP_transmit;
+    logic tt_len_data;
+    
+    //The interface between TCP_tx and IP_tx
+    logic TCP_send, TCP_tx_valid, TCP_tx_last;
+    logic [15:0] TCP_len_data;
+    logic [DATA_WIDTH - 1:0] TCP_transmit;
+
     // --------------------------------------------------------------
     // Derived constants
     // --------------------------------------------------------------
@@ -47,7 +59,7 @@ module top #(
 
     
     logic                    nw_segment;
-    logic                    axis_t_last_int;
+    logic                    TCP_rx_last;
     logic                    TCP_flush_int;
     logic [63:0]             axis_data_rx_int;
     logic                    handshake_done_int;
@@ -95,9 +107,32 @@ module top #(
     assign bytes_abt_sent   = bytes_abt_sent_int;
     assign TCP_stop_flag    = TCP_stop_flg_int;   
 
-    // --------------------------------------------------------------
+    // ---------------- MAC ----------------
+    MAC_tx mac_tx (
+        .CLK(CLK),
+        .nRST(nRST),
+        .TX_en(TX_en),
+        .xgmii_txd(xgmii_txd),
+        .xgmii_txc(xgmii_txc),
+        .tt_len_data(tt_len_data),
+        .IP_transmit(IP_transmit),
+        .IP_send(IP_send),
+        .IP_last(IP_last)
+    );
     
-    // --------------------------------------------------------------
+    // ---------------- IP ----------------
+    IP_tx ip_tx (
+        .CLK(CLK),
+        .nRST(nRST),
+        .IP_send(IP_send),
+        .IP_transmit(IP_transmit),
+        .IP_last(IP_last),
+        .tt_len_data(tt_len_data),
+        .len_data(TCP_len_data),
+        .protocol_send(TCP_send),
+        .protocol_last(TCP_tx_last),
+        .protocol_transmit(TCP_transmit)
+    );
 
     // ---------------- TCP ----------------
     TCP #(
@@ -122,7 +157,7 @@ module top #(
 
         // Data out to payload FIFO
         .nw_segment         (nw_segment),
-        .axis_t_last        (axis_t_last_int),
+        .TCP_rx_last        (TCP_rx_last),
         .TCP_flush          (TCP_flush_int),
         .axis_data_rx       (axis_data_rx_int),
 
@@ -159,7 +194,8 @@ module top #(
 
         // IP transmit handshake
         .TCP_send           (TCP_send),
-        .TCP_last           (TCP_last),
+        .TCP_len_data       (TCP_len_data),
+        .TCP_tx_last           (TCP_tx_last),
         .TCP_transmit       (TCP_transmit),
 
         // Retransmission feedback
@@ -188,7 +224,7 @@ module top #(
         // Write side (from TCP receiver)
         .nw_segment         (nw_segment),
         .TCP_flush          (TCP_flush_int),
-        .axis_t_last        (axis_t_last_int),
+        .axis_t_last        (TCP_rx_last),
         .axis_data_rx       (axis_data_rx_int),
 
         .handshake_done     (handshake_done_int),

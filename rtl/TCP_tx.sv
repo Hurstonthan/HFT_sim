@@ -31,9 +31,10 @@ module TCP_tx #(
     
 
     // Interface between TCP_tx and IP_tx
-    input logic TCP_send,
+    input logic  TCP_send,
     output logic TCP_tx_valid,
     output logic TCP_tx_last,
+    output logic [15:0] TCP_len_data,
     output logic [DATA_WIDTH - 1 : 0] TCP_transmit,
     input logic [15:0] TCP_basesum_payload
     
@@ -78,15 +79,17 @@ always_ff @(posedge CLK, negedge nRST) begin
         seq_up <= 1'b0;
         TCP_tx_valid <= 0;
         TCP_tx_last <= 0;
+        TCP_len_data <= 0;
         frame_hold <= 0;
     end else begin
-        state <= nstate;
+        state        <= nstate;
         TCP_transmit <= nTCP_transmit;
         TCP_tx_valid <= nTCP_tx_valid;
-        TCP_tx_last <= nTCP_tx_last;
-        bytes_sent <= nbytes_sent;
-        seq_up <= nseq_up;
-        frame_hold <= nframe_hold;
+        TCP_tx_last  <= nTCP_tx_last;
+        TCP_len_data <= bytes_abt_sent[15:0];
+        bytes_sent   <= nbytes_sent;
+        seq_up       <= nseq_up;
+        frame_hold   <= nframe_hold;
         if (valid_checksum) begin
             TCP_checksum <= ~(nTCP_checksum);
         end else begin

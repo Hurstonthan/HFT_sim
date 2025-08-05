@@ -27,7 +27,7 @@ module TCP #(
     
     //Interface between TCP rcv and payload rcv
     output logic nw_segment,
-    output logic axis_t_last,
+    output logic TCP_rx_last,
     output logic TCP_flush,
     output logic [63:0] axis_data_rx,
 
@@ -66,8 +66,9 @@ module TCP #(
     output logic [31:0] seq_num_tx_out,
 
     //Interface between TCP_tx and IP_tx
-    input logic TCP_send,
-    output logic TCP_last,
+    input  logic        TCP_send,
+    output logic        TCP_tx_last,
+    output logic [15:0] TCP_len_data,
     output logic [63:0] TCP_transmit,
 
     input logic re_trans,
@@ -156,7 +157,7 @@ module TCP #(
         .bytes_sent(bytes_sent),
         .bytes_abt_sent(bytes_abt_sent),
         .payload_len_rx(payload_len_rx),
-        .TCP_last (axis_t_last),
+        .TCP_last (TCP_rx_last),
         .rcv_next_out(rcv_next),
         .seq_num_out(seq_num),
         .seq_rx_FIFO_rd(seq_rx_FIFO_rd),
@@ -203,7 +204,7 @@ module TCP #(
 
         //output logic add for TCP_flow_ctrl and FIFO
         .nw_segment(nw_segment), // New segment flag
-        .TCP_last(axis_t_last) // Last segment flag    
+        .TCP_last(TCP_rx_last) // Last segment flag    
     );
 
     TCP_tx TCP_tx (
@@ -224,7 +225,8 @@ module TCP #(
         .bytes_sent(bytes_sent),
         .TCP_send(TCP_send),
         .TCP_transmit(TCP_transmit),
-        .TCP_tx_last(TCP_last),
+        .TCP_tx_last(TCP_tx_last),
+        .TCP_len_data(TCP_len_data),
         .TCP_basesum_payload(TCP_basesum_payload)
     );
     TCP_ISN ISN_gen (
