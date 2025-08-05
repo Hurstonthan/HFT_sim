@@ -13,6 +13,7 @@ module top #(
     //MAC
     output wire [WORD_WIDTH - 1:0] xgmii_txd,
     output wire [CTRL_WIDTH - 1:0] xgmii_txc,
+    output logic frame_end,
     
     //RX
     input  logic                           IP_valid,
@@ -117,7 +118,8 @@ module top #(
         .tt_len_data(tt_len_data),
         .IP_transmit(IP_transmit),
         .IP_send(IP_send),
-        .IP_last(IP_last)
+        .IP_last(IP_last),
+        .frame_end(frame_end)
     );
     
     // ---------------- IP ----------------

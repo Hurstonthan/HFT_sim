@@ -19,7 +19,9 @@ module MAC_tx #(
     input logic [WORD_WIDTH - 1:0] IP_transmit, 
     input logic [15:0] tt_len_data,
     input logic IP_last,
-    output logic IP_send
+    output logic IP_send,
+    //debugging signal
+    output logic frame_end
 );
 
 
@@ -89,7 +91,7 @@ module MAC_tx #(
         IP_send_l = IP_send;
         crc_init = 1'b0;
         valid = 1'b1;
-        
+        frame_end = 1'b0;
         case (state)
             IDLE: begin
                 crc_init = 1'b1; //Initialize CRC
@@ -143,6 +145,7 @@ module MAC_tx #(
             SEND_FCS_TERMINATE: begin
                 valid = 1'b0;
                 crc_init = 1'b1;
+                frame_end = 1'b1;
                 nstate = SEND_IDLE_END1; //Send IDLE end
             end
             SEND_IDLE_END1: begin
