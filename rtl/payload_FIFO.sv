@@ -64,6 +64,9 @@ module payload_FIFO #(
     logic naxis_r_valid;
     logic TCP_flush_l, nTCP_flush_l;
 
+    //signal that avoid receiving writing
+    logic handshake, nhandshake;
+
     //debugging the FIFO
     logic [DATA_WIDTH-1:0] payload      [FIFO_DEPTH];   // payload[0]..payload[4]
     logic [CTRL_WIDTH-1:0] bytes_offset [FIFO_DEPTH];   // bytes_offset[0]..bytes_offset[4]
@@ -105,6 +108,7 @@ module payload_FIFO #(
             axis_rd_data <= 0;
             wr_FIFO_len <= 0;
             seq_rx_FIFO_rd <= 0;
+            handshake <= 0;
 
             for (int i = 0; i < FIFO_DEPTH; i++) begin
                 TCP_FIFO[i]  <= 0;
@@ -116,13 +120,16 @@ module payload_FIFO #(
             rd_FIFO_valid_l <= nrd_FIFO_valid_l;
             rd_len_ptr <= nrd_len_ptr;
             seq_rx_FIFO_rd <= seq_trk_rd;
+            handshake <= nhandshake;
             flush_ptr <= nflush_ptr;
             len_TCP_flush <= nlen_TCP_flush;
             axis_r_valid <= naxis_r_valid;
             TCP_flush_l <= nTCP_flush_l;
             TCP_FIFO <= nTCP_FIFO;
+
             if (handshake_done) begin
                 seq_trk_rd <= seq_rcv_start;
+                handshake <= handshake_done;
             end else begin
                 seq_trk_rd <= nseq_trk_rd;
             end
@@ -158,6 +165,9 @@ module payload_FIFO #(
         nrd_FIFO_valid_l = rd_FIFO_valid_l;
         nrd_len_ptr = rd_len_ptr;
         naxis_r_valid = axis_r_valid;
+        nhandshake = handshake;
+
+        
         
     
         if (TCP_flush || TCP_flush_l) begin
@@ -171,7 +181,7 @@ module payload_FIFO #(
             
         end
 
-        if (wr_FIFO_en) begin
+        if (wr_FIFO_en && handshake) begin
             nwr_ptr = wr_ptr + 1;
             nTCP_FIFO[wr_ptr].payload = axis_data_rx;
             nTCP_FIFO[wr_ptr].bytes_offset = wr_FIFO_offset;

@@ -1,4 +1,4 @@
-`timescale 1ns/1ps
+`timescale 1ns/10ps
 
 module top #(
     parameter int DATA_WIDTH    = 64,
@@ -8,40 +8,39 @@ module top #(
 ) (
     input  logic                           CLK,
     input  logic                           nRST,
-    input logic [7:0] tb_count,
 
-    //MAC
-    output wire [WORD_WIDTH - 1:0] xgmii_txd,
+    //MAC _TX
+    input logic TX_en,
+    output wire [DATA_WIDTH - 1:0] xgmii_txd,
     output wire [CTRL_WIDTH - 1:0] xgmii_txc,
     output logic frame_end,
     
-    //RX
-    input  logic                           IP_valid,
-    input  logic                           IP_flush,
-    input  logic [15:0]                    IP_pseuder,
-    input  logic [63:0]                    IP_payload,
-    input  logic [15:0]                    TCP_len,
-    input  logic [7:0]                     IP_bytes_rcv,
+    //MAC RX
+    input logic [DATA_WIDTH - 1 : 0] xgmii_rxd,
+    input logic [DATA_WIDTH - 1 : 0] xgmii_rxc,
 
+    //FIFO TX
     input  logic                           axis_last,
     input  logic                           wr_FIFO_en,
     input  logic [31:0]                    len_seq,
     input  logic [DATA_WIDTH-1:0]          soupbin_TCP_payload,
+    output logic wr_FIFO_valid, //FULL case
     
+    //FIFO RX
     input  logic                           axis_r_en,
     output logic                           axis_r_valid,
     output logic [DATA_WIDTH-1:0]          axis_rd_data,
     
+    //Debugging
     output logic                           TCP_stop_flag,
     output logic [31:0]                    rcv_next,
-    output logic [31:0]                    seq_num,
-    output logic wr_FIFO_full
+    output logic [31:0]                    seq_num
 );
 
     //The interface between IP_tx and MAC_tx
     logic IP_send, IP_tx_last;
     logic [DATA_WIDTH - 1:0] IP_transmit;
-    logic tt_len_data;
+    logic [15:0] tt_len_data;
     
     //The interface between TCP_tx and IP_tx
     logic TCP_send, TCP_tx_valid, TCP_tx_last;
@@ -53,6 +52,60 @@ module top #(
     // --------------------------------------------------------------
     localparam int FIFO_WIDTH_TX = $clog2(FIFO_DEPTH_TX);
     localparam int FIFO_WIDTH_RX = $clog2(FIFO_DEPTH_RX);
+
+    // IP_RX and TCP_receiver
+    logic                           IP_valid;
+    logic                           IP_flush;
+    logic                           IP_rx_last; 
+    logic [15:0]                    IP_pseuder;
+    logic [63:0]                    IP_payload;
+    logic [15:0]                    TCP_len;
+    logic [7:0]                     IP_bytes_rcv_len;
+
+    //IP_RX and MAC_RX
+    logic [DATA_WIDTH - 1:0] MAC_payload_rcv;
+    logic MAC_valid;
+    logic CRC_flush;
+    logic frame_ok;
+    logic [7:0] bytes_rcv_len;
+
+    //-------------------------- MAC RX -----------------------
+
+    MAC_rx mac_rx (
+        .CLK(CLK),
+        .nRST(nRST),
+        .xgmii_rxd(xgmii_rxd),
+        .xgmii_rxc(xgmii_rxc),
+        .MAC_valid(MAC_valid),
+        .MAC_payload_rcv(MAC_payload_rcv),
+        .CRC_flush(CRC_flush),
+        .frame_ok(frame_ok),
+        .bytes_rcv_len(bytes_rcv_len)
+    );
+
+
+    //-------------------------- MAC RX -----------------------
+
+
+
+    // ------------------------- IP_RX -----------------------
+
+    IP_rx ip_rx (
+        .CLK(CLK),
+        .nRST(nRST),
+        .MAC_valid(MAC_valid),
+        .MAC_payload_rcv(MAC_payload_rcv),
+        .MAC_flush(CRC_flush),
+        .bytes_rcv_len(bytes_rcv_len),
+        .IP_valid(IP_valid),
+        .IP_flush(IP_flush),
+        .IP_last(IP_rx_last),
+        .IP_payload(IP_payload),
+        .IP_bytes_rcv_len(IP_bytes_rcv_len),
+        .IP_pseuder(IP_pseuder)
+    );
+
+    // ------------------------- IP_RX -----------------------
 
     // --------------------------------------------------------------
     // Internal nets
@@ -118,7 +171,7 @@ module top #(
         .tt_len_data(tt_len_data),
         .IP_transmit(IP_transmit),
         .IP_send(IP_send),
-        .IP_last(IP_last),
+        .IP_last(IP_tx_last),
         .frame_end(frame_end)
     );
     
@@ -128,7 +181,7 @@ module top #(
         .nRST(nRST),
         .IP_send(IP_send),
         .IP_transmit(IP_transmit),
-        .IP_last(IP_last),
+        .IP_last(IP_tx_last),
         .tt_len_data(tt_len_data),
         .len_data(TCP_len_data),
         .protocol_send(TCP_send),
@@ -154,7 +207,6 @@ module top #(
         .IP_flush           (IP_flush),
         .IP_pseuder         (IP_pseuder),
         .IP_payload         (IP_payload),
-        .TCP_len            (TCP_len),
         .IP_bytes_rcv       (IP_bytes_rcv),
 
         // Data out to payload FIFO
@@ -291,7 +343,7 @@ module top #(
         .checksum_re_trans  (checksum_re_trans_int),
 
         // (Optional) FIFO full flag – unused at top level
-        .wr_FIFO_valid      (wr_TX_full)
+        .wr_FIFO_valid      (wr_FIFO_valid)
     );
 
 endmodule

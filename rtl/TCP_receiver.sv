@@ -12,11 +12,11 @@ module TCP_receiver #(
     input wire nRST,
 
     input  logic [63:0] IP_payload_rx,
+    input  logic IP_last,
     input  logic        valid_IP_header_rx,
+    input  logic [7:0]  IP_bytes_rcv,
     input  logic        IP_flush,
-    input  logic [15:0] TCP_len,
     input  logic [15:0] IP_pseuder,
-
 
     output logic        rcv_data,
     output logic [7:0]  TCP_control_rx,
@@ -27,8 +27,6 @@ module TCP_receiver #(
     output logic [15:0] checksum_rx,
     output logic [15:0] urgent_pointer_rx,
     output logic [7:0]  bytes_rcv,
-    
-    output logic [15:0] TCP_len_data,
     output logic [63:0] TCP_payload_rx,
     output logic        TCP_valid,
     output logic        TCP_flush,
@@ -48,9 +46,7 @@ module TCP_receiver #(
     logic [31:0] nseq_num_rx, nACK_rx; // Sequence and acknowledgment numbers
     logic [3:0] noffset_rx; // Offset
     logic [15:0] nwindow_size_rx, nchecksum_rx, nurgent_pointer_rx; // Window size, checksum, and urgent pointer
-    logic [15:0] bytes_trk, nbytes_trk;
     logic [15:0] checksum_in;
-    logic [15:0] nTCP_len_data;
     logic [16:0] TCP_checksum, nTCP_checksum;
     logic [15:0] TCP_checksum_comp;
     logic [7:0] TCP_data_dl, nTCP_data_dl;
@@ -84,14 +80,12 @@ module TCP_receiver #(
             window_size_rx <= '0;
             checksum_rx <= '0;
             urgent_pointer_rx <= '0;
-            TCP_len_data <= '0;
             TCP_payload_rx <= 0;
             TCP_valid <= 0;
             rcv_data <= 0;
 
             // ENDs
             TCP_checksum <= 0;
-            bytes_trk <= '0;
             bytes_rcv <= 0;
             nw_segment <= 0;
             TCP_last <= 0;
@@ -106,12 +100,10 @@ module TCP_receiver #(
                 window_size_rx <= '0;
                 checksum_rx <= '0;
                 urgent_pointer_rx <= '0;
-                TCP_len_data <= '0;
                 TCP_payload_rx <= 0;
                 TCP_valid <= 0;
                 rcv_data <= 0;
                 TCP_checksum <= 0;
-                bytes_trk <= '0;
                 nw_segment <= 0;
                 TCP_last <= 0;
                 bytes_rcv <= 0;
@@ -124,12 +116,10 @@ module TCP_receiver #(
                 window_size_rx <= nwindow_size_rx;
                 checksum_rx <= nchecksum_rx;
                 urgent_pointer_rx <= nurgent_pointer_rx;
-                TCP_len_data <= TCP_len;
                 TCP_checksum <= nTCP_checksum;
                 TCP_payload_rx <= nTCP_payload_rx;
                 TCP_valid <= nTCP_valid;
                 rcv_data <= nrcv_data;
-                bytes_trk <= nbytes_trk;
                 bytes_rcv <= nbytes_rcv;
                 nw_segment <= n_nw_segment;
                 TCP_last <= nTCP_last;
@@ -144,10 +134,8 @@ module TCP_receiver #(
         n_nw_segment = nw_segment;
         nTCP_last = TCP_last;
         nstate = state; // Default to current state
-        nbytes_trk = 0; // Default to current bytes tracked
         nbytes_rcv = bytes_rcv;
         nTCP_checksum = TCP_checksum;
-        nTCP_len_data = TCP_len_data; // Default to current length
         nTCP_payload_rx = TCP_payload_rx;
         nTCP_valid = TCP_valid;
         nTCP_control_rx = TCP_control_rx;
@@ -199,10 +187,10 @@ module TCP_receiver #(
                 temp = temp[15:0] + temp[19:16]; //2nd second bit
                 temp = temp[15:0] + temp[16];
                 nTCP_checksum = temp[16:0];
+                
 
                 
-                if (|TCP_len) begin
-                    nbytes_trk = bytes_trk + 2;
+                if (!IP_last) begin
                     nTCP_valid = 1'b1;
                     n_nw_segment = 1'b1;
                     nbytes_rcv = 2;
@@ -210,6 +198,14 @@ module TCP_receiver #(
                     nstate = RCV_DATA;
                 end else begin
                     nstate = TCP_CHECKSUM;
+                    nTCP_last = 1'b1;
+                    nbytes_rcv = 0;
+                    if (|IP_bytes_rcv) begin
+                        nTCP_valid = 1'b1;
+                        n_nw_segment = 1'b1;
+                        nbytes_rcv = 2;
+                        nTCP_payload_rx = IP_payload_rx[15:0];
+                    end
                 end
             end
 
@@ -218,26 +214,23 @@ module TCP_receiver #(
             RCV_DATA: begin
                 // Process the received data here (e.g., store it, send ACK, etc.)
                 n_nw_segment = 1'b1;
-                nbytes_rcv = 8;
-                nbytes_trk = bytes_trk + 8; // Increment bytes tracked
+                nbytes_rcv = IP_bytes_rcv;
                 temp = {2'b0, TCP_checksum[15:0]} + IP_payload_rx[63:48] + IP_payload_rx[47:32] + IP_payload_rx[31:16] + IP_payload_rx[15:0];
                 temp = temp[15:0] + temp[19:16]; //2nd second bit
                 temp = temp[15:0] + temp[16];
                 nTCP_checksum = temp[16:0];
                 nTCP_payload_rx = IP_payload_rx; // Store received payload     
-                if (bytes_trk + 8 < TCP_len_data) begin
-                    nbytes_trk = bytes_trk + 8;
-                end else begin
-                    nbytes_trk = bytes_trk + ((bytes_trk + 8) - TCP_len_data);
+                if (IP_last) begin
                     nTCP_valid = 1'b0;
                     nTCP_last = 1'b1;
                     n_nw_segment = 1'b1;
-                    nstate = TCP_CHECKSUM; // Go back to IDLE after processing all data
+                    nstate = TCP_CHECKSUM;
                 end
             end
 
             TCP_CHECKSUM: begin
                 n_nw_segment = 1'b0;
+                nbytes_rcv = 0;
                 nTCP_last = 1'b0;
                 TCP_checksum_comp = ~TCP_checksum[15:0];
                 if (TCP_checksum_comp == checksum_rx) begin

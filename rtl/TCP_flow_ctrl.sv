@@ -39,7 +39,6 @@ module TCP_flow_ctrl #(
     input logic [31:0] ISN_num,
     input logic [31:0] bytes_sent,
     input logic [31:0] bytes_abt_sent,
-    input logic [31:0] payload_len_rx,
     input logic TCP_last,
     output logic [31:0] rcv_next_out,
     output logic [31:0] seq_num_out,
@@ -610,7 +609,7 @@ module TCP_flow_ctrl #(
                 //Flow receiving logic
                 //If we rcv 
                 
-                if (rcv_data  && (seq_num_rx + payload_len_rx >= rcv_next)) begin
+                if (rcv_data  && (seq_rx_trk >= rcv_next)) begin
                     nwindow_size = window_size_rx; //Update the new window size
                     if (ACK_rx == ack_num.ACK_num && rcv_pkg_type.ACK) begin
                         if (ack_num.dup_chk == 3) begin

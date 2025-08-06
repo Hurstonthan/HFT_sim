@@ -286,11 +286,15 @@ void rcv_IP (const std::vector<IP_rx_in>& IP_payloads, const std::vector<IP_payl
 void sending_TCP() {
     top -> TX_en = 1;
     tick(top, tfp);
-    while (~(top -> frame_end)) {
+    top -> TX_en = 0;
+    while (!(top -> frame_end)) {
         tick(top, tfp);
     }
-    top -> TX_en = 0;
-    tick(top,tfp);
+    
+    for (size_t i = 0; i < 10; i++) {
+        tick(top,tfp);
+    }
+    
 }
 //--------------------- FUNCTION for FIFO_TX --------------------------//
 

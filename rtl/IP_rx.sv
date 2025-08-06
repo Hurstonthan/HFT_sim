@@ -25,6 +25,7 @@ module IP_rx #(
     output logic IP_last,
     output logic [63:0] IP_payload,
     output logic [7:0] IP_bytes_rcv_len,
+    output logic [15:0] IP_pseuder,
     output logic is_udp,
     output logic is_tcp
 );
@@ -40,6 +41,9 @@ module IP_rx #(
     logic [15:0] dst_addr, ndst_addr;
     logic [15:0] IP_len, nIP_len;
     logic [7:0] nIP_bytes_rcv_len;
+
+    logic [15:0] nIP_pseuder;
+    logic [19:0] temp;
 
     logic nIP_valid, nIP_last;
     logic next_is_udp, next_is_tcp;
@@ -67,6 +71,7 @@ module IP_rx #(
             is_tcp <= 0;
             is_udp <= 0;
             IP_bytes_rcv_len <= 0;
+            IP_pseuder <= 0;
         end else begin
             // flush is only trigger by one clock cycle
             // if (MAC_flush || IP_flush) begin 
@@ -91,6 +96,7 @@ module IP_rx #(
                 IP_len <= nIP_len;
                 IP_bytes_rcv_len <= nIP_bytes_rcv_len;
                 IP_last <= nIP_last;
+                IP_pseuder <= nIP_pseuder;
                 is_tcp <= next_is_tcp;
                 is_udp <= next_is_udp;
                 // IP_flush <= nIP_flush;
@@ -134,6 +140,7 @@ always_comb begin
     chksum_clear = 1'b0;
     chksum_final = {1'b0, chksum_pl};
     nIP_len = IP_len;
+    nIP_pseuder = IP_pseuder;
     next_is_tcp = is_tcp;
     next_is_udp = is_udp;
     
@@ -171,7 +178,8 @@ always_comb begin
             if (MAC_valid) begin
                 chksum_en = 1'b1;
                 if (MAC_payload_rcv[15:12] == IP_VERSION) begin
-                    nstate = RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL;
+                    nstate      = RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL;
+                    nIP_pseuder = {12'b0,MAC_payload_rcv[11:8]} << 2;
                 end else begin
                     nstate = ERROR;
                     //IP_flush = 1'b1;
@@ -198,6 +206,10 @@ always_comb begin
                     !MAC_payload_rcv[31] && //MF != 1
                     (next_is_tcp || next_is_udp)) begin
                         nstate = RCV_SUM_SRC_ADDR_DEST_ADDR;
+                        temp = {4'b0, {8'b0, MAC_payload_rcv[7:0]}} + {4'b0, nIP_len} - {4'b0,IP_pseuder};
+                        temp = temp[15:0] + temp[19:16];
+                        temp = temp[15:0] + temp[16];
+                        nIP_pseuder = temp[15:0];
                     end else begin
                         // IP_flush = 1'b1;
                         nstate = ERROR;
@@ -213,6 +225,10 @@ always_comb begin
                 // Store header checksum and destination address
                 nIP_checksum = MAC_payload_rcv[63:48];
                 ndst_addr = MAC_payload_rcv[15:0]; // store the destonation address as part of the element
+                temp = {4'b0, MAC_payload_rcv[47:32]} + {4'b0, MAC_payload_rcv[31:16]} + {4'b0, MAC_payload_rcv[15:0]} + {4'b0, IP_pseuder};
+                temp = temp[15:0] + temp[19:16];
+                temp = temp[15:0] + temp[16];
+                nIP_pseuder = temp[15:0];
                 
                 if (is_src_addr) begin
                     nstate = RCV_PAYLOAD_DEST;
@@ -228,6 +244,10 @@ always_comb begin
             if (MAC_valid) begin
                 chksum_in = {48'h0, MAC_payload_rcv[63:48]};
                 chksum_en = 1'b1;
+                temp = {4'b0, MAC_payload_rcv[63:58]} + {4'b0, IP_pseuder};
+                temp = temp[15:0] + temp[19:16];
+                temp = temp[15:0] + temp[16];
+                nIP_pseuder = temp[15:0];
                 
                 if (({dst_addr, MAC_payload_rcv[63:48]} == IP_DEST_ADDR)) begin
                     nIP_payload = {16'h0, MAC_payload_rcv[47:0]};

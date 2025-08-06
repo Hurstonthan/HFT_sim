@@ -136,7 +136,7 @@ module MAC_tx #(
             SEND_ZERO_PADDING: begin
                 nlen_counter = len_counter + 8;
                 if (len_counter >=46) begin
-                    nstate = SEND_IDLE_END1;
+                    nstate = SEND_FCS_TERMINATE;
                     IP_send_l = 1'b0;
                 end
                 

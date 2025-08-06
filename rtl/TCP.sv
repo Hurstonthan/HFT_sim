@@ -20,7 +20,7 @@ module TCP #(
     input  logic IP_flush,     // Flush signal for IP packet
     input  logic [15:0] IP_pseuder, // Pseudo header for TCP
     input  logic [63:0] IP_payload, // Payload of the IP packet
-    input  logic [15:0] TCP_len, // Length of the TCP segment
+    input  logic IP_last,
     input  logic [7:0] IP_bytes_rcv, // Number of bytes received
 
     
@@ -95,7 +95,6 @@ module TCP #(
     logic [15:0] window_size_rx;
     logic [15:0] checksum_rx;
     logic [15:0] urgent_pointer_rx;
-    logic [15:0] payload_len_rx; // Length of the TCP payload
 
 
 
@@ -156,7 +155,6 @@ module TCP #(
         .ISN_num (ISN_num),
         .bytes_sent(bytes_sent),
         .bytes_abt_sent(bytes_abt_sent),
-        .payload_len_rx(payload_len_rx),
         .TCP_last (TCP_rx_last),
         .rcv_next_out(rcv_next),
         .seq_num_out(seq_num),
@@ -186,7 +184,8 @@ module TCP #(
         .IP_payload_rx(IP_payload),
         .valid_IP_header_rx(IP_valid),
         .IP_flush(IP_flush),
-        .TCP_len(TCP_len),
+        .IP_last(IP_last),
+        .IP_bytes_rcv(IP_bytes_rcv),
         .IP_pseuder(IP_pseuder),
         .bytes_rcv(bytes_rcv),
         .rcv_data(rcv_data),
@@ -197,7 +196,6 @@ module TCP #(
         .window_size_rx(window_size_rx),
         .checksum_rx(checksum_rx),
         .urgent_pointer_rx(urgent_pointer_rx),
-        .TCP_len_data(payload_len_rx), // Output TCP length data
         .TCP_payload_rx(axis_data_rx), // Output payload
         .TCP_valid(rd_FIFO_valid), // Valid signal for the TCP payload
         .TCP_flush(TCP_flush), // Flush signal for TCP

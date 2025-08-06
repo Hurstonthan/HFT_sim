@@ -34,7 +34,7 @@ module IP_tx #(
 
     //Interface between Ethernet MAC and IP TX
     input logic IP_send,
-    input logic protcol_last,
+    input logic protocol_last,
     input logic [15:0] len_data,
     input logic [WORD_WIDTH - 1 : 0] protocol_transmit,
     output logic [WORD_WIDTH - 1 : 0] IP_transmit,
@@ -105,7 +105,7 @@ module IP_tx #(
              
         end else begin
             IP_state <= nxIP_state;
-            IP_last <= protcol_last;
+            IP_last <= protocol_last;
             IP_transmit <= nxIP_transmit_l;
             tt_len_data <= ntt_len_data;
             IPv4_chk_sum <= nIPv4_chk_sum;
@@ -153,7 +153,7 @@ module IP_tx #(
             SEND_ETYPE_IPV4_MSB_LENGTH: begin
 
                 nxIP_state = SEND_IP_HEADER1;
-                ntt_len_data = len_data + 16'h5 + IP_PROTOCOL_LEN;
+                ntt_len_data = len_data + 16'd20 + IP_PROTOCOL_LEN;
                 nxIP_transmit_l = {ntt_len_data, IP_IDENFICATION, IP_FLAG_OFFSET, IP_TLL, IP_PROTOCOL}; //Send length LSB, IP_iden, IP_flag, IP offset,IP TLL, IP protocol, IP checksum MSB
                 chk_sum_valid = 1'b1;
                 
@@ -183,7 +183,7 @@ module IP_tx #(
             SEND_IP_PAYLOAD: begin
                 protocol_send = 1'b1; //Indicate that TCP header is being sent
                 nxIP_transmit_l = protocol_transmit;
-                if (protcol_last) begin
+                if (protocol_last) begin
                     protocol_send = 1'b0;
                     nxIP_state = DONE;
                 end
