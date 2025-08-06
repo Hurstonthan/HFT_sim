@@ -80,9 +80,9 @@ module UDP_rx (
                         next_UDP_valid = 1'b1;
                         next_cnt = 16'd6; // 6 bytes from CHK_SUM is payload
                         // nstate = UDP_CHK_SUM_PAYLOAD;
-                //     end else begin
-                //         nstate = UDP_ERROR;
-                //         // UDP_flush = 1'b1;
+                    //  end else begin
+                    //  nstate = UDP_ERROR;
+                    //  UDP_flush = 1'b1;
                 end
                 // if (IP_valid) begin
                 //     if (is_udp_dest && is_udp_source) begin

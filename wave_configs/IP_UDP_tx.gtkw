@@ -1,0 +1,61 @@
+[*]
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Wed Aug  6 15:32:09 2025
+[*]
+[dumpfile] "/home/polarbearbo/purdue/HFT_project/HFT_sim/IP_UDP_tx.fst"
+[dumpfile_mtime] "Wed Aug  6 15:29:19 2025"
+[dumpfile_size] 2141
+[savefile] "/home/polarbearbo/purdue/HFT_project/HFT_sim/wave_configs/IP_UDP_tx.gtkw"
+[timestart] 0
+[size] 1920 1033
+[pos] -27 -24
+*-7.081598 366 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.IP_UDP_tx.
+[sst_width] 278
+[signals_width] 346
+[sst_expanded] 1
+[sst_vpaned_height] 308
+@28
+TOP.IP_UDP_tx.ip_tx_inst.CLK
+TOP.nRST
+@22
+TOP.UDP_payload[63:0]
+TOP.UDP_len[15:0]
+@28
+TOP.valid
+[color] 3
+TOP.IP_last
+@22
+[color] 3
+TOP.IP_transmit[63:0]
+@28
+[color] 3
+TOP.protocol_send
+@22
+[color] 3
+TOP.tt_len_data[15:0]
+@200
+-UDP
+@28
+TOP.IP_UDP_tx.udp_tx_inst.valid
+@100000028
+TOP.IP_UDP_tx.udp_tx_inst.current_state[2:0]
+@22
+TOP.IP_UDP_tx.udp_tx_inst.IP_payload[63:0]
+TOP.IP_UDP_tx.udp_tx_inst.next_IP_payload[63:0]
+TOP.IP_UDP_tx.udp_tx_inst.header_reg[63:0]
+@28
+TOP.IP_UDP_tx.udp_tx_inst.UDP_last
+@22
+TOP.IP_UDP_tx.udp_tx_inst.UDP_len[15:0]
+@28
+TOP.IP_UDP_tx.udp_tx_inst.protocol_last
+@200
+-IP
+@100000028
+TOP.IP_UDP_tx.ip_tx_inst.IP_state[2:0]
+@22
+TOP.IP_UDP_tx.ip_tx_inst.IP_transmit[63:0]
+[pattern_trace] 1
+[pattern_trace] 0

@@ -1,0 +1,278 @@
+// Dump of all post-preprocessor input
+// Blank lines and `line directives have been removed
+//
+// Information:
+//   Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+//   Arguments: -Wno-lint --error-limit 0 --trace --trace-fst --debug -Iinclude -Irtl -CFLAGS -Irtl -Iinclude -O0 -g --cc rtl/IP_UDP_tx.sv --top-module IP_UDP_tx --exe generated/IP_UDP_tx/IP_UDP_tx_tb.cpp generated/IP_UDP_tx/IP_UDP_tx_input.cpp --build
+//   Build jobs: 1
+//   Verilate jobs: 1
+
+`begin_keywords "1800-2017"
+`timescale 1ns/10ps
+module IP_UDP_tx #(
+    parameter ETHER_TYPE         = 16'h0800,
+    parameter WORD_WIDTH         = 64,
+    parameter TYPE_OF_SERVICE    = 8'b0,  
+    parameter IPV4_VER           = 8'h45,       
+    parameter LENGTH             = 16'd20,      
+    parameter IP_IDENFICATION    = 16'h0001,    
+    parameter IP_FLAG_OFFSET     = 16'h4000,    
+    parameter IP_TLL             = 8'h40,       
+    parameter IP_PROTOCOL        = 8'h06,       
+    parameter IP_PROTOCOL_LEN    = 16'd20,
+    parameter IP_SRC_ADDR        = 32'hC0A80101,  
+    parameter IP_DEST_ADDR       = 32'hC0A80102,   
+    parameter UDP_DEST_ADDR = 16'h1234, 
+    parameter UDP_SRC_ADDR = 16'h4321, 
+    parameter UDP_HEADER_LENGTH = 16'h08, 
+    parameter UDP_CHECKSUM = 16'h0000
+) (
+    input logic CLK, nRST,
+    input logic valid,
+    input logic [15:0] UDP_len,
+    input logic [63:0] UDP_payload,
+    input logic protocol_last,
+    output logic [WORD_WIDTH - 1 : 0] IP_transmit,
+    output logic [15:0] tt_len_data,
+    output logic IP_last,
+    output logic protocol_send
+);
+    logic [63:0] IP_payload;
+    logic UDP_last;
+    logic [15:0] IP_len, protocol_Data_len;
+    UDP_tx udp_tx_inst(
+        .CLK(CLK),
+        .nRST(nRST),
+        .valid(protocol_send),
+        .UDP_payload(UDP_payload),
+        .UDP_len(UDP_len),
+        .protocol_last(protocol_last),
+        .IP_payload(IP_payload),
+        .UDP_last(UDP_last),
+        .protocol_Data_len(protocol_Data_len),
+        .IP_len(IP_len)
+    );
+    IP_for_udp_tx ip_tx_inst(
+        .CLK(CLK),
+        .nRST(nRST),
+        .IP_send(valid),
+        .protocol_last(UDP_last),
+        .len_data(IP_len),
+        .protocol_transmit(IP_payload),
+        .IP_transmit(IP_transmit),
+        .tt_len_data(tt_len_data),
+        .IP_last(IP_last),
+        .protocol_send(protocol_send)
+    );
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns/10ps
+module UDP_tx
+#(
+    parameter UDP_DEST_ADDR = 16'h1234, 
+    parameter UDP_SRC_ADDR = 16'h4321, 
+    parameter UDP_HEADER_LENGTH = 16'h08, 
+    parameter UDP_CHECKSUM = 16'h0000,
+    parameter IP_DEST_ADDR = 32'hC0A80102   
+)
+(
+    input logic CLK, nRST,
+    input logic valid,  
+    input logic [63:0] UDP_payload,  
+    input logic [15:0] UDP_len,  
+    input logic protocol_last,  
+    output logic [63:0] IP_payload,  
+    output logic UDP_last,
+    output logic [15:0] protocol_Data_len,
+    output logic [15:0] IP_len 
+);
+    typedef enum logic [2:0] {
+        IDLE,
+        SEND_HEADER,
+        SEND_PAYLOAD,
+        DONE,
+        SEND_CHKSUM_PAYLOAD
+    } state_t;
+    logic [63:0] next_IP_payload;
+    state_t current_state, nstate;
+    logic [15:0] computed_len; 
+    logic [63:0] header_reg;
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            current_state <= IDLE;
+            header_reg <= '0;
+            IP_payload <= '0;
+        end else begin
+            current_state <= nstate;
+            header_reg <= {16'b0, UDP_SRC_ADDR, UDP_DEST_ADDR, IP_len};
+            IP_payload <= next_IP_payload;
+        end
+    end
+    assign IP_len = UDP_len + UDP_HEADER_LENGTH; 
+    assign protocol_Data_len = UDP_len; 
+    always_comb begin
+        nstate = current_state;
+        next_IP_payload = '0; 
+        UDP_last = 1'b0;
+        casez(current_state)
+            IDLE: begin
+                if (valid) begin
+                    nstate = SEND_HEADER;
+                    next_IP_payload = header_reg;
+                end
+            end
+            SEND_HEADER: begin
+                nstate = SEND_CHKSUM_PAYLOAD;
+                next_IP_payload = {16'b0, UDP_payload[47:0]};
+            end
+            SEND_CHKSUM_PAYLOAD: begin
+                nstate = SEND_PAYLOAD;
+                next_IP_payload = UDP_payload;
+            end
+            SEND_PAYLOAD: begin
+                next_IP_payload = UDP_payload;
+                if (protocol_last) begin
+                    nstate = DONE;
+                end else begin
+                    nstate = SEND_PAYLOAD;
+                end
+            end
+            DONE: begin
+                UDP_last = 1'b1;  
+                nstate = IDLE;  
+            end
+            default: begin
+                nstate = IDLE;  
+            end
+        endcase
+    end
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns / 10ps
+module IP_for_udp_tx #(
+    parameter ETHER_TYPE         = 16'h0800,
+    parameter WORD_WIDTH         = 64,
+    parameter TYPE_OF_SERVICE    = 8'b0,  
+    parameter IPV4_VER           = 8'h45,       
+    parameter LENGTH             = 16'd20,      
+    parameter IP_IDENFICATION    = 16'h0001,    
+    parameter IP_FLAG_OFFSET     = 16'h4000,    
+    parameter IP_TLL             = 8'h40,       
+    parameter IP_PROTOCOL        = 8'h06,       
+    parameter IP_PROTOCOL_LEN    = 16'd20,
+    parameter IP_SRC_ADDR        = 32'hC0A80101,  
+    parameter IP_DEST_ADDR       = 32'hC0A80102   
+) (
+    input logic CLK,
+    input logic nRST,
+    input logic IP_send,
+    input logic protocol_last,
+    input logic [15:0] len_data,
+    input logic [WORD_WIDTH - 1 : 0] protocol_transmit,
+    output logic [WORD_WIDTH - 1 : 0] IP_transmit,
+    output logic [15:0] tt_len_data,
+    output logic IP_last,
+    output logic protocol_send
+);
+    typedef enum logic [2:0] {
+        IDLE,
+        SEND_ETYPE_IPV4_MSB_LENGTH,
+        SEND_IP_HEADER1,  
+        SEND_IP_HEADER2,  
+        SEND_IP_HEADER3,  
+        SEND_IP_PAYLOAD,
+        DONE
+    } IP_state_t;
+    IP_state_t IP_state, nxIP_state;
+    logic [WORD_WIDTH - 1 : 0] nxIP_transmit_l;
+    logic chk_sum_valid;
+    logic [19:0] temp;
+    logic [16:0] IPv4_chk_sum, nIPv4_chk_sum;
+    logic [15:0] ntt_len_data;
+    logic [15:0] chksum_rslt;
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            IP_transmit <= '0;
+            IPv4_chk_sum <= '0;
+            tt_len_data <= 0;
+            IP_last <= 0;
+            IP_state <= IDLE;
+        end else begin
+            IP_state <= nxIP_state;
+            IP_last <= protocol_last;
+            IP_transmit <= nxIP_transmit_l;
+            tt_len_data <= ntt_len_data;
+            IPv4_chk_sum <= nIPv4_chk_sum;
+        end
+    end
+    always_comb begin
+        nIPv4_chk_sum = IPv4_chk_sum;
+        if (chk_sum_valid) begin
+        temp = {IPV4_VER, TYPE_OF_SERVICE} 
+                + IP_IDENFICATION 
+                + IP_FLAG_OFFSET 
+                + {IP_TLL, IP_PROTOCOL}
+                + IP_SRC_ADDR[31:16] + IP_SRC_ADDR[15:0]
+                + IP_DEST_ADDR[31:16] + IP_DEST_ADDR[15:0]
+                + len_data + 16'd20 + IP_PROTOCOL_LEN;  
+        temp = temp[15:0] + temp[19:16];
+        temp = temp[15:0] + temp[16];
+        nIPv4_chk_sum = temp[16:0]; 
+        end
+    end
+    always_comb begin  
+        nxIP_transmit_l = IP_transmit;
+        nxIP_state = IP_state;
+        ntt_len_data = tt_len_data;
+        chk_sum_valid = 1'b0;
+        protocol_send = 1'b0;
+        chksum_rslt = 0;
+        case (IP_state)
+            IDLE: begin
+                if (IP_send) begin
+                    nxIP_state = SEND_ETYPE_IPV4_MSB_LENGTH;
+                    nxIP_transmit_l = {32'b0, ETHER_TYPE, {IPV4_VER, TYPE_OF_SERVICE}};  
+                end  
+            end
+            SEND_ETYPE_IPV4_MSB_LENGTH: begin
+                nxIP_state = SEND_IP_HEADER1;
+                ntt_len_data = len_data + 16'd20 + IP_PROTOCOL_LEN;
+                nxIP_transmit_l = {ntt_len_data, IP_IDENFICATION, IP_FLAG_OFFSET, IP_TLL, IP_PROTOCOL};  
+                chk_sum_valid = 1'b1;
+            end
+            SEND_IP_HEADER1: begin
+                nxIP_state = SEND_IP_HEADER2;
+                chksum_rslt = ~IPv4_chk_sum[15:0];
+                nxIP_transmit_l = {~IPv4_chk_sum[15:0], IP_SRC_ADDR, IP_DEST_ADDR[31:16]};
+            end
+            SEND_IP_HEADER2: begin
+                protocol_send = 1'b1;  
+                nxIP_state = SEND_IP_HEADER3;
+                nxIP_transmit_l = {IP_DEST_ADDR[15:0], protocol_transmit[47:0]};  
+            end
+            SEND_IP_HEADER3: begin
+                protocol_send = 1'b1;  
+                nxIP_state = SEND_IP_PAYLOAD;
+                nxIP_transmit_l = protocol_transmit;
+            end
+            SEND_IP_PAYLOAD: begin
+                protocol_send = 1'b1;  
+                nxIP_transmit_l = protocol_transmit;
+                if (protocol_last) begin
+                    protocol_send = 1'b0;
+                    nxIP_state = DONE;
+                end
+            end
+            DONE: begin
+                if (!IP_send) begin
+                    nxIP_state = IDLE;
+                end
+            end
+            default: begin
+                nxIP_transmit_l = '0;
+            end
+        endcase
+    end
+endmodule

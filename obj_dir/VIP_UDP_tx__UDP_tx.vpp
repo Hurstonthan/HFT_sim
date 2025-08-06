@@ -1,3 +1,5 @@
+`begin_keywords "1800-2017"
+`line 1 "rtl/UDP_tx.sv" 1
 `timescale 1ns/10ps
 module UDP_tx
 #(
@@ -5,19 +7,20 @@ module UDP_tx
     parameter UDP_SRC_ADDR = 16'h4321, 
     parameter UDP_HEADER_LENGTH = 16'h08, 
     parameter UDP_CHECKSUM = 16'h0000,
-    parameter IP_DEST_ADDR = 32'hC0A80102  // destination IP address
+    parameter IP_DEST_ADDR = 32'hC0A80102   
 )
 (
     input logic CLK, nRST,
-    input logic valid, // sended from Ip layer
-    input logic [63:0] UDP_payload, // payload to send
-    input logic [15:0] UDP_len, // length of the UDP packet
-    // input logic [15:0] UDP_src_port, 
-    // input logic [15:0] UDP_dest_port, 
-    input logic protocol_last, // end of the payload latched already
+    input logic valid,  
+    input logic [63:0] UDP_payload,  
+    input logic [15:0] UDP_len,  
+     
+     
+    input logic protocol_last,  
 
-    output logic [63:0] IP_payload, // including the UDP header and payload
-    // output logic IP_valid, // signal to indicate that the IP packet is ready to be sent
+`line 19 "rtl/UDP_tx.sv" 0
+    output logic [63:0] IP_payload,  
+     
     output logic UDP_last,
     output logic [15:0] protocol_Data_len,
     output logic [15:0] IP_len 
@@ -28,14 +31,15 @@ module UDP_tx
         SEND_PAYLOAD,
         DONE,
         SEND_CHKSUM_PAYLOAD
-        // ERROR
+         
     } state_t;
     logic [63:0] next_IP_payload;
     state_t current_state, nstate;
     logic [15:0] computed_len; 
     logic [63:0] header_reg;
-    // logic last_reg; 
+     
 
+`line 39 "rtl/UDP_tx.sv" 0
     always_ff @(posedge CLK, negedge nRST) begin
         if (!nRST) begin
             current_state <= IDLE;
@@ -43,56 +47,67 @@ module UDP_tx
             IP_payload <= '0;
         end else begin
             current_state <= nstate;
-            // may need to change the header_reg
+             
             header_reg <= {16'b0, UDP_SRC_ADDR, UDP_DEST_ADDR, IP_len};
-            // may need to change the chksum
+             
             IP_payload <= next_IP_payload;
         end
     end
 
+`line 53 "rtl/UDP_tx.sv" 0
     assign IP_len = UDP_len + UDP_HEADER_LENGTH; 
     assign protocol_Data_len = UDP_len; 
     
     always_comb begin
-        /* 0      7 8     15 16    23 24    31 32    39 40    47 48    55 56     63 
-        * +--------+--------+--------+--------+--------+--------+--------+--------+
-        * |       IP        |      Source     |   Destination   |       Length    |
-        * |    Dest addr    |      Port       |      Port
-        * +--------+--------+--------+--------+--------+--------+--------+--------+
-        * |                 |                 
-        * |    CHK_SUM      |    data octets ...     
-        * +--------+--------+--------+--------+--------+--------+--------+--------+
-        */
-        // It will send IP_Dest_addr back first
+        
+
+`line 65 "rtl/UDP_tx.sv" 0
+
+`line 65 "rtl/UDP_tx.sv" 0
+
+`line 65 "rtl/UDP_tx.sv" 0
+
+`line 65 "rtl/UDP_tx.sv" 0
+
+`line 65 "rtl/UDP_tx.sv" 0
+
+`line 65 "rtl/UDP_tx.sv" 0
+
+`line 65 "rtl/UDP_tx.sv" 0
+ 
+         
         nstate = current_state;
-        // IP_valid = 1'b0;
+         
         next_IP_payload = '0; 
         UDP_last = 1'b0;
         casez(current_state)
             IDLE: begin
                 if (valid) begin
-                    //IP_valid = 1'b1; 
+                     
                     nstate = SEND_HEADER;
                     next_IP_payload = header_reg;
                 end
             end
 
+`line 80 "rtl/UDP_tx.sv" 0
             SEND_HEADER: begin
-                //source and destination addresses are flipped
+                 
                 nstate = SEND_CHKSUM_PAYLOAD;
-                // IP_valid = 1'b1;
-                // chksum will be implemented later
+                 
+                 
                 next_IP_payload = {16'b0, UDP_payload[47:0]};
             end
 
+`line 88 "rtl/UDP_tx.sv" 0
             SEND_CHKSUM_PAYLOAD: begin
-                // nstate = (protocol_last)? DONE : SEND_PAYLOAD;
+                 
                 nstate = SEND_PAYLOAD;
                 next_IP_payload = UDP_payload;
             end
 
+`line 94 "rtl/UDP_tx.sv" 0
             SEND_PAYLOAD: begin
-                // IP_valid = 1'b1;
+                 
                 next_IP_payload = UDP_payload;
                 if (protocol_last) begin
                     nstate = DONE;
@@ -101,19 +116,24 @@ module UDP_tx
                 end
             end
 
+`line 104 "rtl/UDP_tx.sv" 0
             DONE: begin
-                UDP_last = 1'b1; //payload is done 
-                nstate = IDLE; // done with sending the packet
+                UDP_last = 1'b1;  
+                nstate = IDLE;  
             end
 
-            // ERROR: begin
-            //     IP_valid = 1'b0; // not sending anythin
-            //     nstate = IDLE: 
-            // end
+`line 109 "rtl/UDP_tx.sv" 0
+             
+             
+             
+             
 
+`line 114 "rtl/UDP_tx.sv" 0
             default: begin
-                nstate = IDLE; // in case of unexpected state
+                nstate = IDLE;  
             end
         endcase
     end
 endmodule
+
+`line 121 "rtl/UDP_tx.sv" 0

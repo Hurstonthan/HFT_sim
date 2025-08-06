@@ -38,7 +38,7 @@ module chksum_tcp_pl #(
             temp1 = temp[15:0] + temp[19:16];
             temp2 = temp1[15:0] + temp1[16];
             nTCP_checksum = temp2[16:0];
-            
+            // nTCP_checksum = {1'b1, temp[16:0]};
         end
     end
 
