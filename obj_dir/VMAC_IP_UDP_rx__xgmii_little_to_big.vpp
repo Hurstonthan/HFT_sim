@@ -1,0 +1,38 @@
+`begin_keywords "1800-2017"
+`line 1 "rtl/xgmii_little_to_big.sv" 1
+ 
+ 
+ 
+`timescale 1ns/10ps
+module xgmii_little_to_big (
+    input  logic [63:0] xgmii_rxd ,    
+    input  logic [7:0]  xgmii_rxc ,    
+    output logic [63:0] be_rxd   ,     
+    output logic [7:0]  be_rxc         
+);
+
+`line 12 "rtl/xgmii_little_to_big.sv" 0
+     
+    assign be_rxd = { xgmii_rxd[ 7: 0],   
+                      xgmii_rxd[15: 8],
+                      xgmii_rxd[23:16],
+                      xgmii_rxd[31:24],
+                      xgmii_rxd[39:32],
+                      xgmii_rxd[47:40],
+                      xgmii_rxd[55:48],
+                      xgmii_rxd[63:56]};  
+
+`line 22 "rtl/xgmii_little_to_big.sv" 0
+     
+    assign be_rxc = { xgmii_rxc[0],       
+                      xgmii_rxc[1],
+                      xgmii_rxc[2],
+                      xgmii_rxc[3],
+                      xgmii_rxc[4],
+                      xgmii_rxc[5],
+                      xgmii_rxc[6],
+                      xgmii_rxc[7] };     
+endmodule
+
+
+`line 34 "rtl/xgmii_little_to_big.sv" 0

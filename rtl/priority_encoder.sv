@@ -1,4 +1,3 @@
-// ------------------------------------------------------------
 `timescale 1ns / 10ps
 module priority_encoder #(
     parameter int WIDTH = 128,

@@ -1,0 +1,137 @@
+Verilator Statistics Report
+
+Information:
+  Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  Arguments: -Wno-lint --error-limit 0 --trace --trace-fst --debug -Iinclude -Irtl -CFLAGS -Irtl -Iinclude -O0 -g --cc rtl/system.sv --top-module system --exe generated/system/system_tb.cpp generated/system/system_input.cpp --build
+  Build jobs: 1
+  Verilate jobs: 1
+
+Global Statistics:
+
+
+Performance Statistics:
+
+
+Stage Statistics:
+  Stat                                        Final all  Final fast
+  --------                                    -------    -------  
+
+  Branch prediction,                                4
+
+  Expr combination, ADD over PARSEREF               2
+  Expr combination, ARG over PARSEREF               4
+  Expr combination, ARG over RAND                   1
+  Expr combination, DOT over FUNCREF                3
+  Expr combination, DOT over PARSEREF               5
+  Expr combination, DOT over TASKREF                2
+  Expr combination, EQ over CONST                   1
+  Expr combination, EQ over PARSEREF                1
+  Expr combination, GT over CONST                   2
+  Expr combination, GT over FUNCREF                 2
+  Expr combination, GTE over PARSEREF               2
+  Expr combination, LOGOR over EQ                   1
+  Expr combination, LOGOR over LT                   1
+  Expr combination, LT over FUNCREF                 1
+  Expr combination, LT over PARSEREF                1
+  Expr combination, RAND over DOT                   1
+  Expr combination, SELBIT over CONST               1
+  Expr combination, SELBIT over PARSEREF            1
+  Expr combination, SFORMATF over CONST             1
+  Expr combination, SUB over PARSEREF               2
+  Expr combination, TASKREF over ARG                5
+
+  Node count, ADD                                   1
+  Node count, ARG                                   5
+  Node count, ASSIGN                                6
+  Node count, BASICDTYPE                           23
+  Node count, BEGIN                                 4
+  Node count, BRACKETARRAYDTYPE                     1
+  Node count, CLASS                                 3
+  Node count, CONST                                23
+  Node count, CONSTPOOL                             1
+  Node count, DEFIMPLICITDTYPE                      1
+  Node count, DISPLAY                               1
+  Node count, DOT                                   5
+  Node count, ENUMDTYPE                             1
+  Node count, ENUMITEM                              5
+  Node count, EQ                                    1
+  Node count, FUNC                                 10
+  Node count, FUNCREF                               6
+  Node count, GT                                    2
+  Node count, GTE                                   1
+  Node count, IF                                    4
+  Node count, LOGOR                                 1
+  Node count, LT                                    1
+  Node count, MODULE                                1
+  Node count, NETLIST                               1
+  Node count, NEW                                   1
+  Node count, PACKAGE                               1
+  Node count, PARSEREF                             29
+  Node count, PARSETYPEDTYPE                        1
+  Node count, RAND                                  2
+  Node count, REFDTYPE                             11
+  Node count, RETURN                               12
+  Node count, SCOPE                                 1
+  Node count, SELBIT                                1
+  Node count, SFORMATF                              1
+  Node count, STMTEXPR                              5
+  Node count, STOP                                  1
+  Node count, SUB                                   1
+  Node count, SYSFUNCASTASK                         1
+  Node count, TASK                                 11
+  Node count, TASKREF                               5
+  Node count, TYPEDEF                               1
+  Node count, TYPEDEFFWD                            1
+  Node count, TYPETABLE                             1
+  Node count, UNBOUNDED                             1
+  Node count, VAR                                  19
+  Node count, VOIDDTYPE                             1
+
+  Node memory TOTAL (MiB)                           0          0
+
+  Node memory share (%), ADD                     0.35
+  Node memory share (%), ARG                     1.97
+  Node memory share (%), ASSIGN                  1.97
+  Node memory share (%), BASICDTYPE              9.07
+  Node memory share (%), BEGIN                   1.64
+  Node memory share (%), BRACKETARRAYDTYPE       0.36
+  Node memory share (%), CLASS                   1.73
+  Node memory share (%), CONST                  11.34
+  Node memory share (%), CONSTPOOL               0.76
+  Node memory share (%), DEFIMPLICITDTYPE        0.46
+  Node memory share (%), DISPLAY                 0.35
+  Node memory share (%), DOT                     1.73
+  Node memory share (%), ENUMDTYPE               0.61
+  Node memory share (%), ENUMITEM                1.97
+  Node memory share (%), EQ                      0.35
+  Node memory share (%), FUNC                    5.10
+  Node memory share (%), FUNCREF                 3.65
+  Node memory share (%), GT                      0.69
+  Node memory share (%), GTE                     0.35
+  Node memory share (%), IF                      1.38
+  Node memory share (%), LOGOR                   0.35
+  Node memory share (%), LT                      0.35
+  Node memory share (%), MODULE                  0.56
+  Node memory share (%), NETLIST                 0.54
+  Node memory share (%), NEW                     0.59
+  Node memory share (%), PACKAGE                 0.56
+  Node memory share (%), PARSEREF               11.92
+  Node memory share (%), PARSETYPEDTYPE          0.36
+  Node memory share (%), RAND                    0.69
+  Node memory share (%), REFDTYPE                5.24
+  Node memory share (%), RETURN                  3.94
+  Node memory share (%), SCOPE                   0.44
+  Node memory share (%), SELBIT                  0.35
+  Node memory share (%), SFORMATF                0.41
+  Node memory share (%), STMTEXPR                1.64
+  Node memory share (%), STOP                    0.33
+  Node memory share (%), SUB                     0.35
+  Node memory share (%), SYSFUNCASTASK           0.33
+  Node memory share (%), TASK                    5.60
+  Node memory share (%), TASKREF                 3.04
+  Node memory share (%), TYPEDEF                 0.48
+  Node memory share (%), TYPEDEFFWD              0.39
+  Node memory share (%), TYPETABLE               0.99
+  Node memory share (%), UNBOUNDED               0.33
+  Node memory share (%), VAR                    14.05
+  Node memory share (%), VOIDDTYPE               0.36

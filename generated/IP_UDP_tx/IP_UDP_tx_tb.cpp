@@ -43,8 +43,8 @@ void test_simple_packet(VIP_UDP_tx *top, VerilatedFstC *tfp) {
     std::vector<uint64_t> payload = {0xDEADBEEF, 0x12345678, 0xABCDEF01};
     uint16_t total_payload_len = payload.size() * 8; // 64-bit words, so 8 bytes each
     
-    // The "valid" signal indicates a transaction is starting
     top->valid = 1;
+    //need to wait ip finish the header
     for (int i = 0; i < 4; i++) tick(top, tfp);
     for (size_t i = 0; i < payload.size(); ++i) {
         top->UDP_payload = payload[i];
@@ -85,6 +85,7 @@ void test_zero_length_payload(VIP_UDP_tx *top, VerilatedFstC *tfp) {
     std::cout << "Starting Test Case 2: Zero-Length Payload" << std::endl;
 
     top->valid = 1;
+    for (int i = 0; i < 4; i++) tick(top, tfp);
     top->UDP_payload = 0;
     top->UDP_len = 0;
     top->protocol_last = 1; // Signal that this is the only word and it's the last
@@ -120,7 +121,7 @@ void test_back_to_back_packets(VIP_UDP_tx *top, VerilatedFstC *tfp) {
 
         top->valid = 1;
         top->UDP_len = total_payload_len;
-
+        for (int i = 0; i < 4; i++) tick(top, tfp);
         for (size_t i = 0; i < payload.size(); ++i) {
             top->UDP_payload = payload[i];
             top->protocol_last = (i == payload.size() - 1);
@@ -132,7 +133,7 @@ void test_back_to_back_packets(VIP_UDP_tx *top, VerilatedFstC *tfp) {
         while (!top->IP_last) {
             tick(top, tfp);
         }
-
+        for (int i = 0; i < 4; i++) tick(top, tfp);
         // De-assert signals to prepare for the next packet
         top->valid = 0;
         top->protocol_last = 0;
@@ -162,7 +163,7 @@ int main(int argc, char **argv) {
     reset_module(top, tfp);
     // test_zero_length_payload(top, tfp);
     // reset_module(top, tfp);
-    // test_back_to_back_packets(top, tfp);
+    test_back_to_back_packets(top, tfp);
 
     tfp->close();
     delete top;
