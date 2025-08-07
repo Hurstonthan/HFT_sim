@@ -18,6 +18,7 @@ static void tick(Vether_simulation *top, VerilatedFstC *tfp) {
     tfp->dump(main_time++);
 
 }
+//Setting up the handshake 
 
 int main(int argc, char **argv) {
     Verilated::commandArgs(argc, argv);
@@ -34,7 +35,27 @@ int main(int argc, char **argv) {
 
     // Example stimulus
     drive_input_ether_simulation(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    for (int i = 0; i < 20; ++i) tick(top, tfp);
+
+    top -> nRST= 1;
+    top -> tb_count = 0xFF;
+    tick(top, tfp);
+    tick(top, tfp);
+
+    //Part 1: Setting up the handshake
+    // the client send SYN first
+    top -> tb_count = 0;
+    top -> TX_en_clt = 1;
+    tick(top, tfp);
+    top -> TX_en_clt = 0;
+    while (!(top -> frame_end_clt)) {
+        tick(top,tfp);
+    }
+    
+    for (size_t i = 0; i < 10; i++) {
+        tick(top,tfp);
+    }
+
+
 
     tfp->close();
     delete top;

@@ -25,8 +25,8 @@ package rx_pkg;
     parameter TCP_PROTOCOL = 8'h06; 
     parameter ICMP_PROTOCOL = 8'h01;
     parameter IP_TTL = 8'h40; 
-    parameter IP_SRC_ADDR = 32'hFFFFFFFF; // needs to change to the correct value
-    parameter IP_DEST_ADDR = 32'hAAAAAAAA; 
+    parameter IP_SRC_ADDR = 32'hC0A80101; // needs to change to the correct value
+    parameter IP_DEST_ADDR = 32'hC0A80102; 
 
     //UDP layer parameters
     parameter UDP_SRC_ADDR = 16'h1234; 

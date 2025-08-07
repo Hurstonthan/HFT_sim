@@ -118,9 +118,9 @@ module IP_tx #(
         //     //0x4884 is including everything but TCP payload length, and the checksum
         //    nIPv4_chk_sum = 16'h4884 + len_data; // 2 is extra 2 bytes for TCP transmission
 
-        temp = {IPV4_VER, TYPE_OF_SERVICE} 
-                + IP_IDENFICATION 
-                + IP_FLAG_OFFSET 
+        temp = {4'b0, IPV4_VER, TYPE_OF_SERVICE} 
+                + {4'b0, IP_IDENFICATION}
+                + {4'b0, IP_FLAG_OFFSET} 
                 + {IP_TLL, IP_PROTOCOL}
                 + IP_SRC_ADDR[31:16] + IP_SRC_ADDR[15:0]
                 + IP_DEST_ADDR[31:16] + IP_DEST_ADDR[15:0]

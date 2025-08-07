@@ -232,7 +232,7 @@ always_comb begin
                 
                 if (is_src_addr) begin
                     nstate = RCV_PAYLOAD_DEST;
-                    nIP_valid = 1'b1;
+                    //nIP_valid = 1'b1;
                 end else begin
                     nstate = ERROR;
                     chksum_en = 1'b0;
@@ -268,12 +268,13 @@ always_comb begin
             // take the complement of the sum
             //todo finish the checksum
             // msb (most significant bit) order 
-            if (chksum_pl == IP_checksum) begin
+            if (~chksum_pl == IP_checksum) begin
                 nstate = RCV_PAYLOAD;
                 nIP_valid = 1'b1;
                 if (nbytes_rcv >= IP_len) begin
                     nIP_last = 1'b1;
                     nIP_bytes_rcv_len = IP_len - bytes_rcv; 
+                    nbytes_rcv        = bytes_rcv + (IP_len - bytes_rcv);
                     nstate = DONE;
                 end
             end else begin

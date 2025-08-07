@@ -365,6 +365,10 @@ static std::vector<Column> generate_frame (bool lane4) {
         segment = {0xFE, IP_data};
         frame.push_back(segment);
 
+        IP_data = 0x07070707070707;
+        segment = {0xFF, IP_data};
+        frame.push_back(segment);
+
 
 
 

@@ -46,7 +46,7 @@ module MAC_rx #(
     logic [31:0] rg, nrg; 
     logic [63:0]FCS_frame_cvt;
     //logic [63:0] MAC_;
-    logic crc_delay, ncrc_delay;
+    logic crc_delay, ncrc_delay, ncrc_valid;
     int i;
 
     logic soft_dl, nsoft_dl;
@@ -144,6 +144,7 @@ module MAC_rx #(
             bytes_rcv_dl <= 0;
             FCS_rxc <= 0;
             rg <= 0;
+            crc_valid <= 0;
             
         end else begin
             state <= next_state;
@@ -163,6 +164,7 @@ module MAC_rx #(
             bytes_rcv <= nbytes_rcv;
             bytes_rcv_dl <= nbytes_rcv_dl;
             FCS_rxc <= nFCS_rxc;
+            crc_valid <= ncrc_valid;
         end
     end
     //debugging
@@ -181,7 +183,7 @@ module MAC_rx #(
         nrg = rg;
         next_state = state;
         crc_init = 1'b0;
-        crc_valid = 1'b1;
+        ncrc_valid = crc_valid;
         frame_ok = 1'b0;
         CRC_flush = 1'b0;
         ncrc_check = crc_check;
@@ -224,11 +226,13 @@ module MAC_rx #(
                         nsoft_dl = 1'b1;
                     end else begin
                         next_state = RCV_ETHER_HEAD1;
+                        ncrc_valid = 1'b1;
                     end
                 end
 
                 if (soft_dl) begin
                     next_state = RCV_ETHER_HEAD1;
+                    ncrc_valid = 1'b1;
                 end
                 
                 
@@ -291,6 +295,8 @@ module MAC_rx #(
                                     xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
                             endcase
+                            //crc_valid = 1'b0;
+                            ncrc_valid = 1'b0;
                             next_state = CHECK_CRC;
                         end else begin
                             //nbytes_rcv_dl = bytes_offset - 8'd4;  //Old one
@@ -370,12 +376,14 @@ module MAC_rx #(
                             //Data is in xgmii_previous and progressed
                             3'd0: begin
                                 nbytes_rcv = 8'd8;
+                                ncrc_valid = 1'b0;
                                 next_state = CHECK_CRC;
                             end
                         endcase
                     end
                 end
                 if (crc_delay) begin
+                    ncrc_valid = 1'b0;
                     next_state = CHECK_CRC;
                     nbytes_rcv = bytes_rcv_dl;
                     nFCS_frame = FCS_frame;
@@ -384,7 +392,7 @@ module MAC_rx #(
             end
 
             CHECK_CRC: begin
-                crc_valid = 1'b0;
+                // crc_valid = 1'b0;
                 //nMAC_valid = 1'b0; //This one is for Questasim
                 nMAC_valid = 1'b1;  //This one is for Verilator 
                 nsof_found = 1'b0;

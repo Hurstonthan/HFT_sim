@@ -68,6 +68,8 @@ module TCP_flow_ctrl #(
     import ether_pkg::*;
     typedef enum logic [6:0] {
         IDLE,
+        SEND_SYN_ACK,
+        WAIT_ACK,
         WAIT_SYN_ACK,
         SEND_ACK,
         DATA_CONNECTED,
@@ -555,14 +557,35 @@ module TCP_flow_ctrl #(
                     nstate = WAIT_SYN_ACK;
                     nseq_num.seq_num = seq_num.seq_num + 1;
                 end
+
+                if (rcv_data && rcv_pkg_type.SYN) begin
+                    nstate = SEND_SYN_ACK;
+                    nrcv_next = seq_num_rx + 1;
+                end
+            end
+
+            SEND_SYN_ACK: begin
+                if (seq_up) begin
+                    nstate = WAIT_ACK;
+                end
+            end
+
+            WAIT_ACK: begin
+                TCP_stop_flg = 1'b1;
+                ncount_en_timeout = 1'b1;
+                if (rcv_data && seq_num_rx == rcv_next) begin
+                    nstate = DATA_CONNECTED;
+                    ncount_en_timeout = 1'b0;
+                    nclear_timeout = 1'b1;
+                    nack_num.ACK_num = ACK_rx;
+                    nwindow_size = window_size_rx;
+                end
+
             end
 
             WAIT_SYN_ACK: begin
                 //If we receive SYN_ACK, we will increment seq_num and 
                 TCP_stop_flg = 1'b1;
-                // if (TCP_flush) begin
-                //     nstate = IDLE;
-                // end
                 ncount_en_timeout = 1'b1;
                 
                 if (rcv_data && rcv_pkg_type.SYN && rcv_pkg_type.ACK) begin                    
@@ -715,6 +738,19 @@ module TCP_flow_ctrl #(
 
             WAIT_SYN_ACK: begin
                 
+            end
+
+            SEND_SYN_ACK: begin
+                tx_pkg_type.SYN = 1'b1;
+                tx_pkg_type.ACK = 1'b1;
+                seq_num_tx = seq_num.seq_num;
+                ACK_tx = rcv_next;
+            end
+
+            WAIT_ACK: begin
+                if (rcv_data && seq_num_rx == rcv_next) begin
+                    nhand_shake_done = 1'b1; //Handshake is done
+                end
             end
 
             SEND_ACK: begin

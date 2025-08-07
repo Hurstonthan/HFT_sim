@@ -204,6 +204,7 @@ module top #(
 
         // IP receive interface
         .IP_valid           (IP_valid),
+        .IP_last            (IP_rx_last),
         .IP_flush           (IP_flush),
         .IP_pseuder         (IP_pseuder),
         .IP_payload         (IP_payload),

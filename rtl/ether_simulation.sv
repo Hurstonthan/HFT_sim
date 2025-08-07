@@ -22,7 +22,7 @@ module ether_simulation #(
     input logic wr_FIFO_en_svr,
     input logic [31:0] len_seq_svr,
     input logic [DATA_WIDTH - 1:0] soupbin_TCP_payload_svr,
-    output logic wr_FIFO_valid_svr, //FULL case
+    output logic wr_FIFO_validing_svr, //FULL case
 
     //FIFO RX
     input logic axis_r_en_svr,
@@ -59,6 +59,23 @@ module ether_simulation #(
     output logic [31:0] rcv_next_clt
 );
 
+    logic [DATA_WIDTH - 1:0] xgmii_rxd_clt_cvrt, xgmii_rxd_svr_cvrt;
+    logic [CTRL_WIDTH - 1:0] xgmii_rxc_clt_cvrt, xgmii_rxc_svr_cvrt;
+
+    xgmii_little_to_big cvrt_clt (
+        .xgmii_rxd(xgmii_txd_clt),
+        .xgmii_rxc(xgmii_txc_clt),
+        .be_rxd(xgmii_rxd_svr_cvrt),
+        .be_rxc(xgmii_rxc_svr_cvrt)
+    );
+
+    xgmii_little_to_big cvrt_svr (
+        .xgmii_rxd(xgmii_txd_svr),
+        .xgmii_rxc(xgmii_txc_svr),
+        .be_rxd(xgmii_rxd_clt_cvrt),
+        .be_rxc(xgmii_rxc_clt_cvrt)
+    );
+
 
     //Sever top.sv module side
     top svr_inst (
@@ -70,8 +87,8 @@ module ether_simulation #(
         .xgmii_txc(xgmii_txc_svr),
         .frame_end(frame_end_svr),
 
-        .xgmii_rxd(xgmii_txd_clt),
-        .xgmii_rxc(xgmii_txc_clt),
+        .xgmii_rxd(xgmii_rxd_svr_cvrt),
+        .xgmii_rxc(xgmii_rxc_svr_cvrt),
 
         .axis_last(axis_last_svr),
         .wr_FIFO_en(wr_FIFO_en_svr),

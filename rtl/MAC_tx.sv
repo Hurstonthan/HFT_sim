@@ -3,8 +3,8 @@
 module MAC_tx #(
     parameter WORD_WIDTH = 64,
     parameter CTRL_WIDTH = 8,
-    parameter MAC_SRC_ADDR  = 48'h FFFF_FFCC_BBAA,
-    parameter MAC_DEST_ADDR = 48'h AACC_BBFF_FFFF,
+    parameter MAC_DEST_ADDR  = 48'h FFFF_FFCC_BBAA,
+    parameter MAC_SRC_ADDR = 48'h AACC_BBFF_FFFF,
     parameter ETHER_TYPE         = 16'h0800   // IPv4 EtherType
 ) (
     input wire CLK,
@@ -41,7 +41,7 @@ module MAC_tx #(
     logic IP_send_l; //Signals indicating IP module and TCP need to send the 64 bits data
     ether_state_t state, nstate;
 
-    logic crc_init, valid;
+    logic crc_init, valid, nvalid;
     logic [31:0] crc_out;
 
     //variables to assist zero paddins for >= 46 bytes 
@@ -59,7 +59,7 @@ module MAC_tx #(
         .nRST(nRST),
         .valid(valid),
         .crc_init(crc_init),
-        .data_in(xgmii_txd),
+        .data_in(nxgmii_txd_l),
         .crc_out(crc_out)
       );
 
@@ -69,11 +69,13 @@ module MAC_tx #(
             xgmii_txd_l <= 64'h07070707_07070707;
             xgmii_txc_l <= '1;
             len_counter <= 0;
+            //valid <= 0;
         end else begin
             state <= nstate;
             xgmii_txd_l <= nxgmii_txd_l;
             xgmii_txc_l <= nxgmii_txc_l;
             len_counter <= nlen_counter;
+            //valid <= nvalid;
             
         end
     end
@@ -95,16 +97,16 @@ module MAC_tx #(
         case (state)
             IDLE: begin
                 crc_init = 1'b1; //Initialize CRC
-                valid = 1'b0;
                 if (TX_en) begin
                     nstate = SEND_PREAMBLE_SFD;
                     IP_send_l = 1'b1;
                 end
             end
             SEND_PREAMBLE_SFD: begin
+
                 nstate = SEND_ETHER_HEAD1;
                 IP_send_l = 1'b1; //V changing need to change with questa
-                crc_init = 1'b1; //Initialize CRC
+                //crc_init = 1'b0; //Initialize CRC
             end
             SEND_ETHER_HEAD1: begin
                 nstate = SEND_ETHER_HEAD2;
@@ -130,6 +132,7 @@ module MAC_tx #(
                 end else if (IP_last) begin
                     nstate = SEND_FCS_TERMINATE; //Send FCS and terminate
                     IP_send_l = 1'b0;
+
                 end
             end            
 
@@ -137,14 +140,13 @@ module MAC_tx #(
                 nlen_counter = len_counter + 8;
                 if (len_counter >=46) begin
                     nstate = SEND_FCS_TERMINATE;
-                    IP_send_l = 1'b0;
                 end
                 
             end
 
             SEND_FCS_TERMINATE: begin
-                valid = 1'b0;
                 crc_init = 1'b1;
+                valid = 1'b0;
                 frame_end = 1'b1;
                 nstate = SEND_IDLE_END1; //Send IDLE end
             end
@@ -169,7 +171,7 @@ module MAC_tx #(
                 nxgmii_txc_l = '1;
                 if (TX_en) begin
                     nxgmii_txd_l = {8'hFB,48'h555555555555, 8'hD5}; //Preamble and SFD 
-                    nxgmii_txc_l = 8'b000_0001;
+                    nxgmii_txc_l = 8'b1000_0000;
                 end
             end
 
@@ -247,9 +249,8 @@ module MAC_tx #(
                 nxgmii_txc_l = 0;
                 if (len_counter >= 46) begin
                     nxgmii_txd_l = {crc_out, 32'hFD070707}; // FCS and 0xFD
-                    nxgmii_txc_l = 8'b0000_1111; // all control
+                    nxgmii_txc_l = 8'b0000_1111;
                 end
-
             end
 
             // SEND_IP_TCP_HEADER: begin
@@ -314,12 +315,14 @@ module MAC_tx #(
 
             SEND_FCS_TERMINATE: begin
                 // Logic to send FCS and terminate
-                nxgmii_txd_l = {crc_out, 32'hFD070707}; // FCS and 0xFD
+                //nxgmii_txd_l = {crc_out, 32'hFD070707}; // FCS and 0xFD
+                //nxgmii_txc_l = 8'b0000_1111;
                 // // nxgmii_txd_l = 64'h00_00_00_00_00_00_00_FD; // FCS and 0xFD
                 // nxgmii_txc_l = 8'b0000_0001; // all control
 
-                // nxgmii_txd_l = 64'h07070707_07070707;
-                nxgmii_txc_l = 8'b0000_1111;
+                nxgmii_txd_l = 64'h07070707_07070707;
+                nxgmii_txc_l = 8'b1111_1111;
+                
 
             end
 

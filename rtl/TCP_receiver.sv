@@ -150,11 +150,11 @@ module TCP_receiver #(
 
         case (state)
             IDLE: begin
-                if (valid_IP_header_rx && IP_payload_rx[63:48] == SRC_PORT && 
-                    IP_payload_rx[47:32] == DEST_PORT) begin
-                    nseq_num_rx[31:16] = IP_payload_rx[31:16]; // Extract sequence number
+                if (valid_IP_header_rx && IP_payload_rx[47:32] == SRC_PORT && 
+                    IP_payload_rx[31:16] == DEST_PORT) begin
+                    nseq_num_rx[15:0] = IP_payload_rx[31:16]; // Extract sequence number
                     nstate = RCV_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE;
-                    temp = {2'b0, TCP_checksum[15:0]} + IP_payload_rx[63:48] + IP_payload_rx[47:32] + IP_payload_rx[31:16] + IP_pseuder;
+                    temp = {2'b0, TCP_checksum[15:0]} + IP_payload_rx[47:32] + IP_payload_rx[31:16] + IP_payload_rx[15:0] + IP_pseuder;
                     temp = temp[15:0] + temp[19:16]; //2nd second bit
                     temp = temp[15:0] + temp[16];
                     nTCP_checksum = temp[16:0];
