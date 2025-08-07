@@ -1,3 +1,0 @@
-Vether_simulation_xgmii_little_to_big__DepSet_he3ebb512__0.o: \
- Vether_simulation_xgmii_little_to_big__DepSet_he3ebb512__0.cpp \
- Vether_simulation__pch.h Vether_simulation_xgmii_little_to_big.h

@@ -1,3 +1,0 @@
-Vether_simulation_xgmii_little_to_big__Slow.o: \
- Vether_simulation_xgmii_little_to_big__Slow.cpp Vether_simulation__pch.h \
- Vether_simulation__Syms.h Vether_simulation_xgmii_little_to_big.h
