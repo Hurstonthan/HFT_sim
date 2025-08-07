@@ -244,7 +244,7 @@ always_comb begin
             if (MAC_valid) begin
                 chksum_in = {48'h0, MAC_payload_rcv[63:48]};
                 chksum_en = 1'b1;
-                temp = {4'b0, MAC_payload_rcv[63:58]} + {4'b0, IP_pseuder};
+                temp = {4'b0, MAC_payload_rcv[63:48]} + {4'b0, IP_pseuder};
                 temp = temp[15:0] + temp[19:16];
                 temp = temp[15:0] + temp[16];
                 nIP_pseuder = temp[15:0];
@@ -297,6 +297,7 @@ always_comb begin
         end
 
         DONE: begin
+            nbytes_rcv = 0;
             nIP_valid = 1'b0;
             nstate = IDLE;
         end

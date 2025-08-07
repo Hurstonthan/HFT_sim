@@ -66,6 +66,10 @@ logic [19:0] temp;
 logic nTCP_tx_valid, nTCP_tx_last;
 logic nseq_up;
 
+//debug
+logic [15:0] chksum_debug;
+logic [15:0] IP_pseuder_debug;
+logic [19:0] IP_pseuder_temp;
 
 //TCP_tx implementation for avoiding 2 bytes
 logic [47:0] frame_hold, nframe_hold;
@@ -102,7 +106,14 @@ end
 always_comb begin
     nTCP_checksum = TCP_checksum;
     if (valid_checksum) begin
-        temp =  IP_SRC_ADDR[31:16] + IP_DEST_ADDR[15:0]
+        IP_pseuder_temp = IP_SRC_ADDR[31:16] + IP_SRC_ADDR[15:0]
+                        + IP_DEST_ADDR[31:16] + IP_DEST_ADDR[15:0]
+                        +{8'h0000, 8'h06}
+                        + bytes_abt_sent[15:0] + 20;
+        IP_pseuder_temp = IP_pseuder_temp[15:0] + IP_pseuder_temp[19:16];
+        IP_pseuder_temp = IP_pseuder_temp[15:0] + IP_pseuder_temp[16];
+        IP_pseuder_debug = IP_pseuder_temp[15:0];
+        temp =  IP_SRC_ADDR[31:16] + IP_SRC_ADDR[15:0]
                         + IP_DEST_ADDR[31:16] + IP_DEST_ADDR[15:0]
                         +{8'h0000, 8'h06}
                         + bytes_abt_sent[15:0] + 20
@@ -112,7 +123,7 @@ always_comb begin
                         + ACK_tx[15:0] 
                         + {offset_tx, 4'b0000, TCP_control_tx} 
                         + urgent_pointer_tx 
-                        + SRC_PORT
+                        + SRC_PORT 
                         + DEST_PORT
                         + TCP_basesum_payload;
         temp = temp[15:0] + temp[19:16];
@@ -130,6 +141,9 @@ always_comb begin
     rd_FIFO_en = 1'b0; // Reset read enable flag
     nseq_up = 1'b0; // Reset sequence update flag for next state
     nframe_hold = frame_hold;
+
+    //Debug signal
+    chksum_debug = 0;
 
 
 
@@ -153,6 +167,7 @@ always_comb begin
             valid_checksum = 1'b0;
             rd_FIFO_en = 1'b1;
             //nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, 16'd0};// Send the last 8 bits of window size, checksum, urgent pointer, and 24 bits of zero padding
+            chksum_debug = TCP_checksum[15:0];
             nTCP_transmit = {window_size_tx[15:0], TCP_checksum[15:0], urgent_pointer_tx, rd_FIFO_payload[63:48]};// Send the last 8 bits of window size, checksum, urgent pointer, and 16 bits of data
             nframe_hold = rd_FIFO_payload[47:0];
             nstate = SEND_WINDOWSIZE_CHECKSUM_URGENT_PAYLOAD; // Move to the next state

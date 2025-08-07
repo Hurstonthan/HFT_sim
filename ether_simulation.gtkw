@@ -1,24 +1,25 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Thu Aug  7 01:17:31 2025
+[*] Thu Aug  7 09:35:45 2025
 [*]
 [dumpfile] "/home/than0/HFT_sim/ether_simulation.vcd"
-[dumpfile_mtime] "Thu Aug  7 01:16:29 2025"
-[dumpfile_size] 17009
+[dumpfile_mtime] "Thu Aug  7 09:34:39 2025"
+[dumpfile_size] 22290
 [savefile] "/home/than0/HFT_sim/ether_simulation.gtkw"
-[timestart] 0
+[timestart] 57
 [size] 1634 1001
-[pos] 70 337
-*-3.854535 28 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] 70 562
+*-3.854535 65 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.ether_simulation.
 [treeopen] TOP.ether_simulation.clt_inst.
 [treeopen] TOP.ether_simulation.clt_inst.mac_tx.
+[treeopen] TOP.ether_simulation.clt_inst.u_tcp.
 [treeopen] TOP.ether_simulation.svr_inst.
 [treeopen] TOP.ether_simulation.svr_inst.ip_rx.
 [treeopen] TOP.ether_simulation.svr_inst.u_tcp.
 [sst_width] 286
-[signals_width] 520
+[signals_width] 626
 [sst_expanded] 1
 [sst_vpaned_height] 284
 @28
@@ -63,8 +64,44 @@ TOP.ether_simulation.clt_inst.ip_tx.IP_state[2:0]
 @200
 -IP_TX
 -
+-TCP
+-TCP_flow
+@28
+TOP.ether_simulation.clt_inst.u_tcp.tcp_flow.hand_shake_done
+TOP.ether_simulation.clt_inst.u_tcp.tcp_flow.rcv_data
+@100000028
+TOP.ether_simulation.clt_inst.u_tcp.tcp_flow.state[6:0]
+@28
+TOP.ether_simulation.clt_inst.u_tcp.tcp_rcv.TCP_control_rx[7:0]
+@200
+-TCP_flow
 -TCP_TX
+-
+@22
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.seq_num_tx[31:0]
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.ACK_tx[31:0]
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.TCP_control_tx[7:0]
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.bytes_abt_sent[31:0]
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.bytes_sent[31:0]
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.offset_tx[3:0]
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.urgent_pointer_tx[15:0]
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.window_size_tx[15:0]
+@200
+-
+@100000028
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.state[6:0]
+@22
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.chksum_debug[15:0]
+@28
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.TCP_send
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.TCP_tx_valid
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.TCP_tx_last
+@22
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.TCP_transmit[63:0]
+TOP.ether_simulation.clt_inst.u_tcp.TCP_tx.IP_pseuder_debug[15:0]
+@200
 -TCP_TX
+-TCP
 -
 -Client side
 -
@@ -102,6 +139,8 @@ TOP.ether_simulation.svr_inst.ip_rx.IP_last
 TOP.ether_simulation.svr_inst.ip_rx.IP_len[15:0]
 @22
 TOP.ether_simulation.svr_inst.ip_rx.IP_bytes_rcv_len[7:0]
+@28
+TOP.ether_simulation.svr_inst.ip_rx.MAC_valid
 @24
 TOP.ether_simulation.svr_inst.ip_rx.bytes_rcv[15:0]
 @22
@@ -121,16 +160,44 @@ TOP.ether_simulation.svr_inst.ip_rx.IP_checksum[15:0]
 -IP_RX
 -
 -
+-TCP
+@22
+TOP.ether_simulation.svr_inst.u_tcp.TCP_tx.TCP_control_tx[7:0]
+@200
 -TCP_RX
+-
+@22
+TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.ACK_rx[31:0]
+TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.TCP_control_rx[7:0]
+TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.offset_rx[3:0]
+@28
+TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.rcv_data
+@22
+TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.seq_num_rx[31:0]
+TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.urgent_pointer_rx[15:0]
+TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.window_size_rx[15:0]
+TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.checksum_rx[15:0]
+@200
+-
 @28
 TOP.ether_simulation.svr_inst.u_tcp.IP_last
 TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.valid_IP_header_rx
 @22
+TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.IP_pseuder[15:0]
+TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.TCP_checksum_comp[15:0]
 TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.IP_payload_rx[63:0]
 @100000028
 TOP.ether_simulation.svr_inst.u_tcp.tcp_rcv.state[2:0]
 @200
 -TCP_RX
+-TCP_flow
+@28
+TOP.ether_simulation.svr_inst.u_tcp.tcp_flow.hand_shake_done
+@100000028
+TOP.ether_simulation.svr_inst.u_tcp.tcp_flow.state[6:0]
+@200
+-TCP_flow
+-TCP
 -
 -Sever side
 [pattern_trace] 1

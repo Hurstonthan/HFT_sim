@@ -154,7 +154,7 @@ module TCP_receiver #(
                     IP_payload_rx[31:16] == DEST_PORT) begin
                     nseq_num_rx[15:0] = IP_payload_rx[31:16]; // Extract sequence number
                     nstate = RCV_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE;
-                    temp = {2'b0, TCP_checksum[15:0]} + IP_payload_rx[47:32] + IP_payload_rx[31:16] + IP_payload_rx[15:0] + IP_pseuder;
+                    temp = {4'b0, TCP_checksum[15:0]} + {4'b0,IP_payload_rx[47:32]} + {4'b0,IP_payload_rx[31:16]} + {4'b0,IP_payload_rx[15:0]} + {4'b0,IP_pseuder};
                     temp = temp[15:0] + temp[19:16]; //2nd second bit
                     temp = temp[15:0] + temp[16];
                     nTCP_checksum = temp[16:0];
@@ -171,7 +171,7 @@ module TCP_receiver #(
                 noffset_rx = IP_payload_rx[15:12]; // Extract offset
                 nTCP_control_rx = IP_payload_rx[7:0]; // Extract control flags
                 // nwindow_size_rx[15:8] = IP_payload_rx[7:0]; // Extract window size
-                temp = {2'b0, TCP_checksum[15:0]} + IP_payload_rx[63:48] + IP_payload_rx[47:32] + IP_payload_rx[31:16] + IP_payload_rx[15:0];
+                temp = {4'b0, TCP_checksum[15:0]} + {4'b0,IP_payload_rx[63:48]} + {4'b0,IP_payload_rx[47:32]} + {4'b0,IP_payload_rx[31:16]} + {4'b0,IP_payload_rx[15:0]};
                 temp = temp[15:0] + temp[19:16]; //2nd second bit
                 temp = temp[15:0] + temp[16];
                 nTCP_checksum = temp[16:0];
@@ -183,7 +183,7 @@ module TCP_receiver #(
                 nwindow_size_rx[15:0] = IP_payload_rx[63:48]; // Extract window size
                 nchecksum_rx = IP_payload_rx[47:32]; // Extract checksum
                 nurgent_pointer_rx = IP_payload_rx[31:16]; // Extract urgent pointer
-                temp = {2'b0, TCP_checksum[15:0]} + IP_payload_rx[63:48] + 16'h0 + IP_payload_rx[31:16] + IP_payload_rx[15:0];
+                temp = {4'b0, TCP_checksum[15:0]} + {4'b0,IP_payload_rx[63:48]} + 19'h0 + {4'b0,IP_payload_rx[31:16]};
                 temp = temp[15:0] + temp[19:16]; //2nd second bit
                 temp = temp[15:0] + temp[16];
                 nTCP_checksum = temp[16:0];

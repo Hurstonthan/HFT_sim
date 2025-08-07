@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
     tick(top, tfp);
 
     //Part 1: Setting up the handshake
-    // the client send SYN first
+    // the client send SYN first, the sever receiver SYN
     top -> tb_count = 0;
     top -> TX_en_clt = 1;
     tick(top, tfp);
@@ -51,9 +51,38 @@ int main(int argc, char **argv) {
         tick(top,tfp);
     }
     
+    for (size_t i = 0; i < 3; i++) {
+        tick(top,tfp);
+    }
+
+    // the sever send SYN_ACK, the client receive SYN_ACK
+    top -> TX_en_svr = 1;
+    tick(top, tfp);
+    top -> TX_en_svr = 0;
+    while (!(top -> frame_end_svr)) {
+        tick(top,tfp);
+    }
+
+    for (size_t i = 0; i < 3; i++) {
+        tick(top,tfp);
+    }
+
+    //The client send ACK, the sever receive ACK both of them done handshake
+    top -> TX_en_clt = 1;
+    tick(top, tfp);
+    top -> TX_en_clt = 0;
+    while (!(top -> frame_end_clt)) {
+        tick(top,tfp);
+    }
+
+    for (size_t i = 0; i < 3; i++) {
+        tick(top,tfp);
+    }
+    
     for (size_t i = 0; i < 10; i++) {
         tick(top,tfp);
     }
+
 
 
 

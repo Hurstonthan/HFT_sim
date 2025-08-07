@@ -393,8 +393,8 @@ module MAC_rx #(
 
             CHECK_CRC: begin
                 // crc_valid = 1'b0;
-                //nMAC_valid = 1'b0; //This one is for Questasim
-                nMAC_valid = 1'b1;  //This one is for Verilator 
+                nMAC_valid = 1'b0; //This one is for Questasim
+                //nMAC_valid = 1'b1;  //This one is for Verilator 
                 nsof_found = 1'b0;
                 nsoft_dl = 1'b0;
                 // todo giving wrong crc 
