@@ -1,6 +1,7 @@
 `timescale 1ns / 10ps
 module TCP_ISN #(
-    parameter WIDTH = 32
+    parameter WIDTH = 32,
+    parameter CLT_OR_SVR = 0
 )(
     input  wire CLK,
     input  wire nRST,
@@ -12,15 +13,16 @@ module TCP_ISN #(
 
     always_ff @(posedge CLK or negedge nRST) begin
         if (!nRST) begin
-            counter <= 32'hABCDE123;   // Example non-zero reset value
+
+            counter <= CLT_OR_SVR ? 32'h123ABCDE : 32'hABCDE123;
         end else begin
             counter <= counter + 1;    // Free-running counter
         end
     end
 
     always_ff @(posedge CLK or negedge nRST) begin
-        if (!nRST) begin
-            ISN_num <= 32'hABCDE123;
+        if (!nRST) begin            
+            ISN_num <= CLT_OR_SVR ? 32'h123ABCDE : 32'hABCDE123;
         end else if (gen_en) begin
             ISN_num <= counter;            // Capture the ISN_num on request
         end

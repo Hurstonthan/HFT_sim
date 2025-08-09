@@ -221,7 +221,9 @@ module MAC_rx #(
             IDLE: begin
                 crc_init = 1'b1;
                 nMAC_valid = 1'b0;
+                nbytes_rcv = 0;
                 if (sof_found) begin
+
                     if (sof_lane == 4) begin
                         nsoft_dl = 1'b1;
                     end else begin
@@ -276,21 +278,25 @@ module MAC_rx #(
                     if (sof_lane == 0) begin
                         if (bytes_offset < 5) begin
                             case_debug = 1'b1;
-                            nbytes_rcv = 8'd4 - bytes_offset; 
+                            //nbytes_rcv = 8'd4 - bytes_offset; 
                             case (bytes_offset)
                                 3'd0: begin
+                                    nbytes_rcv = 8'd4 - bytes_offset; 
                                     nMAC_payload_rcv_cvrt = frame_store[95:64];
                                     xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
                                 3'd1: begin
+                                    nbytes_rcv = 8'd4 - bytes_offset; 
                                     nMAC_payload_rcv_cvrt = frame_store[103:64];
                                     xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
                                 3'd2: begin
+                                    nbytes_rcv = 8'd4 - bytes_offset; 
                                     nMAC_payload_rcv_cvrt = frame_store[111:64];
                                     xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
                                 3'd3: begin
+                                    nbytes_rcv = 8'd4 - bytes_offset; 
                                     nMAC_payload_rcv_cvrt = frame_store[119:64];
                                     xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end

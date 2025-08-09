@@ -24,8 +24,9 @@ module IP_rx #(
     output logic IP_flush,
     output logic IP_last,
     output logic [63:0] IP_payload,
-    output logic [7:0] IP_bytes_rcv_len,
+    output logic [7:0]  IP_bytes_rcv_len,
     output logic [15:0] IP_pseuder,
+    output logic  protocol_data_flag,
     output logic is_udp,
     output logic is_tcp
 );
@@ -47,7 +48,7 @@ module IP_rx #(
 
     logic nIP_valid, nIP_last;
     logic next_is_udp, next_is_tcp;
-    
+    logic nprotocol_data_flag;
     //todo fix the checksum logic
     chksum_tcp_pl chksum_inst(
        .CLK(CLK),
@@ -72,6 +73,7 @@ module IP_rx #(
             is_udp <= 0;
             IP_bytes_rcv_len <= 0;
             IP_pseuder <= 0;
+            protocol_data_flag <= 0;
         end else begin
             // flush is only trigger by one clock cycle
             // if (MAC_flush || IP_flush) begin 
@@ -99,6 +101,7 @@ module IP_rx #(
                 IP_pseuder <= nIP_pseuder;
                 is_tcp <= next_is_tcp;
                 is_udp <= next_is_udp;
+                protocol_data_flag <= nprotocol_data_flag;
                 // IP_flush <= nIP_flush;
             //end
         end
@@ -143,6 +146,7 @@ always_comb begin
     nIP_pseuder = IP_pseuder;
     next_is_tcp = is_tcp;
     next_is_udp = is_udp;
+    nprotocol_data_flag = (IP_len > 16'd40) ? 1'b1 : 1'b0;
     
 
     // debugging
@@ -285,7 +289,7 @@ always_comb begin
         end
 
         RCV_PAYLOAD: begin
-            if (MAC_valid) begin
+            //if (MAC_valid) begin
                 nIP_payload = MAC_payload_rcv;
                 nIP_valid = 1'b1;
                 if (nbytes_rcv >= IP_len) begin
@@ -293,7 +297,7 @@ always_comb begin
                     nIP_bytes_rcv_len = IP_len - bytes_rcv; 
                     nstate = DONE;
                 end 
-            end
+            //end
         end
 
         DONE: begin

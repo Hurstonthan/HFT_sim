@@ -42,6 +42,7 @@ module MAC_tx #(
     ether_state_t state, nstate;
 
     logic crc_init, valid, nvalid;
+    logic IP_last_dl;
     logic [31:0] crc_out;
 
     //variables to assist zero paddins for >= 46 bytes 
@@ -69,12 +70,14 @@ module MAC_tx #(
             xgmii_txd_l <= 64'h07070707_07070707;
             xgmii_txc_l <= '1;
             len_counter <= 0;
+            IP_last_dl <= 0;
             //valid <= 0;
         end else begin
             state <= nstate;
             xgmii_txd_l <= nxgmii_txd_l;
             xgmii_txc_l <= nxgmii_txc_l;
             len_counter <= nlen_counter;
+            IP_last_dl <= IP_last;
             //valid <= nvalid;
             
         end
@@ -130,9 +133,10 @@ module MAC_tx #(
                     nstate = SEND_ZERO_PADDING;
                     nlen_counter = tt_len_data;
                 end else if (IP_last) begin
-                    nstate = SEND_FCS_TERMINATE; //Send FCS and terminate
                     IP_send_l = 1'b0;
-
+                end else if (IP_last_dl) begin
+                    IP_send_l = 1'b0;
+                    nstate = SEND_FCS_TERMINATE;
                 end
             end            
 
@@ -239,6 +243,13 @@ module MAC_tx #(
                 // nxgmii_txc_l =  '0;
                 nxgmii_txd_l = IP_transmit;
                 nxgmii_txc_l =  '0;
+
+                if (IP_last_dl && (tt_len_data >= 46)) begin
+                    nxgmii_txd_l = {crc_out, 32'hFD070707}; // FCS and 0xFD
+                    nxgmii_txc_l = 8'b0000_1111;
+                end
+
+
 
                 
                 

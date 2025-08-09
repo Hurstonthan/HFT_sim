@@ -5,6 +5,7 @@ module TCP #(
     parameter DATA_WIDTH = 64, // Width of the data bus
     parameter int FIFO_DEPTH  = 10,               // words  (must be power‑of‑2)
     parameter int CTRL_WIDTH = 8,
+    parameter CLT_OR_SVR = 1'b0,
     localparam int WORD_BYTES = DATA_WIDTH / 8,
     localparam int FIFO_WIDTH = $clog2(FIFO_DEPTH),
     localparam int WINDOW_BYTES = FIFO_DEPTH * WORD_BYTES
@@ -18,6 +19,7 @@ module TCP #(
     //Interface between TCP_rcv and IP_rcv
     input  logic IP_valid,     // Indicates if the IP packet is valid
     input  logic IP_flush,     // Flush signal for IP packet
+    input  logic IP_data_flag, 
     input  logic [15:0] IP_pseuder, // Pseudo header for TCP
     input  logic [63:0] IP_payload, // Payload of the IP packet
     input  logic IP_last,
@@ -187,6 +189,7 @@ module TCP #(
         .IP_last(IP_last),
         .IP_bytes_rcv(IP_bytes_rcv),
         .IP_pseuder(IP_pseuder),
+        .IP_data_flag (IP_data_flag),
         .bytes_rcv(bytes_rcv),
         .rcv_data(rcv_data),
         .TCP_control_rx(TCP_control_rx),
@@ -227,7 +230,9 @@ module TCP #(
         .TCP_len_data(TCP_len_data),
         .TCP_basesum_payload(TCP_basesum_payload)
     );
-    TCP_ISN ISN_gen (
+    TCP_ISN #(
+        .CLT_OR_SVR(CLT_OR_SVR)
+    )ISN_gen (
         .CLK(CLK),
         .nRST(nRST),
         .gen_en(1'b0),

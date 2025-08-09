@@ -4,7 +4,8 @@ module top #(
     parameter int DATA_WIDTH    = 64,
     parameter int FIFO_DEPTH_TX = 16,
     parameter int FIFO_DEPTH_RX = 16,
-    parameter int CTRL_WIDTH    = 8
+    parameter int CTRL_WIDTH    = 8,
+    parameter CLT_OR_SVR = 1'b0
 ) (
     input  logic                           CLK,
     input  logic                           nRST,
@@ -61,6 +62,7 @@ module top #(
     logic [63:0]                    IP_payload;
     logic [15:0]                    TCP_len;
     logic [7:0]                     IP_bytes_rcv_len;
+    logic protocol_data_flag;
 
     //IP_RX and MAC_RX
     logic [DATA_WIDTH - 1:0] MAC_payload_rcv;
@@ -97,6 +99,7 @@ module top #(
         .MAC_payload_rcv(MAC_payload_rcv),
         .MAC_flush(CRC_flush),
         .bytes_rcv_len(bytes_rcv_len),
+        .protocol_data_flag(protocol_data_flag),
         .IP_valid(IP_valid),
         .IP_flush(IP_flush),
         .IP_last(IP_rx_last),
@@ -153,6 +156,7 @@ module top #(
     logic [DATA_WIDTH-1:0] rd_FIFO_payload;
     logic [15:0] bytes_abt_sent;
 
+
     
     // Output mapping to top level
     assign rd_FIFO_valid_tx = rd_ftx_valid_int;
@@ -193,7 +197,8 @@ module top #(
     TCP #(
         .DATA_WIDTH  (DATA_WIDTH),
         .FIFO_DEPTH  (FIFO_DEPTH_RX),
-        .CTRL_WIDTH  (CTRL_WIDTH)
+        .CTRL_WIDTH  (CTRL_WIDTH),
+        .CLT_OR_SVR  (CLT_OR_SVR)
     ) u_tcp (
         .CLK                (CLK),
         .nRST               (nRST),
@@ -208,7 +213,8 @@ module top #(
         .IP_flush           (IP_flush),
         .IP_pseuder         (IP_pseuder),
         .IP_payload         (IP_payload),
-        .IP_bytes_rcv       (IP_bytes_rcv),
+        .IP_bytes_rcv       (IP_bytes_rcv_len),
+        .IP_data_flag       (protocol_data_flag),
 
         // Data out to payload FIFO
         .nw_segment         (nw_segment),

@@ -446,7 +446,7 @@ module TCP_flow_ctrl #(
             else begin
                 case_bug = non_overlap;
                 // wr_FIFO_en = 1'b1;
-                wr_FIFO_offset = 8'hFF >> (8 - TCP_bytes_trk);
+                wr_FIFO_offset = 8'hFF << (8 - TCP_bytes_trk);
                 if (free_mask && TCP_last) begin 
                     // case_bug = right_trim;
                     nTCP_order[free_idx].seq_num = seq_rx_str;
@@ -547,7 +547,7 @@ module TCP_flow_ctrl #(
         case (state)
             //During the IDLE, client will send the SYN packet first
             IDLE: begin
-                nseq_num.seq_num = seq_num;
+                nseq_num.seq_num = seq_num.seq_num;
                 
                 // if (SYN_sent) begin
                 //     nstate = WAIT_SYN_ACK;

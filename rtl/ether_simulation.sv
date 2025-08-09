@@ -18,6 +18,8 @@ module ether_simulation #(
 
     input logic [DATA_WIDTH - 1:0] xgmii_rxd_svr,
     input logic [CTRL_WIDTH - 1:0] xgmii_rxc_svr,
+
+    //FIFO TX
     input logic axis_last_svr,
     input logic wr_FIFO_en_svr,
     input logic [31:0] len_seq_svr,
@@ -78,7 +80,9 @@ module ether_simulation #(
 
 
     //Sever top.sv module side
-    top svr_inst (
+    top #(
+        .CLT_OR_SVR(1'b1)
+    )svr_inst (
         .CLK(CLK),
         .nRST(nRST),
 

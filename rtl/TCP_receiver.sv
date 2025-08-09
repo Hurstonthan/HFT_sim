@@ -17,6 +17,7 @@ module TCP_receiver #(
     input  logic [7:0]  IP_bytes_rcv,
     input  logic        IP_flush,
     input  logic [15:0] IP_pseuder,
+    input  logic IP_data_flag,
 
     output logic        rcv_data,
     output logic [7:0]  TCP_control_rx,
@@ -152,7 +153,7 @@ module TCP_receiver #(
             IDLE: begin
                 if (valid_IP_header_rx && IP_payload_rx[47:32] == SRC_PORT && 
                     IP_payload_rx[31:16] == DEST_PORT) begin
-                    nseq_num_rx[15:0] = IP_payload_rx[31:16]; // Extract sequence number
+                    nseq_num_rx[31:16] = IP_payload_rx[15:0]; // Extract sequence number
                     nstate = RCV_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE;
                     temp = {4'b0, TCP_checksum[15:0]} + {4'b0,IP_payload_rx[47:32]} + {4'b0,IP_payload_rx[31:16]} + {4'b0,IP_payload_rx[15:0]} + {4'b0,IP_pseuder};
                     temp = temp[15:0] + temp[19:16]; //2nd second bit
@@ -187,9 +188,7 @@ module TCP_receiver #(
                 temp = temp[15:0] + temp[19:16]; //2nd second bit
                 temp = temp[15:0] + temp[16];
                 nTCP_checksum = temp[16:0];
-                
 
-                
                 if (!IP_last) begin
                     nTCP_valid = 1'b1;
                     n_nw_segment = 1'b1;
@@ -200,8 +199,9 @@ module TCP_receiver #(
                     nstate = TCP_CHECKSUM;
                     nTCP_last = 1'b1;
                     nbytes_rcv = 0;
-                    if (|IP_bytes_rcv) begin
+                    if (IP_data_flag) begin
                         nTCP_valid = 1'b1;
+                        nTCP_last  = 1'b1;
                         n_nw_segment = 1'b1;
                         nbytes_rcv = 2;
                         nTCP_payload_rx = IP_payload_rx[15:0];
