@@ -1,5 +1,5 @@
 `timescale  1ns/10ps
-`include "rx_pkg.sv"
+//`include "rx_pkg.sv"
 
 module ethernet_rx 
 #(
@@ -22,7 +22,7 @@ module ethernet_rx
     // output logic UDP_valid,
     // output logic [63:0] UDP_payload
 );
-    import rx_pkg::*;
+    //import rx_pkg::*;
     logic MAC_valid, MAC_flush;
     logic [63:0] MAC_payload_rcv;
     logic [7:0] bytes_rcv_len;

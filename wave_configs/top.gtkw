@@ -1,0 +1,75 @@
+[*]
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Sun Aug 10 19:47:31 2025
+[*]
+[dumpfile] "/home/polarbearbo/purdue/HFT_project/HFT_sim/top.fst"
+[dumpfile_mtime] "Sun Aug 10 19:45:41 2025"
+[dumpfile_size] 8442
+[savefile] "/home/polarbearbo/purdue/HFT_project/HFT_sim/wave_configs/top.gtkw"
+[timestart] 9
+[size] 1920 1033
+[pos] -27 -24
+*-3.044818 40 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.top.
+[treeopen] TOP.top.mac_rx.
+[treeopen] TOP.top.mac_tx.
+[sst_width] 278
+[signals_width] 302
+[sst_expanded] 1
+[sst_vpaned_height] 308
+@100000028
+TOP.CLK
+@28
+TOP.TX_en
+@22
+TOP.UDP_len[15:0]
+@28
+TOP.nRST
+@23
+TOP.xgmii_rxc[7:0]
+@22
+TOP.xgmii_rxd[63:0]
+TOP.xgmii_txc[7:0]
+TOP.xgmii_txd[63:0]
+@28
+TOP.frame_end
+@200
+-
+-MAC_rx
+@100000028
+TOP.top.mac_rx.state[5:0]
+TOP.top.mac_rx.next_state[5:0]
+@20000
+-
+@200
+-IP_rx
+@100000028
+TOP.top.ip_rx.state[3:0]
+TOP.top.ip_rx.nstate[3:0]
+@200
+-
+-UDP_rx
+@100000028
+TOP.top.udp_rx.current_state[2:0]
+TOP.top.udp_rx.nstate[2:0]
+@200
+-
+-MAC_tx
+@100000028
+TOP.top.mac_tx.state[6:0]
+TOP.top.mac_tx.nstate[6:0]
+@200
+-
+-IP_tx
+@100000028
+TOP.top.ip_tx.IP_state[2:0]
+TOP.top.ip_tx.nxIP_state[2:0]
+@200
+-
+-UDP_rx
+@100000028
+TOP.top.udp_rx.current_state[2:0]
+TOP.top.udp_rx.nstate[2:0]
+[pattern_trace] 1
+[pattern_trace] 0

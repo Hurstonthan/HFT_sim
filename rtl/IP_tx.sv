@@ -66,7 +66,7 @@ module IP_tx #(
 
     //Adding the logic of IP checksum
     logic chk_sum_valid;
-    logic [19:0] temp;
+    logic [19:0] temp, temp1, temp2;
     logic [16:0] IPv4_chk_sum, nIPv4_chk_sum;
     logic [15:0] ntt_len_data;
     logic [15:0] chksum_rslt;
@@ -113,22 +113,26 @@ module IP_tx #(
     end
 
     always_comb begin
+        // default value to the temp 
+        temp = 0;
+        temp1 = 0;
+        temp2 = 0;
         nIPv4_chk_sum = IPv4_chk_sum;
         if (chk_sum_valid) begin
         //     //0x4884 is including everything but TCP payload length, and the checksum
         //    nIPv4_chk_sum = 16'h4884 + len_data; // 2 is extra 2 bytes for TCP transmission
 
-        temp = {IPV4_VER, TYPE_OF_SERVICE} 
-                + IP_IDENFICATION 
-                + IP_FLAG_OFFSET 
-                + {IP_TLL, IP_PROTOCOL}
-                + IP_SRC_ADDR[31:16] + IP_SRC_ADDR[15:0]
-                + IP_DEST_ADDR[31:16] + IP_DEST_ADDR[15:0]
-                + len_data + 16'd20 + IP_PROTOCOL_LEN; //len data from protocol + 20bytes IP header, 20bytes TCP/UDP header
+            temp = {IPV4_VER, TYPE_OF_SERVICE} 
+                    + IP_IDENFICATION 
+                    + IP_FLAG_OFFSET 
+                    + {IP_TLL, IP_PROTOCOL}
+                    + IP_SRC_ADDR[31:16] + IP_SRC_ADDR[15:0]
+                    + IP_DEST_ADDR[31:16] + IP_DEST_ADDR[15:0]
+                    + len_data + 16'd20 + IP_PROTOCOL_LEN; //len data from protocol + 20bytes IP header, 20bytes TCP/UDP header
 
-        temp = temp[15:0] + temp[19:16];
-        temp = temp[15:0] + temp[16];
-        nIPv4_chk_sum = temp[16:0]; 
+            temp1 = temp[15:0] + temp[19:16];
+            temp2 = temp1[15:0] + temp1[16];
+            nIPv4_chk_sum = temp2[16:0]; 
         end
     end
 

@@ -19,8 +19,8 @@ module UDP_tx
     output logic [63:0] IP_payload, // including the UDP header and payload
     // output logic IP_valid, // signal to indicate that the IP packet is ready to be sent
     output logic UDP_last,
-    output logic [15:0] protocol_Data_len,
-    output logic [15:0] IP_len 
+    output logic [15:0] protocol_Data_len
+    // output logic [15:0] IP_len 
 );
     typedef enum logic [2:0] {
         IDLE,
@@ -34,6 +34,7 @@ module UDP_tx
     state_t current_state, nstate;
     logic [15:0] computed_len; 
     logic [63:0] header_reg;
+    logic [15:0] IP_len;
     // logic last_reg; 
 
     always_ff @(posedge CLK, negedge nRST) begin
