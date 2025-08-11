@@ -1,0 +1,433 @@
+`begin_keywords "1800-2017"
+`line 1 "rtl/IP_rx.sv" 1
+`timescale 1ns/10ps
+ 
+ 
+ 
+`line 4 "rtl/IP_rx.sv" 0
+`line 1 "include/rx_pkg.sv" 1
+`timescale 1ns/10ps
+`line 2 "include/rx_pkg.sv" 0
+ 
+ 
+
+`line 5 "include/rx_pkg.sv" 0
+ 
+    
+    
+    
+    
+    
+
+`line 12 "include/rx_pkg.sv" 0
+    
+    
+    
+
+`line 16 "include/rx_pkg.sv" 0
+    
+        
+        
+        
+
+`line 21 "include/rx_pkg.sv" 0
+    
+        
+        
+        
+        
+       
+        
+        
+        
+
+`line 31 "include/rx_pkg.sv" 0
+    
+        
+        
+       
+        
+    
+         
+        
+         
+         
+         
+         
+        
+        
+        
+        
+     
+
+`line 49 "include/rx_pkg.sv" 0
+         
+        
+         
+         
+        
+        
+        
+        
+     
+     
+
+
+
+`line 62 "include/rx_pkg.sv" 0
+ 
+`line 63 "include/rx_pkg.sv" 0
+`line 4 "rtl/IP_rx.sv" 2
+
+`line 5 "rtl/IP_rx.sv" 0
+module IP_rx #(
+     
+     
+     
+     
+     
+     
+     
+    parameter PROTOCOL = 8'h06,
+    parameter PROTOCOL_LEN = 16'd20
+) (
+    input logic CLK,
+    input logic nRST,
+    input logic MAC_valid,
+    input logic [63:0] MAC_payload_rcv,
+    input logic MAC_flush,
+    input logic [7:0] bytes_rcv_len,
+
+`line 23 "rtl/IP_rx.sv" 0
+    output logic IP_valid,
+    output logic IP_flush,
+    output logic IP_last,
+    output logic [63:0] IP_payload,
+    output logic [7:0]  IP_bytes_rcv_len,
+    output logic [15:0] IP_pseuder,
+    output logic  protocol_data_flag,
+    output logic is_udp,
+    output logic is_tcp
+);
+    import rx_pkg::*;
+    IP_t state, nstate;
+    logic [15:0] IP_checksum, nIP_checksum;
+    logic [63:0] nIP_payload;
+    logic [15:0] bytes_rcv, nbytes_rcv;
+    logic chksum_en, chksum_clear;
+    logic [63:0] chksum_in;
+    logic [15:0] chksum_pl;
+    logic [16:0] chksum_final;
+    logic [15:0] dst_addr, ndst_addr;
+    logic [15:0] IP_len, nIP_len;
+    logic [7:0] nIP_bytes_rcv_len;
+
+`line 46 "rtl/IP_rx.sv" 0
+    logic [15:0] nIP_pseuder;
+    logic [19:0] temp;
+
+`line 49 "rtl/IP_rx.sv" 0
+    logic nIP_valid, nIP_last;
+    logic next_is_udp, next_is_tcp;
+    logic nprotocol_data_flag;
+     
+    chksum_tcp_pl chksum_inst(
+       .CLK(CLK),
+       .nRST(nRST),
+       .clear(chksum_clear),
+       .FIFO_rd_en(chksum_en),
+       .TCP_payload_tx(chksum_in),
+       .TCP_checksum_pl(chksum_pl)
+    );
+
+`line 62 "rtl/IP_rx.sv" 0
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            state <= IDLE;
+            IP_checksum <= 0;
+            IP_payload <= 0;
+            bytes_rcv <= 0;
+            dst_addr <= 0;
+            IP_valid <= 0;
+            IP_last <= 0;
+            IP_len <= 0;
+            is_tcp <= 0;
+            is_udp <= 0;
+            IP_bytes_rcv_len <= 0;
+            IP_pseuder <= 0;
+            protocol_data_flag <= 0;
+        end else begin
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+                state <= nstate;
+                IP_checksum <= nIP_checksum;
+                IP_payload <= nIP_payload;
+                bytes_rcv <= nbytes_rcv;
+                dst_addr <= ndst_addr;
+                IP_valid <= nIP_valid;
+                IP_len <= nIP_len;
+                IP_bytes_rcv_len <= nIP_bytes_rcv_len;
+                IP_last <= nIP_last;
+                IP_pseuder <= nIP_pseuder;
+                is_tcp <= next_is_tcp;
+                is_udp <= next_is_udp;
+                protocol_data_flag <= nprotocol_data_flag;
+                 
+             
+        end
+    end
+
+`line 110 "rtl/IP_rx.sv" 0
+ 
+logic [15:0] total_len;
+logic [15:0] frags_flag;
+logic [7:0] ttl;
+logic [2:0] flags;
+logic [12:0] fragoff;
+logic [3:0] test_valid;
+logic [3:0] ip_version;
+logic is_src_addr;
+logic is_ip_version_valid;
+logic [31:0] src_addr, dest_addr;
+
+`line 122 "rtl/IP_rx.sv" 0
+always_comb begin
+    
+
+`line 136 "rtl/IP_rx.sv" 0
+
+`line 136 "rtl/IP_rx.sv" 0
+
+`line 136 "rtl/IP_rx.sv" 0
+
+`line 136 "rtl/IP_rx.sv" 0
+
+`line 136 "rtl/IP_rx.sv" 0
+
+`line 136 "rtl/IP_rx.sv" 0
+
+`line 136 "rtl/IP_rx.sv" 0
+
+`line 136 "rtl/IP_rx.sv" 0
+
+`line 136 "rtl/IP_rx.sv" 0
+
+`line 136 "rtl/IP_rx.sv" 0
+
+`line 136 "rtl/IP_rx.sv" 0
+
+`line 136 "rtl/IP_rx.sv" 0
+ 
+    nstate = state;
+    nIP_payload = IP_payload;
+    chksum_en = 1'b0;
+    chksum_in = MAC_payload_rcv;
+    nbytes_rcv = bytes_rcv;
+    ndst_addr = dst_addr;
+    nIP_valid = 0;
+    chksum_clear = 1'b0;
+    chksum_final = {1'b0, chksum_pl};
+    nIP_len = IP_len;
+    nIP_pseuder = IP_pseuder;
+    next_is_tcp = is_tcp;
+    next_is_udp = is_udp;
+    nprotocol_data_flag = (IP_len > 16'd40) ? 1'b1 : 1'b0;
+    
+
+`line 153 "rtl/IP_rx.sv" 0
+     
+    total_len = MAC_payload_rcv[63:48];
+    frags_flag = MAC_payload_rcv[31:16];
+    ttl = MAC_payload_rcv[15:8];
+    flags = MAC_payload_rcv[31:29];
+    fragoff = MAC_payload_rcv[28:16];
+    test_valid[3] = (MAC_payload_rcv[63:48] <= 16'd1480);   
+    test_valid[2] = (MAC_payload_rcv[28:16] == 0);          
+    test_valid[1] = (MAC_payload_rcv[15:8] != 0);           
+    test_valid[0] = (!MAC_payload_rcv[31]);                 
+    ip_version = MAC_payload_rcv[15:12];
+    IP_flush = 1'b0;
+    is_src_addr = (MAC_payload_rcv[47:16] == IP_SRC_ADDR);
+    is_ip_version_valid = (ip_version == IP_VERSION);
+    src_addr = MAC_payload_rcv[47:16];
+    dest_addr = {dst_addr, MAC_payload_rcv[63:48]};
+
+`line 170 "rtl/IP_rx.sv" 0
+    nIP_bytes_rcv_len = bytes_rcv_len;
+    nIP_last = 0;
+    if (MAC_valid) begin
+        nbytes_rcv = bytes_rcv + bytes_rcv_len;
+    end
+
+`line 176 "rtl/IP_rx.sv" 0
+    case (state)
+        IDLE: begin
+            chksum_clear = 1'b1;
+            if (MAC_valid) begin
+                nstate = RCV_VER_IHL_DSCP_ECN; 
+            end
+        end
+
+`line 184 "rtl/IP_rx.sv" 0
+        RCV_VER_IHL_DSCP_ECN: begin
+            if (MAC_valid) begin
+                chksum_en = 1'b1;
+                if (MAC_payload_rcv[15:12] == IP_VERSION) begin
+                    nstate      = RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL;
+                    nIP_pseuder = {12'b0,MAC_payload_rcv[11:8]} << 2;
+                end else begin
+                    nstate = ERROR;
+                     
+                end
+            end
+        end
+
+`line 197 "rtl/IP_rx.sv" 0
+        RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL: begin
+            if (MAC_valid) begin
+                 
+                chksum_en = 1'b1;
+                 
+                 
+                nIP_len = MAC_payload_rcv[63:48];
+
+`line 205 "rtl/IP_rx.sv" 0
+                 
+                next_is_tcp = (MAC_payload_rcv[7:0] == TCP_PROTOCOL);
+                next_is_udp = (MAC_payload_rcv[7:0] == UDP_PROTOCOL);
+
+`line 209 "rtl/IP_rx.sv" 0
+                 
+                if (MAC_payload_rcv[63:48] <= 16'd1480 &&  
+                     
+                    MAC_payload_rcv[15:8] !=0 &&  
+                    !MAC_payload_rcv[31] &&  
+                    (next_is_tcp || next_is_udp)) begin
+                        nstate = RCV_SUM_SRC_ADDR_DEST_ADDR;
+                        temp = {4'b0, {8'b0, MAC_payload_rcv[7:0]}} + {4'b0, nIP_len} - {4'b0,IP_pseuder};
+                        temp = temp[15:0] + temp[19:16];
+                        temp = temp[15:0] + temp[16];
+                        nIP_pseuder = temp[15:0];
+                    end else begin
+                         
+                        nstate = ERROR;
+                    end
+            end 
+        end
+
+`line 227 "rtl/IP_rx.sv" 0
+        RCV_SUM_SRC_ADDR_DEST_ADDR: begin
+            if (MAC_valid) begin
+                chksum_en = 1'b1;
+                chksum_in = {16'h0, MAC_payload_rcv[47:0]};
+
+`line 232 "rtl/IP_rx.sv" 0
+                 
+                nIP_checksum = MAC_payload_rcv[63:48];
+                ndst_addr = MAC_payload_rcv[15:0];  
+                temp = {4'b0, MAC_payload_rcv[47:32]} + {4'b0, MAC_payload_rcv[31:16]} + {4'b0, MAC_payload_rcv[15:0]} + {4'b0, IP_pseuder};
+                temp = temp[15:0] + temp[19:16];
+                temp = temp[15:0] + temp[16];
+                nIP_pseuder = temp[15:0];
+                
+                if (is_src_addr) begin
+                    nstate = RCV_PAYLOAD_DEST;
+                    nIP_valid = 1'b1;
+                end else begin
+                    nstate = ERROR;
+                    chksum_en = 1'b0;
+                end
+            end
+        end
+
+`line 250 "rtl/IP_rx.sv" 0
+        RCV_PAYLOAD_DEST: begin
+            if (MAC_valid) begin
+                chksum_in = {48'h0, MAC_payload_rcv[63:48]};
+                chksum_en = 1'b1;
+                temp = {4'b0, MAC_payload_rcv[63:48]} + {4'b0, IP_pseuder};
+                temp = temp[15:0] + temp[19:16];
+                temp = temp[15:0] + temp[16];
+                nIP_pseuder = temp[15:0];
+                
+                if (({dst_addr, MAC_payload_rcv[63:48]} == IP_DEST_ADDR)) begin
+                    nIP_payload = {16'h0, MAC_payload_rcv[47:0]};
+                    nIP_valid = 1'b1;
+                    nstate = CHK_SUM;
+                end else begin
+                    nstate = ERROR;
+                     
+                end
+            end
+        end
+
+`line 270 "rtl/IP_rx.sv" 0
+        CHK_SUM: begin
+            if (MAC_valid) begin
+                nIP_payload = MAC_payload_rcv;
+            end
+             
+             
+             
+             
+            if (~chksum_pl == IP_checksum) begin
+                nstate = RCV_PAYLOAD;
+                nIP_valid = 1'b1;
+                if (nbytes_rcv >= IP_len) begin
+                    nIP_last = 1'b1;
+                    nIP_bytes_rcv_len = IP_len - bytes_rcv; 
+                    nbytes_rcv        = bytes_rcv + (IP_len - bytes_rcv);
+                    nstate = DONE;
+                end
+            end else begin
+                nstate = ERROR;
+                 
+            end
+
+`line 292 "rtl/IP_rx.sv" 0
+        end
+
+`line 294 "rtl/IP_rx.sv" 0
+        RCV_PAYLOAD: begin
+             
+                nIP_payload = MAC_payload_rcv;
+                nIP_valid = 1'b1;
+                if (nbytes_rcv >= IP_len) begin
+                    nIP_last = 1'b1;
+                    nIP_bytes_rcv_len = IP_len - bytes_rcv; 
+                    nstate = DONE;
+                end 
+             
+        end
+
+`line 306 "rtl/IP_rx.sv" 0
+        DONE: begin
+            nbytes_rcv = 0;
+            nIP_valid = 1'b0;
+            nstate = IDLE;
+        end
+
+`line 312 "rtl/IP_rx.sv" 0
+        ERROR: begin
+            IP_flush = 1'b1;
+            if (!MAC_valid) begin
+                nstate = IDLE;
+            end
+        end
+        default: nstate = IDLE; 
+    endcase
+end
+endmodule
+`line 322 "rtl/IP_rx.sv" 0

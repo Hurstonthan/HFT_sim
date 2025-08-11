@@ -1,0 +1,857 @@
+Verilator Statistics Report
+
+Information:
+  Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+  Arguments: -Wno-lint --error-limit 0 --trace --trace-fst --debug -Iinclude -Irtl -CFLAGS -Irtl -Iinclude -O0 -g --cc rtl/top.sv --top-module top --exe generated/top/top_tb.cpp generated/top/top_input.cpp --build
+  Build jobs: 1
+  Verilate jobs: 1
+
+Global Statistics:
+
+  Assertions, assert immediate statements                                                             0
+  Assertions, assert non-immediate statements                                                         0
+  Assertions, cover statements                                                                        0
+  Assertions, full/parallel case                                                                      0
+  ConstPool, Constants emitted                                                                        0
+  ConstPool, Tables emitted                                                                           0
+  Optimizations, Cases complex                                                                        3
+  Optimizations, Cases parallelized                                                                   7
+  Optimizations, Clocker decomposed vectors                                                           0
+  Optimizations, Clocker seen vectors                                                                 0
+  Optimizations, Combined CFuncs                                                                      3
+  Optimizations, Const bit op reduction                                                           10464
+  Optimizations, Const bit op reduction                                                               0
+  Optimizations, DFG  pre inline 1st CSE, expressions eliminated                                      5
+  Optimizations, DFG  pre inline 2nd CSE, expressions eliminated                                      0
+  Optimizations, DFG  pre inline Ast2Dfg, coalesced assignments                                      25
+  Optimizations, DFG  pre inline Ast2Dfg, input equations                                            30
+  Optimizations, DFG  pre inline Ast2Dfg, non-representable (dtype)                                   0
+  Optimizations, DFG  pre inline Ast2Dfg, non-representable (impure)                                  0
+  Optimizations, DFG  pre inline Ast2Dfg, non-representable (lhs)                                     0
+  Optimizations, DFG  pre inline Ast2Dfg, non-representable (node)                                    0
+  Optimizations, DFG  pre inline Ast2Dfg, non-representable (timing)                                  0
+  Optimizations, DFG  pre inline Ast2Dfg, non-representable (unknown)                                 0
+  Optimizations, DFG  pre inline Ast2Dfg, non-representable (var ref)                                 0
+  Optimizations, DFG  pre inline Ast2Dfg, non-representable (width)                                   0
+  Optimizations, DFG  pre inline Ast2Dfg, representable                                              30
+  Optimizations, DFG  pre inline Dfg2Ast, intermediate variables                                      7
+  Optimizations, DFG  pre inline Dfg2Ast, replaced variables                                          0
+  Optimizations, DFG  pre inline Dfg2Ast, result equations                                           37
+  Optimizations, DFG  pre inline General, modules                                                    13
+  Optimizations, DFG  pre inline Peephole, fold assoc binary                                          0
+  Optimizations, DFG  pre inline Peephole, fold assoc binary lhs of rhs                               0
+  Optimizations, DFG  pre inline Peephole, fold assoc binary rhs of lhs                               0
+  Optimizations, DFG  pre inline Peephole, fold binary                                                0
+  Optimizations, DFG  pre inline Peephole, fold sel                                                   0
+  Optimizations, DFG  pre inline Peephole, fold unary                                                 0
+  Optimizations, DFG  pre inline Peephole, inline arraysel                                            0
+  Optimizations, DFG  pre inline Peephole, pull nots through cond                                     0
+  Optimizations, DFG  pre inline Peephole, push bitwise op through concat                             0
+  Optimizations, DFG  pre inline Peephole, push bitwise through reduction                             0
+  Optimizations, DFG  pre inline Peephole, push compare op through concat                             0
+  Optimizations, DFG  pre inline Peephole, push concat through nots                                   0
+  Optimizations, DFG  pre inline Peephole, push not through cond                                      0
+  Optimizations, DFG  pre inline Peephole, push reduction through concat                              0
+  Optimizations, DFG  pre inline Peephole, push reduction through cond with const branch              0
+  Optimizations, DFG  pre inline Peephole, push sel through concat                                    0
+  Optimizations, DFG  pre inline Peephole, push sel through cond                                      0
+  Optimizations, DFG  pre inline Peephole, push sel through not                                       0
+  Optimizations, DFG  pre inline Peephole, push sel through replicate                                 0
+  Optimizations, DFG  pre inline Peephole, push sel through shiftl                                    0
+  Optimizations, DFG  pre inline Peephole, remove and with ones                                       0
+  Optimizations, DFG  pre inline Peephole, remove concat of adjoining sels                            0
+  Optimizations, DFG  pre inline Peephole, remove cond with false condition                           0
+  Optimizations, DFG  pre inline Peephole, remove cond with true condition                            0
+  Optimizations, DFG  pre inline Peephole, remove full width sel                                      2
+  Optimizations, DFG  pre inline Peephole, remove not not                                             0
+  Optimizations, DFG  pre inline Peephole, remove or with zero                                        0
+  Optimizations, DFG  pre inline Peephole, remove redundant zext on rhs of shift                      0
+  Optimizations, DFG  pre inline Peephole, remove replicate once                                      0
+  Optimizations, DFG  pre inline Peephole, remove sel from lhs of concat                              1
+  Optimizations, DFG  pre inline Peephole, remove sel from rhs of concat                              1
+  Optimizations, DFG  pre inline Peephole, remove sub zero                                            0
+  Optimizations, DFG  pre inline Peephole, remove width one reduction                                 0
+  Optimizations, DFG  pre inline Peephole, remove xor with zero                                       0
+  Optimizations, DFG  pre inline Peephole, replace and of not and neq                                 0
+  Optimizations, DFG  pre inline Peephole, replace and of not and not                                 0
+  Optimizations, DFG  pre inline Peephole, replace and with zero                                      0
+  Optimizations, DFG  pre inline Peephole, replace concat sel bottom and zero with shiftl             0
+  Optimizations, DFG  pre inline Peephole, replace concat zero and sel top with shiftr                0
+  Optimizations, DFG  pre inline Peephole, replace cond dec                                           0
+  Optimizations, DFG  pre inline Peephole, replace cond inc                                           0
+  Optimizations, DFG  pre inline Peephole, replace cond with else branch ones                         0
+  Optimizations, DFG  pre inline Peephole, replace cond with else branch zero                         0
+  Optimizations, DFG  pre inline Peephole, replace cond with then branch ones                         0
+  Optimizations, DFG  pre inline Peephole, replace cond with then branch zero                         0
+  Optimizations, DFG  pre inline Peephole, replace contradictory and                                  0
+  Optimizations, DFG  pre inline Peephole, replace extend                                             2
+  Optimizations, DFG  pre inline Peephole, replace nested concat of adjoining sels on lhs             0
+  Optimizations, DFG  pre inline Peephole, replace nested concat of adjoining sels on rhs             0
+  Optimizations, DFG  pre inline Peephole, replace not eq                                             0
+  Optimizations, DFG  pre inline Peephole, replace not neq                                            0
+  Optimizations, DFG  pre inline Peephole, replace or of concat lhs zero and concat zero rhs          0
+  Optimizations, DFG  pre inline Peephole, replace or of concat zero lhs and concat rhs zero          0
+  Optimizations, DFG  pre inline Peephole, replace or of not and neq                                  0
+  Optimizations, DFG  pre inline Peephole, replace or of not and not                                  0
+  Optimizations, DFG  pre inline Peephole, replace or with ones                                       0
+  Optimizations, DFG  pre inline Peephole, replace sel from sel                                       0
+  Optimizations, DFG  pre inline Peephole, replace sub with not                                       0
+  Optimizations, DFG  pre inline Peephole, replace tautological or                                    0
+  Optimizations, DFG  pre inline Peephole, replace xor with ones                                      0
+  Optimizations, DFG  pre inline Peephole, right leaning assoc                                        0
+  Optimizations, DFG  pre inline Peephole, swap cond with neq condition                               0
+  Optimizations, DFG  pre inline Peephole, swap cond with not condition                               0
+  Optimizations, DFG  pre inline Peephole, swap const in commutative binary                           0
+  Optimizations, DFG  pre inline Peephole, swap not in commutative binary                             0
+  Optimizations, DFG  pre inline Peephole, swap var in commutative binary                             0
+  Optimizations, DFG  pre inline Remove vars, variables removed                                       0
+  Optimizations, DFG post inline 1st CSE, expressions eliminated                                     21
+  Optimizations, DFG post inline 2nd CSE, expressions eliminated                                      0
+  Optimizations, DFG post inline Ast2Dfg, coalesced assignments                                      68
+  Optimizations, DFG post inline Ast2Dfg, input equations                                            45
+  Optimizations, DFG post inline Ast2Dfg, non-representable (dtype)                                   0
+  Optimizations, DFG post inline Ast2Dfg, non-representable (impure)                                  0
+  Optimizations, DFG post inline Ast2Dfg, non-representable (lhs)                                     0
+  Optimizations, DFG post inline Ast2Dfg, non-representable (node)                                    0
+  Optimizations, DFG post inline Ast2Dfg, non-representable (timing)                                  0
+  Optimizations, DFG post inline Ast2Dfg, non-representable (unknown)                                 0
+  Optimizations, DFG post inline Ast2Dfg, non-representable (var ref)                                 0
+  Optimizations, DFG post inline Ast2Dfg, non-representable (width)                                   0
+  Optimizations, DFG post inline Ast2Dfg, representable                                              45
+  Optimizations, DFG post inline Dfg2Ast, intermediate variables                                      2
+  Optimizations, DFG post inline Dfg2Ast, replaced variables                                          0
+  Optimizations, DFG post inline Dfg2Ast, result equations                                           47
+  Optimizations, DFG post inline General, modules                                                     1
+  Optimizations, DFG post inline Peephole, fold assoc binary                                          0
+  Optimizations, DFG post inline Peephole, fold assoc binary lhs of rhs                               3
+  Optimizations, DFG post inline Peephole, fold assoc binary rhs of lhs                               0
+  Optimizations, DFG post inline Peephole, fold binary                                                0
+  Optimizations, DFG post inline Peephole, fold sel                                                   4
+  Optimizations, DFG post inline Peephole, fold unary                                                 0
+  Optimizations, DFG post inline Peephole, inline arraysel                                            0
+  Optimizations, DFG post inline Peephole, pull nots through cond                                     0
+  Optimizations, DFG post inline Peephole, push bitwise op through concat                             0
+  Optimizations, DFG post inline Peephole, push bitwise through reduction                             0
+  Optimizations, DFG post inline Peephole, push compare op through concat                             0
+  Optimizations, DFG post inline Peephole, push concat through nots                                   0
+  Optimizations, DFG post inline Peephole, push not through cond                                      0
+  Optimizations, DFG post inline Peephole, push reduction through concat                              0
+  Optimizations, DFG post inline Peephole, push reduction through cond with const branch              0
+  Optimizations, DFG post inline Peephole, push sel through concat                                    0
+  Optimizations, DFG post inline Peephole, push sel through cond                                      0
+  Optimizations, DFG post inline Peephole, push sel through not                                       0
+  Optimizations, DFG post inline Peephole, push sel through replicate                                 0
+  Optimizations, DFG post inline Peephole, push sel through shiftl                                    0
+  Optimizations, DFG post inline Peephole, remove and with ones                                       0
+  Optimizations, DFG post inline Peephole, remove concat of adjoining sels                            0
+  Optimizations, DFG post inline Peephole, remove cond with false condition                           1
+  Optimizations, DFG post inline Peephole, remove cond with true condition                            0
+  Optimizations, DFG post inline Peephole, remove full width sel                                      0
+  Optimizations, DFG post inline Peephole, remove not not                                             0
+  Optimizations, DFG post inline Peephole, remove or with zero                                        0
+  Optimizations, DFG post inline Peephole, remove redundant zext on rhs of shift                      0
+  Optimizations, DFG post inline Peephole, remove replicate once                                      0
+  Optimizations, DFG post inline Peephole, remove sel from lhs of concat                              4
+  Optimizations, DFG post inline Peephole, remove sel from rhs of concat                              4
+  Optimizations, DFG post inline Peephole, remove sub zero                                            0
+  Optimizations, DFG post inline Peephole, remove width one reduction                                 0
+  Optimizations, DFG post inline Peephole, remove xor with zero                                       0
+  Optimizations, DFG post inline Peephole, replace and of not and neq                                 0
+  Optimizations, DFG post inline Peephole, replace and of not and not                                 0
+  Optimizations, DFG post inline Peephole, replace and with zero                                      0
+  Optimizations, DFG post inline Peephole, replace concat sel bottom and zero with shiftl             0
+  Optimizations, DFG post inline Peephole, replace concat zero and sel top with shiftr                0
+  Optimizations, DFG post inline Peephole, replace cond dec                                           0
+  Optimizations, DFG post inline Peephole, replace cond inc                                           0
+  Optimizations, DFG post inline Peephole, replace cond with else branch ones                         0
+  Optimizations, DFG post inline Peephole, replace cond with else branch zero                         0
+  Optimizations, DFG post inline Peephole, replace cond with then branch ones                         0
+  Optimizations, DFG post inline Peephole, replace cond with then branch zero                         0
+  Optimizations, DFG post inline Peephole, replace contradictory and                                  0
+  Optimizations, DFG post inline Peephole, replace extend                                             0
+  Optimizations, DFG post inline Peephole, replace nested concat of adjoining sels on lhs             0
+  Optimizations, DFG post inline Peephole, replace nested concat of adjoining sels on rhs             0
+  Optimizations, DFG post inline Peephole, replace not eq                                             0
+  Optimizations, DFG post inline Peephole, replace not neq                                            0
+  Optimizations, DFG post inline Peephole, replace or of concat lhs zero and concat zero rhs          0
+  Optimizations, DFG post inline Peephole, replace or of concat zero lhs and concat rhs zero          0
+  Optimizations, DFG post inline Peephole, replace or of not and neq                                  0
+  Optimizations, DFG post inline Peephole, replace or of not and not                                  0
+  Optimizations, DFG post inline Peephole, replace or with ones                                       0
+  Optimizations, DFG post inline Peephole, replace sel from sel                                       0
+  Optimizations, DFG post inline Peephole, replace sub with not                                       0
+  Optimizations, DFG post inline Peephole, replace tautological or                                    0
+  Optimizations, DFG post inline Peephole, replace xor with ones                                      0
+  Optimizations, DFG post inline Peephole, right leaning assoc                                        0
+  Optimizations, DFG post inline Peephole, swap cond with neq condition                               0
+  Optimizations, DFG post inline Peephole, swap cond with not condition                               0
+  Optimizations, DFG post inline Peephole, swap const in commutative binary                           0
+  Optimizations, DFG post inline Peephole, swap not in commutative binary                             0
+  Optimizations, DFG post inline Peephole, swap var in commutative binary                             0
+  Optimizations, DFG post inline Remove vars, variables removed                                       0
+  Optimizations, Delayed shared-sets                                                                  0
+  Optimizations, Gate assign merged                                                                   0
+  Optimizations, Gate inputs replaced                                                               230
+  Optimizations, Gate sigs deduped                                                                    0
+  Optimizations, Gate sigs deleted                                                                  160
+  Optimizations, Inline unsupported                                                                   0
+  Optimizations, Inlined instances                                                                   16
+  Optimizations, Lifetime assign deletions                                                           30
+  Optimizations, Lifetime constant prop                                                               2
+  Optimizations, Lifetime postassign deletions                                                       51
+  Optimizations, MergeCond longest merge                                                             40
+  Optimizations, MergeCond merged items                                                             579
+  Optimizations, MergeCond merges                                                                   190
+  Optimizations, Prelim extracted value to ConstPool                                                  0
+  Optimizations, Reloop iterations                                                                    0
+  Optimizations, Reloops                                                                              0
+  Optimizations, Split always                                                                        94
+  Optimizations, Substituted temps                                                                  164
+  Optimizations, Tables created                                                                       0
+  Optimizations, Unrolled Iterations                                                                 32
+  Optimizations, Unrolled Loops                                                                       3
+  Optimizations, Vars localized                                                                      11
+  Optimizations, expand limited                                                                       0
+  Optimizations, expand wide words                                                                  208
+  Optimizations, expand wides                                                                        52
+  Optimizations, isolate_assignments blocks                                                           0
+  Scheduling, size of class: clocked                                                                713
+  Scheduling, size of class: combinational                                                        18162
+  Scheduling, size of class: final                                                                    0
+  Scheduling, size of class: hybrid                                                                 306
+  Scheduling, size of class: initial                                                                  0
+  Scheduling, size of class: static                                                                   0
+  Scheduling, size of region: Active                                                                486
+  Scheduling, size of region: Active Pre                                                              0
+  Scheduling, size of region: NBA                                                                 18695
+  Scheduling, size of replicated logic: Active                                                     7776
+  Scheduling, size of replicated logic: Input                                                     16623
+  Scheduling, size of replicated logic: NBA                                                         359
+  SplitVar, Split packed variables                                                                    0
+  SplitVar, Split unpacked arrays                                                                     0
+  Tracing, Ignored signals                                                                            0
+  Tracing, Traced signals                                                                           400
+  Tracing, Unique trace codes                                                                       308
+  Tracing, Unique traced signals                                                                    263
+  Tristate, Tristate resolved nets                                                                    0
+  Unknowns, variables created                                                                         0
+  Warnings, Suppressed CASEINCOMPLETE                                                                 3
+  Warnings, Suppressed DECLFILENAME                                                                   1
+  Warnings, Suppressed EOFNEWLINE                                                                    11
+  Warnings, Suppressed LATCH                                                                          5
+  Warnings, Suppressed PINCONNECTEMPTY                                                                1
+  Warnings, Suppressed PINMISSING                                                                     9
+  Warnings, Suppressed UNDRIVEN                                                                       5
+  Warnings, Suppressed UNOPTFLAT                                                                      1
+  Warnings, Suppressed UNUSEDPARAM                                                                   18
+  Warnings, Suppressed UNUSEDSIGNAL                                                                  85
+  Warnings, Suppressed WIDTHEXPAND                                                                   49
+  Warnings, Suppressed WIDTHTRUNC                                                                     6
+
+Performance Statistics:
+
+  Stage, Elapsed time (sec), 001_cells                                                         0.000000
+  Stage, Elapsed time (sec), 002_linkparse                                                     0.008754
+  Stage, Elapsed time (sec), 003_linkdot                                                       0.014618
+  Stage, Elapsed time (sec), 004_linkresolve                                                   0.004481
+  Stage, Elapsed time (sec), 005_linklvalue                                                    0.003516
+  Stage, Elapsed time (sec), 006_linkjump                                                      0.051060
+  Stage, Elapsed time (sec), 007_linkinc                                                       0.052943
+  Stage, Elapsed time (sec), 008_param                                                         0.012890
+  Stage, Elapsed time (sec), 009_linkdotparam                                                  0.054336
+  Stage, Elapsed time (sec), 010_linklvalue                                                    0.003297
+  Stage, Elapsed time (sec), 011_deadModules                                                   0.004165
+  Stage, Elapsed time (sec), 012_width                                                         0.089896
+  Stage, Elapsed time (sec), 013_widthcommit                                                   0.014009
+  Stage, Elapsed time (sec), 014_const                                                         0.062150
+  Stage, Elapsed time (sec), 015_undriven                                                      0.012613
+  Stage, Elapsed time (sec), 016_assertpre                                                     0.007730
+  Stage, Elapsed time (sec), 017_assert                                                        0.004485
+  Stage, Elapsed time (sec), 018_wraptop                                                       0.003414
+  Stage, Elapsed time (sec), 019_const                                                         0.061793
+  Stage, Elapsed time (sec), 020_split_var                                                     0.028798
+  Stage, Elapsed time (sec), 021_split_var                                                     0.003709
+  Stage, Elapsed time (sec), 022_dearray                                                       0.003343
+  Stage, Elapsed time (sec), 023_linkdot                                                       0.010189
+  Stage, Elapsed time (sec), 024_begin                                                         0.057473
+  Stage, Elapsed time (sec), 025_tristate                                                      0.061284
+  Stage, Elapsed time (sec), 026_unknown                                                       0.064571
+  Stage, Elapsed time (sec), 027_dfg-extract                                                   0.004401
+  Stage, Elapsed time (sec), 028_dfg-optimize                                                  0.059935
+  Stage, Elapsed time (sec), 029_inline                                                        0.111521
+  Stage, Elapsed time (sec), 030_linkdot                                                       0.014292
+  Stage, Elapsed time (sec), 031_interface                                                     0.007623
+  Stage, Elapsed time (sec), 032_dfg-optimize                                                  0.103628
+  Stage, Elapsed time (sec), 033_const                                                         0.105832
+  Stage, Elapsed time (sec), 034_deadDtypes                                                    0.101683
+  Stage, Elapsed time (sec), 035_inst                                                          0.007866
+  Stage, Elapsed time (sec), 036_const                                                         0.021730
+  Stage, Elapsed time (sec), 037_scope                                                         0.145751
+  Stage, Elapsed time (sec), 038_linkdot                                                       0.128655
+  Stage, Elapsed time (sec), 039_class                                                         0.007440
+  Stage, Elapsed time (sec), 040_const                                                         0.011704
+  Stage, Elapsed time (sec), 041_deadDtypesScoped                                              0.009472
+  Stage, Elapsed time (sec), 042_case                                                          0.124644
+  Stage, Elapsed time (sec), 043_task                                                          0.010036
+  Stage, Elapsed time (sec), 044_name                                                          0.007943
+  Stage, Elapsed time (sec), 045_unroll                                                        0.120669
+  Stage, Elapsed time (sec), 046_slice                                                         0.005979
+  Stage, Elapsed time (sec), 047_const                                                         0.112797
+  Stage, Elapsed time (sec), 048_life                                                          0.111793
+  Stage, Elapsed time (sec), 049_table                                                         0.004743
+  Stage, Elapsed time (sec), 050_const                                                         0.112494
+  Stage, Elapsed time (sec), 051_deadDtypesScoped                                              0.007226
+  Stage, Elapsed time (sec), 052_active                                                        0.113662
+  Stage, Elapsed time (sec), 053_split                                                         0.128014
+  Stage, Elapsed time (sec), 054_splitas                                                       0.006062
+  Stage, Elapsed time (sec), 055_tracedecl                                                     0.124030
+  Stage, Elapsed time (sec), 056_gate                                                          0.129499
+  Stage, Elapsed time (sec), 057_const                                                         0.119035
+  Stage, Elapsed time (sec), 058_deadAllScoped                                                 0.114554
+  Stage, Elapsed time (sec), 059_reorder                                                       0.117468
+  Stage, Elapsed time (sec), 060_delayed                                                       0.121256
+  Stage, Elapsed time (sec), 061_activetop                                                     0.128561
+  Stage, Elapsed time (sec), 062_sched-gather                                                  0.003000
+  Stage, Elapsed time (sec), 063_sched-static                                                  0.000062
+  Stage, Elapsed time (sec), 064_sched-initial                                                 0.000020
+  Stage, Elapsed time (sec), 065_sched-final                                                   0.000018
+  Stage, Elapsed time (sec), 066_sched-break-cycles                                            0.001811
+  Stage, Elapsed time (sec), 067_sched-settle                                                  0.014561
+  Stage, Elapsed time (sec), 068_sched-partition                                               0.003234
+  Stage, Elapsed time (sec), 069_sched-replicate                                               0.010889
+  Stage, Elapsed time (sec), 070_sched-create-ico                                              0.003266
+  Stage, Elapsed time (sec), 071_sched-create-triggers                                         0.000209
+  Stage, Elapsed time (sec), 072_sched-create-act                                              0.001823
+  Stage, Elapsed time (sec), 073_sched-create-nba                                              0.011120
+  Stage, Elapsed time (sec), 074_sched                                                         0.354426
+  Stage, Elapsed time (sec), 075_clock                                                         0.360981
+  Stage, Elapsed time (sec), 076_const                                                         0.370129
+  Stage, Elapsed time (sec), 077_life                                                          0.040757
+  Stage, Elapsed time (sec), 078_life_post                                                     0.371637
+  Stage, Elapsed time (sec), 079_const                                                         0.369373
+  Stage, Elapsed time (sec), 080_deadAllScoped                                                 0.360831
+  Stage, Elapsed time (sec), 081_trace                                                         0.371378
+  Stage, Elapsed time (sec), 082_localize                                                      0.041431
+  Stage, Elapsed time (sec), 083_descope                                                       0.304537
+  Stage, Elapsed time (sec), 084_combine                                                       0.213862
+  Stage, Elapsed time (sec), 085_const                                                         0.206853
+  Stage, Elapsed time (sec), 086_deadAll                                                       0.197575
+  Stage, Elapsed time (sec), 087_clean                                                         0.222008
+  Stage, Elapsed time (sec), 088_premit                                                        0.193366
+  Stage, Elapsed time (sec), 089_expand                                                        0.380537
+  Stage, Elapsed time (sec), 090_const_cpp                                                     0.079271
+  Stage, Elapsed time (sec), 091_subst                                                         0.060968
+  Stage, Elapsed time (sec), 092_const_cpp                                                     0.065746
+  Stage, Elapsed time (sec), 093_deadAll                                                       0.056356
+  Stage, Elapsed time (sec), 094_merge_cond                                                    0.036776
+  Stage, Elapsed time (sec), 095_reloop                                                        0.005264
+  Stage, Elapsed time (sec), 096_depth                                                         0.005663
+  Stage, Elapsed time (sec), 097_cast                                                          0.054946
+  Stage, Elapsed time (sec), 098_cctors                                                        0.053835
+  Stage, Elapsed time (sec), 099_common                                                        0.004962
+  Stage, Elapsed time (sec), 100_variableorder                                                 0.049991
+  Stage, Elapsed time (sec), 101_cuse                                                          0.007684
+  Stage, Elapsed time (sec), 102_emit                                                          0.072035
+  Stage, Elapsed time (sec), TOTAL                                                             8.220706
+  Stage, Memory (MB), 001_cells                                                               10.882812
+  Stage, Memory (MB), 002_linkparse                                                           10.992188
+  Stage, Memory (MB), 003_linkdot                                                             11.636719
+  Stage, Memory (MB), 004_linkresolve                                                         11.636719
+  Stage, Memory (MB), 005_linklvalue                                                          11.636719
+  Stage, Memory (MB), 006_linkjump                                                            11.636719
+  Stage, Memory (MB), 007_linkinc                                                             11.636719
+  Stage, Memory (MB), 008_param                                                               14.003906
+  Stage, Memory (MB), 009_linkdotparam                                                        14.132812
+  Stage, Memory (MB), 010_linklvalue                                                          14.132812
+  Stage, Memory (MB), 011_deadModules                                                         14.132812
+  Stage, Memory (MB), 012_width                                                               17.355469
+  Stage, Memory (MB), 013_widthcommit                                                         18.132812
+  Stage, Memory (MB), 014_const                                                               18.132812
+  Stage, Memory (MB), 015_undriven                                                            18.261719
+  Stage, Memory (MB), 016_assertpre                                                           18.261719
+  Stage, Memory (MB), 017_assert                                                              18.261719
+  Stage, Memory (MB), 018_wraptop                                                             18.261719
+  Stage, Memory (MB), 019_const                                                               18.261719
+  Stage, Memory (MB), 020_split_var                                                           18.261719
+  Stage, Memory (MB), 021_split_var                                                           18.261719
+  Stage, Memory (MB), 022_dearray                                                             18.261719
+  Stage, Memory (MB), 023_linkdot                                                             18.390625
+  Stage, Memory (MB), 024_begin                                                               18.390625
+  Stage, Memory (MB), 025_tristate                                                            18.777344
+  Stage, Memory (MB), 026_unknown                                                             20.839844
+  Stage, Memory (MB), 027_dfg-extract                                                         20.839844
+  Stage, Memory (MB), 028_dfg-optimize                                                        20.968750
+  Stage, Memory (MB), 029_inline                                                              22.703125
+  Stage, Memory (MB), 030_linkdot                                                             22.832031
+  Stage, Memory (MB), 031_interface                                                           22.832031
+  Stage, Memory (MB), 032_dfg-optimize                                                        23.089844
+  Stage, Memory (MB), 033_const                                                               23.089844
+  Stage, Memory (MB), 034_deadDtypes                                                          23.089844
+  Stage, Memory (MB), 035_inst                                                                23.089844
+  Stage, Memory (MB), 036_const                                                               23.089844
+  Stage, Memory (MB), 037_scope                                                               26.957031
+  Stage, Memory (MB), 038_linkdot                                                             26.957031
+  Stage, Memory (MB), 039_class                                                               26.957031
+  Stage, Memory (MB), 040_const                                                               26.957031
+  Stage, Memory (MB), 041_deadDtypesScoped                                                    26.957031
+  Stage, Memory (MB), 042_case                                                                27.343750
+  Stage, Memory (MB), 043_task                                                                27.343750
+  Stage, Memory (MB), 044_name                                                                27.343750
+  Stage, Memory (MB), 045_unroll                                                              27.859375
+  Stage, Memory (MB), 046_slice                                                               27.859375
+  Stage, Memory (MB), 047_const                                                               27.859375
+  Stage, Memory (MB), 048_life                                                                27.859375
+  Stage, Memory (MB), 049_table                                                               27.859375
+  Stage, Memory (MB), 050_const                                                               27.859375
+  Stage, Memory (MB), 051_deadDtypesScoped                                                    27.859375
+  Stage, Memory (MB), 052_active                                                              27.859375
+  Stage, Memory (MB), 053_split                                                               29.664062
+  Stage, Memory (MB), 054_splitas                                                             29.664062
+  Stage, Memory (MB), 055_tracedecl                                                           30.058594
+  Stage, Memory (MB), 056_gate                                                                30.445312
+  Stage, Memory (MB), 057_const                                                               30.445312
+  Stage, Memory (MB), 058_deadAllScoped                                                       30.445312
+  Stage, Memory (MB), 059_reorder                                                             30.445312
+  Stage, Memory (MB), 060_delayed                                                             30.445312
+  Stage, Memory (MB), 061_activetop                                                           30.566406
+  Stage, Memory (MB), 062_sched-gather                                                        30.566406
+  Stage, Memory (MB), 063_sched-static                                                        30.566406
+  Stage, Memory (MB), 064_sched-initial                                                       30.566406
+  Stage, Memory (MB), 065_sched-final                                                         30.566406
+  Stage, Memory (MB), 066_sched-break-cycles                                                  30.566406
+  Stage, Memory (MB), 067_sched-settle                                                        34.562500
+  Stage, Memory (MB), 068_sched-partition                                                     34.820312
+  Stage, Memory (MB), 069_sched-replicate                                                     39.847656
+  Stage, Memory (MB), 070_sched-create-ico                                                    39.847656
+  Stage, Memory (MB), 071_sched-create-triggers                                               39.847656
+  Stage, Memory (MB), 072_sched-create-act                                                    40.039062
+  Stage, Memory (MB), 073_sched-create-nba                                                    40.167969
+  Stage, Memory (MB), 074_sched                                                               40.167969
+  Stage, Memory (MB), 075_clock                                                               40.167969
+  Stage, Memory (MB), 076_const                                                               40.167969
+  Stage, Memory (MB), 077_life                                                                40.167969
+  Stage, Memory (MB), 078_life_post                                                           40.167969
+  Stage, Memory (MB), 079_const                                                               40.167969
+  Stage, Memory (MB), 080_deadAllScoped                                                       40.167969
+  Stage, Memory (MB), 081_trace                                                               40.554688
+  Stage, Memory (MB), 082_localize                                                            40.941406
+  Stage, Memory (MB), 083_descope                                                             40.941406
+  Stage, Memory (MB), 084_combine                                                             40.941406
+  Stage, Memory (MB), 085_const                                                               40.941406
+  Stage, Memory (MB), 086_deadAll                                                             40.941406
+  Stage, Memory (MB), 087_clean                                                               41.070312
+  Stage, Memory (MB), 088_premit                                                              41.199219
+  Stage, Memory (MB), 089_expand                                                              85.148438
+  Stage, Memory (MB), 090_const_cpp                                                           86.691406
+  Stage, Memory (MB), 091_subst                                                               86.949219
+  Stage, Memory (MB), 092_const_cpp                                                           87.851562
+  Stage, Memory (MB), 093_deadAll                                                             87.851562
+  Stage, Memory (MB), 094_merge_cond                                                          88.109375
+  Stage, Memory (MB), 095_reloop                                                              88.109375
+  Stage, Memory (MB), 096_depth                                                               88.109375
+  Stage, Memory (MB), 097_cast                                                                88.496094
+  Stage, Memory (MB), 098_cctors                                                              88.625000
+  Stage, Memory (MB), 099_common                                                              88.625000
+  Stage, Memory (MB), 100_variableorder                                                       88.625000
+  Stage, Memory (MB), 101_cuse                                                                88.625000
+  Stage, Memory (MB), 102_emit                                                                88.785156
+
+Stage Statistics:
+  Stat                                           Link       PreOrder   Scoped     Final all  Final fast
+  --------                                       -------    -------    -------    -------    -------  
+
+  Branch prediction,                                  65        382        992        619        378
+  Branch prediction, VL_UNLIKELY                                            11         15         13
+
+  Expr combination, ADD over ADD                      15          5         10         10          5
+  Expr combination, ADD over AND                                                       64         34
+  Expr combination, ADD over CCAST                                                     49         29
+  Expr combination, ADD over CONST                     9          8         22
+  Expr combination, ADD over EXTEND                              35         75
+  Expr combination, ADD over REPLICATE                15
+  Expr combination, ADD over SELBIT                    5
+  Expr combination, ADD over SELEXTRACT               19
+  Expr combination, ADD over SUB                       2          2          5          5          3
+  Expr combination, ADD over VARREF                   19          8         20          4          3
+  Expr combination, AND over ADD                                                       50         28
+  Expr combination, AND over AND                                 22         60        104         67
+  Expr combination, AND over CCAST                                                    396        237
+  Expr combination, AND over CMETHODHARD                                    15         15          5
+  Expr combination, AND over CONST                                          15       1338        851
+  Expr combination, AND over EQ                                  51        150        109         74
+  Expr combination, AND over GT                                   3          8          8          5
+  Expr combination, AND over GTE                                  1          2          2          1
+  Expr combination, AND over LTE                                  2          6          3          2
+  Expr combination, AND over NEQ                                  1          2          2          1
+  Expr combination, AND over NOT                                 23         63        175        102
+  Expr combination, AND over OR                                   1          2         23         16
+  Expr combination, AND over SEL                                 38        107
+  Expr combination, AND over SHIFTL                                                   161        106
+  Expr combination, AND over SHIFTLOVR                                                  6          3
+  Expr combination, AND over SHIFTR                                                   156         88
+  Expr combination, AND over SUB                                                       10          6
+  Expr combination, AND over VARREF                              18         50        488        351
+  Expr combination, AND over XOR                                                        4          3
+  Expr combination, ARRAYSEL over CONST                                     30         30         18
+  Expr combination, ARRAYSEL over VARREF                                    30         30         18
+  Expr combination, ATTROF over VARREF               144
+  Expr combination, CCAST over AND                                                    133         88
+  Expr combination, CCAST over CCAST                                                  287        192
+  Expr combination, CCAST over CMETHODHARD                                              4
+  Expr combination, CCAST over CONST                                                   32         21
+  Expr combination, CCAST over OR                                                      42         27
+  Expr combination, CCAST over SHIFTR                                                 190        114
+  Expr combination, CCAST over VARREF                                                 948        581
+  Expr combination, CCAST over WORDSEL                                                165        113
+  Expr combination, CLOG2 over VARREF                  6
+  Expr combination, CMETHODHARD over CCAST                                              2          1
+  Expr combination, CMETHODHARD over CONST                                  27         27         13
+  Expr combination, CMETHODHARD over NEQ                                     3          3          2
+  Expr combination, CMETHODHARD over OR                                      1          1          1
+  Expr combination, CMETHODHARD over VARREF                                 40         38         20
+  Expr combination, CONCAT over ADD                               1          1
+  Expr combination, CONCAT over CONCAT                30         55        111
+  Expr combination, CONCAT over CONST                 41         10         28
+  Expr combination, CONCAT over EQ                                1          2
+  Expr combination, CONCAT over EXTEND                            6         18
+  Expr combination, CONCAT over GTE                               1          2
+  Expr combination, CONCAT over NEQ                               1          2
+  Expr combination, CONCAT over NOT                    1          2          5
+  Expr combination, CONCAT over REPLICATE              7
+  Expr combination, CONCAT over SEL                             105        231
+  Expr combination, CONCAT over SELBIT                 8
+  Expr combination, CONCAT over SELEXTRACT            74
+  Expr combination, CONCAT over VARREF                33         18         42
+  Expr combination, COND over AND                                 1          2         23         15
+  Expr combination, COND over CCAST                                                     9          6
+  Expr combination, COND over CONCAT                             13         31
+  Expr combination, COND over COND                                9         17          6          4
+  Expr combination, COND over CONST                    3         56         79         32         20
+  Expr combination, COND over ENUMITEMREF              2
+  Expr combination, COND over EQ                       3          7         12         12          7
+  Expr combination, COND over EXTEND                              5         15
+  Expr combination, COND over GT                       1
+  Expr combination, COND over LOGAND                   1
+  Expr combination, COND over NOT                      1          1          2          2          1
+  Expr combination, COND over OR                                  4          4         17         12
+  Expr combination, COND over REPLICATE                4
+  Expr combination, COND over SEL                                17         43
+  Expr combination, COND over SELEXTRACT               1
+  Expr combination, COND over VARREF                   2         73         80          7          4
+  Expr combination, EQ over AND                                                        75         46
+  Expr combination, EQ over CCAST                                                     116         80
+  Expr combination, EQ over CONCAT                                5         14
+  Expr combination, EQ over CONST                     11        107        302        193        128
+  Expr combination, EQ over ENUMITEMREF                1
+  Expr combination, EQ over NOT                        1          3          8          3          2
+  Expr combination, EQ over OR                                                          8          5
+  Expr combination, EQ over REPLICATE                  3
+  Expr combination, EQ over SEL                                  40         98
+  Expr combination, EQ over SELEXTRACT                16
+  Expr combination, EQ over SELPLUS                    1
+  Expr combination, EQ over VARREF                    23         65        198          1          1
+  Expr combination, EXTEND over CONCAT                            1          2
+  Expr combination, EXTEND over COND                              1          2
+  Expr combination, EXTEND over SEL                              54        133
+  Expr combination, EXTEND over VARREF                           12         30
+  Expr combination, GT over CCAST                                                      15         10
+  Expr combination, GT over CONST                      1          6         18         15         10
+  Expr combination, GT over VARREF                     1          6         18
+  Expr combination, GTE over AND                                                        4          2
+  Expr combination, GTE over CCAST                                                     12          6
+  Expr combination, GTE over CONST                     3          2          4          4          2
+  Expr combination, GTE over SEL                                  2          4
+  Expr combination, GTE over VARREF                    9          6         12
+  Expr combination, LOGAND over AND                                                     1          1
+  Expr combination, LOGAND over CCAST                                                  27         27
+  Expr combination, LOGAND over EQ                     7
+  Expr combination, LOGAND over GTE                    1
+  Expr combination, LOGAND over LOGAND                 5          1          1          1          1
+  Expr combination, LOGAND over LOGNOT                 3
+  Expr combination, LOGAND over LOGOR                  1
+  Expr combination, LOGAND over LT                     1          1          1          1          1
+  Expr combination, LOGAND over LTE                    1
+  Expr combination, LOGAND over NEQ                    1
+  Expr combination, LOGAND over NOT                               1          1
+  Expr combination, LOGAND over SELBIT                 3
+  Expr combination, LOGAND over VARREF                11         27         27
+  Expr combination, LOGNOT over SELBIT                 2
+  Expr combination, LOGNOT over VARREF                14
+  Expr combination, LOGOR over VARREF                  4
+  Expr combination, LT over CCAST                                                       7          4
+  Expr combination, LT over CONST                      3          2          7          7          5
+  Expr combination, LT over VARREF                     7          4         11          4          3
+  Expr combination, LTE over CCAST                                                     12          8
+  Expr combination, LTE over CONST                     2          8         24         12          8
+  Expr combination, LTE over SELEXTRACT                2
+  Expr combination, LTE over VARREF                               8         24
+  Expr combination, MUL over CONST                     1
+  Expr combination, MUL over VARREF                    1
+  Expr combination, NEQ over AND                                                        4          2
+  Expr combination, NEQ over CCAST                                                     26         17
+  Expr combination, NEQ over CONST                     2         36         96         28         18
+  Expr combination, NEQ over NOT                                  1          2          2          1
+  Expr combination, NEQ over SEL                                  3          6
+  Expr combination, NEQ over SELEXTRACT                2
+  Expr combination, NEQ over VARREF                              34         98          6          4
+  Expr combination, NOT over CCAST                                                    114         66
+  Expr combination, NOT over CMETHODHARD                                     4
+  Expr combination, NOT over COND                                 1          2          2          1
+  Expr combination, NOT over OR                                   1          1          1          1
+  Expr combination, NOT over SEL                                 76        172
+  Expr combination, NOT over SELEXTRACT                2
+  Expr combination, NOT over SHIFTR                                                    53         31
+  Expr combination, NOT over VARREF                    2         32         85         14          8
+  Expr combination, OR over AND                                              2        357        235
+  Expr combination, OR over ARRAYSEL                                         5          5          5
+  Expr combination, OR over CCAST                                                     104         71
+  Expr combination, OR over CONST                                                      22         15
+  Expr combination, OR over OR                                               1         69         28
+  Expr combination, OR over SHIFTL                                                    167        109
+  Expr combination, OR over SHIFTR                                                      2          1
+  Expr combination, OR over VARREF                               12         14
+  Expr combination, REDXOR over AND                                                   256        192
+  Expr combination, REPLICATE over CONCAT             67
+  Expr combination, REPLICATE over CONST              70
+  Expr combination, REPLICATE over REPLICATE           2
+  Expr combination, REPLICATE over SELEXTRACT          1
+  Expr combination, SEL over CONST                             6758      22586
+  Expr combination, SEL over EXTEND                               1          3
+  Expr combination, SEL over SHIFTR                               2          5
+  Expr combination, SEL over VARREF                            3376      11285
+  Expr combination, SELBIT over CONST               1473
+  Expr combination, SELBIT over SUB                    1
+  Expr combination, SELBIT over VARREF              1478
+  Expr combination, SELEXTRACT over ATTROF           143
+  Expr combination, SELEXTRACT over CONST            284
+  Expr combination, SELEXTRACT over SUB                2
+  Expr combination, SELEXTRACT over VARREF           143
+  Expr combination, SELPLUS over ATTROF                1
+  Expr combination, SELPLUS over CONST                 1
+  Expr combination, SELPLUS over MUL                   1
+  Expr combination, SELPLUS over VARREF                1
+  Expr combination, SHIFTL over CCAST                                                 197        119
+  Expr combination, SHIFTL over CONST                  3          4          9        331        217
+  Expr combination, SHIFTL over EQ                                                      2          1
+  Expr combination, SHIFTL over EXTEND                            3          6
+  Expr combination, SHIFTL over GTE                                                     2          1
+  Expr combination, SHIFTL over NEQ                                                     2          1
+  Expr combination, SHIFTL over REPLICATE              1
+  Expr combination, SHIFTL over SUB                    1          1          3
+  Expr combination, SHIFTL over VARREF                 1                                4          2
+  Expr combination, SHIFTL over XOR                                                   124         93
+  Expr combination, SHIFTLOVR over AND                                                  2          1
+  Expr combination, SHIFTLOVR over CCAST                                                4          2
+  Expr combination, SHIFTLOVR over CONST                                                9          5
+  Expr combination, SHIFTLOVR over SUB                                                  3          2
+  Expr combination, SHIFTR over AND                                                    11          7
+  Expr combination, SHIFTR over CCAST                                                 203        118
+  Expr combination, SHIFTR over CONCAT                            1          3
+  Expr combination, SHIFTR over CONST                                                 399        233
+  Expr combination, SHIFTR over OR                                                     29         19
+  Expr combination, SHIFTR over SHIFTL                 1          2          5
+  Expr combination, SHIFTR over SHIFTLOVR                                               3          2
+  Expr combination, SHIFTR over VARREF                 3          1          2        163         93
+  Expr combination, SUB over ADD                       1          1          2          2          1
+  Expr combination, SUB over CCAST                                                     34         21
+  Expr combination, SUB over CLOG2                     3
+  Expr combination, SUB over CONST                    46          4         13
+  Expr combination, SUB over EXTEND                               5         15
+  Expr combination, SUB over REPLICATE                 1
+  Expr combination, SUB over SEL                                  4          8
+  Expr combination, SUB over SELEXTRACT                1
+  Expr combination, SUB over SUB                       2
+  Expr combination, SUB over VARREF                   50          2          4
+  Expr combination, WORDSEL over CONST                                                326        223
+  Expr combination, WORDSEL over VARREF                                               326        223
+  Expr combination, XOR over REDXOR                                                   256        192
+  Expr combination, XOR over SEL                               2844       9954
+  Expr combination, XOR over SELBIT                 1422
+  Expr combination, XOR over XOR                    1358       2716       9506
+
+  Node count, ACTIVE                                             54
+  Node count, ADD                                     42         29         66         66         37
+  Node count, ADDROFCFUNC                                                    4          4
+  Node count, ALWAYS                                  20        104
+  Node count, AND                                                80        240       1525        973
+  Node count, ARRAYSEL                                                      30         30         18
+  Node count, ASSIGN                                 362        428       1247       1166        738
+  Node count, ASSIGNDLY                              106         55         55         92         92
+  Node count, ASSIGNPOST                                         51
+  Node count, ASSIGNPRE                                          51
+  Node count, ASSIGNW                                 26          9         23         17         10
+  Node count, ATTROF                                 144
+  Node count, BASICDTYPE                             379         28         35         60
+  Node count, BEGIN                                  175
+  Node count, CASE                                    10
+  Node count, CASEITEM                                70
+  Node count, CCALL                                               2         30         30         19
+  Node count, CCAST                                                                  1801       1136
+  Node count, CELL                                    15          1
+  Node count, CFILE                                                                    13
+  Node count, CFUNC                                               3         38         37         16
+  Node count, CLOG2                                    6
+  Node count, CMETHODHARD                                                   35         35         17
+  Node count, CONCAT                                  97        100        221
+  Node count, COND                                     6         62         95         36         23
+  Node count, CONST                                 2501       7345      24017       3557       2216
+  Node count, CONSTPOOL                                1          1          1          1
+  Node count, CRESET                                                                  209
+  Node count, CRETURN                                                        4          4          3
+  Node count, CSTMT                                               2         15         19         11
+  Node count, ENUMDTYPE                                6          6          6          6
+  Node count, ENUMITEM                                42         42         42         42
+  Node count, ENUMITEMREF                            115
+  Node count, EQ                                      28        110        310        198        131
+  Node count, EXTEND                                             68        167
+  Node count, GT                                       1          6         18         15         10
+  Node count, GTE                                      6          5         10         10          5
+  Node count, IF                                      65        382       1003        634        391
+  Node count, LOGAND                                  17         15         15         15         15
+  Node count, LOGNOT                                  16
+  Node count, LOGOR                                    2
+  Node count, LT                                       5          3          9          9          6
+  Node count, LTE                                      2          8         24         12          8
+  Node count, MODULE                                  12          2          2          2
+  Node count, MUL                                      1
+  Node count, NEQ                                      2         37        101         33         21
+  Node count, NETLIST                                  1          1          1          1
+  Node count, NOT                                      4        110        264        184        107
+  Node count, OR                                                  6         11        363        232
+  Node count, PACKAGE                                  1          1
+  Node count, PIN                                    108
+  Node count, RANGE                                  172                     1          1
+  Node count, REDXOR                                                                  256        192
+  Node count, REFDTYPE                                12         12         12         12
+  Node count, REPLICATE                               70
+  Node count, SCOPE                                    1          3          2          2
+  Node count, SEL                                              3379      11293
+  Node count, SELBIT                                1476
+  Node count, SELEXTRACT                             143
+  Node count, SELPLUS                                  1
+  Node count, SENITEM                                 18          4
+  Node count, SENTREE                                  9          3
+  Node count, SHIFTL                                   3          4          9        331        217
+  Node count, SHIFTLOVR                                                                 9          5
+  Node count, SHIFTR                                   2          2          5        404        236
+  Node count, STMTEXPR                                            2         38         38         25
+  Node count, SUB                                     52          8         21         18         11
+  Node count, TEXT                                                2         66         70         31
+  Node count, TEXTBLOCK                                                      7          7          5
+  Node count, TOPSCOPE                                            1          1          1
+  Node count, TRACEDECL                                         400        400        400
+  Node count, TRACEINC                                                     431        431        168
+  Node count, TRACEPOPPREFIX                                     19         19         19
+  Node count, TRACEPUSHPREFIX                                    19         19         19
+  Node count, TYPEDEF                                  6
+  Node count, TYPETABLE                                1          1          1          1
+  Node count, UNPACKARRAYDTYPE                                               1          1
+  Node count, VAR                                    363        251        228        236         13
+  Node count, VARREF                                2670       4744      13762       3930       2345
+  Node count, VARSCOPE                                          251        228
+  Node count, VOIDDTYPE                                1          1          1          1
+  Node count, WHILE                                    3                     4          4          3
+  Node count, WORDSEL                                                                 326        223
+  Node count, XOR                                   1390       2780       9730        128         96
+
+  Node memory TOTAL (MiB)                              2          4         12          3          1
+
+  Node memory share (%), ACTIVE                                0.25
+  Node memory share (%), ADD                        0.32       0.11       0.08       0.33       0.33
+  Node memory share (%), ADDROFCFUNC                                      0.01       0.02
+  Node memory share (%), ALWAYS                     0.15       0.40
+  Node memory share (%), AND                                   0.31       0.30       7.67       8.55
+  Node memory share (%), ARRAYSEL                                         0.04       0.15       0.16
+  Node memory share (%), ASSIGN                     2.64       1.56       1.49       5.58       6.17
+  Node memory share (%), ASSIGNDLY                  0.77       0.20       0.07       0.44       0.77
+  Node memory share (%), ASSIGNPOST                            0.19
+  Node memory share (%), ASSIGNPRE                             0.19
+  Node memory share (%), ASSIGNW                    0.19       0.03       0.03       0.08       0.08
+  Node memory share (%), ATTROF                     1.10
+  Node memory share (%), BASICDTYPE                 3.32       0.12       0.05       0.34
+  Node memory share (%), BEGIN                      1.60
+  Node memory share (%), CASE                       0.08
+  Node memory share (%), CASEITEM                   0.51
+  Node memory share (%), CCALL                                 0.01       0.05       0.20       0.22
+  Node memory share (%), CCAST                                                       9.48      10.45
+  Node memory share (%), CELL                       0.19       0.01
+  Node memory share (%), CFILE                                                       0.08
+  Node memory share (%), CFUNC                                 0.03       0.10       0.41       0.31
+  Node memory share (%), CLOG2                      0.05
+  Node memory share (%), CMETHODHARD                                      0.05       0.21       0.18
+  Node memory share (%), CONCAT                     0.74       0.38       0.28
+  Node memory share (%), COND                       0.05       0.24       0.12       0.18       0.20
+  Node memory share (%), CONST                     27.39      40.09      43.13      25.54      27.81
+  Node memory share (%), CONSTPOOL                  0.02       0.01       0.00       0.01
+  Node memory share (%), CRESET                                                      1.00
+  Node memory share (%), CRETURN                                          0.00       0.02       0.03
+  Node memory share (%), CSTMT                                 0.01       0.02       0.09       0.09
+  Node memory share (%), ENUMDTYPE                  0.08       0.04       0.01       0.05
+  Node memory share (%), ENUMITEM                   0.37       0.18       0.06       0.24
+  Node memory share (%), ENUMITEMREF                0.92
+  Node memory share (%), EQ                         0.21       0.42       0.39       1.00       1.15
+  Node memory share (%), EXTEND                                0.26       0.21
+  Node memory share (%), GT                         0.01       0.02       0.02       0.08       0.09
+  Node memory share (%), GTE                        0.05       0.02       0.01       0.05       0.04
+  Node memory share (%), IF                         0.50       1.46       1.26       3.19       3.43
+  Node memory share (%), LOGAND                     0.13       0.06       0.02       0.08       0.13
+  Node memory share (%), LOGNOT                     0.12
+  Node memory share (%), LOGOR                      0.02
+  Node memory share (%), LT                         0.04       0.01       0.01       0.05       0.05
+  Node memory share (%), LTE                        0.02       0.03       0.03       0.06       0.07
+  Node memory share (%), MODULE                     0.15       0.01       0.00       0.02
+  Node memory share (%), MUL                        0.01
+  Node memory share (%), NEQ                        0.02       0.14       0.13       0.17       0.18
+  Node memory share (%), NETLIST                    0.01       0.01       0.00       0.01
+  Node memory share (%), NOT                        0.03       0.42       0.33       0.92       0.94
+  Node memory share (%), OR                                    0.02       0.01       1.82       2.04
+  Node memory share (%), PACKAGE                    0.01       0.01
+  Node memory share (%), PIN                        1.10
+  Node memory share (%), RANGE                      1.26                  0.00       0.00
+  Node memory share (%), REDXOR                                                      1.29       1.69
+  Node memory share (%), REFDTYPE                   0.13       0.06       0.02       0.08
+  Node memory share (%), REPLICATE                  0.54
+  Node memory share (%), SCOPE                      0.01       0.01       0.00       0.01
+  Node memory share (%), SEL                                  14.14      15.55
+  Node memory share (%), SELBIT                    11.32
+  Node memory share (%), SELEXTRACT                 1.10
+  Node memory share (%), SELPLUS                    0.01
+  Node memory share (%), SENITEM                    0.14       0.02
+  Node memory share (%), SENTREE                    0.07       0.01
+  Node memory share (%), SHIFTL                     0.02       0.02       0.01       1.66       1.91
+  Node memory share (%), SHIFTLOVR                                                   0.05       0.04
+  Node memory share (%), SHIFTR                     0.02       0.01       0.01       2.03       2.07
+  Node memory share (%), STMTEXPR                              0.01       0.05       0.18       0.21
+  Node memory share (%), SUB                        0.40       0.03       0.03       0.09       0.10
+  Node memory share (%), TEXT                                  0.01       0.10       0.42       0.32
+  Node memory share (%), TEXTBLOCK                                        0.01       0.04       0.05
+  Node memory share (%), TOPSCOPE                              0.00       0.00       0.00
+  Node memory share (%), TRACEDECL                             2.11       0.69       2.78
+  Node memory share (%), TRACEINC                                         0.57       2.27       1.55
+  Node memory share (%), TRACEPOPPREFIX                        0.07       0.02       0.09
+  Node memory share (%), TRACEPUSHPREFIX                       0.09       0.03       0.11
+  Node memory share (%), TYPEDEF                    0.06
+  Node memory share (%), TYPETABLE                  0.02       0.01       0.00       0.01
+  Node memory share (%), UNPACKARRAYDTYPE                                 0.00       0.01
+  Node memory share (%), VAR                        5.96       2.06       0.61       2.54       0.24
+  Node memory share (%), VARREF                    25.35      22.44      21.42      24.46      25.50
+  Node memory share (%), VARSCOPE                              1.05       0.31
+  Node memory share (%), VOIDDTYPE                  0.01       0.00       0.00       0.01
+  Node memory share (%), WHILE                      0.02                  0.00       0.02       0.03
+  Node memory share (%), WORDSEL                                                     1.64       1.96
+  Node memory share (%), XOR                       10.66      10.62      12.23       0.64       0.84
+
+  Vars, width     1                                    4         84         86         86         86
+  Vars, width     2                                                          5          5          5
+  Vars, width     3                                              15         11         11         11
+  Vars, width     4                                              10          9          9          9
+  Vars, width     6                                               3          2          2          2
+  Vars, width     7                                               3          2          2          2
+  Vars, width     8                                              23         19         19         19
+  Vars, width    16                                              43         32         32         32
+  Vars, width    17                                               6          4          4          4
+  Vars, width    20                                               7          7          7          7
+  Vars, width    32                                              20         19         19         19
+  Vars, width    48                                               1          4          4          4
+  Vars, width    64                                              32         25         25         25
+  Vars, width   128                                               4          3         11         11

@@ -1,0 +1,140 @@
+`begin_keywords "1800-2017"
+`line 1 "rtl/UDP_tx.sv" 1
+`timescale 1ns/10ps
+module UDP_tx
+#(
+    parameter UDP_DEST_ADDR = 16'h1234, 
+    parameter UDP_SRC_ADDR = 16'h4321, 
+    parameter UDP_HEADER_LENGTH = 16'h08, 
+    parameter UDP_CHECKSUM = 16'h0000,
+    parameter IP_DEST_ADDR = 32'hC0A80102   
+)
+(
+    input logic CLK, nRST,
+    input logic valid,  
+    input logic [63:0] UDP_payload,  
+    input logic [15:0] UDP_len,  
+     
+     
+    input logic protocol_last,  
+
+`line 19 "rtl/UDP_tx.sv" 0
+    output logic [63:0] IP_payload,  
+     
+    output logic UDP_last,
+    output logic [15:0] protocol_Data_len
+     
+);
+    typedef enum logic [2:0] {
+        IDLE,
+        SEND_HEADER,
+        SEND_PAYLOAD,
+        DONE,
+        SEND_CHKSUM_PAYLOAD
+         
+    } state_t;
+    logic [63:0] next_IP_payload;
+    state_t current_state, nstate;
+    logic [15:0] computed_len; 
+    logic [63:0] header_reg;
+    logic [15:0] IP_len;
+     
+
+`line 40 "rtl/UDP_tx.sv" 0
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            current_state <= IDLE;
+            header_reg <= '0;
+            IP_payload <= '0;
+        end else begin
+            current_state <= nstate;
+             
+            header_reg <= {16'b0, UDP_SRC_ADDR, UDP_DEST_ADDR, IP_len};
+             
+            IP_payload <= next_IP_payload;
+        end
+    end
+
+`line 54 "rtl/UDP_tx.sv" 0
+    assign IP_len = UDP_len + UDP_HEADER_LENGTH; 
+    assign protocol_Data_len = UDP_len; 
+    
+    always_comb begin
+        
+
+`line 66 "rtl/UDP_tx.sv" 0
+
+`line 66 "rtl/UDP_tx.sv" 0
+
+`line 66 "rtl/UDP_tx.sv" 0
+
+`line 66 "rtl/UDP_tx.sv" 0
+
+`line 66 "rtl/UDP_tx.sv" 0
+
+`line 66 "rtl/UDP_tx.sv" 0
+
+`line 66 "rtl/UDP_tx.sv" 0
+ 
+         
+        nstate = current_state;
+         
+        next_IP_payload = '0; 
+        UDP_last = 1'b0;
+        casez(current_state)
+            IDLE: begin
+                if (valid) begin
+                     
+                    nstate = SEND_HEADER;
+                    next_IP_payload = header_reg;
+                end
+            end
+
+`line 81 "rtl/UDP_tx.sv" 0
+            SEND_HEADER: begin
+                 
+                nstate = SEND_CHKSUM_PAYLOAD;
+                 
+                 
+                next_IP_payload = {16'b0, UDP_payload[47:0]};
+            end
+
+`line 89 "rtl/UDP_tx.sv" 0
+            SEND_CHKSUM_PAYLOAD: begin
+                 
+                nstate = SEND_PAYLOAD;
+                next_IP_payload = UDP_payload;
+            end
+
+`line 95 "rtl/UDP_tx.sv" 0
+            SEND_PAYLOAD: begin
+                 
+                next_IP_payload = UDP_payload;
+                if (protocol_last) begin
+                    nstate = DONE;
+                end else begin
+                    nstate = SEND_PAYLOAD;
+                end
+            end
+
+`line 105 "rtl/UDP_tx.sv" 0
+            DONE: begin
+                UDP_last = 1'b1;  
+                nstate = IDLE;  
+            end
+
+`line 110 "rtl/UDP_tx.sv" 0
+             
+             
+             
+             
+
+`line 115 "rtl/UDP_tx.sv" 0
+            default: begin
+                nstate = IDLE;  
+            end
+        endcase
+    end
+endmodule
+
+`line 122 "rtl/UDP_tx.sv" 0

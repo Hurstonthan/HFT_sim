@@ -19,8 +19,9 @@ module top #(
     
     //MAC RX
     input logic [DATA_WIDTH - 1 : 0] xgmii_rxd,
-    input logic [CTRL_WIDTH - 1 : 0] xgmii_rxc
+    input logic [CTRL_WIDTH - 1 : 0] xgmii_rxc,
 
+    input protocol_last
     // //FIFO TX
     // input  logic                           axis_last,
     // input  logic                           wr_FIFO_en,
@@ -85,12 +86,6 @@ module top #(
         .frame_ok(frame_ok),
         .bytes_rcv_len(bytes_rcv_len)
     );
-
-
-    //-------------------------- MAC RX -----------------------
-
-
-
     // ------------------------- IP_RX -----------------------
 
     IP_rx ip_rx (
@@ -110,8 +105,6 @@ module top #(
         .is_udp(is_udp_rx),
         .is_tcp(is_tcp_rx)
     );
-
-    // ------------------------- IP_RX -----------------------
 
     // ------------------------- UDP_RX ----------------------
     UDP_rx udp_rx (
@@ -225,7 +218,7 @@ module top #(
         .valid(IP_send),
         .UDP_payload(UDP_payload),
         .UDP_len(UDP_len),
-        .protocol_last(UDP_tx_last),
+        .protocol_last(protocol_last),
         .IP_payload(UDP_transmit),
         .UDP_last(UDP_tx_last),
         .protocol_Data_len(UDP_len_data)

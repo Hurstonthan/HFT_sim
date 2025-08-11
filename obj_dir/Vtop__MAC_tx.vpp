@@ -1,0 +1,418 @@
+`begin_keywords "1800-2017"
+`line 1 "rtl/MAC_tx.sv" 1
+`timescale 1ns/1ps
+
+`line 3 "rtl/MAC_tx.sv" 0
+module MAC_tx #(
+    parameter WORD_WIDTH = 64,
+    parameter CTRL_WIDTH = 8,
+    parameter MAC_DEST_ADDR  = 48'h FFFF_FFCC_BBAA,
+    parameter MAC_SRC_ADDR = 48'h AACC_BBFF_FFFF,
+    parameter ETHER_TYPE         = 16'h0800    
+) (
+    input wire CLK,
+    input wire nRST,
+
+`line 13 "rtl/MAC_tx.sv" 0
+    input logic TX_en,
+
+`line 15 "rtl/MAC_tx.sv" 0
+    output wire [WORD_WIDTH - 1:0] xgmii_txd,
+    output wire [CTRL_WIDTH - 1:0] xgmii_txc,
+
+`line 18 "rtl/MAC_tx.sv" 0
+     
+    input logic [WORD_WIDTH - 1:0] IP_transmit, 
+    input logic [15:0] tt_len_data,
+    input logic IP_last,
+    output logic IP_send,
+     
+    output logic frame_end
+);
+
+
+`line 28 "rtl/MAC_tx.sv" 0
+    typedef enum logic [6:0] {
+        IDLE,
+        SEND_PREAMBLE_SFD,
+        SEND_ETHER_HEAD1,
+        SEND_ETHER_HEAD2,
+        SEND_IP_HEADER_PAYLOAD,
+        SEND_FCS_TERMINATE,
+        SEND_ZERO_PADDING,
+        SEND_IDLE_END1    
+    } ether_state_t;
+
+`line 39 "rtl/MAC_tx.sv" 0
+    logic [WORD_WIDTH - 1 : 0] xgmii_txd_l, nxgmii_txd_l;
+    logic [CTRL_WIDTH - 1 : 0] xgmii_txc_l, nxgmii_txc_l;
+    logic IP_send_l;  
+    ether_state_t state, nstate;
+
+`line 44 "rtl/MAC_tx.sv" 0
+    logic crc_init, valid, nvalid;
+    logic IP_last_dl;
+    logic [31:0] crc_out;
+
+`line 48 "rtl/MAC_tx.sv" 0
+     
+    logic [15:0] len_counter, nlen_counter;
+
+
+`line 52 "rtl/MAC_tx.sv" 0
+    
+
+`line 54 "rtl/MAC_tx.sv" 0
+    assign xgmii_txd = xgmii_txd_l;
+    assign xgmii_txc = xgmii_txc_l; 
+
+
+`line 58 "rtl/MAC_tx.sv" 0
+      crc32_parallel_64bit CRC (
+        .CLK(CLK),
+        .nRST(nRST),
+        .valid(valid),
+        .crc_init(crc_init),
+        .data_in(nxgmii_txd_l),
+        .crc_out(crc_out)
+      );
+
+`line 67 "rtl/MAC_tx.sv" 0
+    always_ff @(posedge CLK, negedge nRST) begin  
+        if (!nRST) begin
+            state <= IDLE;
+            xgmii_txd_l <= 64'h07070707_07070707;
+            xgmii_txc_l <= '1;
+            len_counter <= 0;
+            IP_last_dl <= 0;
+             
+        end else begin
+            state <= nstate;
+            xgmii_txd_l <= nxgmii_txd_l;
+            xgmii_txc_l <= nxgmii_txc_l;
+            len_counter <= nlen_counter;
+            IP_last_dl <= IP_last;
+             
+            
+        end
+    end
+
+`line 86 "rtl/MAC_tx.sv" 0
+    always_ff @(posedge CLK, negedge nRST) begin 
+        if (!nRST) begin
+            IP_send <= 0;
+        end else begin
+            IP_send <= IP_send_l;
+        end
+    end
+
+`line 94 "rtl/MAC_tx.sv" 0
+    always_comb begin  
+        nstate = state;
+        IP_send_l = IP_send;
+        crc_init = 1'b0;
+        valid = 1'b1;
+        frame_end = 1'b0;
+        case (state)
+            IDLE: begin
+                crc_init = 1'b1;  
+                if (TX_en) begin
+                    nstate = SEND_PREAMBLE_SFD;
+                    IP_send_l = 1'b1;
+                end
+            end
+            SEND_PREAMBLE_SFD: begin
+
+`line 110 "rtl/MAC_tx.sv" 0
+                nstate = SEND_ETHER_HEAD1;
+                IP_send_l = 1'b1;  
+                 
+            end
+            SEND_ETHER_HEAD1: begin
+                nstate = SEND_ETHER_HEAD2;
+                IP_send_l = 1'b1;
+            end
+
+`line 119 "rtl/MAC_tx.sv" 0
+            SEND_ETHER_HEAD2: begin
+                nstate = SEND_IP_HEADER_PAYLOAD;
+                IP_send_l = 1'b1;
+                 
+                 
+                 
+                 
+            end
+
+`line 128 "rtl/MAC_tx.sv" 0
+            SEND_IP_HEADER_PAYLOAD: begin
+                IP_send_l = 1'b1;
+                 
+                if (IP_last && (tt_len_data < 46)) begin
+                    IP_send_l = 1'b0;
+                    nstate = SEND_ZERO_PADDING;
+                    nlen_counter = tt_len_data;
+                end else if (IP_last) begin
+                    IP_send_l = 1'b0;
+                end else if (IP_last_dl) begin
+                    IP_send_l = 1'b0;
+                    nstate = SEND_FCS_TERMINATE;
+                end
+            end            
+
+`line 143 "rtl/MAC_tx.sv" 0
+            SEND_ZERO_PADDING: begin
+                nlen_counter = len_counter + 8;
+                if (len_counter >=46) begin
+                    nstate = SEND_FCS_TERMINATE;
+                end
+                
+            end
+
+`line 151 "rtl/MAC_tx.sv" 0
+            SEND_FCS_TERMINATE: begin
+                crc_init = 1'b1;
+                valid = 1'b0;
+                frame_end = 1'b1;
+                nstate = SEND_IDLE_END1;  
+            end
+            SEND_IDLE_END1: begin
+                crc_init = 1'b1;
+                nstate = IDLE;
+            end
+            default: begin
+                
+            end
+
+`line 165 "rtl/MAC_tx.sv" 0
+        endcase    
+
+`line 167 "rtl/MAC_tx.sv" 0
+    end
+
+`line 169 "rtl/MAC_tx.sv" 0
+    always_comb begin  
+        nxgmii_txd_l = xgmii_txd_l;
+        nxgmii_txc_l = xgmii_txc_l;
+        case (state)
+            IDLE: begin
+                nxgmii_txd_l = 64'h07070707_07070707;
+                nxgmii_txc_l = '1;
+                if (TX_en) begin
+                    nxgmii_txd_l = {8'hFB,48'h555555555555, 8'hD5};  
+                    nxgmii_txc_l = 8'b1000_0000;
+                end
+            end
+
+`line 182 "rtl/MAC_tx.sv" 0
+            SEND_PREAMBLE_SFD: begin
+                 
+                 
+                nxgmii_txc_l =  '0;
+                nxgmii_txd_l = {MAC_DEST_ADDR,MAC_SRC_ADDR[47:32]};
+                
+            end
+
+`line 190 "rtl/MAC_tx.sv" 0
+            SEND_ETHER_HEAD1: begin
+                 
+
+`line 193 "rtl/MAC_tx.sv" 0
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                
+                nxgmii_txd_l = {MAC_SRC_ADDR[31:0], IP_transmit[31:0]};
+                
+                nxgmii_txc_l =  '0; 
+                 
+                 
+                 
+            end
+
+`line 211 "rtl/MAC_tx.sv" 0
+            SEND_ETHER_HEAD2: begin
+                 
+                 
+                 
+                 
+                 
+                 
+                
+                 
+                 
+
+`line 222 "rtl/MAC_tx.sv" 0
+                 
+                nxgmii_txd_l = IP_transmit;
+                nxgmii_txc_l =  '0;
+                 
+                 
+                 
+                 
+
+`line 230 "rtl/MAC_tx.sv" 0
+            end
+
+`line 232 "rtl/MAC_tx.sv" 0
+            SEND_IP_HEADER_PAYLOAD: begin
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+
+`line 242 "rtl/MAC_tx.sv" 0
+                 
+                 
+                nxgmii_txd_l = IP_transmit;
+                nxgmii_txc_l =  '0;
+
+`line 247 "rtl/MAC_tx.sv" 0
+                if (IP_last_dl && (tt_len_data >= 46)) begin
+                    nxgmii_txd_l = {crc_out, 32'hFD070707};  
+                    nxgmii_txc_l = 8'b0000_1111;
+                end
+
+
+
+`line 254 "rtl/MAC_tx.sv" 0
+                
+                
+            end
+
+`line 258 "rtl/MAC_tx.sv" 0
+            SEND_ZERO_PADDING: begin
+                nxgmii_txd_l = 0;
+                nxgmii_txc_l = 0;
+                if (len_counter >= 46) begin
+                    nxgmii_txd_l = {crc_out, 32'hFD070707};  
+                    nxgmii_txc_l = 8'b0000_1111;
+                end
+            end
+
+`line 267 "rtl/MAC_tx.sv" 0
+             
+             
+             
+             
+             
+             
+             
+             
+
+`line 276 "rtl/MAC_tx.sv" 0
+             
+
+`line 278 "rtl/MAC_tx.sv" 0
+             
+             
+             
+             
+             
+
+`line 284 "rtl/MAC_tx.sv" 0
+             
+             
+
+`line 287 "rtl/MAC_tx.sv" 0
+             
+             
+             
+             
+
+`line 292 "rtl/MAC_tx.sv" 0
+             
+             
+             
+             
+             
+             
+             
+             
+
+`line 301 "rtl/MAC_tx.sv" 0
+             
+             
+             
+
+`line 305 "rtl/MAC_tx.sv" 0
+             
+             
+             
+             
+             
+             
+
+`line 312 "rtl/MAC_tx.sv" 0
+             
+             
+               
+             
+             
+
+`line 318 "rtl/MAC_tx.sv" 0
+             
+             
+             
+
+`line 322 "rtl/MAC_tx.sv" 0
+             
+             
+             
+             
+
+`line 327 "rtl/MAC_tx.sv" 0
+            SEND_FCS_TERMINATE: begin
+                 
+                 
+                 
+                 
+                 
+
+`line 334 "rtl/MAC_tx.sv" 0
+                nxgmii_txd_l = 64'h07070707_07070707;
+                nxgmii_txc_l = 8'b1111_1111;
+                
+
+`line 338 "rtl/MAC_tx.sv" 0
+            end
+
+`line 340 "rtl/MAC_tx.sv" 0
+            SEND_IDLE_END1: begin
+                nxgmii_txd_l = 64'h07070707_07070707;
+                nxgmii_txc_l = 8'hFF;
+            end
+
+`line 345 "rtl/MAC_tx.sv" 0
+             
+             
+             
+             
+             
+             
+             
+             
+            default: begin
+                nxgmii_txd_l = 0;
+                nxgmii_txc_l = 0;
+            end
+        endcase
+
+`line 359 "rtl/MAC_tx.sv" 0
+    end
+
+`line 361 "rtl/MAC_tx.sv" 0
+    
+
+`line 363 "rtl/MAC_tx.sv" 0
+endmodule
+`line 364 "rtl/MAC_tx.sv" 0

@@ -1,0 +1,1428 @@
+// Dump of all post-preprocessor input
+// Blank lines and `line directives have been removed
+//
+// Information:
+//   Verilator 5.020 2024-01-01 rev (Debian 5.020-1)
+//   Arguments: -Wno-lint --error-limit 0 --trace --trace-fst --debug -Iinclude -Irtl -CFLAGS -Irtl -Iinclude -O0 -g --cc rtl/top.sv --top-module top --exe generated/top/top_tb.cpp generated/top/top_input.cpp --build
+//   Build jobs: 1
+//   Verilate jobs: 1
+
+`begin_keywords "1800-2017"
+`timescale 1ns/10ps
+`timescale 1ns/10ps
+package rx_pkg;
+    parameter FPGA_MAC = 48'h123456;  
+    parameter NASDAQ_MAC = 48'h65431;  
+    parameter IP_TYPE = 16'h0800;  
+    parameter IP_VERSION = 4'h4;  
+    parameter IP_HDL = 4'h5;  
+    parameter UDP_PROTOCOL = 8'h11; 
+    parameter TCP_PROTOCOL = 8'h06; 
+    parameter ICMP_PROTOCOL = 8'h01;
+    parameter IP_TTL = 8'h40; 
+    parameter IP_SRC_ADDR = 32'hFFFFFFFF;  
+    parameter IP_DEST_ADDR = 32'hAAAAAAAA; 
+    parameter UDP_SRC_ADDR = 16'h1234; 
+    parameter UDP_DEST_ADDR = 16'h4321; 
+    parameter UDP_HEADER_LENGTH = 16'h08;
+    parameter UDP_CHECKSUM = 16'h0000;  
+    typedef enum logic [3:0] { 
+        IDLE,
+        RCV_VER_IHL_DSCP_ECN,  
+        RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL,  
+        RCV_SUM_SRC_ADDR_DEST_ADDR,  
+        RCV_PAYLOAD_DEST,  
+        CHK_SUM,
+        RCV_PAYLOAD,
+        DONE,
+        ERROR
+    } IP_t;
+    typedef enum logic [2:0] { 
+        UDP_IDLE,
+        UDP_HEADER,  
+        UDP_CHK_SUM_PAYLOAD,  
+        UDP_PAYLOAD,
+        UDP_DONE,
+        UDP_CHK_SUM,
+        UDP_ERROR
+    } UDP_t;
+endpackage
+module top #(
+    parameter int DATA_WIDTH    = 64,
+    parameter int FIFO_DEPTH_TX = 16,
+    parameter int FIFO_DEPTH_RX = 16,
+    parameter int CTRL_WIDTH    = 8,
+    parameter CLT_OR_SVR = 1'b0
+) (
+    input  logic                           CLK,
+    input  logic                           nRST,
+    input logic TX_en,
+    input logic [15:0] UDP_len,  
+    output logic [DATA_WIDTH - 1:0] xgmii_txd,
+    output logic [CTRL_WIDTH - 1:0] xgmii_txc,
+    output logic frame_end,
+    input logic [DATA_WIDTH - 1 : 0] xgmii_rxd,
+    input logic [CTRL_WIDTH - 1 : 0] xgmii_rxc,
+    input protocol_last
+);
+    logic IP_send, IP_tx_last;
+    logic [DATA_WIDTH - 1:0] IP_transmit;
+    logic [15:0] tt_len_data;
+    logic TCP_send, TCP_tx_valid, TCP_tx_last;
+    logic [15:0] TCP_len_data;
+    logic [DATA_WIDTH - 1:0] TCP_transmit;
+    localparam int FIFO_WIDTH_TX = $clog2(FIFO_DEPTH_TX);
+    localparam int FIFO_WIDTH_RX = $clog2(FIFO_DEPTH_RX);
+    logic                           IP_valid;
+    logic                           IP_flush;
+    logic                           IP_rx_last; 
+    logic [15:0]                    IP_pseuder;
+    logic [63:0]                    IP_payload;
+    logic [15:0]                    TCP_len;
+    logic [7:0]                     IP_bytes_rcv_len;
+    logic protocol_data_flag;
+    logic [DATA_WIDTH - 1:0] MAC_payload_rcv;
+    logic MAC_valid;
+    logic CRC_flush;
+    logic frame_ok;
+    logic [7:0] bytes_rcv_len;
+    MAC_rx mac_rx (
+        .CLK(CLK),
+        .nRST(nRST),
+        .xgmii_rxd(xgmii_rxd),
+        .xgmii_rxc(xgmii_rxc),
+        .MAC_valid(MAC_valid),
+        .MAC_payload_rcv(MAC_payload_rcv),
+        .CRC_flush(CRC_flush),
+        .frame_ok(frame_ok),
+        .bytes_rcv_len(bytes_rcv_len)
+    );
+    IP_rx ip_rx (
+        .CLK(CLK),
+        .nRST(nRST),
+        .MAC_valid(MAC_valid),
+        .MAC_payload_rcv(MAC_payload_rcv),
+        .MAC_flush(CRC_flush),
+        .bytes_rcv_len(bytes_rcv_len),
+        .protocol_data_flag(protocol_data_flag),
+        .IP_valid(IP_valid),
+        .IP_flush(IP_flush),
+        .IP_last(IP_rx_last),
+        .IP_payload(IP_payload),
+        .IP_bytes_rcv_len(IP_bytes_rcv_len),
+        .IP_pseuder(IP_pseuder),
+        .is_udp(is_udp_rx),
+        .is_tcp(is_tcp_rx)
+    );
+    UDP_rx udp_rx (
+        .CLK(CLK),
+        .nRST(nRST),
+        .IP_valid(IP_valid),
+        .IP_flush(IP_flush), 
+        .is_udp(is_udp_rx),
+        .IP_payload(IP_payload),
+        .UDP_flush(UDP_flush),
+        .UDP_valid(UDP_valid),
+        .UDP_payload(UDP_payload)
+    );
+    logic is_udp_rx, is_tcp_rx;
+    logic [63:0] UDP_payload; 
+    logic                    nw_segment;
+    logic                    TCP_rx_last;
+    logic                    TCP_flush_int;
+    logic [63:0]             axis_data_rx_int;
+    logic                    handshake_done_int;
+    logic [31:0]             seq_rcv_start_int;
+    logic                    wr_pfifo_en_int;
+    logic [7:0]              wr_pfifo_offset_int;
+    logic [FIFO_WIDTH_RX-1:0]wr_ptr_out_int;
+    logic [FIFO_WIDTH_RX-1:0]wr_pfifo_len_int;
+    logic                    rd_pfifo_valid_int;
+    logic [FIFO_WIDTH_RX-1:0]rd_pfifo_ptr_int;
+    logic [FIFO_WIDTH_RX-1:0]rd_pfifo_len_int;
+    logic                    rd_pfifo_en_int;
+    logic [31:0]             seq_rx_FIFO_rd_int;
+    logic                    rd_ftx_en_int;
+    logic [63:0]             rd_ftx_payload_int;
+    logic                    rd_ftx_valid_int;
+    logic                    rd_ftx_last_int;
+    logic [15:0]             bytes_abt_sent_int;
+    logic [31:0]             ACK_num_int;
+    logic                    ACK_rcv_flag_int;
+    logic                    out_order_req_int;
+    logic                    TCP_stop_flg_int;
+    logic                    end_ss_int;
+    logic                    re_trans_int;
+    logic [15:0]             checksum_re_trans_int;
+    logic        seq_up;
+    logic [31:0] seq_num_tx;
+    logic [15:0] checksum_TX;
+    logic        full;
+    logic        rd_FIFO_valid_tx;
+    logic        rd_FIFO_last;
+    logic [DATA_WIDTH-1:0] rd_FIFO_payload;
+    logic [15:0] bytes_abt_sent;
+    assign rd_FIFO_valid_tx = rd_ftx_valid_int;
+    assign rd_FIFO_last     = rd_ftx_last_int;
+    assign rd_FIFO_payload  = rd_ftx_payload_int;
+    assign bytes_abt_sent   = bytes_abt_sent_int;
+    assign TCP_stop_flag    = TCP_stop_flg_int;   
+    MAC_tx mac_tx (
+        .CLK(CLK),
+        .nRST(nRST),
+        .TX_en(TX_en),
+        .xgmii_txd(xgmii_txd), 
+        .xgmii_txc(xgmii_txc),
+        .tt_len_data(tt_len_data),
+        .IP_transmit(IP_transmit),
+        .IP_send(IP_send),
+        .IP_last(IP_tx_last),
+        .frame_end(frame_end)
+    );
+    IP_tx ip_tx (
+        .CLK(CLK),
+        .nRST(nRST),
+        .IP_send(IP_send),
+        .IP_transmit(IP_transmit),
+        .IP_last(IP_tx_last),
+        .tt_len_data(tt_len_data),
+        .len_data(UDP_len_data),
+        .protocol_send(UDP_send),
+        .protocol_last(UDP_tx_last),
+        .protocol_transmit(UDP_transmit)
+    );
+    logic [15:0] UDP_transmit;
+    logic [15:0] UDP_len_data;
+    logic UDP_tx_last, UDP_tx_send;
+    UDP_tx udp_tx (
+        .CLK(CLK),
+        .nRST(nRST),
+        .valid(IP_send),
+        .UDP_payload(UDP_payload),
+        .UDP_len(UDP_len),
+        .protocol_last(protocol_last),
+        .IP_payload(UDP_transmit),
+        .UDP_last(UDP_tx_last),
+        .protocol_Data_len(UDP_len_data)
+    );
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns/10ps
+module MAC_rx #(
+    parameter DATA_WIDTH = 64,
+    parameter CTRL_WIDTH = 8,
+    parameter MAC_DEST_ADDR = 48'hFFFF_FFCC_BBAA, 
+    parameter MAC_SRC_ADDR = 48'hAACC_BBFF_FFFF,
+    parameter ETHER_TYPE_MSB = 16'h0008,
+    parameter CRC_MAGIC = 32'hC704_DD7B
+) (
+    input logic CLK,
+    input logic nRST,
+    input logic [DATA_WIDTH - 1:0] xgmii_rxd,
+    input logic [CTRL_WIDTH - 1:0] xgmii_rxc,
+    output logic [DATA_WIDTH - 1:0] MAC_payload_rcv,
+    output logic MAC_valid,
+    output logic CRC_flush,
+    output logic frame_ok,
+    output logic [7:0] bytes_rcv_len
+);
+    logic crc_init, end_valid;
+    logic [31:0] crc_out;
+    logic [63:0] crc_in, crc_in_big;
+    logic [15:0] xgmii_rxc_frame, nxgmii_rxc_frame;
+    logic [$clog2(CTRL_WIDTH) - 1:0] bytes_offset;
+    logic [$clog2(CTRL_WIDTH) - 1 : 0]  end_FCS, str_FCS;
+    logic sof_found, crc_valid, nsof_found;
+    logic [2:0] sof_lane, nsof_lane;
+    logic [DATA_WIDTH - 1 : 0] xgmii_rxd_f, nxgmii_rxd_f, xgmii_rxd_MSB, xgmii_rxd_f_cvt;
+    logic [CTRL_WIDTH - 1 : 0] xgmii_rxc_f, nxgmii_rxc_f, xgmii_rxc_MSB; 
+    logic [15:0] FCS_rxc, nFCS_rxc;
+    logic [3:0] FCS_offset;
+    logic [31:0] crc_check, ncrc_check;
+    logic [127:0] frame_store, nframe_store;
+    logic [127:0] FCS_grap;
+    logic [15:0] crc_ind, ncrc_ind;
+    logic [5:0] shift_bits;
+    logic [7:0] byte_END;
+    logic [31:0] FCS_frame, nFCS_frame; 
+    logic [31:0] rg, nrg; 
+    logic [63:0]FCS_frame_cvt;
+    logic crc_delay, ncrc_delay, ncrc_valid;
+    int i;
+    logic soft_dl, nsoft_dl;
+    logic case_debug;
+    logic [63:0] MAC_payload_rcv_cvrt,nMAC_payload_rcv_cvrt;
+    logic [7:0] bytes_rcv, nbytes_rcv;
+    logic [7:0] bytes_rcv_dl, nbytes_rcv_dl;
+    logic nMAC_valid;
+    typedef enum logic [5:0] {
+        IDLE,
+        RCV_ETHER_HEAD1,
+        RCV_ETHER_HEAD2,
+        RCV_MAC_PAYLOAD,
+        CHECK_CRC,
+        ERROR
+    } MAC_t;
+    crc32_parallel_64bit CRC (
+        .CLK(CLK),
+        .nRST(nRST),
+        .rx(1'b0),
+        .valid(crc_valid),
+        .crc_init(crc_init),
+        .data_in(crc_in_big),
+        .crc_out(crc_out)
+      );
+      xgmii_little_to_big crc_convert (
+        .xgmii_rxd(crc_in),
+        .be_rxd(crc_in_big)
+      );
+      xgmii_little_to_big crc_frame_convert (
+        .xgmii_rxd({FCS_frame[31:0],32'h0}),
+        .be_rxd(FCS_frame_cvt)
+      );
+      xgmii_little_to_big payload_cvrt (
+        .xgmii_rxd(MAC_payload_rcv_cvrt),
+        .be_rxd(MAC_payload_rcv)
+      );
+      xgmii_little_to_big xgmii_cvrt (
+        .xgmii_rxd(xgmii_rxd_f),
+        .be_rxd(xgmii_rxd_f_cvt)
+      );
+    priority_encoder #(
+        .WIDTH(CTRL_WIDTH),
+        .MSB(1'b0)
+    ) crc_check_encoder (
+        .din(xgmii_rxc),
+        .valid(end_valid),
+        .idx(bytes_offset)
+    );
+    priority_encoder #(
+        .WIDTH(CTRL_WIDTH + CTRL_WIDTH),
+        .MSB(1'b0)
+    ) xgmii_fcs (
+        .din((sof_lane == 0) ? {xgmii_rxc, xgmii_rxc_frame[15:8]} : {xgmii_rxc, xgmii_rxc_frame[11:4]}),
+        .valid(),
+        .idx(FCS_offset)
+    );
+    MAC_t state, next_state;
+    assign FCS_grap = {xgmii_rxd, frame_store[127:64]};  
+    assign shift_bits = bytes_offset << 3;  
+    assign byte_END = (xgmii_rxd >> shift_bits);
+    assign crc_in = xgmii_rxd_f;
+    assign bytes_rcv_len = bytes_rcv;
+    always_ff @(posedge CLK or negedge nRST) begin
+        if (!nRST) begin
+            state <= IDLE;
+            crc_check <= '0;
+            frame_store <= '0;
+            crc_delay <= 0;
+            FCS_frame <= 0;
+            sof_found <= 0;
+            sof_lane <= 0;
+            xgmii_rxc_frame <= 0;
+            soft_dl <= 0;
+            MAC_valid <= 0;
+            MAC_payload_rcv_cvrt <= 0;
+            bytes_rcv <= 0;
+            bytes_rcv_dl <= 0;
+            FCS_rxc <= 0;
+            rg <= 0;
+            crc_valid <= 0;
+        end else begin
+            state <= next_state;
+            crc_check <= ncrc_check;
+            frame_store <= nframe_store;
+            rg <= nrg;
+            FCS_frame <= nFCS_frame;
+            crc_delay <= ncrc_delay;
+            sof_found <= nsof_found;
+            sof_lane <=  nsof_lane;
+            xgmii_rxc_frame <= nxgmii_rxc_frame;
+            soft_dl <= nsoft_dl;
+            MAC_valid <= nMAC_valid;
+            MAC_payload_rcv_cvrt <= nMAC_payload_rcv_cvrt;
+            bytes_rcv <= nbytes_rcv;
+            bytes_rcv_dl <= nbytes_rcv_dl;
+            FCS_rxc <= nFCS_rxc;
+            crc_valid <= ncrc_valid;
+        end
+    end
+    /*verilator lint_off UNOPTFLAT*/ 
+    logic [47:0] mac_dest_addr;
+    logic [47:0] mac_src_addr;
+    logic [31:0] second_half_src_addr;
+    logic [127:0] temp;
+    logic mac_dest_addr_valid, mac_src_addr_first_valid, mac_src_addr_second_valid;
+    assign mac_dest_addr = {xgmii_rxd_f[7:0],xgmii_rxd_f[15:8], xgmii_rxd_f[23:16], xgmii_rxd_f[31:24],xgmii_rxd_f[39:32], xgmii_rxd_f[47:40]};
+    assign mac_src_addr = {xgmii_rxd_f[63:48], xgmii_rxd_f[31:0]};
+    assign mac_dest_addr_valid = (mac_dest_addr == MAC_DEST_ADDR);
+    assign mac_src_addr_first_valid = (mac_src_addr[47:32] == MAC_SRC_ADDR[47:32]);
+    assign mac_src_addr_second_valid = (mac_src_addr[31:0] == MAC_SRC_ADDR[31:0]);
+    assign second_half_src_addr = {xgmii_rxd_f[7:0],xgmii_rxd_f[15:8],xgmii_rxd_f[23:16],xgmii_rxd_f[31:24]};
+    always_comb begin
+        nrg = rg;
+        next_state = state;
+        crc_init = 1'b0;
+        ncrc_valid = crc_valid;
+        frame_ok = 1'b0;
+        CRC_flush = 1'b0;
+        ncrc_check = crc_check;
+        ncrc_delay = 1'b0;
+        nMAC_valid = 1'b0;
+        nsoft_dl = soft_dl;
+        nFCS_frame = FCS_frame;
+        xgmii_rxd_f = '0;
+        nxgmii_rxc_frame = {xgmii_rxc, xgmii_rxc_frame[15:8]};
+        nframe_store = {xgmii_rxd,frame_store[127:64]};
+        nMAC_payload_rcv_cvrt = MAC_payload_rcv_cvrt;
+        nMAC_valid = MAC_valid;
+        nbytes_rcv = bytes_rcv;
+        nbytes_rcv_dl = bytes_rcv_dl;
+        nFCS_rxc = (sof_lane == 0) ? {xgmii_rxc, xgmii_rxc_frame[15:8]} : {xgmii_rxc, xgmii_rxc_frame[11:4]};
+        nsof_found = sof_found;
+        nsof_lane = sof_lane;
+        for (i = 0; i < 8; i++) begin
+            if (state == IDLE && xgmii_rxc[i] && xgmii_rxd[i*8+: 8] == 8'hFB) begin
+                nsof_found = 1'b1;
+                nsof_lane = i[2:0];
+            end
+        end
+        if (sof_lane == 0) begin
+            xgmii_rxd_f = frame_store[127:64];
+        end else if (sof_lane == 4) begin
+            xgmii_rxd_f = frame_store[95:32];
+        end
+        case (state)
+            IDLE: begin
+                crc_init = 1'b1;
+                nMAC_valid = 1'b0;
+                if (sof_found) begin
+                    if (sof_lane == 4) begin
+                        nsoft_dl = 1'b1;
+                    end else begin
+                        next_state = RCV_ETHER_HEAD1;
+                        ncrc_valid = 1'b1;
+                    end
+                end
+                if (soft_dl) begin
+                    next_state = RCV_ETHER_HEAD1;
+                    ncrc_valid = 1'b1;
+                end
+            end
+            RCV_ETHER_HEAD1: begin
+                crc_init = 1'b0;
+                if (mac_dest_addr == MAC_DEST_ADDR && {xgmii_rxd_f[55:48], xgmii_rxd_f[63:56]} == MAC_SRC_ADDR[47:32]) begin
+                    next_state = RCV_ETHER_HEAD2;
+                    nMAC_valid = 1'b1;
+                end else begin
+                    next_state = ERROR;
+                end
+            end
+            RCV_ETHER_HEAD2: begin
+                if ({xgmii_rxd_f[7:0],xgmii_rxd_f[15:8],xgmii_rxd_f[23:16],xgmii_rxd_f[31:24]} == MAC_SRC_ADDR[31:0] && xgmii_rxd_f[47:32] == 16'h0008) begin
+                    next_state = RCV_MAC_PAYLOAD;
+                    nMAC_payload_rcv_cvrt = {xgmii_rxd_f[63:48],48'h0};
+                    nbytes_rcv = 7'd2;
+                    nMAC_valid = 1'b1;
+                end else begin
+                    nMAC_valid = 1'b0;
+                    next_state = ERROR;
+                end
+            end
+            RCV_MAC_PAYLOAD: begin
+                nMAC_valid = 1'b1;
+                nMAC_payload_rcv_cvrt = xgmii_rxd_f;
+                nbytes_rcv = 7'd8;
+                if (end_valid && (byte_END == 8'hFD)) begin
+                    nFCS_frame = FCS_grap >> ((FCS_offset - 4) << 3);
+                    if (sof_lane == 0) begin
+                        if (bytes_offset < 5) begin
+                            case_debug = 1'b1;
+                            nbytes_rcv = 8'd4 - bytes_offset; 
+                            case (bytes_offset)
+                                3'd0: begin
+                                    nMAC_payload_rcv_cvrt = frame_store[95:64];
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
+                                end
+                                3'd1: begin
+                                    nMAC_payload_rcv_cvrt = frame_store[103:64];
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
+                                end
+                                3'd2: begin
+                                    nMAC_payload_rcv_cvrt = frame_store[111:64];
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
+                                end
+                                3'd3: begin
+                                    nMAC_payload_rcv_cvrt = frame_store[119:64];
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
+                                end
+                            endcase
+                            ncrc_valid = 1'b0;
+                            next_state = CHECK_CRC;
+                        end else begin
+                            nbytes_rcv_dl = bytes_offset - 8'd3;
+                            casez (bytes_offset)
+                                3'd5:  
+                                    nframe_store = {{56'b0,xgmii_rxd[7:0]},frame_store[127:64]};
+                                3'd6:  
+                                    nframe_store = {{48'b0,xgmii_rxd[15:0]}, frame_store[127:64]};
+                                3'd7:  
+                                    nframe_store = {{40'b0,xgmii_rxd[23:0]}, frame_store[127:64]};
+                            endcase
+                            nMAC_payload_rcv_cvrt = frame_store[127:64];
+                            nbytes_rcv = 8'd8;
+                            ncrc_delay = 1'b1; 
+                        end
+                    end
+                    else begin
+                        ncrc_delay = 1'b1;
+                        nbytes_rcv_dl = 7'd4 + (bytes_offset - 7'd4);
+                        case(bytes_offset)
+                            3'd7: begin
+                                nframe_store = {{40'h0,xgmii_rxd[23:0]},frame_store[127:64]};
+                            end
+                            3'd6: begin
+                                nframe_store = {{48'h 0, xgmii_rxd[15:0], frame_store[127:64]}};
+                            end
+                            3'd5: begin
+                                nframe_store = {{56'h0, xgmii_rxd[7:0], frame_store[127:64]}};
+                            end
+                            3'd4: begin
+                                nframe_store ={64'h0, frame_store[127:64]};
+                            end
+                            3'd3: begin
+                                nframe_store ={8'h0,{frame_store[119:64]}};
+                            end
+                            3'd2: begin
+                                nframe_store = {16'h0,frame_store[111:64]};
+                            end
+                            3'd1: begin
+                                nframe_store = {24'h0, frame_store[103:64]};
+                            end
+                            3'd0: begin
+                                nbytes_rcv = 8'd8;
+                                ncrc_valid = 1'b0;
+                                next_state = CHECK_CRC;
+                            end
+                        endcase
+                    end
+                end
+                if (crc_delay) begin
+                    ncrc_valid = 1'b0;
+                    next_state = CHECK_CRC;
+                    nbytes_rcv = bytes_rcv_dl;
+                    nFCS_frame = FCS_frame;
+                end
+            end
+            CHECK_CRC: begin
+                nMAC_valid = 1'b0;  
+                nsof_found = 1'b0;
+                nsoft_dl = 1'b0;
+                if (crc_out == FCS_frame_cvt[31:0]) begin
+                    frame_ok = 1'b1;
+                    next_state = IDLE;
+                end else begin
+                    CRC_flush = 1'b1;
+                    nMAC_valid = 1'b0;
+                    next_state = ERROR;
+                end
+            end
+            ERROR: begin
+                next_state = IDLE;
+            end
+        endcase
+    end
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns/10ps
+`timescale 1ns/10ps
+module IP_rx #(
+    parameter PROTOCOL = 8'h06,
+    parameter PROTOCOL_LEN = 16'd20
+) (
+    input logic CLK,
+    input logic nRST,
+    input logic MAC_valid,
+    input logic [63:0] MAC_payload_rcv,
+    input logic MAC_flush,
+    input logic [7:0] bytes_rcv_len,
+    output logic IP_valid,
+    output logic IP_flush,
+    output logic IP_last,
+    output logic [63:0] IP_payload,
+    output logic [7:0]  IP_bytes_rcv_len,
+    output logic [15:0] IP_pseuder,
+    output logic  protocol_data_flag,
+    output logic is_udp,
+    output logic is_tcp
+);
+    import rx_pkg::*;
+    IP_t state, nstate;
+    logic [15:0] IP_checksum, nIP_checksum;
+    logic [63:0] nIP_payload;
+    logic [15:0] bytes_rcv, nbytes_rcv;
+    logic chksum_en, chksum_clear;
+    logic [63:0] chksum_in;
+    logic [15:0] chksum_pl;
+    logic [16:0] chksum_final;
+    logic [15:0] dst_addr, ndst_addr;
+    logic [15:0] IP_len, nIP_len;
+    logic [7:0] nIP_bytes_rcv_len;
+    logic [15:0] nIP_pseuder;
+    logic [19:0] temp;
+    logic nIP_valid, nIP_last;
+    logic next_is_udp, next_is_tcp;
+    logic nprotocol_data_flag;
+    chksum_tcp_pl chksum_inst(
+       .CLK(CLK),
+       .nRST(nRST),
+       .clear(chksum_clear),
+       .FIFO_rd_en(chksum_en),
+       .TCP_payload_tx(chksum_in),
+       .TCP_checksum_pl(chksum_pl)
+    );
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            state <= IDLE;
+            IP_checksum <= 0;
+            IP_payload <= 0;
+            bytes_rcv <= 0;
+            dst_addr <= 0;
+            IP_valid <= 0;
+            IP_last <= 0;
+            IP_len <= 0;
+            is_tcp <= 0;
+            is_udp <= 0;
+            IP_bytes_rcv_len <= 0;
+            IP_pseuder <= 0;
+            protocol_data_flag <= 0;
+        end else begin
+                state <= nstate;
+                IP_checksum <= nIP_checksum;
+                IP_payload <= nIP_payload;
+                bytes_rcv <= nbytes_rcv;
+                dst_addr <= ndst_addr;
+                IP_valid <= nIP_valid;
+                IP_len <= nIP_len;
+                IP_bytes_rcv_len <= nIP_bytes_rcv_len;
+                IP_last <= nIP_last;
+                IP_pseuder <= nIP_pseuder;
+                is_tcp <= next_is_tcp;
+                is_udp <= next_is_udp;
+                protocol_data_flag <= nprotocol_data_flag;
+        end
+    end
+logic [15:0] total_len;
+logic [15:0] frags_flag;
+logic [7:0] ttl;
+logic [2:0] flags;
+logic [12:0] fragoff;
+logic [3:0] test_valid;
+logic [3:0] ip_version;
+logic is_src_addr;
+logic is_ip_version_valid;
+logic [31:0] src_addr, dest_addr;
+always_comb begin
+    nstate = state;
+    nIP_payload = IP_payload;
+    chksum_en = 1'b0;
+    chksum_in = MAC_payload_rcv;
+    nbytes_rcv = bytes_rcv;
+    ndst_addr = dst_addr;
+    nIP_valid = 0;
+    chksum_clear = 1'b0;
+    chksum_final = {1'b0, chksum_pl};
+    nIP_len = IP_len;
+    nIP_pseuder = IP_pseuder;
+    next_is_tcp = is_tcp;
+    next_is_udp = is_udp;
+    nprotocol_data_flag = (IP_len > 16'd40) ? 1'b1 : 1'b0;
+    total_len = MAC_payload_rcv[63:48];
+    frags_flag = MAC_payload_rcv[31:16];
+    ttl = MAC_payload_rcv[15:8];
+    flags = MAC_payload_rcv[31:29];
+    fragoff = MAC_payload_rcv[28:16];
+    test_valid[3] = (MAC_payload_rcv[63:48] <= 16'd1480);   
+    test_valid[2] = (MAC_payload_rcv[28:16] == 0);          
+    test_valid[1] = (MAC_payload_rcv[15:8] != 0);           
+    test_valid[0] = (!MAC_payload_rcv[31]);                 
+    ip_version = MAC_payload_rcv[15:12];
+    IP_flush = 1'b0;
+    is_src_addr = (MAC_payload_rcv[47:16] == IP_SRC_ADDR);
+    is_ip_version_valid = (ip_version == IP_VERSION);
+    src_addr = MAC_payload_rcv[47:16];
+    dest_addr = {dst_addr, MAC_payload_rcv[63:48]};
+    nIP_bytes_rcv_len = bytes_rcv_len;
+    nIP_last = 0;
+    if (MAC_valid) begin
+        nbytes_rcv = bytes_rcv + bytes_rcv_len;
+    end
+    case (state)
+        IDLE: begin
+            chksum_clear = 1'b1;
+            if (MAC_valid) begin
+                nstate = RCV_VER_IHL_DSCP_ECN; 
+            end
+        end
+        RCV_VER_IHL_DSCP_ECN: begin
+            if (MAC_valid) begin
+                chksum_en = 1'b1;
+                if (MAC_payload_rcv[15:12] == IP_VERSION) begin
+                    nstate      = RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL;
+                    nIP_pseuder = {12'b0,MAC_payload_rcv[11:8]} << 2;
+                end else begin
+                    nstate = ERROR;
+                end
+            end
+        end
+        RCV_LENGTH_IDEN_FLAGS_FRGOFF_TLL_PROTOCOL: begin
+            if (MAC_valid) begin
+                chksum_en = 1'b1;
+                nIP_len = MAC_payload_rcv[63:48];
+                next_is_tcp = (MAC_payload_rcv[7:0] == TCP_PROTOCOL);
+                next_is_udp = (MAC_payload_rcv[7:0] == UDP_PROTOCOL);
+                if (MAC_payload_rcv[63:48] <= 16'd1480 &&  
+                    MAC_payload_rcv[15:8] !=0 &&  
+                    !MAC_payload_rcv[31] &&  
+                    (next_is_tcp || next_is_udp)) begin
+                        nstate = RCV_SUM_SRC_ADDR_DEST_ADDR;
+                        temp = {4'b0, {8'b0, MAC_payload_rcv[7:0]}} + {4'b0, nIP_len} - {4'b0,IP_pseuder};
+                        temp = temp[15:0] + temp[19:16];
+                        temp = temp[15:0] + temp[16];
+                        nIP_pseuder = temp[15:0];
+                    end else begin
+                        nstate = ERROR;
+                    end
+            end 
+        end
+        RCV_SUM_SRC_ADDR_DEST_ADDR: begin
+            if (MAC_valid) begin
+                chksum_en = 1'b1;
+                chksum_in = {16'h0, MAC_payload_rcv[47:0]};
+                nIP_checksum = MAC_payload_rcv[63:48];
+                ndst_addr = MAC_payload_rcv[15:0];  
+                temp = {4'b0, MAC_payload_rcv[47:32]} + {4'b0, MAC_payload_rcv[31:16]} + {4'b0, MAC_payload_rcv[15:0]} + {4'b0, IP_pseuder};
+                temp = temp[15:0] + temp[19:16];
+                temp = temp[15:0] + temp[16];
+                nIP_pseuder = temp[15:0];
+                if (is_src_addr) begin
+                    nstate = RCV_PAYLOAD_DEST;
+                    nIP_valid = 1'b1;
+                end else begin
+                    nstate = ERROR;
+                    chksum_en = 1'b0;
+                end
+            end
+        end
+        RCV_PAYLOAD_DEST: begin
+            if (MAC_valid) begin
+                chksum_in = {48'h0, MAC_payload_rcv[63:48]};
+                chksum_en = 1'b1;
+                temp = {4'b0, MAC_payload_rcv[63:48]} + {4'b0, IP_pseuder};
+                temp = temp[15:0] + temp[19:16];
+                temp = temp[15:0] + temp[16];
+                nIP_pseuder = temp[15:0];
+                if (({dst_addr, MAC_payload_rcv[63:48]} == IP_DEST_ADDR)) begin
+                    nIP_payload = {16'h0, MAC_payload_rcv[47:0]};
+                    nIP_valid = 1'b1;
+                    nstate = CHK_SUM;
+                end else begin
+                    nstate = ERROR;
+                end
+            end
+        end
+        CHK_SUM: begin
+            if (MAC_valid) begin
+                nIP_payload = MAC_payload_rcv;
+            end
+            if (~chksum_pl == IP_checksum) begin
+                nstate = RCV_PAYLOAD;
+                nIP_valid = 1'b1;
+                if (nbytes_rcv >= IP_len) begin
+                    nIP_last = 1'b1;
+                    nIP_bytes_rcv_len = IP_len - bytes_rcv; 
+                    nbytes_rcv        = bytes_rcv + (IP_len - bytes_rcv);
+                    nstate = DONE;
+                end
+            end else begin
+                nstate = ERROR;
+            end
+        end
+        RCV_PAYLOAD: begin
+                nIP_payload = MAC_payload_rcv;
+                nIP_valid = 1'b1;
+                if (nbytes_rcv >= IP_len) begin
+                    nIP_last = 1'b1;
+                    nIP_bytes_rcv_len = IP_len - bytes_rcv; 
+                    nstate = DONE;
+                end 
+        end
+        DONE: begin
+            nbytes_rcv = 0;
+            nIP_valid = 1'b0;
+            nstate = IDLE;
+        end
+        ERROR: begin
+            IP_flush = 1'b1;
+            if (!MAC_valid) begin
+                nstate = IDLE;
+            end
+        end
+        default: nstate = IDLE; 
+    endcase
+end
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns/10ps
+`timescale 1ns/10ps
+module UDP_rx (
+    input logic CLK, nRST,
+    input logic IP_valid,
+    input logic IP_flush,
+    input logic [63:0] IP_payload,
+    input logic is_udp,
+    output logic UDP_flush,
+    output logic UDP_valid,
+    output logic [63:0] UDP_payload 
+);
+    import rx_pkg::*;
+    logic [15:0] cnt, next_cnt, UDP_len, next_UDP_len;
+    UDP_t current_state, nstate;
+    logic next_UDP_valid;
+    logic [63:0] next_UDP_payload;
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            current_state <= UDP_IDLE;
+            UDP_valid <= '0;
+            UDP_payload <= '0;
+            UDP_len <= '0;
+            cnt <= '0;
+        end else if (UDP_flush || IP_flush) begin
+            current_state <= UDP_IDLE;
+            UDP_valid <= '0;
+            UDP_payload <= '0;
+            UDP_len <= '0;
+            cnt <= '0;
+        end else begin
+            current_state <= nstate;
+            UDP_valid <= next_UDP_valid;
+            UDP_payload <= next_UDP_payload;
+            cnt <= next_cnt;
+            UDP_len <= next_UDP_len;
+        end
+    end
+    logic is_udp_source, is_udp_dest; 
+    assign is_udp_source = (IP_payload[47:32] == UDP_SRC_ADDR);
+    assign is_udp_dest = (IP_payload[31:16] == UDP_DEST_ADDR);
+    always_comb begin
+        nstate = current_state;
+        next_UDP_valid = '0; 
+        UDP_flush = '0;
+        next_cnt = cnt;
+        next_UDP_len = UDP_len; 
+        casez(current_state) 
+            UDP_IDLE: begin
+                if (IP_valid && is_udp) begin
+                    nstate = UDP_HEADER;
+                end
+            end
+            UDP_HEADER: begin
+                nstate = (IP_valid && is_udp_source && is_udp_dest)? UDP_CHK_SUM_PAYLOAD : UDP_ERROR;
+                if (IP_valid && is_udp_dest && is_udp_source) begin
+                        next_UDP_len = IP_payload[15:0]; 
+                        next_UDP_valid = 1'b1;
+                        next_cnt = 16'd6;  
+                end
+            end
+            UDP_CHK_SUM_PAYLOAD: begin
+                if(IP_valid) begin
+                    next_UDP_payload = {16'b0, IP_payload[47:0]};
+                    nstate = UDP_PAYLOAD;  
+                    next_cnt = cnt + 16'd8; 
+                    next_UDP_valid = 1'b1;
+                end  
+            end
+            UDP_PAYLOAD: begin 
+                if (IP_valid) begin
+                    next_cnt = cnt + 16'd8;  
+                    next_UDP_payload = IP_payload;
+                    if (cnt >= UDP_len) begin 
+                        nstate = UDP_DONE; 
+                    end else begin
+                        next_UDP_valid = 1'b1;
+                    end
+                end
+            end
+            UDP_DONE: begin
+                nstate = UDP_IDLE; 
+                next_UDP_len = '0;
+                next_cnt = '0;
+            end
+            UDP_ERROR: begin
+                UDP_flush = 1'b1;
+                if (!IP_valid) begin
+                    nstate = UDP_IDLE;
+                end
+            end
+            default: nstate = current_state; 
+        endcase 
+    end
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns/1ps
+module MAC_tx #(
+    parameter WORD_WIDTH = 64,
+    parameter CTRL_WIDTH = 8,
+    parameter MAC_DEST_ADDR  = 48'h FFFF_FFCC_BBAA,
+    parameter MAC_SRC_ADDR = 48'h AACC_BBFF_FFFF,
+    parameter ETHER_TYPE         = 16'h0800    
+) (
+    input wire CLK,
+    input wire nRST,
+    input logic TX_en,
+    output wire [WORD_WIDTH - 1:0] xgmii_txd,
+    output wire [CTRL_WIDTH - 1:0] xgmii_txc,
+    input logic [WORD_WIDTH - 1:0] IP_transmit, 
+    input logic [15:0] tt_len_data,
+    input logic IP_last,
+    output logic IP_send,
+    output logic frame_end
+);
+    typedef enum logic [6:0] {
+        IDLE,
+        SEND_PREAMBLE_SFD,
+        SEND_ETHER_HEAD1,
+        SEND_ETHER_HEAD2,
+        SEND_IP_HEADER_PAYLOAD,
+        SEND_FCS_TERMINATE,
+        SEND_ZERO_PADDING,
+        SEND_IDLE_END1    
+    } ether_state_t;
+    logic [WORD_WIDTH - 1 : 0] xgmii_txd_l, nxgmii_txd_l;
+    logic [CTRL_WIDTH - 1 : 0] xgmii_txc_l, nxgmii_txc_l;
+    logic IP_send_l;  
+    ether_state_t state, nstate;
+    logic crc_init, valid, nvalid;
+    logic IP_last_dl;
+    logic [31:0] crc_out;
+    logic [15:0] len_counter, nlen_counter;
+    assign xgmii_txd = xgmii_txd_l;
+    assign xgmii_txc = xgmii_txc_l; 
+      crc32_parallel_64bit CRC (
+        .CLK(CLK),
+        .nRST(nRST),
+        .valid(valid),
+        .crc_init(crc_init),
+        .data_in(nxgmii_txd_l),
+        .crc_out(crc_out)
+      );
+    always_ff @(posedge CLK, negedge nRST) begin  
+        if (!nRST) begin
+            state <= IDLE;
+            xgmii_txd_l <= 64'h07070707_07070707;
+            xgmii_txc_l <= '1;
+            len_counter <= 0;
+            IP_last_dl <= 0;
+        end else begin
+            state <= nstate;
+            xgmii_txd_l <= nxgmii_txd_l;
+            xgmii_txc_l <= nxgmii_txc_l;
+            len_counter <= nlen_counter;
+            IP_last_dl <= IP_last;
+        end
+    end
+    always_ff @(posedge CLK, negedge nRST) begin 
+        if (!nRST) begin
+            IP_send <= 0;
+        end else begin
+            IP_send <= IP_send_l;
+        end
+    end
+    always_comb begin  
+        nstate = state;
+        IP_send_l = IP_send;
+        crc_init = 1'b0;
+        valid = 1'b1;
+        frame_end = 1'b0;
+        case (state)
+            IDLE: begin
+                crc_init = 1'b1;  
+                if (TX_en) begin
+                    nstate = SEND_PREAMBLE_SFD;
+                    IP_send_l = 1'b1;
+                end
+            end
+            SEND_PREAMBLE_SFD: begin
+                nstate = SEND_ETHER_HEAD1;
+                IP_send_l = 1'b1;  
+            end
+            SEND_ETHER_HEAD1: begin
+                nstate = SEND_ETHER_HEAD2;
+                IP_send_l = 1'b1;
+            end
+            SEND_ETHER_HEAD2: begin
+                nstate = SEND_IP_HEADER_PAYLOAD;
+                IP_send_l = 1'b1;
+            end
+            SEND_IP_HEADER_PAYLOAD: begin
+                IP_send_l = 1'b1;
+                if (IP_last && (tt_len_data < 46)) begin
+                    IP_send_l = 1'b0;
+                    nstate = SEND_ZERO_PADDING;
+                    nlen_counter = tt_len_data;
+                end else if (IP_last) begin
+                    IP_send_l = 1'b0;
+                end else if (IP_last_dl) begin
+                    IP_send_l = 1'b0;
+                    nstate = SEND_FCS_TERMINATE;
+                end
+            end            
+            SEND_ZERO_PADDING: begin
+                nlen_counter = len_counter + 8;
+                if (len_counter >=46) begin
+                    nstate = SEND_FCS_TERMINATE;
+                end
+            end
+            SEND_FCS_TERMINATE: begin
+                crc_init = 1'b1;
+                valid = 1'b0;
+                frame_end = 1'b1;
+                nstate = SEND_IDLE_END1;  
+            end
+            SEND_IDLE_END1: begin
+                crc_init = 1'b1;
+                nstate = IDLE;
+            end
+            default: begin
+            end
+        endcase    
+    end
+    always_comb begin  
+        nxgmii_txd_l = xgmii_txd_l;
+        nxgmii_txc_l = xgmii_txc_l;
+        case (state)
+            IDLE: begin
+                nxgmii_txd_l = 64'h07070707_07070707;
+                nxgmii_txc_l = '1;
+                if (TX_en) begin
+                    nxgmii_txd_l = {8'hFB,48'h555555555555, 8'hD5};  
+                    nxgmii_txc_l = 8'b1000_0000;
+                end
+            end
+            SEND_PREAMBLE_SFD: begin
+                nxgmii_txc_l =  '0;
+                nxgmii_txd_l = {MAC_DEST_ADDR,MAC_SRC_ADDR[47:32]};
+            end
+            SEND_ETHER_HEAD1: begin
+                nxgmii_txd_l = {MAC_SRC_ADDR[31:0], IP_transmit[31:0]};
+                nxgmii_txc_l =  '0; 
+            end
+            SEND_ETHER_HEAD2: begin
+                nxgmii_txd_l = IP_transmit;
+                nxgmii_txc_l =  '0;
+            end
+            SEND_IP_HEADER_PAYLOAD: begin
+                nxgmii_txd_l = IP_transmit;
+                nxgmii_txc_l =  '0;
+                if (IP_last_dl && (tt_len_data >= 46)) begin
+                    nxgmii_txd_l = {crc_out, 32'hFD070707};  
+                    nxgmii_txc_l = 8'b0000_1111;
+                end
+            end
+            SEND_ZERO_PADDING: begin
+                nxgmii_txd_l = 0;
+                nxgmii_txc_l = 0;
+                if (len_counter >= 46) begin
+                    nxgmii_txd_l = {crc_out, 32'hFD070707};  
+                    nxgmii_txc_l = 8'b0000_1111;
+                end
+            end
+            SEND_FCS_TERMINATE: begin
+                nxgmii_txd_l = 64'h07070707_07070707;
+                nxgmii_txc_l = 8'b1111_1111;
+            end
+            SEND_IDLE_END1: begin
+                nxgmii_txd_l = 64'h07070707_07070707;
+                nxgmii_txc_l = 8'hFF;
+            end
+            default: begin
+                nxgmii_txd_l = 0;
+                nxgmii_txc_l = 0;
+            end
+        endcase
+    end
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns / 10ps
+module IP_tx #(
+    parameter ETHER_TYPE         = 16'h0800,
+    parameter WORD_WIDTH         = 64,
+    parameter TYPE_OF_SERVICE    = 8'b0,  
+    parameter IPV4_VER           = 8'h45,       
+    parameter LENGTH             = 16'd20,      
+    parameter IP_IDENFICATION    = 16'h0001,    
+    parameter IP_FLAG_OFFSET     = 16'h4000,    
+    parameter IP_TLL             = 8'h40,       
+    parameter IP_PROTOCOL        = 8'h06,       
+    parameter IP_PROTOCOL_LEN    = 16'd20,
+    parameter IP_SRC_ADDR        = 32'hC0A80101,  
+    parameter IP_DEST_ADDR       = 32'hC0A80102   
+) (
+    input wire CLK,
+    input wire nRST,
+    input logic IP_send,
+    input logic protocol_last,
+    input logic [15:0] len_data,
+    input logic [WORD_WIDTH - 1 : 0] protocol_transmit,
+    output logic [WORD_WIDTH - 1 : 0] IP_transmit,
+    output logic [15:0] tt_len_data,
+    output logic IP_last,
+    output logic protocol_send
+);
+    typedef enum logic [2:0] {
+        IDLE,
+        SEND_ETYPE_IPV4_MSB_LENGTH,
+        SEND_IP_HEADER1,  
+        SEND_IP_HEADER2,  
+        SEND_IP_HEADER3,  
+        SEND_IP_PAYLOAD,
+        DONE
+    } IP_state_t;
+    IP_state_t IP_state, nxIP_state;
+    logic [WORD_WIDTH - 1 : 0] nxIP_transmit_l;
+    logic chk_sum_valid;
+    logic [19:0] temp, temp1, temp2;
+    logic [16:0] IPv4_chk_sum, nIPv4_chk_sum;
+    logic [15:0] ntt_len_data;
+    logic [15:0] chksum_rslt;
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            IP_transmit <= '0;
+            IPv4_chk_sum <= '0;
+            tt_len_data <= 0;
+            IP_last <= 0;
+            IP_state <= IDLE;
+        end else begin
+            IP_state <= nxIP_state;
+            IP_last <= protocol_last;
+            IP_transmit <= nxIP_transmit_l;
+            tt_len_data <= ntt_len_data;
+            IPv4_chk_sum <= nIPv4_chk_sum;
+        end
+    end
+    always_comb begin
+        temp = 0;
+        temp1 = 0;
+        temp2 = 0;
+        nIPv4_chk_sum = IPv4_chk_sum;
+        if (chk_sum_valid) begin
+            temp = {IPV4_VER, TYPE_OF_SERVICE} 
+                    + IP_IDENFICATION 
+                    + IP_FLAG_OFFSET 
+                    + {IP_TLL, IP_PROTOCOL}
+                    + IP_SRC_ADDR[31:16] + IP_SRC_ADDR[15:0]
+                    + IP_DEST_ADDR[31:16] + IP_DEST_ADDR[15:0]
+                    + len_data + 16'd20 + IP_PROTOCOL_LEN;  
+            temp1 = temp[15:0] + temp[19:16];
+            temp2 = temp1[15:0] + temp1[16];
+            nIPv4_chk_sum = temp2[16:0]; 
+        end
+    end
+    always_comb begin  
+        nxIP_transmit_l = IP_transmit;
+        nxIP_state = IP_state;
+        ntt_len_data = tt_len_data;
+        chk_sum_valid = 1'b0;
+        protocol_send = 1'b0;
+        chksum_rslt = 0;
+        case (IP_state)
+            IDLE: begin
+                if (IP_send) begin
+                    nxIP_state = SEND_ETYPE_IPV4_MSB_LENGTH;
+                    nxIP_transmit_l = {32'b0, ETHER_TYPE, {IPV4_VER, TYPE_OF_SERVICE}};  
+                end  
+            end
+            SEND_ETYPE_IPV4_MSB_LENGTH: begin
+                nxIP_state = SEND_IP_HEADER1;
+                ntt_len_data = len_data + 16'd20 + IP_PROTOCOL_LEN;
+                nxIP_transmit_l = {ntt_len_data, IP_IDENFICATION, IP_FLAG_OFFSET, IP_TLL, IP_PROTOCOL};  
+                chk_sum_valid = 1'b1;
+            end
+            SEND_IP_HEADER1: begin
+                protocol_send = 1'b1;  
+                nxIP_state = SEND_IP_HEADER2;
+                chksum_rslt = ~IPv4_chk_sum[15:0];
+                nxIP_transmit_l = {~IPv4_chk_sum[15:0], IP_SRC_ADDR, IP_DEST_ADDR[31:16]};
+            end
+            SEND_IP_HEADER2: begin
+                protocol_send = 1'b1;  
+                nxIP_state = SEND_IP_HEADER3;
+                nxIP_transmit_l = {IP_DEST_ADDR[15:0], protocol_transmit[47:0]};  
+            end
+            SEND_IP_HEADER3: begin
+                protocol_send = 1'b1;  
+                nxIP_state = SEND_IP_PAYLOAD;
+                nxIP_transmit_l = protocol_transmit;
+            end
+            SEND_IP_PAYLOAD: begin
+                protocol_send = 1'b1;  
+                nxIP_transmit_l = protocol_transmit;
+                if (protocol_last) begin
+                    protocol_send = 1'b0;
+                    nxIP_state = DONE;
+                end
+            end
+            DONE: begin
+                if (!IP_send) begin
+                    nxIP_state = IDLE;
+                end
+            end
+            default: begin
+                nxIP_transmit_l = '0;
+            end
+        endcase
+    end
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns/10ps
+module UDP_tx
+#(
+    parameter UDP_DEST_ADDR = 16'h1234, 
+    parameter UDP_SRC_ADDR = 16'h4321, 
+    parameter UDP_HEADER_LENGTH = 16'h08, 
+    parameter UDP_CHECKSUM = 16'h0000,
+    parameter IP_DEST_ADDR = 32'hC0A80102   
+)
+(
+    input logic CLK, nRST,
+    input logic valid,  
+    input logic [63:0] UDP_payload,  
+    input logic [15:0] UDP_len,  
+    input logic protocol_last,  
+    output logic [63:0] IP_payload,  
+    output logic UDP_last,
+    output logic [15:0] protocol_Data_len
+);
+    typedef enum logic [2:0] {
+        IDLE,
+        SEND_HEADER,
+        SEND_PAYLOAD,
+        DONE,
+        SEND_CHKSUM_PAYLOAD
+    } state_t;
+    logic [63:0] next_IP_payload;
+    state_t current_state, nstate;
+    logic [15:0] computed_len; 
+    logic [63:0] header_reg;
+    logic [15:0] IP_len;
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            current_state <= IDLE;
+            header_reg <= '0;
+            IP_payload <= '0;
+        end else begin
+            current_state <= nstate;
+            header_reg <= {16'b0, UDP_SRC_ADDR, UDP_DEST_ADDR, IP_len};
+            IP_payload <= next_IP_payload;
+        end
+    end
+    assign IP_len = UDP_len + UDP_HEADER_LENGTH; 
+    assign protocol_Data_len = UDP_len; 
+    always_comb begin
+        nstate = current_state;
+        next_IP_payload = '0; 
+        UDP_last = 1'b0;
+        casez(current_state)
+            IDLE: begin
+                if (valid) begin
+                    nstate = SEND_HEADER;
+                    next_IP_payload = header_reg;
+                end
+            end
+            SEND_HEADER: begin
+                nstate = SEND_CHKSUM_PAYLOAD;
+                next_IP_payload = {16'b0, UDP_payload[47:0]};
+            end
+            SEND_CHKSUM_PAYLOAD: begin
+                nstate = SEND_PAYLOAD;
+                next_IP_payload = UDP_payload;
+            end
+            SEND_PAYLOAD: begin
+                next_IP_payload = UDP_payload;
+                if (protocol_last) begin
+                    nstate = DONE;
+                end else begin
+                    nstate = SEND_PAYLOAD;
+                end
+            end
+            DONE: begin
+                UDP_last = 1'b1;  
+                nstate = IDLE;  
+            end
+            default: begin
+                nstate = IDLE;  
+            end
+        endcase
+    end
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns / 10ps
+module crc32_parallel_64bit (
+    input  logic        CLK,
+    input  logic        nRST,
+    input  logic        valid,
+    input  logic        crc_init,
+    input  logic rx,
+    input  logic [63:0] data_in,
+    output logic [31:0] crc_out
+);
+    logic [31:0] crc_reg;
+    logic [31:0] next_crc;
+    assign crc_out = rx ? crc_reg : ~crc_reg;
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST)
+            crc_reg <= 32'hFFFFFFFF;
+        else if (crc_init)
+            crc_reg <= 32'hFFFFFFFF;
+        else if (valid)
+            crc_reg <= next_crc;
+    end
+    always_comb begin
+        next_crc[0]  = crc_reg[1] ^ crc_reg[3] ^ crc_reg[4] ^ crc_reg[6] ^ crc_reg[9] ^ crc_reg[10] ^ crc_reg[11] ^ crc_reg[14] ^ crc_reg[16] ^ crc_reg[17] ^ crc_reg[19] ^ crc_reg[20] ^ crc_reg[27] ^ crc_reg[30] ^ data_in[1] ^ data_in[3] ^ data_in[4] ^ data_in[6] ^ data_in[9] ^ data_in[10] ^ data_in[11] ^ data_in[14] ^ data_in[16] ^ data_in[17] ^ data_in[19] ^ data_in[20] ^ data_in[27] ^ data_in[30] ^ data_in[32] ^ data_in[33] ^ data_in[34] ^ data_in[35] ^ data_in[36] ^ data_in[38] ^ data_in[39] ^ data_in[40] ^ data_in[48] ^ data_in[52] ^ data_in[54] ^ data_in[55] ^ data_in[58];
+        next_crc[1]  = crc_reg[0] ^ crc_reg[2] ^ crc_reg[4] ^ crc_reg[5] ^ crc_reg[7] ^ crc_reg[10] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[15] ^ crc_reg[17] ^ crc_reg[18] ^ crc_reg[20] ^ crc_reg[21] ^ crc_reg[28] ^ crc_reg[31] ^ data_in[0] ^ data_in[2] ^ data_in[4] ^ data_in[5] ^ data_in[7] ^ data_in[10] ^ data_in[11] ^ data_in[12] ^ data_in[15] ^ data_in[17] ^ data_in[18] ^ data_in[20] ^ data_in[21] ^ data_in[28] ^ data_in[31] ^ data_in[33] ^ data_in[34] ^ data_in[35] ^ data_in[36] ^ data_in[37] ^ data_in[39] ^ data_in[40] ^ data_in[41] ^ data_in[49] ^ data_in[53] ^ data_in[55] ^ data_in[56] ^ data_in[59];
+        next_crc[2]  = crc_reg[0] ^ crc_reg[1] ^ crc_reg[3] ^ crc_reg[5] ^ crc_reg[6] ^ crc_reg[8] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[16] ^ crc_reg[18] ^ crc_reg[19] ^ crc_reg[21] ^ crc_reg[22] ^ crc_reg[29] ^ data_in[0] ^ data_in[1] ^ data_in[3] ^ data_in[5] ^ data_in[6] ^ data_in[8] ^ data_in[11] ^ data_in[12] ^ data_in[13] ^ data_in[16] ^ data_in[18] ^ data_in[19] ^ data_in[21] ^ data_in[22] ^ data_in[29] ^ data_in[32] ^ data_in[34] ^ data_in[35] ^ data_in[36] ^ data_in[37] ^ data_in[38] ^ data_in[40] ^ data_in[41] ^ data_in[42] ^ data_in[50] ^ data_in[54] ^ data_in[56] ^ data_in[57] ^ data_in[60];
+        next_crc[3]  = crc_reg[0] ^ crc_reg[1] ^ crc_reg[2] ^ crc_reg[4] ^ crc_reg[6] ^ crc_reg[7] ^ crc_reg[9] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[14] ^ crc_reg[17] ^ crc_reg[19] ^ crc_reg[20] ^ crc_reg[22] ^ crc_reg[23] ^ crc_reg[30] ^ data_in[0] ^ data_in[1] ^ data_in[2] ^ data_in[4] ^ data_in[6] ^ data_in[7] ^ data_in[9] ^ data_in[12] ^ data_in[13] ^ data_in[14] ^ data_in[17] ^ data_in[19] ^ data_in[20] ^ data_in[22] ^ data_in[23] ^ data_in[30] ^ data_in[33] ^ data_in[35] ^ data_in[36] ^ data_in[37] ^ data_in[38] ^ data_in[39] ^ data_in[41] ^ data_in[42] ^ data_in[43] ^ data_in[51] ^ data_in[55] ^ data_in[57] ^ data_in[58] ^ data_in[61];
+        next_crc[4]  = crc_reg[0] ^ crc_reg[1] ^ crc_reg[2] ^ crc_reg[3] ^ crc_reg[5] ^ crc_reg[7] ^ crc_reg[8] ^ crc_reg[10] ^ crc_reg[13] ^ crc_reg[14] ^ crc_reg[15] ^ crc_reg[18] ^ crc_reg[20] ^ crc_reg[21] ^ crc_reg[23] ^ crc_reg[24] ^ crc_reg[31] ^ data_in[0] ^ data_in[1] ^ data_in[2] ^ data_in[3] ^ data_in[5] ^ data_in[7] ^ data_in[8] ^ data_in[10] ^ data_in[13] ^ data_in[14] ^ data_in[15] ^ data_in[18] ^ data_in[20] ^ data_in[21] ^ data_in[23] ^ data_in[24] ^ data_in[31] ^ data_in[34] ^ data_in[36] ^ data_in[37] ^ data_in[38] ^ data_in[39] ^ data_in[40] ^ data_in[42] ^ data_in[43] ^ data_in[44] ^ data_in[52] ^ data_in[56] ^ data_in[58] ^ data_in[59] ^ data_in[62];
+        next_crc[5]  = crc_reg[1] ^ crc_reg[2] ^ crc_reg[3] ^ crc_reg[4] ^ crc_reg[6] ^ crc_reg[8] ^ crc_reg[9] ^ crc_reg[11] ^ crc_reg[14] ^ crc_reg[15] ^ crc_reg[16] ^ crc_reg[19] ^ crc_reg[21] ^ crc_reg[22] ^ crc_reg[24] ^ crc_reg[25] ^ data_in[1] ^ data_in[2] ^ data_in[3] ^ data_in[4] ^ data_in[6] ^ data_in[8] ^ data_in[9] ^ data_in[11] ^ data_in[14] ^ data_in[15] ^ data_in[16] ^ data_in[19] ^ data_in[21] ^ data_in[22] ^ data_in[24] ^ data_in[25] ^ data_in[32] ^ data_in[35] ^ data_in[37] ^ data_in[38] ^ data_in[39] ^ data_in[40] ^ data_in[41] ^ data_in[43] ^ data_in[44] ^ data_in[45] ^ data_in[53] ^ data_in[57] ^ data_in[59] ^ data_in[60] ^ data_in[63];
+        next_crc[6]  = crc_reg[1] ^ crc_reg[2] ^ crc_reg[5] ^ crc_reg[6] ^ crc_reg[7] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[14] ^ crc_reg[15] ^ crc_reg[19] ^ crc_reg[22] ^ crc_reg[23] ^ crc_reg[25] ^ crc_reg[26] ^ crc_reg[27] ^ crc_reg[30] ^ data_in[1] ^ data_in[2] ^ data_in[5] ^ data_in[6] ^ data_in[7] ^ data_in[11] ^ data_in[12] ^ data_in[14] ^ data_in[15] ^ data_in[19] ^ data_in[22] ^ data_in[23] ^ data_in[25] ^ data_in[26] ^ data_in[27] ^ data_in[30] ^ data_in[32] ^ data_in[34] ^ data_in[35] ^ data_in[41] ^ data_in[42] ^ data_in[44] ^ data_in[45] ^ data_in[46] ^ data_in[48] ^ data_in[52] ^ data_in[55] ^ data_in[60] ^ data_in[61];
+        next_crc[7]  = crc_reg[0] ^ crc_reg[2] ^ crc_reg[3] ^ crc_reg[6] ^ crc_reg[7] ^ crc_reg[8] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[15] ^ crc_reg[16] ^ crc_reg[20] ^ crc_reg[23] ^ crc_reg[24] ^ crc_reg[26] ^ crc_reg[27] ^ crc_reg[28] ^ crc_reg[31] ^ data_in[0] ^ data_in[2] ^ data_in[3] ^ data_in[6] ^ data_in[7] ^ data_in[8] ^ data_in[12] ^ data_in[13] ^ data_in[15] ^ data_in[16] ^ data_in[20] ^ data_in[23] ^ data_in[24] ^ data_in[26] ^ data_in[27] ^ data_in[28] ^ data_in[31] ^ data_in[33] ^ data_in[35] ^ data_in[36] ^ data_in[42] ^ data_in[43] ^ data_in[45] ^ data_in[46] ^ data_in[47] ^ data_in[49] ^ data_in[53] ^ data_in[56] ^ data_in[61] ^ data_in[62];
+        next_crc[8]  = crc_reg[1] ^ crc_reg[3] ^ crc_reg[4] ^ crc_reg[7] ^ crc_reg[8] ^ crc_reg[9] ^ crc_reg[13] ^ crc_reg[14] ^ crc_reg[16] ^ crc_reg[17] ^ crc_reg[21] ^ crc_reg[24] ^ crc_reg[25] ^ crc_reg[27] ^ crc_reg[28] ^ crc_reg[29] ^ data_in[1] ^ data_in[3] ^ data_in[4] ^ data_in[7] ^ data_in[8] ^ data_in[9] ^ data_in[13] ^ data_in[14] ^ data_in[16] ^ data_in[17] ^ data_in[21] ^ data_in[24] ^ data_in[25] ^ data_in[27] ^ data_in[28] ^ data_in[29] ^ data_in[32] ^ data_in[34] ^ data_in[36] ^ data_in[37] ^ data_in[43] ^ data_in[44] ^ data_in[46] ^ data_in[47] ^ data_in[48] ^ data_in[50] ^ data_in[54] ^ data_in[57] ^ data_in[62] ^ data_in[63];
+        next_crc[9]  = crc_reg[1] ^ crc_reg[2] ^ crc_reg[3] ^ crc_reg[5] ^ crc_reg[6] ^ crc_reg[8] ^ crc_reg[11] ^ crc_reg[15] ^ crc_reg[16] ^ crc_reg[18] ^ crc_reg[19] ^ crc_reg[20] ^ crc_reg[22] ^ crc_reg[25] ^ crc_reg[26] ^ crc_reg[27] ^ crc_reg[28] ^ crc_reg[29] ^ data_in[1] ^ data_in[2] ^ data_in[3] ^ data_in[5] ^ data_in[6] ^ data_in[8] ^ data_in[11] ^ data_in[15] ^ data_in[16] ^ data_in[18] ^ data_in[19] ^ data_in[20] ^ data_in[22] ^ data_in[25] ^ data_in[26] ^ data_in[27] ^ data_in[28] ^ data_in[29] ^ data_in[32] ^ data_in[34] ^ data_in[36] ^ data_in[37] ^ data_in[39] ^ data_in[40] ^ data_in[44] ^ data_in[45] ^ data_in[47] ^ data_in[49] ^ data_in[51] ^ data_in[52] ^ data_in[54] ^ data_in[63];
+        next_crc[10]  = crc_reg[1] ^ crc_reg[2] ^ crc_reg[7] ^ crc_reg[10] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[14] ^ crc_reg[21] ^ crc_reg[23] ^ crc_reg[26] ^ crc_reg[28] ^ crc_reg[29] ^ data_in[1] ^ data_in[2] ^ data_in[7] ^ data_in[10] ^ data_in[11] ^ data_in[12] ^ data_in[14] ^ data_in[21] ^ data_in[23] ^ data_in[26] ^ data_in[28] ^ data_in[29] ^ data_in[32] ^ data_in[34] ^ data_in[36] ^ data_in[37] ^ data_in[39] ^ data_in[41] ^ data_in[45] ^ data_in[46] ^ data_in[50] ^ data_in[53] ^ data_in[54] ^ data_in[58];
+        next_crc[11]  = crc_reg[2] ^ crc_reg[3] ^ crc_reg[8] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[15] ^ crc_reg[22] ^ crc_reg[24] ^ crc_reg[27] ^ crc_reg[29] ^ crc_reg[30] ^ data_in[2] ^ data_in[3] ^ data_in[8] ^ data_in[11] ^ data_in[12] ^ data_in[13] ^ data_in[15] ^ data_in[22] ^ data_in[24] ^ data_in[27] ^ data_in[29] ^ data_in[30] ^ data_in[33] ^ data_in[35] ^ data_in[37] ^ data_in[38] ^ data_in[40] ^ data_in[42] ^ data_in[46] ^ data_in[47] ^ data_in[51] ^ data_in[54] ^ data_in[55] ^ data_in[59];
+        next_crc[12]  = crc_reg[3] ^ crc_reg[4] ^ crc_reg[9] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[14] ^ crc_reg[16] ^ crc_reg[23] ^ crc_reg[25] ^ crc_reg[28] ^ crc_reg[30] ^ crc_reg[31] ^ data_in[3] ^ data_in[4] ^ data_in[9] ^ data_in[12] ^ data_in[13] ^ data_in[14] ^ data_in[16] ^ data_in[23] ^ data_in[25] ^ data_in[28] ^ data_in[30] ^ data_in[31] ^ data_in[34] ^ data_in[36] ^ data_in[38] ^ data_in[39] ^ data_in[41] ^ data_in[43] ^ data_in[47] ^ data_in[48] ^ data_in[52] ^ data_in[55] ^ data_in[56] ^ data_in[60];
+        next_crc[13]  = crc_reg[4] ^ crc_reg[5] ^ crc_reg[10] ^ crc_reg[13] ^ crc_reg[14] ^ crc_reg[15] ^ crc_reg[17] ^ crc_reg[24] ^ crc_reg[26] ^ crc_reg[29] ^ crc_reg[31] ^ data_in[4] ^ data_in[5] ^ data_in[10] ^ data_in[13] ^ data_in[14] ^ data_in[15] ^ data_in[17] ^ data_in[24] ^ data_in[26] ^ data_in[29] ^ data_in[31] ^ data_in[32] ^ data_in[35] ^ data_in[37] ^ data_in[39] ^ data_in[40] ^ data_in[42] ^ data_in[44] ^ data_in[48] ^ data_in[49] ^ data_in[53] ^ data_in[56] ^ data_in[57] ^ data_in[61];
+        next_crc[14]  = crc_reg[5] ^ crc_reg[6] ^ crc_reg[11] ^ crc_reg[14] ^ crc_reg[15] ^ crc_reg[16] ^ crc_reg[18] ^ crc_reg[25] ^ crc_reg[27] ^ crc_reg[30] ^ data_in[5] ^ data_in[6] ^ data_in[11] ^ data_in[14] ^ data_in[15] ^ data_in[16] ^ data_in[18] ^ data_in[25] ^ data_in[27] ^ data_in[30] ^ data_in[32] ^ data_in[33] ^ data_in[36] ^ data_in[38] ^ data_in[40] ^ data_in[41] ^ data_in[43] ^ data_in[45] ^ data_in[49] ^ data_in[50] ^ data_in[54] ^ data_in[57] ^ data_in[58] ^ data_in[62];
+        next_crc[15]  = crc_reg[6] ^ crc_reg[7] ^ crc_reg[12] ^ crc_reg[15] ^ crc_reg[16] ^ crc_reg[17] ^ crc_reg[19] ^ crc_reg[26] ^ crc_reg[28] ^ crc_reg[31] ^ data_in[6] ^ data_in[7] ^ data_in[12] ^ data_in[15] ^ data_in[16] ^ data_in[17] ^ data_in[19] ^ data_in[26] ^ data_in[28] ^ data_in[31] ^ data_in[33] ^ data_in[34] ^ data_in[37] ^ data_in[39] ^ data_in[41] ^ data_in[42] ^ data_in[44] ^ data_in[46] ^ data_in[50] ^ data_in[51] ^ data_in[55] ^ data_in[58] ^ data_in[59] ^ data_in[63];
+        next_crc[16]  = crc_reg[1] ^ crc_reg[3] ^ crc_reg[4] ^ crc_reg[6] ^ crc_reg[7] ^ crc_reg[8] ^ crc_reg[9] ^ crc_reg[10] ^ crc_reg[11] ^ crc_reg[13] ^ crc_reg[14] ^ crc_reg[18] ^ crc_reg[19] ^ crc_reg[29] ^ crc_reg[30] ^ data_in[1] ^ data_in[3] ^ data_in[4] ^ data_in[6] ^ data_in[7] ^ data_in[8] ^ data_in[9] ^ data_in[10] ^ data_in[11] ^ data_in[13] ^ data_in[14] ^ data_in[18] ^ data_in[19] ^ data_in[29] ^ data_in[30] ^ data_in[33] ^ data_in[36] ^ data_in[39] ^ data_in[42] ^ data_in[43] ^ data_in[45] ^ data_in[47] ^ data_in[48] ^ data_in[51] ^ data_in[54] ^ data_in[55] ^ data_in[56] ^ data_in[58] ^ data_in[59] ^ data_in[60];
+        next_crc[17]  = crc_reg[0] ^ crc_reg[2] ^ crc_reg[4] ^ crc_reg[5] ^ crc_reg[7] ^ crc_reg[8] ^ crc_reg[9] ^ crc_reg[10] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[14] ^ crc_reg[15] ^ crc_reg[19] ^ crc_reg[20] ^ crc_reg[30] ^ crc_reg[31] ^ data_in[0] ^ data_in[2] ^ data_in[4] ^ data_in[5] ^ data_in[7] ^ data_in[8] ^ data_in[9] ^ data_in[10] ^ data_in[11] ^ data_in[12] ^ data_in[14] ^ data_in[15] ^ data_in[19] ^ data_in[20] ^ data_in[30] ^ data_in[31] ^ data_in[34] ^ data_in[37] ^ data_in[40] ^ data_in[43] ^ data_in[44] ^ data_in[46] ^ data_in[48] ^ data_in[49] ^ data_in[52] ^ data_in[55] ^ data_in[56] ^ data_in[57] ^ data_in[59] ^ data_in[60] ^ data_in[61];
+        next_crc[18]  = crc_reg[1] ^ crc_reg[3] ^ crc_reg[5] ^ crc_reg[6] ^ crc_reg[8] ^ crc_reg[9] ^ crc_reg[10] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[15] ^ crc_reg[16] ^ crc_reg[20] ^ crc_reg[21] ^ crc_reg[31] ^ data_in[1] ^ data_in[3] ^ data_in[5] ^ data_in[6] ^ data_in[8] ^ data_in[9] ^ data_in[10] ^ data_in[11] ^ data_in[12] ^ data_in[13] ^ data_in[15] ^ data_in[16] ^ data_in[20] ^ data_in[21] ^ data_in[31] ^ data_in[32] ^ data_in[35] ^ data_in[38] ^ data_in[41] ^ data_in[44] ^ data_in[45] ^ data_in[47] ^ data_in[49] ^ data_in[50] ^ data_in[53] ^ data_in[56] ^ data_in[57] ^ data_in[58] ^ data_in[60] ^ data_in[61] ^ data_in[62];
+        next_crc[19]  = crc_reg[0] ^ crc_reg[2] ^ crc_reg[4] ^ crc_reg[6] ^ crc_reg[7] ^ crc_reg[9] ^ crc_reg[10] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[14] ^ crc_reg[16] ^ crc_reg[17] ^ crc_reg[21] ^ crc_reg[22] ^ data_in[0] ^ data_in[2] ^ data_in[4] ^ data_in[6] ^ data_in[7] ^ data_in[9] ^ data_in[10] ^ data_in[11] ^ data_in[12] ^ data_in[13] ^ data_in[14] ^ data_in[16] ^ data_in[17] ^ data_in[21] ^ data_in[22] ^ data_in[32] ^ data_in[33] ^ data_in[36] ^ data_in[39] ^ data_in[42] ^ data_in[45] ^ data_in[46] ^ data_in[48] ^ data_in[50] ^ data_in[51] ^ data_in[54] ^ data_in[57] ^ data_in[58] ^ data_in[59] ^ data_in[61] ^ data_in[62] ^ data_in[63];
+        next_crc[20]  = crc_reg[4] ^ crc_reg[5] ^ crc_reg[6] ^ crc_reg[7] ^ crc_reg[8] ^ crc_reg[9] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[15] ^ crc_reg[16] ^ crc_reg[18] ^ crc_reg[19] ^ crc_reg[20] ^ crc_reg[22] ^ crc_reg[23] ^ crc_reg[27] ^ crc_reg[30] ^ data_in[4] ^ data_in[5] ^ data_in[6] ^ data_in[7] ^ data_in[8] ^ data_in[9] ^ data_in[12] ^ data_in[13] ^ data_in[15] ^ data_in[16] ^ data_in[18] ^ data_in[19] ^ data_in[20] ^ data_in[22] ^ data_in[23] ^ data_in[27] ^ data_in[30] ^ data_in[32] ^ data_in[35] ^ data_in[36] ^ data_in[37] ^ data_in[38] ^ data_in[39] ^ data_in[43] ^ data_in[46] ^ data_in[47] ^ data_in[48] ^ data_in[49] ^ data_in[51] ^ data_in[54] ^ data_in[59] ^ data_in[60] ^ data_in[62] ^ data_in[63];
+        next_crc[21]  = crc_reg[0] ^ crc_reg[1] ^ crc_reg[3] ^ crc_reg[4] ^ crc_reg[5] ^ crc_reg[7] ^ crc_reg[8] ^ crc_reg[11] ^ crc_reg[13] ^ crc_reg[21] ^ crc_reg[23] ^ crc_reg[24] ^ crc_reg[27] ^ crc_reg[28] ^ crc_reg[30] ^ crc_reg[31] ^ data_in[0] ^ data_in[1] ^ data_in[3] ^ data_in[4] ^ data_in[5] ^ data_in[7] ^ data_in[8] ^ data_in[11] ^ data_in[13] ^ data_in[21] ^ data_in[23] ^ data_in[24] ^ data_in[27] ^ data_in[28] ^ data_in[30] ^ data_in[31] ^ data_in[32] ^ data_in[34] ^ data_in[35] ^ data_in[37] ^ data_in[44] ^ data_in[47] ^ data_in[49] ^ data_in[50] ^ data_in[54] ^ data_in[58] ^ data_in[60] ^ data_in[61] ^ data_in[63];
+        next_crc[22]  = crc_reg[2] ^ crc_reg[3] ^ crc_reg[5] ^ crc_reg[8] ^ crc_reg[10] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[16] ^ crc_reg[17] ^ crc_reg[19] ^ crc_reg[20] ^ crc_reg[22] ^ crc_reg[24] ^ crc_reg[25] ^ crc_reg[27] ^ crc_reg[28] ^ crc_reg[29] ^ crc_reg[30] ^ crc_reg[31] ^ data_in[2] ^ data_in[3] ^ data_in[5] ^ data_in[8] ^ data_in[10] ^ data_in[11] ^ data_in[12] ^ data_in[16] ^ data_in[17] ^ data_in[19] ^ data_in[20] ^ data_in[22] ^ data_in[24] ^ data_in[25] ^ data_in[27] ^ data_in[28] ^ data_in[29] ^ data_in[30] ^ data_in[31] ^ data_in[34] ^ data_in[39] ^ data_in[40] ^ data_in[45] ^ data_in[50] ^ data_in[51] ^ data_in[52] ^ data_in[54] ^ data_in[58] ^ data_in[59] ^ data_in[61] ^ data_in[62];
+        next_crc[23]  = crc_reg[0] ^ crc_reg[3] ^ crc_reg[4] ^ crc_reg[6] ^ crc_reg[9] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[17] ^ crc_reg[18] ^ crc_reg[20] ^ crc_reg[21] ^ crc_reg[23] ^ crc_reg[25] ^ crc_reg[26] ^ crc_reg[28] ^ crc_reg[29] ^ crc_reg[30] ^ crc_reg[31] ^ data_in[0] ^ data_in[3] ^ data_in[4] ^ data_in[6] ^ data_in[9] ^ data_in[11] ^ data_in[12] ^ data_in[13] ^ data_in[17] ^ data_in[18] ^ data_in[20] ^ data_in[21] ^ data_in[23] ^ data_in[25] ^ data_in[26] ^ data_in[28] ^ data_in[29] ^ data_in[30] ^ data_in[31] ^ data_in[32] ^ data_in[35] ^ data_in[40] ^ data_in[41] ^ data_in[46] ^ data_in[51] ^ data_in[52] ^ data_in[53] ^ data_in[55] ^ data_in[59] ^ data_in[60] ^ data_in[62] ^ data_in[63];
+        next_crc[24]  = crc_reg[3] ^ crc_reg[5] ^ crc_reg[6] ^ crc_reg[7] ^ crc_reg[9] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[16] ^ crc_reg[17] ^ crc_reg[18] ^ crc_reg[20] ^ crc_reg[21] ^ crc_reg[22] ^ crc_reg[24] ^ crc_reg[26] ^ crc_reg[29] ^ crc_reg[31] ^ data_in[3] ^ data_in[5] ^ data_in[6] ^ data_in[7] ^ data_in[9] ^ data_in[11] ^ data_in[12] ^ data_in[13] ^ data_in[16] ^ data_in[17] ^ data_in[18] ^ data_in[20] ^ data_in[21] ^ data_in[22] ^ data_in[24] ^ data_in[26] ^ data_in[29] ^ data_in[31] ^ data_in[34] ^ data_in[35] ^ data_in[38] ^ data_in[39] ^ data_in[40] ^ data_in[41] ^ data_in[42] ^ data_in[47] ^ data_in[48] ^ data_in[53] ^ data_in[55] ^ data_in[56] ^ data_in[58] ^ data_in[60] ^ data_in[61] ^ data_in[63];
+        next_crc[25]  = crc_reg[1] ^ crc_reg[3] ^ crc_reg[7] ^ crc_reg[8] ^ crc_reg[9] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[16] ^ crc_reg[18] ^ crc_reg[20] ^ crc_reg[21] ^ crc_reg[22] ^ crc_reg[23] ^ crc_reg[25] ^ data_in[1] ^ data_in[3] ^ data_in[7] ^ data_in[8] ^ data_in[9] ^ data_in[11] ^ data_in[12] ^ data_in[13] ^ data_in[16] ^ data_in[18] ^ data_in[20] ^ data_in[21] ^ data_in[22] ^ data_in[23] ^ data_in[25] ^ data_in[33] ^ data_in[34] ^ data_in[38] ^ data_in[41] ^ data_in[42] ^ data_in[43] ^ data_in[49] ^ data_in[52] ^ data_in[55] ^ data_in[56] ^ data_in[57] ^ data_in[58] ^ data_in[59] ^ data_in[61] ^ data_in[62];
+        next_crc[26]  = crc_reg[0] ^ crc_reg[2] ^ crc_reg[4] ^ crc_reg[8] ^ crc_reg[9] ^ crc_reg[10] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[14] ^ crc_reg[17] ^ crc_reg[19] ^ crc_reg[21] ^ crc_reg[22] ^ crc_reg[23] ^ crc_reg[24] ^ crc_reg[26] ^ data_in[0] ^ data_in[2] ^ data_in[4] ^ data_in[8] ^ data_in[9] ^ data_in[10] ^ data_in[12] ^ data_in[13] ^ data_in[14] ^ data_in[17] ^ data_in[19] ^ data_in[21] ^ data_in[22] ^ data_in[23] ^ data_in[24] ^ data_in[26] ^ data_in[34] ^ data_in[35] ^ data_in[39] ^ data_in[42] ^ data_in[43] ^ data_in[44] ^ data_in[50] ^ data_in[53] ^ data_in[56] ^ data_in[57] ^ data_in[58] ^ data_in[59] ^ data_in[60] ^ data_in[62] ^ data_in[63];
+        next_crc[27]  = crc_reg[0] ^ crc_reg[4] ^ crc_reg[5] ^ crc_reg[6] ^ crc_reg[13] ^ crc_reg[15] ^ crc_reg[16] ^ crc_reg[17] ^ crc_reg[18] ^ crc_reg[19] ^ crc_reg[22] ^ crc_reg[23] ^ crc_reg[24] ^ crc_reg[25] ^ crc_reg[30] ^ data_in[0] ^ data_in[4] ^ data_in[5] ^ data_in[6] ^ data_in[13] ^ data_in[15] ^ data_in[16] ^ data_in[17] ^ data_in[18] ^ data_in[19] ^ data_in[22] ^ data_in[23] ^ data_in[24] ^ data_in[25] ^ data_in[30] ^ data_in[32] ^ data_in[33] ^ data_in[34] ^ data_in[38] ^ data_in[39] ^ data_in[43] ^ data_in[44] ^ data_in[45] ^ data_in[48] ^ data_in[51] ^ data_in[52] ^ data_in[55] ^ data_in[57] ^ data_in[59] ^ data_in[60] ^ data_in[61] ^ data_in[63];
+        next_crc[28]  = crc_reg[3] ^ crc_reg[4] ^ crc_reg[5] ^ crc_reg[7] ^ crc_reg[9] ^ crc_reg[10] ^ crc_reg[11] ^ crc_reg[18] ^ crc_reg[23] ^ crc_reg[24] ^ crc_reg[25] ^ crc_reg[26] ^ crc_reg[27] ^ crc_reg[30] ^ crc_reg[31] ^ data_in[3] ^ data_in[4] ^ data_in[5] ^ data_in[7] ^ data_in[9] ^ data_in[10] ^ data_in[11] ^ data_in[18] ^ data_in[23] ^ data_in[24] ^ data_in[25] ^ data_in[26] ^ data_in[27] ^ data_in[30] ^ data_in[31] ^ data_in[32] ^ data_in[36] ^ data_in[38] ^ data_in[44] ^ data_in[45] ^ data_in[46] ^ data_in[48] ^ data_in[49] ^ data_in[53] ^ data_in[54] ^ data_in[55] ^ data_in[56] ^ data_in[60] ^ data_in[61] ^ data_in[62];
+        next_crc[29]  = crc_reg[4] ^ crc_reg[5] ^ crc_reg[6] ^ crc_reg[8] ^ crc_reg[10] ^ crc_reg[11] ^ crc_reg[12] ^ crc_reg[19] ^ crc_reg[24] ^ crc_reg[25] ^ crc_reg[26] ^ crc_reg[27] ^ crc_reg[28] ^ crc_reg[31] ^ data_in[4] ^ data_in[5] ^ data_in[6] ^ data_in[8] ^ data_in[10] ^ data_in[11] ^ data_in[12] ^ data_in[19] ^ data_in[24] ^ data_in[25] ^ data_in[26] ^ data_in[27] ^ data_in[28] ^ data_in[31] ^ data_in[32] ^ data_in[33] ^ data_in[37] ^ data_in[39] ^ data_in[45] ^ data_in[46] ^ data_in[47] ^ data_in[49] ^ data_in[50] ^ data_in[54] ^ data_in[55] ^ data_in[56] ^ data_in[57] ^ data_in[61] ^ data_in[62] ^ data_in[63];
+        next_crc[30]  = crc_reg[0] ^ crc_reg[1] ^ crc_reg[3] ^ crc_reg[4] ^ crc_reg[5] ^ crc_reg[7] ^ crc_reg[10] ^ crc_reg[12] ^ crc_reg[13] ^ crc_reg[14] ^ crc_reg[16] ^ crc_reg[17] ^ crc_reg[19] ^ crc_reg[25] ^ crc_reg[26] ^ crc_reg[28] ^ crc_reg[29] ^ crc_reg[30] ^ data_in[0] ^ data_in[1] ^ data_in[3] ^ data_in[4] ^ data_in[5] ^ data_in[7] ^ data_in[10] ^ data_in[12] ^ data_in[13] ^ data_in[14] ^ data_in[16] ^ data_in[17] ^ data_in[19] ^ data_in[25] ^ data_in[26] ^ data_in[28] ^ data_in[29] ^ data_in[30] ^ data_in[35] ^ data_in[36] ^ data_in[39] ^ data_in[46] ^ data_in[47] ^ data_in[50] ^ data_in[51] ^ data_in[52] ^ data_in[54] ^ data_in[56] ^ data_in[57] ^ data_in[62] ^ data_in[63];
+        next_crc[31]  = crc_reg[0] ^ crc_reg[2] ^ crc_reg[3] ^ crc_reg[5] ^ crc_reg[8] ^ crc_reg[9] ^ crc_reg[10] ^ crc_reg[13] ^ crc_reg[15] ^ crc_reg[16] ^ crc_reg[18] ^ crc_reg[19] ^ crc_reg[26] ^ crc_reg[29] ^ crc_reg[31] ^ data_in[0] ^ data_in[2] ^ data_in[3] ^ data_in[5] ^ data_in[8] ^ data_in[9] ^ data_in[10] ^ data_in[13] ^ data_in[15] ^ data_in[16] ^ data_in[18] ^ data_in[19] ^ data_in[26] ^ data_in[29] ^ data_in[31] ^ data_in[32] ^ data_in[33] ^ data_in[34] ^ data_in[35] ^ data_in[37] ^ data_in[38] ^ data_in[39] ^ data_in[47] ^ data_in[51] ^ data_in[53] ^ data_in[54] ^ data_in[57] ^ data_in[63];
+    end
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns/10ps
+module xgmii_little_to_big (
+    input  logic [63:0] xgmii_rxd ,    
+    input  logic [7:0]  xgmii_rxc ,    
+    output logic [63:0] be_rxd   ,     
+    output logic [7:0]  be_rxc         
+);
+    assign be_rxd = { xgmii_rxd[ 7: 0],   
+                      xgmii_rxd[15: 8],
+                      xgmii_rxd[23:16],
+                      xgmii_rxd[31:24],
+                      xgmii_rxd[39:32],
+                      xgmii_rxd[47:40],
+                      xgmii_rxd[55:48],
+                      xgmii_rxd[63:56]};  
+    assign be_rxc = { xgmii_rxc[0],       
+                      xgmii_rxc[1],
+                      xgmii_rxc[2],
+                      xgmii_rxc[3],
+                      xgmii_rxc[4],
+                      xgmii_rxc[5],
+                      xgmii_rxc[6],
+                      xgmii_rxc[7] };     
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns / 10ps
+module priority_encoder #(
+    parameter int WIDTH = 128,
+    parameter logic MSB = 0,
+    parameter int IDW   = $clog2(WIDTH)
+) (
+    input  logic [WIDTH-1:0] din,
+    output logic             valid,
+    output logic [IDW-1:0]   idx
+);
+    always_comb begin
+        valid = 1'b0;
+        idx   = '0;
+        if (MSB) begin
+            for (int i = 0; i < WIDTH; i++) begin
+                if (din[(WIDTH - 1) - i] && !valid) begin
+                    valid = 1'b1;
+                    idx   = (WIDTH - 1)- i[IDW-1:0];
+                end
+            end
+        end else begin
+            for (int i = 0; i < WIDTH; i++) begin
+                if (din[i] && !valid) begin
+                    valid = 1'b1;
+                    idx   = i[IDW-1:0];
+                end
+            end
+        end
+    end
+endmodule
+
+`begin_keywords "1800-2017"
+`timescale 1ns/10ps
+module chksum_tcp_pl #(
+    parameter DATA_WIDTH = 64  
+)
+(
+    input logic CLK,
+    input logic nRST,
+    input logic FIFO_rd_en,
+    input logic clear,
+    input logic [DATA_WIDTH - 1:0] TCP_payload_tx,  
+    output logic [15:0] TCP_checksum_pl  
+);
+    logic [16:0] TCP_checksum, nTCP_checksum;
+    logic [19:0] temp, temp1, temp2;
+    assign TCP_checksum_pl = (TCP_checksum[15:0] == 16'h0) ? 16'hFFFF : TCP_checksum[15:0];
+    always_ff @(posedge CLK, negedge nRST) begin
+        if (!nRST) begin
+            TCP_checksum <= '0;
+        end else begin
+            TCP_checksum <= nTCP_checksum;
+        end
+    end
+    always_comb begin
+        nTCP_checksum = TCP_checksum;
+        temp = '0;
+        temp1 = '0;
+        temp2 = '0;
+        if (clear) begin
+            nTCP_checksum = 0;
+        end else if (FIFO_rd_en) begin
+            temp = {4'b0, TCP_checksum[15:0]} + {4'b0, TCP_payload_tx[15:0]} + {4'b0, TCP_payload_tx[31:16]} + {4'b0, TCP_payload_tx[47:32]} + {4'b0, TCP_payload_tx[63:48]};
+            temp1 = temp[15:0] + temp[19:16];
+            temp2 = temp1[15:0] + temp1[16];
+            nTCP_checksum = temp2[16:0];
+        end
+    end
+endmodule

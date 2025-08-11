@@ -49,6 +49,7 @@ static void reset_module(Vtop *top, VerilatedFstC *tfp){
     top->nRST = 0;
     top->UDP_len = 0;
     top->TX_en = 0;
+    top->protocol_last = 0;
     for (int i = 0; i < 5; i++) tick(top, tfp);
     top->nRST = 1;
     for (int i = 0; i < 5; i++) tick(top, tfp);
@@ -121,6 +122,17 @@ std::vector<uint64_t> create_ethernet_frame(const std::vector<uint64_t> &payload
         return ((val & 0x00FF) << 8) | ((val & 0xFF00) >> 8);
     };
     
+    auto reverse_bytes_64 = [](uint64_t val) -> uint64_t {
+        return ((val & 0x00000000000000FF) << 56) |
+               ((val & 0x000000000000FF00) << 40) |
+               ((val & 0x0000000000FF0000) << 24) |
+               ((val & 0x00000000FF000000) << 8)  |
+               ((val & 0x000000FF00000000) >> 8)  |
+               ((val & 0x0000FF0000000000) >> 24) |
+               ((val & 0x00FF000000000000) >> 40) |
+               ((val & 0xFF00000000000000) >> 56);
+    };
+
     // Word 0: MAC_SRC upper 2 bytes (bits 63:48) + MAC_DEST (bits 47:0)
     uint64_t mac_dest_be = reverse_bytes_48(MAC_DEST);
     uint64_t mac_src_be = reverse_bytes_48(MAC_SRC);
@@ -172,16 +184,17 @@ std::vector<uint64_t> create_ethernet_frame(const std::vector<uint64_t> &payload
     // Word 5: UDP Checksum + first 6 bytes of payload
     if (!payload.empty()) {
         uint64_t udp_checksum_be = reverse_bytes_16(0x0000);  // UDP Checksum = 0
-        uint64_t word5 = (udp_checksum_be << 48) | (payload[0] >> 16);
+        uint64_t word5 = (udp_checksum_be << 48) | (reverse_bytes_64(payload[0]) >> 16);
         frame.push_back(word5);
         
         // Word 6: Last 2 bytes of payload[0] + first 6 bytes of payload[1] (if exists)
         if (payload.size() > 1) {
-            uint64_t word6 = ((payload[0] & 0xFFFF) << 48) | (payload[1] >> 16);
+            
+            uint64_t word6 = ((reverse_bytes_64(payload[0]) & 0xFFFF) << 48) | (reverse_bytes_64(payload[1]) >> 16);
             frame.push_back(word6);
             
             // Word 7: Last 2 bytes of payload[1]
-            uint64_t word7 = (payload[1] & 0xFFFF) << 48;
+            uint64_t word7 = (reverse_bytes_64(payload[1]) & 0xFFFF) << 48;
             frame.push_back(word7);
         } else {
             // Only first payload word, put remaining 2 bytes in next word
@@ -230,8 +243,12 @@ void send_ethernet_frame(Vtop *top, VerilatedFstC *tfp,
     tick(top, tfp);
     tick(top, tfp);
     tick(top, tfp);
+    top->protocol_last = 1;
+    tick(top, tfp);
+    tick(top, tfp);
     tick(top, tfp);
     top->TX_en = 0;
+    top->protocol_last = 0;
     
     // Send idle
     top->xgmii_rxd = 0x0707070707070707;  // Idle characters

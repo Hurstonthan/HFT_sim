@@ -1,0 +1,870 @@
+`begin_keywords "1800-2017"
+`line 1 "rtl/MAC_rx.sv" 1
+`timescale 1ns/10ps
+
+`line 3 "rtl/MAC_rx.sv" 0
+module MAC_rx #(
+    parameter DATA_WIDTH = 64,
+    parameter CTRL_WIDTH = 8,
+    parameter MAC_DEST_ADDR = 48'hFFFF_FFCC_BBAA, 
+    parameter MAC_SRC_ADDR = 48'hAACC_BBFF_FFFF,
+    parameter ETHER_TYPE_MSB = 16'h0008,
+    parameter CRC_MAGIC = 32'hC704_DD7B
+) (
+    input logic CLK,
+    input logic nRST,
+
+`line 14 "rtl/MAC_rx.sv" 0
+     
+    input logic [DATA_WIDTH - 1:0] xgmii_rxd,
+    input logic [CTRL_WIDTH - 1:0] xgmii_rxc,
+
+`line 18 "rtl/MAC_rx.sv" 0
+    output logic [DATA_WIDTH - 1:0] MAC_payload_rcv,
+    output logic MAC_valid,
+    output logic CRC_flush,
+    output logic frame_ok,
+    output logic [7:0] bytes_rcv_len
+);
+
+`line 25 "rtl/MAC_rx.sv" 0
+    logic crc_init, end_valid;
+    logic [31:0] crc_out;
+    logic [63:0] crc_in, crc_in_big;
+    
+    logic [15:0] xgmii_rxc_frame, nxgmii_rxc_frame;
+    logic [$clog2(CTRL_WIDTH) - 1:0] bytes_offset;
+    logic [$clog2(CTRL_WIDTH) - 1 : 0]  end_FCS, str_FCS;
+    logic sof_found, crc_valid, nsof_found;
+    logic [2:0] sof_lane, nsof_lane;
+    logic [DATA_WIDTH - 1 : 0] xgmii_rxd_f, nxgmii_rxd_f, xgmii_rxd_MSB, xgmii_rxd_f_cvt;
+    logic [CTRL_WIDTH - 1 : 0] xgmii_rxc_f, nxgmii_rxc_f, xgmii_rxc_MSB; 
+    logic [15:0] FCS_rxc, nFCS_rxc;
+    logic [3:0] FCS_offset;
+    logic [31:0] crc_check, ncrc_check;
+    logic [127:0] frame_store, nframe_store;
+    logic [127:0] FCS_grap;
+     
+    
+    logic [15:0] crc_ind, ncrc_ind;
+    logic [5:0] shift_bits;
+    logic [7:0] byte_END;
+    logic [31:0] FCS_frame, nFCS_frame; 
+    logic [31:0] rg, nrg; 
+    logic [63:0]FCS_frame_cvt;
+     
+    logic crc_delay, ncrc_delay, ncrc_valid;
+    int i;
+
+`line 53 "rtl/MAC_rx.sv" 0
+    logic soft_dl, nsoft_dl;
+    logic case_debug;
+
+`line 56 "rtl/MAC_rx.sv" 0
+    logic [63:0] MAC_payload_rcv_cvrt,nMAC_payload_rcv_cvrt;
+    logic [7:0] bytes_rcv, nbytes_rcv;
+    logic [7:0] bytes_rcv_dl, nbytes_rcv_dl;
+    logic nMAC_valid;
+    
+    
+    typedef enum logic [5:0] {
+        IDLE,
+        RCV_ETHER_HEAD1,
+        RCV_ETHER_HEAD2,
+        RCV_MAC_PAYLOAD,
+        CHECK_CRC,
+        ERROR
+    } MAC_t;
+
+`line 71 "rtl/MAC_rx.sv" 0
+    crc32_parallel_64bit CRC (
+        .CLK(CLK),
+        .nRST(nRST),
+        .rx(1'b0),
+        .valid(crc_valid),
+        .crc_init(crc_init),
+        .data_in(crc_in_big),
+        .crc_out(crc_out)
+      );
+
+`line 81 "rtl/MAC_rx.sv" 0
+      xgmii_little_to_big crc_convert (
+        .xgmii_rxd(crc_in),
+        .be_rxd(crc_in_big)
+      );
+
+`line 86 "rtl/MAC_rx.sv" 0
+      xgmii_little_to_big crc_frame_convert (
+        .xgmii_rxd({FCS_frame[31:0],32'h0}),
+        .be_rxd(FCS_frame_cvt)
+      );
+
+`line 91 "rtl/MAC_rx.sv" 0
+      xgmii_little_to_big payload_cvrt (
+        .xgmii_rxd(MAC_payload_rcv_cvrt),
+        .be_rxd(MAC_payload_rcv)
+      );
+
+`line 96 "rtl/MAC_rx.sv" 0
+       
+      xgmii_little_to_big xgmii_cvrt (
+        .xgmii_rxd(xgmii_rxd_f),
+        .be_rxd(xgmii_rxd_f_cvt)
+      );
+
+`line 102 "rtl/MAC_rx.sv" 0
+    
+    priority_encoder #(
+        .WIDTH(CTRL_WIDTH),
+        .MSB(1'b0)
+    ) crc_check_encoder (
+        .din(xgmii_rxc),
+        .valid(end_valid),
+        .idx(bytes_offset)
+    );
+
+`line 112 "rtl/MAC_rx.sv" 0
+    priority_encoder #(
+        .WIDTH(CTRL_WIDTH + CTRL_WIDTH),
+        .MSB(1'b0)
+    ) xgmii_fcs (
+        .din((sof_lane == 0) ? {xgmii_rxc, xgmii_rxc_frame[15:8]} : {xgmii_rxc, xgmii_rxc_frame[11:4]}),
+        .valid(),
+        .idx(FCS_offset)
+    );
+
+`line 121 "rtl/MAC_rx.sv" 0
+    MAC_t state, next_state;
+    
+    assign FCS_grap = {xgmii_rxd, frame_store[127:64]};  
+    assign shift_bits = bytes_offset << 3;  
+    assign byte_END = (xgmii_rxd >> shift_bits);
+     
+    assign crc_in = xgmii_rxd_f;
+    assign bytes_rcv_len = bytes_rcv;
+
+`line 130 "rtl/MAC_rx.sv" 0
+    always_ff @(posedge CLK or negedge nRST) begin
+        if (!nRST) begin
+            state <= IDLE;
+            crc_check <= '0;
+            frame_store <= '0;
+             
+            crc_delay <= 0;
+            FCS_frame <= 0;
+            sof_found <= 0;
+            sof_lane <= 0;
+            xgmii_rxc_frame <= 0;
+            soft_dl <= 0;
+            MAC_valid <= 0;
+            MAC_payload_rcv_cvrt <= 0;
+            bytes_rcv <= 0;
+            bytes_rcv_dl <= 0;
+            FCS_rxc <= 0;
+            rg <= 0;
+            crc_valid <= 0;
+            
+        end else begin
+            state <= next_state;
+            crc_check <= ncrc_check;
+            frame_store <= nframe_store;
+             
+            rg <= nrg;
+            FCS_frame <= nFCS_frame;
+
+`line 158 "rtl/MAC_rx.sv" 0
+            crc_delay <= ncrc_delay;
+            sof_found <= nsof_found;
+            sof_lane <=  nsof_lane;
+            xgmii_rxc_frame <= nxgmii_rxc_frame;
+            soft_dl <= nsoft_dl;
+            MAC_valid <= nMAC_valid;
+            MAC_payload_rcv_cvrt <= nMAC_payload_rcv_cvrt;
+            bytes_rcv <= nbytes_rcv;
+            bytes_rcv_dl <= nbytes_rcv_dl;
+            FCS_rxc <= nFCS_rxc;
+            crc_valid <= ncrc_valid;
+        end
+    end
+     
+    /*verilator lint_off UNOPTFLAT*/ 
+    logic [47:0] mac_dest_addr;
+    logic [47:0] mac_src_addr;
+    logic [31:0] second_half_src_addr;
+    logic [127:0] temp;
+    logic mac_dest_addr_valid, mac_src_addr_first_valid, mac_src_addr_second_valid;
+
+`line 179 "rtl/MAC_rx.sv" 0
+    assign mac_dest_addr = {xgmii_rxd_f[7:0],xgmii_rxd_f[15:8], xgmii_rxd_f[23:16], xgmii_rxd_f[31:24],xgmii_rxd_f[39:32], xgmii_rxd_f[47:40]};
+    assign mac_src_addr = {xgmii_rxd_f[63:48], xgmii_rxd_f[31:0]};
+    assign mac_dest_addr_valid = (mac_dest_addr == MAC_DEST_ADDR);
+    assign mac_src_addr_first_valid = (mac_src_addr[47:32] == MAC_SRC_ADDR[47:32]);
+    assign mac_src_addr_second_valid = (mac_src_addr[31:0] == MAC_SRC_ADDR[31:0]);
+    assign second_half_src_addr = {xgmii_rxd_f[7:0],xgmii_rxd_f[15:8],xgmii_rxd_f[23:16],xgmii_rxd_f[31:24]};
+
+
+`line 187 "rtl/MAC_rx.sv" 0
+    always_comb begin
+        nrg = rg;
+        next_state = state;
+        crc_init = 1'b0;
+        ncrc_valid = crc_valid;
+        frame_ok = 1'b0;
+        CRC_flush = 1'b0;
+        ncrc_check = crc_check;
+        ncrc_delay = 1'b0;
+        nMAC_valid = 1'b0;
+        nsoft_dl = soft_dl;
+        nFCS_frame = FCS_frame;
+        xgmii_rxd_f = '0;
+        nxgmii_rxc_frame = {xgmii_rxc, xgmii_rxc_frame[15:8]};
+        nframe_store = {xgmii_rxd,frame_store[127:64]};
+        nMAC_payload_rcv_cvrt = MAC_payload_rcv_cvrt;
+        nMAC_valid = MAC_valid;
+        nbytes_rcv = bytes_rcv;
+        nbytes_rcv_dl = bytes_rcv_dl;
+        nFCS_rxc = (sof_lane == 0) ? {xgmii_rxc, xgmii_rxc_frame[15:8]} : {xgmii_rxc, xgmii_rxc_frame[11:4]};
+
+`line 208 "rtl/MAC_rx.sv" 0
+        nsof_found = sof_found;
+        nsof_lane = sof_lane;
+        for (i = 0; i < 8; i++) begin
+            if (state == IDLE && xgmii_rxc[i] && xgmii_rxd[i*8+: 8] == 8'hFB) begin
+                nsof_found = 1'b1;
+                nsof_lane = i[2:0];
+            end
+        end
+
+`line 217 "rtl/MAC_rx.sv" 0
+        if (sof_lane == 0) begin
+            xgmii_rxd_f = frame_store[127:64];
+             
+        end else if (sof_lane == 4) begin
+            xgmii_rxd_f = frame_store[95:32];
+             
+        end
+
+`line 225 "rtl/MAC_rx.sv" 0
+        case (state)
+            IDLE: begin
+                crc_init = 1'b1;
+                nMAC_valid = 1'b0;
+                if (sof_found) begin
+                    if (sof_lane == 4) begin
+                        nsoft_dl = 1'b1;
+                    end else begin
+                        next_state = RCV_ETHER_HEAD1;
+                        ncrc_valid = 1'b1;
+                    end
+                end
+
+`line 238 "rtl/MAC_rx.sv" 0
+                if (soft_dl) begin
+                    next_state = RCV_ETHER_HEAD1;
+                    ncrc_valid = 1'b1;
+                end
+                
+                
+            end
+
+`line 246 "rtl/MAC_rx.sv" 0
+            RCV_ETHER_HEAD1: begin
+                crc_init = 1'b0;
+                if (mac_dest_addr == MAC_DEST_ADDR && {xgmii_rxd_f[55:48], xgmii_rxd_f[63:56]} == MAC_SRC_ADDR[47:32]) begin
+                    next_state = RCV_ETHER_HEAD2;
+                    nMAC_valid = 1'b1;
+                end else begin
+                    next_state = ERROR;
+                end
+            end
+
+`line 256 "rtl/MAC_rx.sv" 0
+            RCV_ETHER_HEAD2: begin
+                if ({xgmii_rxd_f[7:0],xgmii_rxd_f[15:8],xgmii_rxd_f[23:16],xgmii_rxd_f[31:24]} == MAC_SRC_ADDR[31:0] && xgmii_rxd_f[47:32] == 16'h0008) begin
+                    next_state = RCV_MAC_PAYLOAD;
+                    nMAC_payload_rcv_cvrt = {xgmii_rxd_f[63:48],48'h0};
+                    nbytes_rcv = 7'd2;
+                    nMAC_valid = 1'b1;
+
+`line 263 "rtl/MAC_rx.sv" 0
+                end else begin
+                    nMAC_valid = 1'b0;
+                    next_state = ERROR;
+                end
+            end
+
+`line 269 "rtl/MAC_rx.sv" 0
+            RCV_MAC_PAYLOAD: begin
+                nMAC_valid = 1'b1;
+                nMAC_payload_rcv_cvrt = xgmii_rxd_f;
+                
+                nbytes_rcv = 7'd8;
+                
+                if (end_valid && (byte_END == 8'hFD)) begin
+                    nFCS_frame = FCS_grap >> ((FCS_offset - 4) << 3);
+                     
+                     
+                     
+                     
+                    if (sof_lane == 0) begin
+                        if (bytes_offset < 5) begin
+                            case_debug = 1'b1;
+                            nbytes_rcv = 8'd4 - bytes_offset; 
+                            case (bytes_offset)
+                                3'd0: begin
+                                    nMAC_payload_rcv_cvrt = frame_store[95:64];
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
+                                end
+                                3'd1: begin
+                                    nMAC_payload_rcv_cvrt = frame_store[103:64];
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
+                                end
+                                3'd2: begin
+                                    nMAC_payload_rcv_cvrt = frame_store[111:64];
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
+                                end
+                                3'd3: begin
+                                    nMAC_payload_rcv_cvrt = frame_store[119:64];
+                                    xgmii_rxd_f = nMAC_payload_rcv_cvrt;
+                                end
+                            endcase
+                             
+                            ncrc_valid = 1'b0;
+                            next_state = CHECK_CRC;
+                        end else begin
+                             
+                            nbytes_rcv_dl = bytes_offset - 8'd3;
+                            casez (bytes_offset)
+                                3'd5:  
+                                    nframe_store = {{56'b0,xgmii_rxd[7:0]},frame_store[127:64]};
+                                 
+                                3'd6:  
+                                    nframe_store = {{48'b0,xgmii_rxd[15:0]}, frame_store[127:64]};
+                                 
+
+`line 317 "rtl/MAC_rx.sv" 0
+                                3'd7:  
+                                    nframe_store = {{40'b0,xgmii_rxd[23:0]}, frame_store[127:64]};
+                                 
+                            endcase
+                            nMAC_payload_rcv_cvrt = frame_store[127:64];
+                            nbytes_rcv = 8'd8;
+                             
+                            ncrc_delay = 1'b1; 
+                        end
+                    end
+
+`line 328 "rtl/MAC_rx.sv" 0
+                     
+                    else begin
+                        ncrc_delay = 1'b1;
+                        nbytes_rcv_dl = 7'd4 + (bytes_offset - 7'd4);
+                        case(bytes_offset)
+                             
+                             
+                            
+                            3'd7: begin
+
+`line 338 "rtl/MAC_rx.sv" 0
+                                nframe_store = {{40'h0,xgmii_rxd[23:0]},frame_store[127:64]};
+                            end
+
+`line 341 "rtl/MAC_rx.sv" 0
+                             
+                             
+                            3'd6: begin
+                                nframe_store = {{48'h 0, xgmii_rxd[15:0], frame_store[127:64]}};
+                            end
+
+`line 347 "rtl/MAC_rx.sv" 0
+                             
+                             
+                            3'd5: begin
+                                nframe_store = {{56'h0, xgmii_rxd[7:0], frame_store[127:64]}};
+                            end
+                            
+                             
+                             
+                            3'd4: begin
+                                 
+                                nframe_store ={64'h0, frame_store[127:64]};
+                            end
+
+`line 360 "rtl/MAC_rx.sv" 0
+                             
+                             
+                            3'd3: begin
+                                 
+                                nframe_store ={8'h0,{frame_store[119:64]}};
+                            end
+
+`line 367 "rtl/MAC_rx.sv" 0
+                             
+                             
+                            3'd2: begin
+                                 
+                                nframe_store = {16'h0,frame_store[111:64]};
+                            end
+
+`line 374 "rtl/MAC_rx.sv" 0
+                             
+                             
+                            3'd1: begin
+                                 
+                                nframe_store = {24'h0, frame_store[103:64]};
+                            end
+                             
+                             
+                            3'd0: begin
+                                nbytes_rcv = 8'd8;
+                                ncrc_valid = 1'b0;
+                                next_state = CHECK_CRC;
+                            end
+                        endcase
+                    end
+                end
+                if (crc_delay) begin
+                    ncrc_valid = 1'b0;
+                    next_state = CHECK_CRC;
+                    nbytes_rcv = bytes_rcv_dl;
+                    nFCS_frame = FCS_frame;
+                     
+                end
+            end
+
+`line 399 "rtl/MAC_rx.sv" 0
+            CHECK_CRC: begin
+                 
+                nMAC_valid = 1'b0;  
+                 
+                nsof_found = 1'b0;
+                nsoft_dl = 1'b0;
+                 
+                if (crc_out == FCS_frame_cvt[31:0]) begin
+                    frame_ok = 1'b1;
+                     
+                    next_state = IDLE;
+                end else begin
+                    CRC_flush = 1'b1;
+                    nMAC_valid = 1'b0;
+                    next_state = ERROR;
+                    
+                end
+            end
+
+`line 418 "rtl/MAC_rx.sv" 0
+            ERROR: begin
+                next_state = IDLE;
+
+`line 421 "rtl/MAC_rx.sv" 0
+            end
+
+`line 423 "rtl/MAC_rx.sv" 0
+        endcase
+    end
+
+`line 426 "rtl/MAC_rx.sv" 0
+     
+     
+        
+     
+
+`line 431 "rtl/MAC_rx.sv" 0
+endmodule
+
+
+`line 434 "rtl/MAC_rx.sv" 0
+ 
+
+`line 436 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 446 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+    
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 457 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 482 "rtl/MAC_rx.sv" 0
+ 
+
+`line 484 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+    
+    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 499 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 509 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+
+`line 514 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+
+`line 519 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 528 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 537 "rtl/MAC_rx.sv" 0
+ 
+    
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 546 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+            
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 583 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 609 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 620 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+                
+                
+ 
+
+`line 627 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 637 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 644 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+
+`line 650 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+                                    
+ 
+ 
+ 
+                                    
+ 
+ 
+ 
+                                    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+                                
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 690 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 701 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+                            
+ 
+
+`line 711 "rtl/MAC_rx.sv" 0
+ 
+ 
+
+`line 714 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+
+`line 720 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+                            
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 733 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 740 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 747 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 769 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 781 "rtl/MAC_rx.sv" 0
+ 
+ 
+
+`line 784 "rtl/MAC_rx.sv" 0
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+`line 795 "rtl/MAC_rx.sv" 0
+ 
+`line 796 "rtl/MAC_rx.sv" 0

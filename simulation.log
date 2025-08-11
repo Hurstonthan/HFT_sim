@@ -1,0 +1,17 @@
+ip_total: 3c
+ip_version_ihl: 45
+ip_ttl: 4011
+checksum result: abd1
+Word 0:ccaaaabbccffffff
+Word 1:450008ffffffbb
+Word 2: 0x114000040000c300 1140004000003c00
+UDP Length: 18
+Frame size: 8 words
+Frame[0]: 0xccaaaabbccffffff [cc][aa][aa][bb][cc][ff][ff][ff]
+Frame[1]: 0x00450008ffffffbb [00][45][00][08][ff][ff][ff][bb]
+Frame[2]: 0x1140004000003c00 [11][40][00][40][00][00][3c][00]
+Frame[3]: 0xaaaaffffffff5ce5 [aa][aa][ff][ff][ff][ff][5c][e5]
+Frame[4]: 0x180021433412aaaa [18][00][21][43][34][12][aa][aa]
+Frame[5]: 0x00000000a5a5a5a5 [00][00][00][00][a5][a5][a5][a5]
+Frame[6]: 0xa5a55a5a5a5a5a5a [a5][a5][5a][5a][5a][5a][5a][5a]
+Frame[7]: 0x5a5a000000000000 [5a][5a][00][00][00][00][00][00]
