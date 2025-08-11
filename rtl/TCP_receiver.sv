@@ -166,7 +166,6 @@ module TCP_receiver #(
             end
 
             RCV_SEQ_ACK_OFFSET_FLAGS_WINDOWSIZE: begin
-                
                 nseq_num_rx[15:0] = IP_payload_rx[63:48]; // Extract sequence number
                 nACK_rx = IP_payload_rx[47:16]; // Extract acknowledgment number
                 noffset_rx = IP_payload_rx[15:12]; // Extract offset

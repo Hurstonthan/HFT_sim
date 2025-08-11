@@ -10,8 +10,14 @@ module top #(
     input  logic                           CLK,
     input  logic                           nRST,
 
-    //MAC _TX
+    //SIMULATION FLAG
+    input logic out_order,
+
+    //REQUEST FLAG
     input logic TX_en,
+    input logic end_ss,
+
+    //MAC _TX
     output wire [DATA_WIDTH - 1:0] xgmii_txd,
     output wire [CTRL_WIDTH - 1:0] xgmii_txc,
     output logic frame_end,
@@ -143,7 +149,7 @@ module top #(
     logic                    out_order_req_int;
     logic                    TCP_stop_flg_int;
 
-    logic                    end_ss_int;
+    
     logic                    re_trans_int;
     logic [15:0]             checksum_re_trans_int;
 
@@ -203,6 +209,8 @@ module top #(
         .CLK                (CLK),
         .nRST               (nRST),
 
+        .out_order(out_order),
+
         // Global TX enable
         .TX_en              (TX_en),
         .checksum_TX         (checksum_TX),
@@ -243,7 +251,7 @@ module top #(
         .ACK_rcv_flag       (ACK_rcv_flag_int),
         .out_order_req      (out_order_req_int),
         .TCP_stop_flg       (TCP_stop_flg_int),
-        .end_ss             (end_ss_int),
+        .end_ss             (end_ss),
 
         // TX data input from FIFO_TX
         .rd_FIFO_payload    (rd_ftx_payload_int),
@@ -324,6 +332,7 @@ module top #(
 
         .rd_FIFO_en         (rd_ftx_en_int),
         .TX_en              (TX_en),
+        .end_ss             (end_ss),
         .checksum_TX        (checksum_TX),
 
         // SoupBinTCP payload (from application)
@@ -343,7 +352,6 @@ module top #(
         .rd_FIFO_payload    (rd_ftx_payload_int),
         .bytes_abt_sent     (bytes_abt_sent_int),
         .TCP_stop_flag      (TCP_stop_flg_int),
-        .end_ss             (end_ss_int),
 
         // Retransmission feedback to TCP
         .re_trans           (re_trans_int),

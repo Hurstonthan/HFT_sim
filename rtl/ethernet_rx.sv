@@ -35,7 +35,6 @@ module ethernet_rx
         .nRST(nRST),
         .xgmii_rxd(xgmii_rxd),
         .xgmii_rxc(xgmii_rxc),
-        
         .MAC_valid(MAC_valid),
         .CRC_flush(MAC_flush),
         .frame_ok(frame_ok),

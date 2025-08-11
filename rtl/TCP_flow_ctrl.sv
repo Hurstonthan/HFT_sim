@@ -11,6 +11,8 @@ module TCP_flow_ctrl #(
     input logic CLK,
     input logic nRST,
 
+    input logic out_order,
+
     input logic rcv_data,
     input logic [7:0] TCP_control_rx,
     input logic [31:0] seq_num_rx,
@@ -74,9 +76,10 @@ module TCP_flow_ctrl #(
         SEND_ACK,
         DATA_CONNECTED,
         FLUSH_DATA,
-        SEND_FIN,
-        WAIT_FIN_SERVER,
-        SEND_ACK_END
+        //Active close
+        FIN_WAIT1,
+        FIN_WAIT2,
+        TIME_WAIT
     } TCP_state_t;
 
     typedef enum logic [1:0] {
@@ -146,22 +149,33 @@ module TCP_flow_ctrl #(
     logic [7:0] bytes_drop, bytes_left;
     logic [N-1:0][3:0] flush_list, nflush_list;
 
-    // assign TCP_len_data = bytes_abt_sent;
+    //assign TCP_len_data = bytes_abt_sent;
     assign TCP_control_tx = tx_pkg_type;
     assign rcv_next_out = rcv_next;
     assign seq_num_out = seq_num.seq_num;
     assign ACK_num = ACK_rx;
     assign ACK_rcv_flag = rcv_data && rcv_pkg_type.ACK ;
     assign debug = TCP_last ? seq_num.valid : 1;
-    
+
+    //Time logic variable for time wait
+    logic timewait_en, timewait_clear, timewait_flag;
+
+    //Passive close variable
+    logic pass_close, npass_close;
+
+    flex_counter #(
+        .SIZE(TIMEWAIT_SIZE)
+    )timewait (
+        .CLK(CLK),
+        .nRST(nRST),
+        .clear(timewait_clear),
+        .count_enable(timewait_en),
+        .initial_val(TIMEWAIT_TICK),
+        .rollover_flag(timewait_flag)
+    );
 
     
-    // initial begin
-    //     $display("CLK : %d", CLK);
-    //     for (int i = 0; i < N; i++) begin
-    //         $display("Entry %d: seq_num: %d, seq_length: %d, rd_ptr: %d, length_ptr: %d, v: %d", i,TCP_order[i].seq_num, TCP_order[i].seq_length, TCP_order[i].rd_ptr, TCP_order[i].length_ptr, TCP_order[i].v);
-    //     end
-    // end
+    
     generate
         for (k = 0; k < N; k++) begin
             assign v_vec[k] = TCP_order[k].v;
@@ -288,12 +302,14 @@ module TCP_flow_ctrl #(
             end
             rcv_next <= '0;
             state <= IDLE;
+            pass_close <= 0;
         end 
         else begin
             ack_num <= nack_num;
             seq_num <= nseq_num;
             window_size <= nwindow_size;
             TCP_order <= nTCP_order;
+            pass_close <= npass_close;
             // TCP_order <= '1;
 
             for (int x = 0; x < N; x++) begin
@@ -301,22 +317,11 @@ module TCP_flow_ctrl #(
             end
             
             state <= nstate;
-            if (match_found) begin
+            if (nw_segment || rcv_data) begin
+                rcv_next <= nrcv_next;
+            end 
+            else if (match_found) begin
                 rcv_next <= TCP_order[match_idx].seq_length; //Update the next sequence number to receive
-                // if (TCP_order[match_idx].seq_num == rcv_next) begin
-                //     // rcv_next <= rcv_next + TCP_order[match_idx].seq_length; //Update the next sequence number to receive
-                //     rcv_next <= TCP_order[match_idx].seq_length; //Update the next sequence number to receive
-                //     //TCP_order[match_idx].v <= 1'b0; //Set the valid bit to 0
-                // end 
-                //else if (rcv_next > TCP_order[match_idx].seq_num) begin
-                //     //Need to check this logic
-                //     if (rcv_next >= TCP_order[match_idx].seq_num + TCP_order[match_idx].length) begin
-                //         TCP_order[match_idx].v <= 1'b0; //Set the valid bit to 0
-                //     end else begin
-                //         TCP_order[match_idx].seq_num <= rcv_next;
-                //         TCP_order[match_idx].length <= (TCP_order[match_idx].seq_num + TCP_order[match_idx].length) - (rcv_next);
-                //     end
-                // end
             end
             else begin
                 rcv_next <= nrcv_next;
@@ -369,16 +374,20 @@ module TCP_flow_ctrl #(
         ncount_en_timeout = count_en_timeout;
         nclear_timeout = 1'b0;
 
+        //TIMEWAIT FLAG LOGIC
+        timewait_en = 1'b0; 
+        timewait_clear = 1'b1;
+
+        //Passive close flag logic
+        npass_close = pass_close;
+
         
         ///////////////////////TRIMMING CASE ////////////////////////
         if (nw_segment) begin
             //Case 1: Full overlap
             nseq_rx_trk = seq_rx_trk + TCP_bytes_trk;
             nseq_rx_str = seq_rx_str;
-            if (seq_rx_trk == rcv_next) begin
-                nrcv_next = rcv_next + TCP_bytes_trk;
-            end
-
+            
             if (|overlap_mask) begin
                 case_bug = overlap;
                 nseq_rx_str = TCP_order[ov_idx].seq_length;
@@ -458,80 +467,16 @@ module TCP_flow_ctrl #(
                     nlen_flush_ptr = len_flush_ptr + 1;
                 end
             end
+
+            if (seq_rx_trk == rcv_next) begin
+                nrcv_next = rcv_next + TCP_bytes_trk;
+            end
         end
         ////////////////////////////////////////////////////////////
 
         //Receiving // Writing logic
         //seq_rx_trk is the start of the sequence number rx       
         for (int i = 0; i < N; i = i + 1) begin
-            // if (nw_segment) begin
-            //     //Case 1: Full overlap
-            //     nseq_rx_trk = seq_rx_trk + TCP_bytes_trk;
-            //     if (TCP_order[i].v && (seq_rx_trk >= TCP_order[i].seq_num) && (seq_rx_trk + TCP_bytes_trk < (TCP_order[i].seq_length))) begin
-            //         case_bug = overlap;
-            //         wr_FIFO_en = 1'b0;
-            //     end
-
-            //     //Case 2: right trim
-            //     //seq_rx_trk < TCP_order[i].seq_num && seq_rx_trk + TCP_bytes_trk > TCP_order[i].seq_num
-            //     else if (TCP_order[i].v && (seq_rx_trk < TCP_order[i].seq_num) && (seq_rx_trk + TCP_bytes_trk > TCP_order[i].seq_num)) begin
-            //         case_bug = right_trim;
-            //         //case_bug_0 = 1'b1;
-            //         //I'm about to enter the overlap segment
-            //         //I'm still write the data
-            //         bytes_drop = seq_rx_trk + TCP_bytes_trk - TCP_order[i].seq_num;
-            //         bytes_left = TCP_bytes_trk - bytes_drop;
-            //         // nseq_rx_trk = seq_rx_trk + bytes_left;
-            //         wr_FIFO_offset = (8'hFF << bytes_drop);
-
-            //         ///This is where we meet overlap and finish a segment
-            //         if (free_mask) begin
-            //             nTCP_order[free_idx].seq_num = seq_num_rx;
-            //             nTCP_order[free_idx].seq_length = seq_rx_trk + bytes_left;
-            //             nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
-            //             nTCP_order[free_idx].length_ptr = wr_FIFO_len;//length_ptr will be 
-            //             nTCP_order[free_idx].v = 1'b1;//length_ptr will be 
-            //             nflush_list[len_flush_ptr] = free_idx;
-            //             nlen_flush_ptr = len_flush_ptr + 1;
-            //         end
-            //         if (seq_num_rx == rcv_next) begin
-            //             nrcv_next = seq_rx_trk + bytes_left;
-            //         end
-            //     end
-
-            //     //Case 3: left trim
-            //     else if (TCP_order[i].v && (seq_rx_trk < TCP_order[i].seq_length) && (seq_rx_trk + TCP_bytes_trk >= TCP_order[i].seq_length)) begin
-            //         case_bug = left_trim;
-            //         case_bug_0 = 1'b1;
-            //         bytes_drop = (TCP_order[i].seq_length) - seq_rx_trk;
-            //         bytes_left = TCP_bytes_trk - bytes_drop;
-            //         nseq_rx_trk = seq_rx_trk + bytes_left;
-            //         //wr_FIFO_offset = (8'hFF >> bytes_drop);
-            //         wr_FIFO_offset = 0;
-            //     end
-
-            //     //Case 4: Non overlap
-            //     else if (!(|overlap_mask)) begin
-            //         case_bug = non_overlap;
-            //         // wr_FIFO_en = 1'b1;
-            //         wr_FIFO_offset = 8'hFF >> (8 - TCP_bytes_trk);
-            //         if (free_mask && TCP_last) begin 
-            //             // case_bug = right_trim;
-            //             nTCP_order[free_idx].seq_num = seq_num_rx;
-            //             nTCP_order[free_idx].seq_length = seq_rx_trk + TCP_bytes_trk;
-            //             nTCP_order[free_idx].rd_ptr = wr_FIFO_ptr;
-            //             nTCP_order[free_idx].length_ptr = wr_FIFO_len + 1;//length_ptr will be 
-            //             nTCP_order[free_idx].v = 1'b1;
-            //             nflush_list[len_flush_ptr] = free_idx;
-            //             nlen_flush_ptr = len_flush_ptr + 1;
-
-            //             if (seq_num_rx == rcv_next) begin
-            //                 nrcv_next = seq_rx_trk + TCP_bytes_trk;
-            //             end
-            //         end
-            //     end
-            // end
-
             //Reading FIFO logic
             if (rd_FIFO_en) begin
                 //case_bug_0 = 1'b1;
@@ -548,11 +493,7 @@ module TCP_flow_ctrl #(
             //During the IDLE, client will send the SYN packet first
             IDLE: begin
                 nseq_num.seq_num = seq_num.seq_num;
-                
-                // if (SYN_sent) begin
-                //     nstate = WAIT_SYN_ACK;
-                //     nseq_num.seq_num = seq_num.seq_num + 1;
-                // end
+                npass_close = 1'b0;
                 if (seq_up) begin
                     nstate = WAIT_SYN_ACK;
                     nseq_num.seq_num = seq_num.seq_num + 1;
@@ -561,24 +502,29 @@ module TCP_flow_ctrl #(
                 if (rcv_data && rcv_pkg_type.SYN) begin
                     nstate = SEND_SYN_ACK;
                     nrcv_next = seq_num_rx + 1;
+                    nseq_rcv_str = seq_num_rx + 1; 
                 end
             end
 
             SEND_SYN_ACK: begin
                 if (seq_up) begin
                     nstate = WAIT_ACK;
+                    nseq_num.seq_num = seq_num.seq_num + 1;
                 end
             end
 
             WAIT_ACK: begin
                 TCP_stop_flg = 1'b1;
                 ncount_en_timeout = 1'b1;
-                if (rcv_data && seq_num_rx == rcv_next) begin
+                if (rcv_data && seq_num_rx == rcv_next && !end_ss) begin
                     nstate = DATA_CONNECTED;
                     ncount_en_timeout = 1'b0;
                     nclear_timeout = 1'b1;
                     nack_num.ACK_num = ACK_rx;
                     nwindow_size = window_size_rx;
+                end 
+                else if (rcv_data && seq_num_rx == rcv_next) begin
+                    nstate = IDLE;
                 end
 
             end
@@ -605,9 +551,11 @@ module TCP_flow_ctrl #(
             end
 
             SEND_ACK: begin
-                if (seq_up) begin
+                if (seq_up && !end_ss) begin
                     //nseq_num.seq_num = seq_num.seq_num + 1;
                     nstate = DATA_CONNECTED;
+                end else if (seq_up) begin
+                    nstate = TIME_WAIT;
                 end
             end
 
@@ -618,13 +566,25 @@ module TCP_flow_ctrl #(
                 //seq_up tell us that we done with
                 if (|wnd_allow) begin
                     TCP_stop_flg = 1'b0; //We can send the data
-                    if (seq_up && !out_order_req) begin
-                        nseq_num.seq_num = seq_num.seq_num + bytes_abt_sent;
+                    //SIMULATION ELSE IF PURPOSE
+                    if (seq_up && out_order) begin
+                        nseq_num.seq_num = seq_num.seq_num;
                         ncount_en_timeout = 1'b1;
-                    end else if (seq_up) begin
-                        nout_order_req = 1'b0;
+                    end 
+                    //THIS SHOULD BE IF
+                    else if (seq_up && !out_order_req) begin
+                        nseq_num.seq_num = end_ss ? (seq_num.seq_num + bytes_abt_sent + 1) : seq_num.seq_num + bytes_abt_sent;
+                        //nseq_num.seq_num  = seq_num.seq_num + bytes_abt_sent;
                         ncount_en_timeout = 1'b1;
                     end
+                    else if (seq_up) begin
+                        nout_order_req = 1'b0;
+                        ncount_en_timeout = 1'b1;
+                    end 
+                    // else if (end_ss) begin
+                    //     nseq_num.seq_num = seq_num.seq_num + 1;
+                    //     ncount_en_timeout = 1'b1;
+                    // end
                 end else begin
                     TCP_stop_flg = 1'b1; //We need to stop sending the data
                 end
@@ -652,15 +612,19 @@ module TCP_flow_ctrl #(
                         nack_num.ACK_num = ACK_rx;    
                         nclear_timeout = 1'b1;
                     end
+
+                    if(rcv_pkg_type.FIN) begin
+                        npass_close = 1'b1;
+                        nrcv_next = rcv_next + 32'd1;
+                    end
+
                     nflush_ptr = 0;
                     nlen_flush_ptr = 0;
                     for (int i = 0; i < N; i++) begin
                             nflush_list[i] = 0;       
                     end
-
-                    
-                    
                 end 
+
                 else if (timeout_flag) begin
                     //Logic of timeout issue resend the packets
                     nout_order_req = 1'b1;
@@ -671,11 +635,93 @@ module TCP_flow_ctrl #(
                 //TCP_bytes will indicated that bytes/payload is done
                 if (TCP_flush) begin
                     nstate = FLUSH_DATA;
-                end else if (end_ss) begin
+                end
+                //Did not receive FIN
+                else if (end_ss && seq_up && !pass_close) begin
+                    nstate = FIN_WAIT1;
+                end
 
+                //receive FIN
+                else if (end_ss && seq_up && pass_close) begin
+                    nstate = WAIT_ACK;
                 end 
 
             end
+
+            FIN_WAIT1: begin
+                if (seq_up) begin
+                    nout_order_req = 1'b0;
+                end
+
+                if (rcv_data  && (seq_rx_trk >= rcv_next)) begin
+                    nwindow_size = window_size_rx;
+                    if (ACK_rx == ack_num.ACK_num && rcv_pkg_type.ACK) begin
+                        if (ack_num.dup_chk == 3) begin
+                            nack_num.dup_chk = 0;
+                            nout_order_req = 1'b1;
+                            nseq_tx_retrans = ACK_rx;
+                            nclear_timeout = 1'b1;
+                        end else begin
+                            nack_num.dup_chk = ack_num.dup_chk + 1;
+                        end
+                    //You have received ACK for your FIN
+                    end else if (rcv_pkg_type.ACK && ACK_rx > ack_num.ACK_num) begin
+                        nack_num.dup_chk = 0;
+                        nack_num.ACK_num = ACK_rx;    
+                        nclear_timeout = 1'b1;
+                        nstate = FIN_WAIT2;
+                    end
+                    nflush_ptr = 0;
+                    nlen_flush_ptr = 0;
+                    for (int i = 0; i < N; i++) begin
+                            nflush_list[i] = 0;       
+                    end
+                end
+
+            end
+
+            FIN_WAIT2: begin
+                if (seq_up) begin
+                    nout_order_req = 1'b0;
+                end
+
+                if (rcv_data  && (seq_rx_trk >= rcv_next)) begin
+                    nwindow_size = window_size_rx; //Update the new window size
+                    if (ACK_rx == ack_num.ACK_num && rcv_pkg_type.ACK) begin
+                        if (ack_num.dup_chk == 3) begin
+                            nack_num.dup_chk = 0;
+                            nout_order_req = 1'b1;
+                            nseq_tx_retrans = ACK_rx;
+                            nclear_timeout = 1'b1;
+                        end else begin
+                            nack_num.dup_chk = ack_num.dup_chk + 1;
+                        end
+                    end else if (rcv_pkg_type.ACK && ACK_rx > ack_num.ACK_num) begin
+                        nack_num.dup_chk = 0;
+                        nack_num.ACK_num = ACK_rx;    
+                        nclear_timeout = 1'b1;
+                    end
+
+                    if (rcv_pkg_type.FIN) begin
+                        nstate = SEND_ACK;
+                    end
+                    nflush_ptr = 0;
+                    nlen_flush_ptr = 0;
+                    for (int i = 0; i < N; i++) begin
+                            nflush_list[i] = 0;       
+                    end
+                end
+            end
+
+            TIME_WAIT: begin
+                timewait_en = 1'b1;
+                timewait_clear = 1'b0;
+                if (timewait_flag) begin
+                    nstate = IDLE;
+                end
+            end
+
+
             FLUSH_DATA: begin
                 nTCP_order[flush_list[flush_ptr]].v = 0;
                 nflush_ptr = flush_ptr + 1;
@@ -685,24 +731,6 @@ module TCP_flow_ctrl #(
                     nlen_flush_ptr = 0;
                     nflush_list = 0;
                     nrcv_next  = rcv_next_prev;
-                end
-            end
-            SEND_FIN: begin
-                if (rcv_pkg_type.ACK) begin
-                    nstate = WAIT_FIN_SERVER;
-                end
-            end
-
-            WAIT_FIN_SERVER: begin
-                TCP_stop_flg = 1'b0;
-                if (rcv_pkg_type.FIN) begin
-                    nstate = SEND_ACK_END;
-                end
-            end
-
-            SEND_ACK_END: begin
-                if (rcv_pkg_type.ACK) begin
-                    nstate = IDLE;
                 end
             end
 
@@ -766,28 +794,18 @@ module TCP_flow_ctrl #(
             DATA_CONNECTED: begin
                 //Do nothing
                 nhand_shake_done = 1'b0;
-                seq_num_tx = (out_order_req) ? seq_tx_retrans : seq_num.seq_num;
+                //simulation signal out_order
+                if (out_order) begin
+                    seq_num_tx = seq_num.seq_num + 32'd24;
+                end else begin
+                    seq_num_tx = (out_order_req) ? seq_tx_retrans : seq_num.seq_num;
+                end
+                //seq_num_tx = (out_order_req) ? seq_tx_retrans : seq_num.seq_num;
                 tx_pkg_type.ACK = 1'b1;
+                tx_pkg_type.FIN = end_ss ? 1'b1 : 1'b0;
                 //ACK_tx = ack_num.ACK_num;
                 ACK_tx = rcv_next;
             end
-
-            SEND_FIN: begin
-                tx_pkg_type.FIN = 1'b1;
-                ACK_tx = rcv_next;    
-            end
-
-            WAIT_FIN_SERVER: begin
-                //Do nothing
-            end
-
-            SEND_ACK_END: begin
-                tx_pkg_type.ACK = 1'b1;
-                seq_num_tx = seq_num.seq_num;
-                ACK_tx = rcv_next;
-                
-            end
-
             default: ;
         endcase
     end

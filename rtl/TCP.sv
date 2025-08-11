@@ -13,6 +13,8 @@ module TCP #(
     input  logic CLK,          // Clock signal
     input  logic nRST,         // Active low reset signal
 
+    input logic out_order,
+
     //global transmit TX_en
     input logic TX_en,
     output logic [15:0] checksum_TX, //variable to store transmitted TX
@@ -131,6 +133,7 @@ module TCP #(
     TCP_flow_ctrl tcp_flow (
         .CLK(CLK),
         .nRST(nRST),
+        .out_order(out_order),
         .rcv_data(rcv_data),
         .TCP_control_rx(TCP_control_rx),
         .seq_num_rx(seq_num_rx),

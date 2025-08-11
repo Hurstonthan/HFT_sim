@@ -417,6 +417,8 @@ module MAC_rx #(
             end
 
             ERROR: begin
+                nMAC_valid = 1'b0;
+                nsof_found = 1'b0;
                 next_state = IDLE;
 
             end

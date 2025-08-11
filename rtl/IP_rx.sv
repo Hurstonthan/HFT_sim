@@ -188,6 +188,8 @@ always_comb begin
                     nstate = ERROR;
                     //IP_flush = 1'b1;
                 end
+            end else begin
+                nstate = IDLE;
             end
         end
 
@@ -218,6 +220,8 @@ always_comb begin
                         // IP_flush = 1'b1;
                         nstate = ERROR;
                     end
+            end else begin
+                nstate = IDLE;
             end 
         end
 
@@ -241,6 +245,8 @@ always_comb begin
                     nstate = ERROR;
                     chksum_en = 1'b0;
                 end
+            end else begin
+                nstate = IDLE;
             end
         end
 
@@ -261,6 +267,8 @@ always_comb begin
                     nstate = ERROR;
                     // IP_flush = 1'b1;
                 end
+            end else begin
+                nstate = IDLE;
             end
         end
 

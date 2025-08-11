@@ -6,7 +6,6 @@
 package ether_pkg;
 
 
-
 //Adding the type and package later
 //sequence number store
 typedef struct packed {
@@ -47,18 +46,15 @@ typedef struct packed {
     
 } TCP_control_t;
 
+//Variables for timewait flags
+parameter int CLK_HZ = 156000000;
+parameter int SEC = 60;
+parameter int TIMEWAIT_SEC = 2 * SEC;
+//parameter int TIMEWAIT_TICK = CLK_HZ * TIMEWAIT_SEC;
+parameter int TIMEWAIT_TICK = 300;
 
-//Adding something to handle the out of order packets
-// typedef struct packed {
-//     logic [31:0] seq_num;
-//     logic [15:0] seq_length;
-//     logic [15:0] rd_ptr;
-//     logic [15:0] length_ptr;
-//     logic v;
-// } TCP_order_t;
 
-// logic [$clog2(N)-1:0] free_idx, match_idx;;
-// logic [31:0] [N - 1: 0] seq_vec;
+parameter int TIMEWAIT_SIZE = $clog2(TIMEWAIT_TICK + 1);
 
 
 
