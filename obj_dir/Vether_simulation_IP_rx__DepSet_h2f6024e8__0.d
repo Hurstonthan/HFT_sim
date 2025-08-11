@@ -1,3 +1,0 @@
-Vether_simulation_IP_rx__DepSet_h2f6024e8__0.o: \
- Vether_simulation_IP_rx__DepSet_h2f6024e8__0.cpp \
- Vether_simulation__pch.h Vether_simulation_IP_rx.h
