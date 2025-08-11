@@ -117,6 +117,7 @@ logic [3:0] test_valid;
 logic [3:0] ip_version;
 logic is_src_addr;
 logic is_ip_version_valid;
+logic [31:0] src_addr, dest_addr;
 
 always_comb begin
     /* 0      7 8     15 16    23 24    31 32    39 40    47 48    55 56     63 
@@ -163,7 +164,9 @@ always_comb begin
     IP_flush = 1'b0;
     is_src_addr = (MAC_payload_rcv[47:16] == IP_SRC_ADDR);
     is_ip_version_valid = (ip_version == IP_VERSION);
-    
+    src_addr = MAC_payload_rcv[47:16];
+    dest_addr = {dst_addr, MAC_payload_rcv[63:48]};
+
     nIP_bytes_rcv_len = bytes_rcv_len;
     nIP_last = 0;
     if (MAC_valid) begin
@@ -236,7 +239,7 @@ always_comb begin
                 
                 if (is_src_addr) begin
                     nstate = RCV_PAYLOAD_DEST;
-                    //nIP_valid = 1'b1;
+                    nIP_valid = 1'b1;
                 end else begin
                     nstate = ERROR;
                     chksum_en = 1'b0;

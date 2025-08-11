@@ -119,6 +119,7 @@ module top #(
         .nRST(nRST),
         .IP_valid(IP_valid),
         .IP_flush(IP_flush), 
+        .is_udp(is_udp_rx),
         .IP_payload(IP_payload),
         .UDP_flush(UDP_flush),
         .UDP_valid(UDP_valid),
@@ -130,7 +131,7 @@ module top #(
     // --------------------------------------------------------------
 
     logic is_udp_rx, is_tcp_rx;
-    logic UDP_payload; 
+    logic [63:0] UDP_payload; 
 
     logic                    nw_segment;
     logic                    TCP_rx_last;
@@ -222,6 +223,7 @@ module top #(
         .CLK(CLK),
         .nRST(nRST),
         .valid(IP_send),
+        .UDP_payload(UDP_payload),
         .UDP_len(UDP_len),
         .protocol_last(UDP_tx_last),
         .IP_payload(UDP_transmit),

@@ -172,13 +172,17 @@ module MAC_rx #(
     /* verilator lint_off UNOPTFLAT */
     logic [47:0] mac_dest_addr;
     logic [47:0] mac_src_addr;
+    logic [31:0] second_half_src_addr;
     logic [127:0] temp;
     logic mac_dest_addr_valid, mac_src_addr_first_valid, mac_src_addr_second_valid;
+
     assign mac_dest_addr = {xgmii_rxd_f[7:0],xgmii_rxd_f[15:8], xgmii_rxd_f[23:16], xgmii_rxd_f[31:24],xgmii_rxd_f[39:32], xgmii_rxd_f[47:40]};
     assign mac_src_addr = {xgmii_rxd_f[63:48], xgmii_rxd_f[31:0]};
     assign mac_dest_addr_valid = (mac_dest_addr == MAC_DEST_ADDR);
     assign mac_src_addr_first_valid = (mac_src_addr[47:32] == MAC_SRC_ADDR[47:32]);
     assign mac_src_addr_second_valid = (mac_src_addr[31:0] == MAC_SRC_ADDR[31:0]);
+    assign second_half_src_addr = {xgmii_rxd_f[7:0],xgmii_rxd_f[15:8],xgmii_rxd_f[23:16],xgmii_rxd_f[31:24]};
+
 
     always_comb begin
         nrg = rg;
