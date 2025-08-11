@@ -1,4 +1,4 @@
-# HFT_sim# 🚀 Project Name
+# HFT_sim#  Project Name
 
 > Implemented a low-latency High-Frequency simulation (HFT) with Alinx AX735 FPGA and 10G Ethernet, integrating custom TCP/IP stack and MAC controller, ITCH/OUCH parser for market data and order execution
 
@@ -7,7 +7,7 @@
 ![GitHub stars](https://img.shields.io/github/stars/USERNAME/REPO)
 ![GitHub forks](https://img.shields.io/github/forks/USERNAME/REPO) -->
 
-![Architecture Diagram](doc/HFT_sim.png)
+![Architecture Diagram](doc/HFT_top.png)
 <p align="center">
   <em>Figure 1: Architecture diagram</em>
 </p>
@@ -56,6 +56,9 @@
 
 ---
 
+## Progress
+
+
 ## Contributing
 
 ## 🛠 Installation
@@ -65,7 +68,6 @@
 - python3
 
 **Clone the repository:**
-```bash
 git clone https://github.com/USERNAME/REPO.git
 
 
