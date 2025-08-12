@@ -184,17 +184,17 @@ std::vector<uint64_t> create_ethernet_frame(const std::vector<uint64_t> &payload
     // Word 5: UDP Checksum + first 6 bytes of payload
     if (!payload.empty()) {
         uint64_t udp_checksum_be = reverse_bytes_16(0x0000);  // UDP Checksum = 0
-        uint64_t word5 = (udp_checksum_be << 48) | (reverse_bytes_64(payload[0]) >> 16);
+        uint64_t word5 = (udp_checksum_be) | (reverse_bytes_64(payload[0]) << 16);
         frame.push_back(word5);
         
         // Word 6: Last 2 bytes of payload[0] + first 6 bytes of payload[1] (if exists)
         if (payload.size() > 1) {
             
-            uint64_t word6 = ((reverse_bytes_64(payload[0]) & 0xFFFF) << 48) | (reverse_bytes_64(payload[1]) >> 16);
+            uint64_t word6 = ((reverse_bytes_64(payload[0]) & 0xFFFF) >> 48) | (reverse_bytes_64(payload[1]) << 16);
             frame.push_back(word6);
             
             // Word 7: Last 2 bytes of payload[1]
-            uint64_t word7 = (reverse_bytes_64(payload[1]) & 0xFFFF) << 48;
+            uint64_t word7 = (reverse_bytes_64(payload[1]) & 0xFFFF) >> 48;
             frame.push_back(word7);
         } else {
             // Only first payload word, put remaining 2 bytes in next word
