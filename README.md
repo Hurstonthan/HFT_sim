@@ -1,6 +1,7 @@
-# HFT_sim#  Project Name
+# HFT_sim
 
-> Implemented a low-latency High-Frequency simulation (HFT) with Alinx AX735 FPGA and 10G Ethernet, integrating custom TCP/IP stack and MAC controller, ITCH/OUCH parser for market data and order execution
+## Project Overview
+> Implemented a low-latency High-Frequency simulation (HFT) with Alinx AX735 FPGA and 10G Ethernet, integrating custom UDP/TCP stack and MAC controller, ITCH/OUCH parser for market data and order execution
 
 <!-- ![GitHub license](https://img.shields.io/github/license/USERNAME/REPO)
 ![GitHub issues](https://img.shields.io/github/issues/USERNAME/REPO)
@@ -11,7 +12,6 @@
 <p align="center">
   <em>Figure 1: Architecture diagram</em>
 </p>
-
 
 ---
 
@@ -26,22 +26,20 @@
 - [License](#-license)
 - [Contact](#-contact)
 
----
+<!-- --- -->
 
-## 📌 About
-> This project is an implication of high-performance FPGA-based with customized TCP/IP stack optimized for high-frequency trading, designed to minimize latency and maximize throughput.
+<!-- ## 📌 About
+> This project is an implication of high-performance FPGA-based with customized TCP/IP stack optimized for high-frequency trading, designed to minimize latency and maximize throughput. -->
 
 ---
 
 ## ✨ Features
-- ✅ Ethernet MAC controller for 10GBASE-R
-- ✅ Ethernet IPv4 layer without VLAN supporting
-- ✅ Ethernet UDP layer
-- ✅ Ethernet UDP multi-casting feature
-- ✅ Ethernet TCP layer
+- ✅ Ethernet MAC controller for AMD 10G Ethernet PCS/PMA
+- ✅ Lightweight IPv4 parsing header
+- ✅ UDP transmitter (TX)
+- ✅ UDP transmitter (RX)
 - ✅ TCP out of order message receive feature
 - ✅ TCP out of order duplicate ACKs fast transmission
-
 
 - 🔄 ITCH 5.0 decoder
 - 🔄 MoldUDP64 AXI Stream receiver
@@ -53,13 +51,23 @@
 - 🔄 Updating runing-time config registers
 - 🔄 TCP Glimpse response handler
 
+---
+
+## 🖥️ Technology Stack
+Hardware Description Language: SystemVerilog
+Simulation & Verification: Verilator, GTKWave
+Target Protocols: IPv4, UDP
+Future Protocols: MoldUDP64, ITCH
 
 ---
 
-## Progress
-
-
-## Contributing
+## 🖥️ Project structure
+```
+├── doc/                # Documentation and protocol specifications
+├── rtl/                # All RTL source code (System Verilog)
+│ └── top.sv          # Top-level design file
+├── tb/                 # All testbench code 
+```
 
 ## 🛠 Installation
 **Requirement:**
