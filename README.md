@@ -54,16 +54,16 @@
 ---
 
 ## 🖥️ Technology Stack
-Hardware Description Language: SystemVerilog
-Simulation & Verification: Verilator, GTKWave
-Target Protocols: IPv4, UDP
-Future Protocols: MoldUDP64, ITCH
+- **Hardware Description Language**: SystemVerilog
+- **Simulation & Verification**: Verilator, GTKWave
+- **Target Protocols**: IPv4, UDP, TCP
+- **Future Protocols**: MoldUDP64, ITCH, SoupbinTCP 3.0, OUCH
 
 ---
 
 ## 🖥️ Project structure
 ```
-├── doc/                # Documentation and protocol specifications
+├── doc/      
 ├── rtl/                # All RTL source code (System Verilog)
 │ └── top.sv          # Top-level design file
 ├── tb/                 # All testbench code 
