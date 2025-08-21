@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Webtalk v2021.1 (64-bit)
+# SW Build 3247384 on Thu Jun 10 19:36:33 MDT 2021
+# IP Build 3246043 on Fri Jun 11 00:30:35 MDT 2021
+# Start of session at: Sun Aug 17 02:14:18 2025
+# Process ID: 5624
+# Current directory: C:/Users/trith/HFT_sim/HFT_sim_FPGA/hft_sim/hft_sim.sim/sim_1/synth/func/xsim
+# Command line: wbtcv.exe -mode batch -source C:/Users/trith/HFT_sim/HFT_sim_FPGA/hft_sim/hft_sim.sim/sim_1/synth/func/xsim/xsim.dir/crc32_parallel_64bit_tb_func_synth/webtalk/xsim_webtalk.tcl -notrace
+# Log file: C:/Users/trith/HFT_sim/HFT_sim_FPGA/hft_sim/hft_sim.sim/sim_1/synth/func/xsim/webtalk.log
+# Journal file: C:/Users/trith/HFT_sim/HFT_sim_FPGA/hft_sim/hft_sim.sim/sim_1/synth/func/xsim\webtalk.jou
+#-----------------------------------------------------------
+source C:/Users/trith/HFT_sim/HFT_sim_FPGA/hft_sim/hft_sim.sim/sim_1/synth/func/xsim/xsim.dir/crc32_parallel_64bit_tb_func_synth/webtalk/xsim_webtalk.tcl -notrace

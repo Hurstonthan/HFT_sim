@@ -232,7 +232,7 @@ module TCP_flow_ctrl #(
     ) ov (
         .din(overlap_mask),
         .valid(),
-        .idx(rt_idx)
+        .idx(ov_idx)
     );
     
 

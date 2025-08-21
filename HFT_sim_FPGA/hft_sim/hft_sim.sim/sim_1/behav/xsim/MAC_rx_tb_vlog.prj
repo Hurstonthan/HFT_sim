@@ -1,0 +1,13 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  \
+"../../../../../../rtl/MAC_rx.sv" \
+"../../../../../../rtl/crc32_parallel_64bit.sv" \
+"../../../../../../rtl/priority_encoder.sv" \
+"../../../../../../rtl/xgmii_little_to_big.sv" \
+"../../../../../../tb_sv/MAC_rx_tb.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

@@ -1,0 +1,9 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"crc32_parallel_64bit_tb_func_synth.v" \
+
+sv xil_defaultlib  \
+"../../../../../../../tb_sv/crc32_parallel_64bit_tb.sv" \
+
+# Do not sort compile order
+nosort

@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
-`include "TCP_flow_if.vh"
-`include "TCP_receiver_if.vh"
+//`include "TCP_flow_if.vh"
+//`include "TCP_receiver_if.vh"
 module TCP #(
     parameter DATA_WIDTH = 64, // Width of the data bus
     parameter int FIFO_DEPTH  = 10,               // words  (must be power‑of‑2)

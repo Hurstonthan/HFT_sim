@@ -1,0 +1,7 @@
+Running: xsim.dir/crc32_parallel_64bit_tb_behav/xsimk.exe -simmode gui -wdb crc32_parallel_64bit_tb_behav.wdb -simrunnum 0 -socket 60826
+Design successfully loaded
+Design Loading Memory Usage: 8884 KB (Peak: 8884 KB)
+Design Loading CPU Usage: 0 ms
+Simulation completed
+Simulation Memory Usage: 9912 KB (Peak: 9912 KB)
+Simulation CPU Usage: 0 ms

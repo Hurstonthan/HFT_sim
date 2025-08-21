@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2021.1 (64-bit)
+# SW Build 3247384 on Thu Jun 10 19:36:33 MDT 2021
+# IP Build 3246043 on Fri Jun 11 00:30:35 MDT 2021
+# Start of session at: Thu Aug 21 09:10:12 2025
+# Process ID: 24940
+# Current directory: C:/Users/trith/HFT_sim/HFT_sim_FPGA/hft_sim/hft_sim.runs/synth_1_copy_4
+# Command line: vivado.exe -log payload_FIFO.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source payload_FIFO.tcl
+# Log file: C:/Users/trith/HFT_sim/HFT_sim_FPGA/hft_sim/hft_sim.runs/synth_1_copy_4/payload_FIFO.vds
+# Journal file: C:/Users/trith/HFT_sim/HFT_sim_FPGA/hft_sim/hft_sim.runs/synth_1_copy_4\vivado.jou
+#-----------------------------------------------------------
+source payload_FIFO.tcl -notrace

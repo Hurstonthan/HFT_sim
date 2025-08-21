@@ -1,12 +1,12 @@
 `timescale 1ns / 10ps
 module crc32_parallel_64bit (
-    input  logic        CLK,
-    input  logic        nRST,
+    input  wire        CLK,
+    input  wire        nRST,
     input  logic        valid,
     input  logic        crc_init,
     input  logic rx,
     input  logic [63:0] data_in,
-    output logic [31:0] crc_out
+    output wire [31:0] crc_out
 );
 
     logic [31:0] crc_reg;

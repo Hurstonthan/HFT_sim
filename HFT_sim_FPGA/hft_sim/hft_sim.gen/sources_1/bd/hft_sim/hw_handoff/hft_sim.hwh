@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Thu Aug 21 08:06:29 2025" VIVADOVERSION="2021.1">
+
+  <SYSTEMINFO ARCH="kintexuplus" BOARD="xilinx.com:kcu116:part0:1.5" DEVICE="xcku5p" NAME="hft_sim" PACKAGE="ffvb676" SPEEDGRADE="-2"/>
+
+  <EXTERNALPORTS/>
+
+  <EXTERNALINTERFACES/>
+
+  <MODULES/>
+
+</EDKSYSTEM>

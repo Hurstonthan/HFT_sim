@@ -1,0 +1,11 @@
+0.7
+2020.2
+Jun 10 2021
+20:04:57
+C:/Users/trith/HFT_sim/HFT_sim_FPGA/hft_sim/hft_sim.sim/sim_1/behav/xsim/glbl.v,1623370582,verilog,,,,glbl,,uvm,,,,,,
+C:/Users/trith/HFT_sim/rtl/MAC_rx.sv,1755422893,systemVerilog,,C:/Users/trith/HFT_sim/rtl/crc32_parallel_64bit.sv,,MAC_rx,,uvm,,,,,,
+C:/Users/trith/HFT_sim/rtl/crc32_parallel_64bit.sv,1755419222,systemVerilog,,C:/Users/trith/HFT_sim/rtl/priority_encoder.sv,,crc32_parallel_64bit,,uvm,,,,,,
+C:/Users/trith/HFT_sim/rtl/priority_encoder.sv,1755378957,systemVerilog,,C:/Users/trith/HFT_sim/rtl/xgmii_little_to_big.sv,,priority_encoder,,uvm,,,,,,
+C:/Users/trith/HFT_sim/rtl/xgmii_little_to_big.sv,1755378957,systemVerilog,,C:/Users/trith/HFT_sim/tb_sv/MAC_rx_tb.sv,,xgmii_little_to_big,,uvm,,,,,,
+C:/Users/trith/HFT_sim/tb_sv/MAC_rx_tb.sv,1755502707,systemVerilog,,,,MAC_rx_tb,,uvm,,,,,,
+C:/Users/trith/HFT_sim/tb_sv/crc32_parallel_64bit_tb.sv,1755417104,systemVerilog,,,,crc32_parallel_64bit_tb,,uvm,,,,,,

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="MAC_rx_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="MAC_rx_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="331.001 ns"></ZoomEndTime>
+      <Cursor1Time time="95.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="404"></NameColumnWidth>
+      <ValueColumnWidth column_width="190"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="20" />
+   <wvobject fp_name="/MAC_rx_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/nRST" type="logic">
+      <obj_property name="ElementShortName">nRST</obj_property>
+      <obj_property name="ObjectShortName">nRST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/xgmii_rxd" type="array">
+      <obj_property name="ElementShortName">xgmii_rxd[63:0]</obj_property>
+      <obj_property name="ObjectShortName">xgmii_rxd[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/xgmii_rxd_rv" type="array">
+      <obj_property name="ElementShortName">xgmii_rxd_rv[63:0]</obj_property>
+      <obj_property name="ObjectShortName">xgmii_rxd_rv[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/xgmii_rxd_dl" type="array">
+      <obj_property name="ElementShortName">xgmii_rxd_dl[63:0]</obj_property>
+      <obj_property name="ObjectShortName">xgmii_rxd_dl[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/xgmii_rxc" type="array">
+      <obj_property name="ElementShortName">xgmii_rxc[7:0]</obj_property>
+      <obj_property name="ObjectShortName">xgmii_rxc[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/crc_out" type="array">
+      <obj_property name="ElementShortName">crc_out[32:0]</obj_property>
+      <obj_property name="ObjectShortName">crc_out[32:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/mac_payload" type="array">
+      <obj_property name="ElementShortName">mac_payload[63:0]</obj_property>
+      <obj_property name="ObjectShortName">mac_payload[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/mac_valid" type="logic">
+      <obj_property name="ElementShortName">mac_valid</obj_property>
+      <obj_property name="ObjectShortName">mac_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/crc_flush" type="logic">
+      <obj_property name="ElementShortName">crc_flush</obj_property>
+      <obj_property name="ObjectShortName">crc_flush</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/frame_ok" type="logic">
+      <obj_property name="ElementShortName">frame_ok</obj_property>
+      <obj_property name="ObjectShortName">frame_ok</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/crc_valid" type="logic">
+      <obj_property name="ElementShortName">crc_valid</obj_property>
+      <obj_property name="ObjectShortName">crc_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/crc_init" type="logic">
+      <obj_property name="ElementShortName">crc_init</obj_property>
+      <obj_property name="ObjectShortName">crc_init</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/DATA_W" type="array">
+      <obj_property name="ElementShortName">DATA_W[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_W[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/CTRL_W" type="array">
+      <obj_property name="ElementShortName">CTRL_W[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CTRL_W[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/MAC_DEST" type="array">
+      <obj_property name="ElementShortName">MAC_DEST[47:0]</obj_property>
+      <obj_property name="ObjectShortName">MAC_DEST[47:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/MAC_SRC" type="array">
+      <obj_property name="ElementShortName">MAC_SRC[47:0]</obj_property>
+      <obj_property name="ObjectShortName">MAC_SRC[47:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/PRE_IDLE" type="array">
+      <obj_property name="ElementShortName">PRE_IDLE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PRE_IDLE[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/CRC_OUT" type="array">
+      <obj_property name="ElementShortName">CRC_OUT[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CRC_OUT[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/MAC_rx_tb/dut/state" type="array">
+      <obj_property name="ElementShortName">state[5:0]</obj_property>
+      <obj_property name="ObjectShortName">state[5:0]</obj_property>
+   </wvobject>
+</wave_config>

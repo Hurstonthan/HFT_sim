@@ -254,7 +254,7 @@ module MAC_rx #(
                 if ({xgmii_rxd_f[7:0],xgmii_rxd_f[15:8],xgmii_rxd_f[23:16],xgmii_rxd_f[31:24]} == MAC_SRC_ADDR[31:0] && xgmii_rxd_f[47:32] == 16'h0008) begin
                     next_state = RCV_MAC_PAYLOAD;
                     nMAC_payload_rcv_cvrt = {xgmii_rxd_f[63:48],48'h0};
-                    nbytes_rcv = 7'd2;
+                    nbytes_rcv = 8'd2;
                     nMAC_valid = 1'b1;
 
                 end else begin
@@ -267,7 +267,7 @@ module MAC_rx #(
                 nMAC_valid = 1'b1;
                 nMAC_payload_rcv_cvrt = xgmii_rxd_f;
                 
-                nbytes_rcv = 7'd8;
+                nbytes_rcv = 8'd8;
                 
                 if (end_valid && (byte_END == 8'hFD)) begin
                     nFCS_frame = FCS_grap >> ((FCS_offset - 4) << 3);
@@ -279,24 +279,30 @@ module MAC_rx #(
                         if (bytes_offset < 5) begin
                             case_debug = 1'b1;
                             //nbytes_rcv = 8'd4 - bytes_offset; 
+                            if (bytes_offset == 4) begin
+                                nbytes_rcv = 8;
+                            end else begin
+                                nbytes_rcv = 8'd4 - {5'b0, bytes_offset};
+                            
+                            end
                             case (bytes_offset)
                                 3'd0: begin
-                                    nbytes_rcv = 8'd4 - bytes_offset; 
+                                  
                                     nMAC_payload_rcv_cvrt = frame_store[95:64];
                                     xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
                                 3'd1: begin
-                                    nbytes_rcv = 8'd4 - bytes_offset; 
+                                     
                                     nMAC_payload_rcv_cvrt = frame_store[103:64];
                                     xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
                                 3'd2: begin
-                                    nbytes_rcv = 8'd4 - bytes_offset; 
+                                     
                                     nMAC_payload_rcv_cvrt = frame_store[111:64];
                                     xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
                                 3'd3: begin
-                                    nbytes_rcv = 8'd4 - bytes_offset; 
+                                     
                                     nMAC_payload_rcv_cvrt = frame_store[119:64];
                                     xgmii_rxd_f = nMAC_payload_rcv_cvrt;
                                 end
@@ -306,7 +312,7 @@ module MAC_rx #(
                             next_state = CHECK_CRC;
                         end else begin
                             //nbytes_rcv_dl = bytes_offset - 8'd4;  //Old one
-                            nbytes_rcv_dl = bytes_offset - 8'd3;
+                            nbytes_rcv_dl = {5'b0, bytes_offset} - 8'd3;
                             casez (bytes_offset)
                                 3'd5: // begin
                                     nframe_store = {{56'b0,xgmii_rxd[7:0]},frame_store[127:64]};
@@ -329,7 +335,7 @@ module MAC_rx #(
                     //Switch at lane 4
                     else begin
                         ncrc_delay = 1'b1;
-                        nbytes_rcv_dl = 7'd4 + (bytes_offset - 7'd4);
+                        nbytes_rcv_dl = 8'd4 + ({5'b0, bytes_offset} - 8'd4);
                         case(bytes_offset)
                             //CRC is still in xgmii_rxd_curr
                             //Data is still in xgmii_rxd_curr

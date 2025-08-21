@@ -1,0 +1,5 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/trith/HFT_sim/HFT_sim_FPGA/hft_sim/hft_sim.sim/sim_1/synth/func/xsim/crc32_parallel_64bit_tb_func_synth.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module crc32_parallel_64bit
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/trith/HFT_sim/tb_sv/crc32_parallel_64bit_tb.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module crc32_parallel_64bit_tb
