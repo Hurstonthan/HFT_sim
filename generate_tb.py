@@ -103,9 +103,13 @@ static vluint64_t main_time = 0;
 double sc_time_stamp() {{ return main_time; }}
 
 static void tick(V{M} *top, VerilatedFstC *tfp) {{
-    top->eval(); tfp->dump(main_time++);
-    top->CLK ^= 1;
-    top->eval(); tfp->dump(main_time++);
+    top->CLK = 1;
+    top->eval(); 
+    tfp->dump(main_time++);          
+       
+    top->CLK = 0;          
+    top->eval();
+    tfp->dump(main_time++);
 }}
 
 int main(int argc, char **argv) {{

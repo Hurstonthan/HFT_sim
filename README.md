@@ -66,6 +66,7 @@
 ├── doc/      
 ├── rtl/                # All RTL source code (System Verilog)
 │ └── top.sv          # Top-level design file
+│ └── ether_simulation.sv          # simulation of client and sever
 ├── tb/                 # All testbench code 
 ```
 
@@ -77,6 +78,9 @@
 
 **Clone the repository:**
 git clone https://github.com/USERNAME/REPO.git
+
+**Run the simulation**
+make ether_simulation.wav
 
 
 

@@ -43,7 +43,7 @@ DRIVE_CPP = $(GEN_DIR_BASE)/$*/$*_input.cpp
 # ---------- build, run, then gtkwave -----------------------------------
 %.wav: %.sim
 	@echo "==> Opening GTKWave ..."
-	@gtkwave $*.vcd $*.gtkw
+	@gtkwave $*.vcd gtkw/$*.gtkw
 
 # ---------- housekeeping ------------------------------------------------
 .PHONY: clean
