@@ -71,41 +71,45 @@ module payload_FIFO #(
     logic handshake, nhandshake;
 
     //debugging the FIFO
-//    logic [DATA_WIDTH-1:0] payload      [FIFO_DEPTH];   // payload[0]..payload[4]
-//    logic [CTRL_WIDTH-1:0] bytes_offset [FIFO_DEPTH];   // bytes_offset[0]..bytes_offset[4]
+    //    logic [DATA_WIDTH-1:0] payload      [FIFO_DEPTH];   // payload[0]..payload[4]
+    //    logic [CTRL_WIDTH-1:0] bytes_offset [FIFO_DEPTH];   // bytes_offset[0]..bytes_offset[4]
 
 
-//    for (genvar i = 0; i < FIFO_DEPTH; i++) begin
-//        assign payload[i] = TCP_FIFO[i].payload;
-//        assign bytes_offset[i] = TCP_FIFO[i].bytes_offset;
-//    end
-
-    
+    //    for (genvar i = 0; i < FIFO_DEPTH; i++) begin
+    //        assign payload[i] = TCP_FIFO[i].payload;
+    //        assign bytes_offset[i] = TCP_FIFO[i].bytes_offset;
+    //    end
     // assign bytes_len = wr_FIFO_offset[7] + wr_FIFO_offset[6] + wr_FIFO_offset[5] + wr_FIFO_offset[4] + wr_FIFO_offset[3] + wr_FIFO_offset[2] + wr_FIFO_offset[1] + wr_FIFO_offset[0]; 
-    //assign bytes_len = TCP_FIFO[rd_ptr].bytes_offset[0] + TCP_FIFO[rd_ptr].bytes_offset[1] + TCP_FIFO[rd_ptr].bytes_offset[2] +TCP_FIFO[rd_ptr].bytes_offset[3] +TCP_FIFO[rd_ptr].bytes_offset[4] +TCP_FIFO[rd_ptr].bytes_offset[5] +TCP_FIFO[rd_ptr].bytes_offset[6] +TCP_FIFO[rd_ptr].bytes_offset[7];
-    //assign bytes_len = TCP_FIFO[rd_ptr].bytes_offset[0] + TCP_FIFO[rd_ptr].bytes_offset[1] + TCP_FIFO[rd_ptr].bytes_offset[2] +TCP_FIFO[rd_ptr].bytes_offset[3] +TCP_FIFO[rd_ptr].bytes_offset[4] +TCP_FIFO[rd_ptr].bytes_offset[5] +TCP_FIFO[rd_ptr].bytes_offset[6] +TCP_FIFO[rd_ptr].bytes_offset[7]; 
+    assign bytes_len = TCP_FIFO[rd_ptr].bytes_offset[0] + TCP_FIFO[rd_ptr].bytes_offset[1] + TCP_FIFO[rd_ptr].bytes_offset[2] +TCP_FIFO[rd_ptr].bytes_offset[3] +TCP_FIFO[rd_ptr].bytes_offset[4] +TCP_FIFO[rd_ptr].bytes_offset[5] +TCP_FIFO[rd_ptr].bytes_offset[6] +TCP_FIFO[rd_ptr].bytes_offset[7];
+
     assign full = ((rd_ptr - 1) == wr_ptr_out);
-
-
     logic [FIFO_WIDTH - 1:0] wr_ptr, nwr_ptr, rd_ptr, nrd_ptr;
     //assign fifo_entry_rd = TCP_FIFO[rd_ptr];
     
     //BRAM friendly FIFO writing
-    always_ff @(posedge CLK) begin
-        if (wr_FIFO_en && handshake) begin
-//            TCP_FIFO[wr_ptr].payload <= axis_data_rx;
-//            TCP_FIFO[wr_ptr].bytes_offset <= wr_FIFO_offset;
-              TCP_FIFO[wr_ptr] <= 1;
-               
+    always_ff @(posedge CLK or negedge nRST) begin
+        if (!nRST) begin
+            for (int i = 0; i < FIFO_DEPTH; i++) begin
+                TCP_FIFO[i]  <= 0;
+            end
+        end else begin
+            if (wr_FIFO_en && handshake) begin
+                TCP_FIFO[wr_ptr].payload <= axis_data_rx;
+                TCP_FIFO[wr_ptr].bytes_offset <= wr_FIFO_offset;       
+            end
         end
     end
 
     //BRAM friendly FIFO reading
-    always_ff @(posedge CLK) begin
-        if (axis_r_en && rd_FIFO_valid_l) begin
-            fifo_entry_rd <= TCP_FIFO[rd_ptr];
-    //                bytes_len <= TCP_FIFO[rd_ptr].bytes_offset[0] + TCP_FIFO[rd_ptr].bytes_offset[1] + TCP_FIFO[rd_ptr].bytes_offset[2] +TCP_FIFO[rd_ptr].bytes_offset[3] +TCP_FIFO[rd_ptr].bytes_offset[4] +TCP_FIFO[rd_ptr].bytes_offset[5] +TCP_FIFO[rd_ptr].bytes_offset[6] +TCP_FIFO[rd_ptr].bytes_offset[7];
-            //bytes_len <= 0;
+    always_ff @(posedge CLK or negedge nRST) begin
+        if (!nRST) begin
+            fifo_entry_rd <= 0;
+        end else begin
+            if (axis_r_en && rd_FIFO_valid_l) begin
+                fifo_entry_rd <= TCP_FIFO[rd_ptr];
+            end else begin
+                fifo_entry_rd <= 0;
+            end
         end
     end
 
@@ -125,15 +129,12 @@ module payload_FIFO #(
             wr_FIFO_len <= 0;
             seq_rx_FIFO_rd <= 0;
             handshake <= 0;
-            // //Doing this consider as array
-            // for (int i = 0; i < FIFO_DEPTH; i++) begin
-            //     TCP_FIFO[i]  <= 0;
-            // end
         end else begin
             wr_ptr <= nwr_ptr;
             rd_ptr <= nrd_ptr;
             rd_FIFO_en <= axis_r_en;
             rd_FIFO_valid_l <= nrd_FIFO_valid_l;
+            axis_rd_data <= fifo_entry_rd.payload;
             rd_len_ptr <= nrd_len_ptr;
             seq_rx_FIFO_rd <= seq_trk_rd;
             handshake <= nhandshake;
@@ -141,8 +142,6 @@ module payload_FIFO #(
             len_TCP_flush <= nlen_TCP_flush;
             axis_r_valid <= naxis_r_valid;
             TCP_flush_l <= nTCP_flush_l;
-            //TCP_FIFO <= nTCP_FIFO;
-
             if (handshake_done) begin
                 seq_trk_rd <= seq_rcv_start;
                 handshake <= handshake_done;
@@ -206,111 +205,3 @@ module payload_FIFO #(
 
 
 endmodule
-
-
-//`timescale 1ns/1ps
-
-//module payload_FIFO #(
-//  parameter int WIDTH  = 64,
-//  parameter int DEPTH  = 15000,                      // "ridiculous" depth ? forces BRAM
-//  localparam int ADDR_W = $clog2(DEPTH)
-//)(
-//  input  logic                clk,
-//  input  logic                rst_n,
-
-//  // write side
-//  input  logic                wr_en,
-//  input  logic [WIDTH-1:0]    wr_data,
-//  output logic                full,
-
-//  // read side
-//  input  logic                rd_en,
-//  output logic [WIDTH-1:0]    rd_data,
-//  output logic                rd_valid,
-//  output logic                empty,
-  
-//  input logic debug,
-
-//  // optional: occupancy
-//  output logic [ADDR_W:0]     count
-//);
-//    typedef struct packed {
-//        logic [WIDTH  -1 :0] payload;
-//        //logic [7:0] offset;
-//    }fifo_entry_t;
-//  // --- Storage: block RAM inference target ---
-//  (* ram_style = "block" *)
-//  fifo_entry_t mem [0:DEPTH-1];
-
-//  logic [ADDR_W-1:0] wptr, rptr, nwptr, nrptr;
-//  logic [WIDTH-1:0]  mem_dout;
-
-//  // handshake helpers
-//  logic wr_fire, rd_fire, rd_fire_q;
-
-//  assign empty  = (count == 0);
-//  assign full   = (count == DEPTH);
-
-//  assign wr_fire = wr_en && !full;
-//  assign rd_fire = rd_en && !empty;
-
-//  // WRITE port (synchronous)
-//  always_ff @(posedge clk) begin
-//    if (wr_fire)
-//      mem[wptr].payload <= wr_data;
-//  end
-
-//  // READ port (synchronous read ? 1-cycle latency)
-//  always_ff @(posedge clk) begin
-//    mem_dout <= mem[rptr].payload;              // BRAM-style sync read
-//  end
-
-//  // Pointers, count, and output pipeline
-//  always_ff @(posedge clk or negedge rst_n) begin
-//    if (!rst_n) begin
-//      wptr      <= '0;
-//      rptr      <= '0;
-//      count     <= '0;
-//      rd_fire_q <= 1'b0;
-//      rd_valid  <= 1'b0;
-//      rd_data   <= '0;
-//    end else begin
-//      // advance pointers
-//      if (debug) begin
-//        wptr <= 3;
-//        rptr <= 3;
-//     end else begin
-//        wptr <= nwptr;
-//        rptr <= nrptr;
-//     end
-      
-////      if (wr_fire) wptr <= wptr + 1'b1;
-////      if (rd_fire) rptr <= rptr + 1'b1;
-
-//      // occupancy
-//      unique case ({wr_fire, rd_fire})
-//        2'b10: count <= count + 1'b1;   // write only
-//        2'b01: count <= count - 1'b1;   // read only
-//        default: /* no change */ ;
-//      endcase
-
-//      // pipeline the read handshake to align with BRAM latency
-//      rd_fire_q <= rd_fire;
-//      rd_valid  <= rd_fire_q;
-//      rd_data   <= mem_dout;            // data valid when rd_valid==1
-//    end
-    
-//  end
-  
-//  always_comb begin
-//    nwptr = 1;
-//    nrptr = 1; 
-    
-////    if (debug) begin
-////        nwptr  = 3;    
-    
-////    end
-  
-//  end 
-
-//endmodule
