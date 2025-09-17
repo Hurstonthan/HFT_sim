@@ -33,7 +33,9 @@ module moldUDP#(
     always_ff @ (posedge clk, negedge n_rst) begin: mold_FF
         if (1'b0 == nRST) begin 
 	    curr_state <= IDLE; 
+	    expected_sequence_num <= 64'b1;
 	end else begin
+	    expected_sequence_num <= next_expected_sequence_num;
 	    curr_state <= next_state;
 	end
     end
@@ -59,11 +61,17 @@ module moldUDP#(
 	message_length = UDP_payload[63:47];
     end
 
-    end_of_session = (message_length == 16'hffff);
+    end_of_session = (message_length == end_session);
 
     // handling misses
-    miss = (sequence_num != expected_sequence_num && message_length == 16'b0);
-    next_expected_sequence_num = (message_length == 16'b0 ? 64'b1 : sequence_num + 1);
+    miss = (sequence_num != expected_sequence_num && message_length != heartbeat && message_length != end_session);
+    if (end_of_session) begin
+	next_expected_sequence_num = 64'b1;
+    end else if (message_length == heartbeat) begin 
+	next_expected_sequence_num = expected_sequence_num;
+    end else begin
+	next_expected_sequence_num = sequence_num + 1;
+    end
 
     // next state logic 
     case (curr_state) begin
