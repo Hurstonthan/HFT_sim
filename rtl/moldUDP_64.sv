@@ -11,11 +11,11 @@ module moldUDP#(
     output logic mold_valid,
     output logic [15:0] mold_length,
     output logic [63:0] mold_payload,
-    output logic mold_request_valid, 
-    output logic [63:0] mold_request_valid
-);
+    output logic mold_request_valid,
+    output logic [63:0] mold_request_payload
+    );
 
-    typedef enum logic [2:0] {IDLE, CHKSUM, SESSION, MSG, REREQ1, REREQ2, REREQ3, PAYLOAD} state; 
+    typedef enum logic [2:0] {IDLE, CHKSUM, SESSION, MSG, REREQ1, REREQ2, REREQ3, PAYLOAD} state_t; 
 
     logic miss;
     logic end_of_session;
@@ -26,17 +26,17 @@ module moldUDP#(
     logic [63:0] next_expected_sequence_num;
     logic [15:0] message_count;
     logic [15:0] message_length;
-    state curr_state, next_state;
+    state_t state, next_state;
 
 
     // register logic
     always_ff @ (posedge clk, negedge n_rst) begin: mold_FF
-        if (1'b0 == nRST) begin 
-            curr_state <= IDLE; 
+        if (~n_rst) begin 
+            state <= IDLE; 
             expected_sequence_num <= 64'b1;
         end else begin
             expected_sequence_num <= next_expected_sequence_num;
-            curr_state <= next_state;
+            state <= next_state;
         end
     end
 
@@ -44,7 +44,7 @@ module moldUDP#(
     always_comb begin
     
         // output logic
-        mold_valid = (state == PAYLOAD);
+        mold_valid = state == PAYLOAD;
         mold_request_valid = (state == REREQ1 | state == REREQ2 | state == REREQ3);
     
         // is this a heartbeat message to end session?
@@ -78,7 +78,7 @@ module moldUDP#(
         end
     
         // next state logic 
-        case (curr_state)
+        case (state)
             IDLE: next_state = CHKSUM;
             CHKSUM: next_state = SESSION;
             SESSION: next_state = MSG;
