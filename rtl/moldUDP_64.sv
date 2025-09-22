@@ -63,7 +63,7 @@ module moldUDP#(
             message_count = UDP_payload[47:32];
             message_length = UDP_payload[63:47];
         end else if (state == PAYLOAD && message_length != heartbeat && message_length != end_session) begin 
-    	mold_payload = UDP_payload;	
+    	    mold_payload = UDP_payload;	
         end
     
     
@@ -72,13 +72,13 @@ module moldUDP#(
         if (end_of_session) begin
             next_expected_sequence_num = 64'b1;
         end else if (message_length == heartbeat) begin 
-    	next_expected_sequence_num = expected_sequence_num;
+    	    next_expected_sequence_num = expected_sequence_num;
         end else begin
-    	next_expected_sequence_num = sequence_num + 1;
+    	    next_expected_sequence_num = sequence_num + 1;
         end
     
         // next state logic 
-        case (curr_state) begin
+        case (curr_state)
             IDLE: next_state = CHKSUM;
             CHKSUM: next_state = SESSION;
             SESSION: next_state = MSG;
