@@ -4,11 +4,11 @@
 module moldUDP_tb;
     // initialization
     parameter CLK_PERIOD = 10;
-    logic clk;
-    logic n_rst;
+    logic clk = 1;
+    logic n_rst = 1;
     logic UDP_flush, UDP_valid, done, mold_valid, mold_request_valid;
     logic [63:0] UDP_payload, mold_payload, mold_request_payload;
-    logic [15:0] mold_length;
+    // logic [15:0] mold_length;
     
     logic [63:0] sequence_number;
     logic [63:0] empty_data = '0;
@@ -21,8 +21,8 @@ module moldUDP_tb;
     logic [63:0] d4 = 64'hAAAAAAAABBBBBBBB;
     logic [63:0] d5 = 64'hCCCCCCCCDDDDDDDD;
     string test_name;
-    logic [63:0][2:0] test_header;
-    logic [63:0][4:0] test_payload;
+    logic [2:0][63:0] test_header;
+    logic [4:0][63:0] test_payload;
 
     // clock generation
     always #(CLK_PERIOD/2) clk++;
@@ -36,7 +36,7 @@ module moldUDP_tb;
         .UDP_payload(UDP_payload),
         .done(done),
         .mold_valid(mold_valid),
-        .mold_length(mold_length),
+        // .mold_length(mold_length),
         .mold_payload(mold_payload),
         .mold_request_valid(mold_request_valid),
         .mold_request_payload(mold_request_payload)
@@ -44,17 +44,17 @@ module moldUDP_tb;
 
     // task to reset the DUT
     task reset;
-        input logic n_rst;
     begin
         n_rst = 0;
         #(2*CLK_PERIOD);
         n_rst = 1;
         #(2*CLK_PERIOD);
+
     end
     endtask 
 
     task send_header;
-        input logic [63:0][2:0] data;
+        input logic [2:0][63:0] data;
     begin
         UDP_payload = data[0]; 
         UDP_valid = 1'b1;
@@ -68,7 +68,7 @@ module moldUDP_tb;
     endtask
 
     task send_payload;
-        input logic [63:0][4:0] data;
+        input logic [4:0][63:0] data;
         input int length;
     begin
         for (int i = 0; i < length; i++) begin
@@ -87,9 +87,9 @@ module moldUDP_tb;
         UDP_valid = 0;
         UDP_payload = 0;
         done = 0;
-        reset(n_rst);
+        reset();
         
-        // moldUDP64 orderinital
+        // moldUDP64 orderin
         // CHKSUM (16) | SESSION_ID(48)
         // SESSION_ID (32) | sequence number (32)
         // sequence_number (32) | Message Count (16) | Message Length (16)
@@ -100,7 +100,7 @@ module moldUDP_tb;
         #(CLK_PERIOD);
         test_header[0] = {16'h0, SESSION_ID[79:32]}; //checking the order of session id 
         test_header[1] = {SESSION_ID[31:0], sequence_number[63:32]}; //length = 5
-        test_header[2] = {sequence_number[31:0], 16'd5, 16'd0};
+        test_header[2] = {sequence_number[31:0], 16'd5, 16'd10};
         test_payload[0] = d1;
         test_payload[1] = d2;
         test_payload[2] = d3;
@@ -109,14 +109,18 @@ module moldUDP_tb;
         send_header(test_header);
         send_payload(test_payload, 5);
         #(CLK_PERIOD);
+        done = 1'b1;
+        #(CLK_PERIOD);
+        done = 1'b0;
+        #(CLK_PERIOD);
         
         sequence_number = sequence_number + 5;
         // 2nd normal packet 
         test_name = "normal packet - 3 payload";
         #(CLK_PERIOD);
         test_header[0] = {16'h0, SESSION_ID[79:32]};
-        test_header[1] = {SESSION_ID[79:32], sequence_number[63:32]};
-        test_header[2] = {sequence_number[31:0], 16'd3, 16'h0};
+        test_header[1] = {SESSION_ID[31:0], sequence_number[63:32]};
+        test_header[2] = {sequence_number[31:0], 16'd3, 16'h10};
         test_payload[0] = d5;
         test_payload[1] = d4;
         test_payload[2] = d3;
@@ -125,14 +129,17 @@ module moldUDP_tb;
         send_header(test_header);
         send_payload(test_payload, 3);
         #(CLK_PERIOD);
-        
+        done = 1'b1;
+        #(CLK_PERIOD);
+        done = 1'b0;
+        #(CLK_PERIOD);
         // 3rd missing packet
         // jump number
         sequence_number = sequence_number + 4; // missing one 
         test_name = "missing packet";
         test_header[0] = {16'h0, SESSION_ID[79:32]};
-        test_header[1] = {SESSION_ID[79:32], sequence_number[63:32]};
-        test_header[2] = {sequence_number[31:0], 16'd3, 16'h0};
+        test_header[1] = {SESSION_ID[31:0], sequence_number[63:32]};
+        test_header[2] = {sequence_number[31:0], 16'd3, 16'h10};
         test_payload[0] = d1;
         test_payload[1] = d2;
         test_payload[2] = empty_data;
@@ -141,7 +148,10 @@ module moldUDP_tb;
         send_header(test_header);
         send_payload(test_payload, 2);
         #(CLK_PERIOD);
-
+        done = 1'b1;
+        #(CLK_PERIOD);
+        done = 1'b0;
+        #(CLK_PERIOD);
         // 4th backward
         sequence_number = sequence_number - 2;
         test_name = "backward packet ";
@@ -158,7 +168,10 @@ module moldUDP_tb;
         #(CLK_PERIOD);
         done = 1'b1;
         #(CLK_PERIOD);
+        done = 1'b0;
+        #(CLK_PERIOD);
 
+        reset();
         // 5th heartbeat packet
         sequence_number = 0;
         test_name = "heartbeat packet";
@@ -169,13 +182,14 @@ module moldUDP_tb;
         #(CLK_PERIOD);
         done = 1'b1;
         #(CLK_PERIOD);       
-
+        done = 1'b0;
+        #(CLK_PERIOD);
         // changing session$finish;
         sequence_number = 1; // changing back to original 
         test_name = "changing session";
         test_header[0] = {16'h0, SESSION_ID[79:32]};
         test_header[1] = {SESSION_ID[79:32], sequence_number[63:32]};
-        test_header[2] = {sequence_number[31:0], 16'd2, 16'h0};
+        test_header[2] = {sequence_number[31:0], 16'd2, 16'hffff};
         test_payload[0] = d1;
         test_payload[1] = d2;
         test_payload[2] = empty_data;
