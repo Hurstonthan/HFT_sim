@@ -1,5 +1,4 @@
 module mold_counter #(
-
     )(
         input logic clk,
         input logic n_rst,
@@ -15,11 +14,11 @@ module mold_counter #(
         output logic [7:0] segment_sel0, //MSB if 11110001 means the first section is high and second is low, so on
         output logic [7:0] segment_sel1 // determine which pin is or not on
     );
-    logic [7:0] byte_count, next_byte_count;
+    logic [15:0] byte_count, next_byte_count;
     logic [1:0][7:0] next_segment_sel;
     logic sel, next_sel; // select the correct
     logic [63:0] next_sequence_num; 
-    logic [15:0] curr_count, next_count, expected_message_len, next_expected_message_len, difference; 
+    logic [15:0] expected_message_len, next_expected_message_len, difference; 
     logic byte_done, next_byte_done; //for the inner  
     
     logic message_done, next_message_done;
@@ -54,7 +53,6 @@ module mold_counter #(
         // next_miss = '0;
         next_byte_done = 1'b0;
         
-        //todo to check whether there is a miss
         if (mold_valid) begin
             casez(difference)
                 16'd0: begin
