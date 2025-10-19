@@ -73,7 +73,7 @@ module moldUDP#(
     // output logic and header info
     always_comb begin
         next_valid = (curr_state == PAYLOAD);
-
+        next_state = curr_state;
         // default values
         next_payload = UDP_payload;	
         next_length = mold_length;
@@ -85,32 +85,35 @@ module moldUDP#(
         next_session_second = session_second;
 
         case (curr_state)
-            CHKSUM: begin
-                checksum = UDP_payload[63:48];
-                next_session_first = UDP_payload[47:0];
+            IDLE: begin
+                if (UDP_valid) begin
+                    next_state = CHKSUM;
+                    next_session_first = UDP_payload[47:0];
+                    checksum = UDP_payload[63:48]; // not used in MOLDUDP, it is UDP signa
+                end else begin
+                    next_state = curr_state; // keep in IDLE
+                end
             end
-            SESSION: begin
+            CHKSUM: begin
+                next_state = SESSION;
                 next_session_second = UDP_payload[63:32];
                 next_sequence_num_first = UDP_payload[31:0];
             end
-            MSG: begin
+            SESSION: begin
+                next_state = MSG;
                 next_sequence_num_second = UDP_payload[63:32];
                 next_count = UDP_payload[31:16];
                 next_length = UDP_payload[15:0];
             end
+            MSG: begin
+                if (mold_count == heartbeat | mold_count == end_session) begin
+                    next_state = IDLE;
+                end else begin
+                    next_state = PAYLOAD;
+                end
+            end
+            PAYLOAD: next_state = (done ? IDLE : PAYLOAD); 
         endcase
     end
-
-
-    // next state logic 
-    always_comb begin: NEXTSTATE
-        next_state = curr_state;
-        case (curr_state)
-            IDLE: next_state = CHKSUM;
-            CHKSUM: next_state = SESSION;
-            SESSION: next_state = MSG;
-            MSG: next_state = (mold_count == heartbeat | mold_count == end_session ? IDLE : PAYLOAD);
-            PAYLOAD: next_state = (done ? IDLE : PAYLOAD);
-        endcase 
-    end
+    // next state logi 
 endmodule

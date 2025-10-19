@@ -1,4 +1,5 @@
 module mold_counter #(
+
     )(
         input logic clk,
         input logic n_rst,
@@ -14,15 +15,15 @@ module mold_counter #(
         output logic [7:0] segment_sel0, //MSB if 11110001 means the first section is high and second is low, so on
         output logic [7:0] segment_sel1 // determine which pin is or not on
     );
-    logic [15:0] byte_count, next_byte_count;
+    logic [7:0] byte_count, next_byte_count;
     logic [1:0][7:0] next_segment_sel;
     logic sel, next_sel; // select the correct
     logic [63:0] next_sequence_num; 
     logic [15:0] expected_message_len, next_expected_message_len, difference; 
     logic byte_done, next_byte_done; //for the inner  
     
-    logic message_done, next_message_done;
-    logic next_done, next_miss;
+    // logic message_done, next_message_done;
+    logic next_done;
     logic [63:0] next_payload;
     // logic [7:0] last_byte;
     
@@ -53,6 +54,7 @@ module mold_counter #(
         // next_miss = '0;
         next_byte_done = 1'b0;
         
+        //todo to check whether there is a miss
         if (mold_valid) begin
             casez(difference)
                 16'd0: begin
@@ -123,7 +125,7 @@ module mold_counter #(
 
     always_ff @(posedge clk, negedge n_rst) begin
         if(~n_rst) begin
-            message_done <= '0;
+            // message_done <= '0;
             expected_message_len <= '0;
             byte_count <= '0;
             sel <= '0;
@@ -131,10 +133,11 @@ module mold_counter #(
             segment_sel0 <= '0;
             segment_sel1 <= '0;
             // mold_miss <= '0;
+            byte_done <= '0;
             done <= '0;
             counter_payload <= '0;
         end else begin
-            message_done <= next_message_done;
+            // message_done <= next_message_done;
             expected_message_len <= next_expected_message_len;
             byte_count <= next_byte_count;
             sel <= next_sel;
@@ -142,6 +145,7 @@ module mold_counter #(
             segment_sel0 <= next_segment_sel[0];
             segment_sel1 <= next_segment_sel[1];
             // mold_miss <= next_miss;
+            byte_done <= next_byte_done;
             done <= next_done;
             counter_payload <= next_payload;
         end

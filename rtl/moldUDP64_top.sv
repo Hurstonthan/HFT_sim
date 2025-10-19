@@ -16,14 +16,14 @@ module moldUDP64_top#()(
     logic [15:0] mold_length, mold_count;
     logic [63:0] mold_payload, sequence_id;
     logic [79:0] session_id;
-
+    logic mold_done;
     moldUDP DECODE(
         .clk(clk),
         .n_rst(n_rst),
         .UDP_flush(UDP_flush),
         .UDP_valid(UDP_payload),
         .UDP_payload(UDP_payload),
-        .done(done),
+        .done(mold_done),
         .mold_valid(mold_valid),
         .mold_length(mold_length),
         .mold_count(mold_count),
@@ -40,7 +40,7 @@ module moldUDP64_top#()(
         .mold_length(mold_length), //from the first segment
         .mold_valid(mold_valid),
         .message_count(mold_count),
-        .done(moldUDP_done), 
+        .done(mold_done), 
         .counter_seq(), //for sending // not used
         .counter_payload(moldUDP_payload),
         .segment_sel0(segment_sel0), //MSB if 11110001 means the first section is high and second is low, so on
@@ -52,7 +52,7 @@ module moldUDP64_top#()(
         .n_rst(n_rst),
         .session_id(session_id),
         .sequence_num_input(sequence_id),
-        .message_count(message_count),
+        .message_count(mold_count),
         .rerequest_valid(rerequest_valid),
         .rerequest_payload(rerequest_payload)
     );
