@@ -72,7 +72,8 @@ module moldUDP#(
 
     // output logic and header info
     always_comb begin
-        next_valid = (curr_state == PAYLOAD);
+        next_valid = '0;
+        // next_valid = (curr_state == PAYLOAD);//
         next_state = curr_state;
         // default values
         next_payload = UDP_payload;	
@@ -90,9 +91,10 @@ module moldUDP#(
                     next_state = CHKSUM;
                     next_session_first = UDP_payload[47:0];
                     checksum = UDP_payload[63:48]; // not used in MOLDUDP, it is UDP signa
-                end else begin
-                    next_state = curr_state; // keep in IDLE
-                end
+                end 
+                // else begin
+                    // next_state = curr_state; // keep in IDLE
+                // end
             end
             CHKSUM: begin
                 next_state = SESSION;
@@ -110,9 +112,17 @@ module moldUDP#(
                     next_state = IDLE;
                 end else begin
                     next_state = PAYLOAD;
+                    next_valid = 1'b1;
                 end
             end
-            PAYLOAD: next_state = (done ? IDLE : PAYLOAD); 
+            PAYLOAD: begin 
+                if (done) begin
+                    next_state = IDLE;
+                end else begin
+                    // next_state = PAYLOAD;
+                    next_valid = 1'b1;
+                end
+            end
         endcase
     end
     // next state logi 

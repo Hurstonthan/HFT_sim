@@ -1,13 +1,17 @@
 `timescale 1ns/10ps
 // include "moldUDP64.sv"
 
-module moldUDP_tb;
+module moldUDP64_top_tb;
     // initialization
     parameter CLK_PERIOD = 10;
     logic clk = 1;
     logic n_rst = 1;
-    logic UDP_flush, UDP_valid, done, mold_valid, mold_request_valid;
-    logic [63:0] UDP_payload, mold_payload, mold_request_payload;
+    logic UDP_flush, UDP_valid, done;
+    logic [63:0] UDP_payload, moldUDP_payload, rerequest_payload;
+    logic rerequest_valid;
+    logic [7:0] segment_sel0, segment_sel1;
+    logic moldUDP_done;
+    
     // logic [15:0] mold_length;
     
     logic [63:0] sequence_number;
@@ -17,8 +21,8 @@ module moldUDP_tb;
     localparam [79:0] CHANGE_SES =  80'h54455354534553533032;
     logic [63:0] d1 = 64'hDEADBEEFBEEFDEAD;
     logic [63:0] d2 = 64'hABCDEF1234567890;
-    logic [63:0] d3 = 64'h1234567887654321;
-    logic [63:0] d4 = 64'hAAAAAAAABBBBBBBB;
+    logic [63:0] d3 = 64'h0006567887654321;
+    logic [63:0] d4 = 64'h0006AAAABBBBBBBB;
     logic [63:0] d5 = 64'hCCCCCCCCDDDDDDDD;
     string test_name;
     logic [2:0][63:0] test_header;
@@ -28,18 +32,19 @@ module moldUDP_tb;
     always #(CLK_PERIOD/2) clk++;
 
     // Declaration
-    moldUDP dut (
+    moldUDP64_top dut (
         .clk(clk),
         .n_rst(n_rst),
         .UDP_flush(UDP_flush),
         .UDP_valid(UDP_valid),
         .UDP_payload(UDP_payload),
         .done(done),
-        .mold_valid(mold_valid),
-        // .mold_length(mold_length),
-        .mold_payload(mold_payload),
-        .mold_request_valid(mold_request_valid),
-        .mold_request_payload(mold_request_payload)
+        .rerequest_valid(rerequest_valid),
+        .moldUDP_payload(moldUDP_payload),
+        .rerequest_payload(rerequest_payload),
+        .segment_sel0(segment_sel0),
+        .segment_sel1(segment_sel1),
+        .moldUDP_done(moldUDP_done)
     );
 
     // task to reset the DUT
@@ -96,11 +101,11 @@ module moldUDP_tb;
 
         // 1st normal packet 
         sequence_number = 1;
-        test_name = "normal packet - 5 payload";
+        test_name = "normal packet - one packet - 40 bytes";
         #(CLK_PERIOD);
         test_header[0] = {16'h0, SESSION_ID[79:32]}; //checking the order of session id 
         test_header[1] = {SESSION_ID[31:0], sequence_number[63:32]}; //length = 5
-        test_header[2] = {sequence_number[31:0], 16'd5, 16'd10};
+        test_header[2] = {sequence_number[31:0], 16'd1, 16'd40};
         test_payload[0] = d1;
         test_payload[1] = d2;
         test_payload[2] = d3;
@@ -114,13 +119,13 @@ module moldUDP_tb;
         done = 1'b0;
         #(CLK_PERIOD);
         
-        sequence_number = sequence_number + 5;
+        sequence_number = sequence_number + 1;
         // 2nd normal packet 
         test_name = "normal packet - 3 payload";
         #(CLK_PERIOD);
         test_header[0] = {16'h0, SESSION_ID[79:32]};
         test_header[1] = {SESSION_ID[31:0], sequence_number[63:32]};
-        test_header[2] = {sequence_number[31:0], 16'd3, 16'h10};
+        test_header[2] = {sequence_number[31:0], 16'd3, 16'd8};
         test_payload[0] = d5;
         test_payload[1] = d4;
         test_payload[2] = d3;
@@ -133,15 +138,15 @@ module moldUDP_tb;
         #(CLK_PERIOD);
         done = 1'b0;
         #(CLK_PERIOD);
-        // 3rd missing packet
-        // jump number
-        sequence_number = sequence_number + 4; // missing one 
+
+
+        sequence_number = sequence_number + 4; 
         test_name = "missing packet";
         test_header[0] = {16'h0, SESSION_ID[79:32]};
         test_header[1] = {SESSION_ID[31:0], sequence_number[63:32]};
-        test_header[2] = {sequence_number[31:0], 16'd3, 16'h10};
-        test_payload[0] = d1;
-        test_payload[1] = d2;
+        test_header[2] = {sequence_number[31:0], 16'd2, 16'd8};
+        test_payload[0] = d5;
+        test_payload[1] = d4;
         test_payload[2] = empty_data;
         test_payload[3] = empty_data;
         test_payload[4] = empty_data;
@@ -152,6 +157,7 @@ module moldUDP_tb;
         #(CLK_PERIOD);
         done = 1'b0;
         #(CLK_PERIOD);
+        
         // 4th backward
         sequence_number = sequence_number - 2;
         test_name = "backward packet ";
