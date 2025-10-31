@@ -7,8 +7,6 @@ module mold_miss#()(
     output logic rerequest_valid,
     output logic [63:0] rerequest_payload
 );
-
-
 typedef enum logic [1:0] {IDLE, SESSION, SEQ, COUNT} state_t;
 
 state_t state, next_state;
@@ -22,15 +20,13 @@ logic [63:0] next_seq_num;
 logic [63:0] expected_seq_num;
 logic [63:0] next_expected_seq_num;
 
-
-
 logic [15:0] request_count, next_request_count;
 logic [63:0] request_seq, next_request_seq;
 
 always_ff @ (posedge clk, negedge n_rst) begin
     if (~n_rst) begin
         seq_num <= '0;
-        expected_seq_num <= '1;
+        expected_seq_num <= '0;
         current_session <= '0;
         state <= IDLE;
         miss <= '0;
@@ -61,25 +57,25 @@ always_comb begin: fsm
     next_count = message_count;
     next_request_count = request_count;
     next_request_seq = request_seq;
+ 
+    next_seq_num = ((miss && message_count != 0 && message_count != '1) ? seq_num : sequence_num_input);
 
-    next_seq_num = (miss ? seq_num: sequence_num_input);
-
-    if (~miss && (next_seq_num > expected_seq_num)) begin
+    //when heartbeat, the miss should be low
+    if (~miss && (seq_num > expected_seq_num) && message_count != 0 && message_count != '1) begin
         next_miss = 1;
 
-        next_request_count = next_seq_num - expected_seq_num;
+        next_request_count = seq_num - expected_seq_num;
         next_request_seq = expected_seq_num;
     end
 
-    next_expected_seq_num = ((miss | next_seq_num < expected_seq_num) ? expected_seq_num : next_seq_num + next_count);
+    next_expected_seq_num = (seq_num < expected_seq_num ? expected_seq_num : seq_num + message_count);
 
-
-    case(state) 
-        IDLE: begin 
+    case (state)
+        IDLE: begin
             next_state = (miss ? SESSION : IDLE);
             next_payload = current_session[79:16];
         end
-
+        // sending payload and data back to UDP, the payload takes three cycles
         SESSION: begin
             next_state = SEQ;
             next_payload[63:48] = current_session[15:0];
@@ -98,6 +94,4 @@ always_comb begin: fsm
     endcase
 
 end
-
-
 endmodule

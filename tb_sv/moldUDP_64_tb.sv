@@ -127,8 +127,8 @@ module moldUDP64_top_tb;
         test_header[1] = {SESSION_ID[31:0], sequence_number[63:32]};
         test_header[2] = {sequence_number[31:0], 16'd3, 16'd8};
         test_payload[0] = d5;
-        test_payload[1] = d4;
-        test_payload[2] = d3;
+        test_payload[1] = 64'h0007AAAABBBBBBBB;
+        test_payload[2] = 64'hAA0005AAAABBBBBB;
         test_payload[3] = empty_data;
         test_payload[4] = empty_data;
         send_header(test_header);
@@ -140,8 +140,26 @@ module moldUDP64_top_tb;
         #(CLK_PERIOD);
 
 
-        sequence_number = sequence_number + 4; 
+        sequence_number = sequence_number + 6; // should give miss  
         test_name = "missing packet";
+        test_header[0] = {16'h0, SESSION_ID[79:32]};
+        test_header[1] = {SESSION_ID[31:0], sequence_number[63:32]};
+        test_header[2] = {sequence_number[31:0], 16'd2, 16'd8};
+        test_payload[0] = d5;
+        test_payload[1] = 64'h0004AAAABBBB0008;
+        test_payload[2] = 64'hDEADBEEFBEEFDEAD;
+        test_payload[3] = empty_data;
+        test_payload[4] = empty_data;
+        send_header(test_header);
+        send_payload(test_payload, 3);
+        #(CLK_PERIOD);
+        done = 1'b1;
+        #(CLK_PERIOD);
+        done = 1'b0;
+        #(CLK_PERIOD);
+        
+        sequence_number = sequence_number + 2; // valid data, pending miss packet 
+        test_name = "valid data, pending miss";
         test_header[0] = {16'h0, SESSION_ID[79:32]};
         test_header[1] = {SESSION_ID[31:0], sequence_number[63:32]};
         test_header[2] = {sequence_number[31:0], 16'd2, 16'd8};
@@ -157,16 +175,17 @@ module moldUDP64_top_tb;
         #(CLK_PERIOD);
         done = 1'b0;
         #(CLK_PERIOD);
-        
+
+
         // 4th backward
-        sequence_number = sequence_number - 2;
+        sequence_number = sequence_number - 5;
         test_name = "backward packet ";
         test_header[0] = {16'h0, SESSION_ID[79:32]};
         test_header[1] = {SESSION_ID[31:0], sequence_number[63:32]}; 
         test_header[2] = {sequence_number[31:0], 16'd3, 16'd8};
-        test_payload[0] = 64'hAAAA0000BBBB1111;
-        test_payload[1] = 64'hCCCC2222DDDD3333;
-        test_payload[2] = 64'hEEEE4444FFFF5555;
+        test_payload[0] = d5;
+        test_payload[1] = d4;
+        test_payload[2] = d3;
         test_payload[3] = empty_data;
         test_payload[4] = empty_data;
         send_header(test_header);
@@ -177,7 +196,6 @@ module moldUDP64_top_tb;
         done = 1'b0;
         #(CLK_PERIOD);
 
-        reset();
         // 5th heartbeat packet
         sequence_number = 0;
         test_name = "heartbeat packet";
@@ -191,6 +209,8 @@ module moldUDP64_top_tb;
         done = 1'b0;
         #(CLK_PERIOD);
         // changing session$finish;
+
+        reset();
         sequence_number = 1; // changing back to original 
         test_name = "changing session";
         test_header[0] = {16'h0, SESSION_ID[79:32]};
