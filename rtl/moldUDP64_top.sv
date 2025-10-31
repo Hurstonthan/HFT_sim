@@ -41,7 +41,6 @@ module moldUDP64_top#()(
         .mold_valid(mold_valid),
         .message_count(mold_count),
         .counter_done(mold_done), 
-        .counter_seq(), //for sending // not used
         .counter_payload(moldUDP_payload),
         .segment_sel0(segment_sel0), //MSB if 11110001 means the first section is high and second is low, so on
         .segment_sel1(segment_sel1)
